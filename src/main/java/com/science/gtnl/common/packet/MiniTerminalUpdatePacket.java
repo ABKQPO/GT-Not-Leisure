@@ -1,4 +1,4 @@
-package com.science.gtnl.common.meminiterminal;
+package com.science.gtnl.common.packet;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -31,7 +31,7 @@ public class MiniTerminalUpdatePacket extends ClientboundPacket {
 
     private static final int PART_BYTES = 512 * 1024;
     private static final int MAX_PART_BYTES = 16 * 1024 * 1024;
-    static final int COMPRESSION_LEVEL = Deflater.BEST_SPEED;
+    public static final int COMPRESSION_LEVEL = Deflater.BEST_SPEED;
 
     public record Entry(int key, IAEStack<?> stack) {}
 
@@ -45,7 +45,7 @@ public class MiniTerminalUpdatePacket extends ClientboundPacket {
         this.data = data;
     }
 
-    MiniTerminalUpdatePacket(NBTTagCompound data, byte[] compressed) {
+    public MiniTerminalUpdatePacket(NBTTagCompound data, byte[] compressed) {
         this.data = data;
         this.compressed = compressed;
     }
@@ -89,11 +89,11 @@ public class MiniTerminalUpdatePacket extends ClientboundPacket {
         minecraft.func_152344_a(() -> MiniTerminalClient.receive(data, entries));
     }
 
-    static List<byte[]> encode(List<Entry> entries) throws IOException {
+    public static List<byte[]> encode(List<Entry> entries) throws IOException {
         return encode(entries, COMPRESSION_LEVEL);
     }
 
-    static List<byte[]> encode(List<Entry> entries, int level) throws IOException {
+    public static List<byte[]> encode(List<Entry> entries, int level) throws IOException {
         List<byte[]> parts = new ObjectArrayList<>();
         ByteBuf part = Unpooled.buffer(Math.min(PART_BYTES, 64 + entries.size() * 64));
         try {

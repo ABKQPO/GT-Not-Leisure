@@ -1,6 +1,8 @@
-package com.science.gtnl.common.item.cellworkbench;
+package com.science.gtnl.common.gui.portableWorkbench;
 
 import net.minecraft.entity.player.InventoryPlayer;
+
+import com.science.gtnl.common.item.cellworkbench.PortableCellWorkbenchHost;
 
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerOpenContext;

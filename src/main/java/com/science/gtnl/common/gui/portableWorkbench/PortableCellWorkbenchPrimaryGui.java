@@ -1,8 +1,9 @@
-package com.science.gtnl.common.item.cellworkbench;
+package com.science.gtnl.common.gui.portableWorkbench;
 
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.science.gtnl.common.gui.GTNLGuiHandler;
+import com.science.gtnl.common.item.cellworkbench.PortableCellWorkbenchHost;
 import com.science.gtnl.utils.enums.GuiType;
 
 import appeng.container.PrimaryGui;

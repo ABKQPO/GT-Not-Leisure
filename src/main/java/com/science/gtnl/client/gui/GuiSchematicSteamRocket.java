@@ -1,4 +1,4 @@
-package com.science.gtnl.common.item.steamRocket;
+package com.science.gtnl.client.gui;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -6,6 +6,7 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
+import com.science.gtnl.common.gui.container.ContainerSchematicSteamRocket;
 import com.science.gtnl.utils.ColorUtils;
 
 import galaxyspace.GalaxySpace;

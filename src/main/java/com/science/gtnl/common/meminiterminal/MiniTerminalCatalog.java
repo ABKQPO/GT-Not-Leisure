@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
-import com.science.gtnl.common.meminiterminal.MiniTerminalUpdatePacket.Entry;
+import com.science.gtnl.common.packet.MiniTerminalUpdatePacket.Entry;
 
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.AEStackTypeRegistry;

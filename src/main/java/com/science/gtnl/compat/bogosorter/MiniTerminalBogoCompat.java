@@ -24,8 +24,8 @@ import com.gtnllib.mod.ModList;
 import com.science.gtnl.client.meminiterminal.MiniTerminalClient;
 import com.science.gtnl.client.meminiterminal.MiniTerminalInventoryPanel;
 import com.science.gtnl.client.meminiterminal.MiniTerminalNEIAdapter;
-import com.science.gtnl.common.meminiterminal.MiniTerminalRequestPacket.DepositMode;
 import com.science.gtnl.common.meminiterminal.MiniTerminalStackTypes;
+import com.science.gtnl.common.packet.MiniTerminalRequestPacket.DepositMode;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;

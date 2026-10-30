@@ -29,6 +29,8 @@ import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.IYogTerminal;
 import com.science.gtnl.common.item.items.ItemYogSothothTerminal;
+import com.science.gtnl.common.packet.YogTerminalStatePacket;
+import com.science.gtnl.common.packet.YogTerminalSyncPacket;
 import com.science.gtnl.utils.CreativeCursor;
 
 import appeng.api.AEApi;

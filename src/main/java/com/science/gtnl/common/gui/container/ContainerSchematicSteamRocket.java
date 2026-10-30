@@ -1,4 +1,4 @@
-package com.science.gtnl.common.item.steamRocket;
+package com.science.gtnl.common.gui.container;
 
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;

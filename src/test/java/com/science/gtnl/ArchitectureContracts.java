@@ -27,7 +27,7 @@ public class ArchitectureContracts {
 
     // Ratchets: each count may only go down. Lower the number in the same change that lowers the count.
     public static final int LONG_METHOD_LINES = 10;
-    public static final int MAX_CLIENT_IMPORTS_IN_COMMON = 89;
+    public static final int MAX_CLIENT_IMPORTS_IN_COMMON = 86;
 
     // The only machine on GT's tooltip-only base; an adapter for a single machine would only forward.
     public static final Set<String> GT_BASE_ALLOWED = Set.of("common/machine/multiblock/QuantumComputer.java");

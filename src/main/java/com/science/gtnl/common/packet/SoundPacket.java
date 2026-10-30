@@ -7,7 +7,7 @@ import net.minecraft.util.ResourceLocation;
 
 import com.github.bsideup.jabel.Desugar;
 import com.gtnllib.network.ClientboundPacket;
-import com.science.gtnl.common.packet.client.SoundHandler;
+import com.science.gtnl.client.SoundHandler;
 
 import cpw.mods.fml.common.network.ByteBufUtils;
 import io.netty.buffer.ByteBuf;

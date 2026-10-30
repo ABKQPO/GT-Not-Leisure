@@ -1,4 +1,4 @@
-package com.science.gtnl.common.packet.client;
+package com.science.gtnl.client;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

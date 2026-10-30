@@ -21,7 +21,7 @@ import com.science.gtnl.common.block.blocks.tile.TileEntityMEChisel;
 import com.science.gtnl.common.block.blocks.tile.TileEntitySuperDualInterface;
 import com.science.gtnl.common.block.blocks.tile.TileEntitySuperInterface;
 import com.science.gtnl.common.gui.container.portableWorkbench.ContainerPortableAdvancedWorkbench;
-import com.science.gtnl.common.item.cellworkbench.PortableCellWorkbenchGuiFactory;
+import com.science.gtnl.common.gui.portableWorkbench.PortableCellWorkbenchGuiFactory;
 import com.science.gtnl.common.item.cellworkbench.PortableCellWorkbenchHost;
 import com.science.gtnl.common.part.PartActiveFormationPlane;
 import com.science.gtnl.common.part.PartMECellDock;

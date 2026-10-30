@@ -1,7 +1,7 @@
 package com.science.gtnl.client;
 
 import static com.science.gtnl.ScienceNotLeisure.network;
-import static com.science.gtnl.common.packet.client.SoundHandler.PLAYING_SOUNDS;
+import static com.science.gtnl.client.SoundHandler.PLAYING_SOUNDS;
 import static com.science.gtnl.common.render.tile.BallRenderer.visualStateMap;
 
 import java.util.Map;

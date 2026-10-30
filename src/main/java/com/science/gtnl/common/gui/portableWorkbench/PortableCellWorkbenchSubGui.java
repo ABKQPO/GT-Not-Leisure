@@ -1,4 +1,4 @@
-package com.science.gtnl.common.item.cellworkbench;
+package com.science.gtnl.common.gui.portableWorkbench;
 
 public enum PortableCellWorkbenchSubGui {
 

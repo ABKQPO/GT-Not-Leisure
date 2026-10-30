@@ -5,11 +5,6 @@ import static com.science.gtnl.ScienceNotLeisure.network;
 import com.gtnllib.network.ClientboundPacket;
 import com.gtnllib.network.PayloadHandler;
 import com.gtnllib.network.ServerboundPacket;
-import com.science.gtnl.common.meminiterminal.MiniTerminalRequestPacket;
-import com.science.gtnl.common.meminiterminal.MiniTerminalUpdatePacket;
-import com.science.gtnl.common.yogsothoth.YogTerminalActionPacket;
-import com.science.gtnl.common.yogsothoth.YogTerminalStatePacket;
-import com.science.gtnl.common.yogsothoth.YogTerminalSyncPacket;
 
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.relauncher.Side;

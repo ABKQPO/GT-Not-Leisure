@@ -12,7 +12,7 @@ public class YogTerminalLocks {
         return client;
     }
 
-    static void setClient(IntSet locked) {
+    public static void setClient(IntSet locked) {
         client = locked.isEmpty() ? IntSets.emptySet() : IntSets.unmodifiable(new IntOpenHashSet(locked));
     }
 

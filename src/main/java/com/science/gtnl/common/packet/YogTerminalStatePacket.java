@@ -1,4 +1,4 @@
-package com.science.gtnl.common.yogsothoth;
+package com.science.gtnl.common.packet;
 
 import java.util.UUID;
 
@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 
 import com.gtnllib.network.ClientboundPacket;
 import com.science.gtnl.client.yogsothoth.YogTerminalClient;
+import com.science.gtnl.common.yogsothoth.YogTerminalLocks;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -35,15 +36,15 @@ public class YogTerminalStatePacket extends ClientboundPacket {
         this.sneak = sneak;
     }
 
-    static YogTerminalStatePacket ended() {
+    public static YogTerminalStatePacket ended() {
         return new YogTerminalStatePacket(ENDED, IntSets.emptySet(), null, -1, false);
     }
 
-    static YogTerminalStatePacket opening(IntSet locked, UUID record, int index) {
+    public static YogTerminalStatePacket opening(IntSet locked, UUID record, int index) {
         return new YogTerminalStatePacket(OPENING, locked, record, index, false);
     }
 
-    static YogTerminalStatePacket use(IntSet locked, UUID record, int index, boolean sneak) {
+    public static YogTerminalStatePacket use(IntSet locked, UUID record, int index, boolean sneak) {
         return new YogTerminalStatePacket(USE, locked, record, index, sneak);
     }
 

@@ -11,7 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import com.science.gtnl.common.meminiterminal.MiniTerminalPinSettings;
-import com.science.gtnl.common.meminiterminal.MiniTerminalUpdatePacket.Entry;
+import com.science.gtnl.common.packet.MiniTerminalUpdatePacket.Entry;
 
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;

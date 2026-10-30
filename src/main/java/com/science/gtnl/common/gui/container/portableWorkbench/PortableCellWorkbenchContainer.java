@@ -1,6 +1,9 @@
-package com.science.gtnl.common.item.cellworkbench;
+package com.science.gtnl.common.gui.container.portableWorkbench;
 
 import net.minecraft.entity.player.InventoryPlayer;
+
+import com.science.gtnl.common.gui.portableWorkbench.PortableCellWorkbenchGuiFactory;
+import com.science.gtnl.common.item.cellworkbench.PortableCellWorkbenchHost;
 
 import appeng.api.config.FuzzyMode;
 import appeng.container.implementations.ContainerCellWorkbench;

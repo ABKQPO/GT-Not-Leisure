@@ -30,8 +30,8 @@ import com.science.gtnl.common.gui.container.portableWorkbench.ContainerPortable
 import com.science.gtnl.common.gui.container.portableWorkbench.ContainerPortableEnderChest;
 import com.science.gtnl.common.gui.container.portableWorkbench.ContainerPortableFurnace;
 import com.science.gtnl.common.gui.container.portableWorkbench.ContainerPortableInfinityChest;
-import com.science.gtnl.common.item.cellworkbench.PortableCellWorkbenchContainer;
-import com.science.gtnl.common.item.cellworkbench.PortableCellWorkbenchGuiFactory;
+import com.science.gtnl.common.gui.container.portableWorkbench.PortableCellWorkbenchContainer;
+import com.science.gtnl.common.gui.portableWorkbench.PortableCellWorkbenchGuiFactory;
 import com.science.gtnl.common.item.cellworkbench.PortableCellWorkbenchHost;
 import com.science.gtnl.common.item.items.PortableChestType;
 import com.science.gtnl.common.part.PartActiveFormationPlane;

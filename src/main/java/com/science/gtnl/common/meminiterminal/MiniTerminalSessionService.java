@@ -22,7 +22,9 @@ import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.item.items.ItemMEMiniPortableTerminal;
-import com.science.gtnl.common.meminiterminal.MiniTerminalRequestPacket.DepositMode;
+import com.science.gtnl.common.packet.MiniTerminalRequestPacket;
+import com.science.gtnl.common.packet.MiniTerminalRequestPacket.DepositMode;
+import com.science.gtnl.common.packet.MiniTerminalUpdatePacket;
 import com.science.gtnl.compat.bogosorter.BogoSorterSlots;
 import com.science.gtnl.utils.CreativeCursor;
 
@@ -133,7 +135,7 @@ public class MiniTerminalSessionService {
         return null;
     }
 
-    static void handle(EntityPlayerMP player, MiniTerminalRequestPacket request) {
+    public static void handle(EntityPlayerMP player, MiniTerminalRequestPacket request) {
         Session session = SESSIONS.get(player.getUniqueID());
         if (request.kind == MiniTerminalRequestPacket.Kind.END) {
             if (session != null && session.id == request.sessionId) end(player);

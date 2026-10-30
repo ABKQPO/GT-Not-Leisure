@@ -19,7 +19,7 @@ import com.gtnllib.gui.wheel.WheelMenuModel;
 import com.gtnllib.gui.wheel.WheelOpenMode;
 import com.gtnllib.gui.wheel.WheelScreen;
 import com.science.gtnl.common.item.items.ItemYogSothothTerminal;
-import com.science.gtnl.common.yogsothoth.YogTerminalActionPacket;
+import com.science.gtnl.common.packet.YogTerminalActionPacket;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

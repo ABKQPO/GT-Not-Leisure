@@ -1,10 +1,12 @@
-package com.science.gtnl.common.item.steamRocket;
+package com.science.gtnl.compat.galaxyspace;
 
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 
+import com.science.gtnl.client.gui.GuiSchematicSteamRocket;
+import com.science.gtnl.common.gui.container.ContainerSchematicSteamRocket;
 import com.science.gtnl.config.MainConfig;
 
 import cpw.mods.fml.relauncher.Side;

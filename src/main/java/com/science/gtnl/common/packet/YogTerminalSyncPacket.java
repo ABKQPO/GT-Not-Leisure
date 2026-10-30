@@ -1,4 +1,4 @@
-package com.science.gtnl.common.yogsothoth;
+package com.science.gtnl.common.packet;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -13,6 +13,7 @@ import net.minecraft.nbt.NBTTagList;
 
 import com.gtnllib.network.ClientboundPacket;
 import com.science.gtnl.client.yogsothoth.YogTerminalClient;
+import com.science.gtnl.common.yogsothoth.YogRecord;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -33,7 +34,7 @@ public class YogTerminalSyncPacket extends ClientboundPacket {
     }
 
     // since: revision the client has within the current structure, -1 for everything; session: open entry or -1.
-    static List<YogTerminalSyncPacket> of(YogRecord record, long since, int session) {
+    public static List<YogTerminalSyncPacket> of(YogRecord record, long since, int session) {
         List<NBTTagList> parts = new ObjectArrayList<>();
         NBTTagList all = since < 0 ? record.writeTerminals() : record.writeChangedSince(since);
         NBTTagList part = new NBTTagList();

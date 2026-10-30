@@ -18,17 +18,17 @@ public class YogRecord {
 
     public final UUID id;
     UUID owner;
-    int generation;
-    long revision;
+    public int generation;
+    public long revision;
     // Bumped when entries are added or removed; within one structure, clients can be sent only changed entries.
-    long structure;
+    public long structure;
     static long modifications;
     final List<ItemStack> terminals = new ObjectArrayList<>();
     // Revision at which each entry last changed, parallel to terminals.
     private final LongArrayList stamps = new LongArrayList();
     final Set<String> batches = new ObjectOpenHashSet<>();
-    int active = -1;
-    boolean hidden;
+    public int active = -1;
+    public boolean hidden;
     int home = -1;
     UUID holder;
     // The Yog-Sothoth stack a disguise replaced, kept so reverting restores the same object screens hold.
@@ -127,7 +127,7 @@ public class YogRecord {
         }
     }
 
-    NBTTagList writeChangedSince(long since) {
+    public NBTTagList writeChangedSince(long since) {
         NBTTagList list = new NBTTagList();
         for (int index = 0; index < terminals.size(); index++) {
             if (stamps.getLong(index) <= since) continue;
@@ -155,7 +155,7 @@ public class YogRecord {
         return tag;
     }
 
-    NBTTagList writeTerminals() {
+    public NBTTagList writeTerminals() {
         NBTTagList list = new NBTTagList();
         for (ItemStack stack : terminals) list.appendTag(
             YogToken.unlinkedCopy(stack)

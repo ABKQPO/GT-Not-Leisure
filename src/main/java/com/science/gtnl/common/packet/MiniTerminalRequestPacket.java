@@ -1,4 +1,4 @@
-package com.science.gtnl.common.meminiterminal;
+package com.science.gtnl.common.packet;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -8,6 +8,9 @@ import net.minecraft.item.ItemStack;
 
 import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
 import com.gtnllib.network.ServerboundPacket;
+import com.science.gtnl.common.meminiterminal.MiniTerminalPinSettings;
+import com.science.gtnl.common.meminiterminal.MiniTerminalSessionService;
+import com.science.gtnl.common.meminiterminal.MiniTerminalStackTypes;
 
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
@@ -52,30 +55,30 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
         NATIVE_REGION
     }
 
-    Kind kind;
-    long sessionId;
-    long requestId;
-    long actionId;
-    long catalogEpoch;
-    long catalogRevision;
-    long pinRevision;
-    int windowId;
-    int slot = -1;
-    int entryId = -1;
-    int nativePin = -1;
-    UUID terminalId;
-    MonitorableAction action;
-    MiniTerminalPinSettings pinSettings;
-    SortOrder sortOrder;
-    SortDir sortDirection;
-    ViewItems viewMode;
-    DepositMode depositMode = DepositMode.STACK;
-    boolean emptyOnly;
-    boolean single;
-    Reference2BooleanMap<IAEStackType<?>> typeFilters;
-    IAEStack<?> pinTarget;
-    ItemStack creativeCursor;
-    byte[] creativeCursorPayload;
+    public Kind kind;
+    public long sessionId;
+    public long requestId;
+    public long actionId;
+    public long catalogEpoch;
+    public long catalogRevision;
+    public long pinRevision;
+    public int windowId;
+    public int slot = -1;
+    public int entryId = -1;
+    public int nativePin = -1;
+    public UUID terminalId;
+    public MonitorableAction action;
+    public MiniTerminalPinSettings pinSettings;
+    public SortOrder sortOrder;
+    public SortDir sortDirection;
+    public ViewItems viewMode;
+    public DepositMode depositMode = DepositMode.STACK;
+    public boolean emptyOnly;
+    public boolean single;
+    public Reference2BooleanMap<IAEStackType<?>> typeFilters;
+    public IAEStack<?> pinTarget;
+    public ItemStack creativeCursor;
+    public byte[] creativeCursorPayload;
 
     public MiniTerminalRequestPacket() {}
 
