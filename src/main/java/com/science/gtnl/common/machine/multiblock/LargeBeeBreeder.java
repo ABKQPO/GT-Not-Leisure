@@ -59,11 +59,13 @@ import gregtech.api.enums.VoltageIndex;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
+import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.recipe.check.SimpleCheckRecipeResult;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
+import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import lombok.Getter;
@@ -265,6 +267,18 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
         markBreedingChanged();
     }
 
+    @Override
+    public int checkEnergyHatchTier() {
+        int tier = VoltageIndex.ULV;
+        for (MTEHatch hatch : GTUtility.validMTEList(mEnergyHatches)) {
+            tier = Math.max(tier, (int) hatch.getInputTier());
+        }
+        for (MTEHatch hatch : GTUtility.validMTEList(mExoticEnergyHatches)) {
+            tier = Math.max(tier, (int) hatch.getInputTier());
+        }
+        return tier;
+    }
+
     @Nonnull
     @Override
     public CheckRecipeResult checkProcessing() {
@@ -283,10 +297,10 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
             return CheckRecipeResultRegistry.NO_RECIPE;
         }
 
-        if (mEnergyHatchTier < BASE_VOLTAGE_TIER) return insufficientBreedingVoltage(BASE_VOLTAGE_TIER);
+        if (getBreedingVoltageTier() < BASE_VOLTAGE_TIER) return insufficientBreedingVoltage(BASE_VOLTAGE_TIER);
         if (speciesArchive.hasSpecies(targetBeeSpecies)) {
             int requiredTier = getSpeciesVoltageTier(targetBeeSpecies);
-            if (mEnergyHatchTier < requiredTier) return insufficientBreedingVoltage(requiredTier);
+            if (getBreedingVoltageTier() < requiredTier) return insufficientBreedingVoltage(requiredTier);
         }
 
         long eutPerAttempt = getEuPerBreedingAttempt();
@@ -320,7 +334,7 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
             .mapToInt(step -> getRequiredVoltageTier(step.chance))
             .min()
             .orElse(BASE_VOLTAGE_TIER);
-        readySteps.removeIf(step -> mEnergyHatchTier < getRequiredVoltageTier(step.chance));
+        readySteps.removeIf(step -> getBreedingVoltageTier() < getRequiredVoltageTier(step.chance));
         if (readySteps.isEmpty()) return insufficientBreedingVoltage(requiredTier);
         if (getMaxInputPower() < eutPerAttempt) return CheckRecipeResultRegistry.insufficientPower(eutPerAttempt);
 
@@ -383,7 +397,7 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
 
     @Override
     public boolean onRunningTick(ItemStack stack) {
-        if (mEnergyHatchTier < activeRequiredVoltageTier) {
+        if (getBreedingVoltageTier() < activeRequiredVoltageTier) {
             checkRecipeResult = insufficientBreedingVoltage(activeRequiredVoltageTier);
             return false;
         }
@@ -793,11 +807,11 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
     }
 
     public int getBreedingVoltageTier() {
-        return mEnergyHatchTier;
+        return checkEnergyHatchTier();
     }
 
     public int getMaxParallelBreedingSteps() {
-        return getParallelForVoltageTier(mEnergyHatchTier);
+        return getParallelForVoltageTier(getBreedingVoltageTier());
     }
 
     public long getEuPerBreedingAttempt() {
@@ -810,7 +824,7 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
     }
 
     private GTNLOverclockCalculator createBreedingOverclockCalculator() {
-        int voltageUpgrades = Math.max(0, Math.min(mEnergyHatchTier, VoltageIndex.MAX) - BASE_VOLTAGE_TIER);
+        int voltageUpgrades = Math.max(0, Math.min(getBreedingVoltageTier(), VoltageIndex.MAX) - BASE_VOLTAGE_TIER);
         return new GTNLOverclockCalculator().setRecipeEUt(BASE_EUT_PER_BREEDING)
             .setEUt(BASE_EUT_PER_BREEDING << (2 * voltageUpgrades))
             .setDuration(TICKS_PER_BREEDING)
