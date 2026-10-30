@@ -21,7 +21,7 @@
 | `registry` | 统一注册器 `Registrar`：物品和方块的名字、翻译键、贴图、分类页和注册写一条 |
 | `network` | 网络包基类 `ClientboundPacket`、`ServerboundPacket`、`PayloadHandler`；频道和注册顺序留在使用方 |
 | `world` | 方块变化监听 `WorldListener`、`IBlockStateListener` |
-| `command` | 通用指令 `/getiteminfo`、`/suicide` |
+| `command` | 通用指令 `/getiteminfo`、`/suicide`；`command/selector` 是指令里 `@a`、`@e[...]` 这类实体选择器的解析 |
 | `mod` | 模组列表 `ModList`（给 mixin 指定目标模组、判断模组是否加载） |
 | `utils` | 单行文字绘制、颜色计算 `ColorMath`、数值工具 `MathUtils`（0~1 限制、伪随机数、大数换算和缩写）、长整数饱和运算 `LongMath`、`GameUtils`（射线、权限、放回背包、UUID）、传送 `TeleporterUtils`、提示行拼接 `MetaTooltipUtils`、三维向量 `Vec3d` |
 | `config` | 客户端配置 `GTNLLibConfig`：HUD 总开关、HUD 总缩放、界面主题、世界粒子数量上限、文字特效开关 |

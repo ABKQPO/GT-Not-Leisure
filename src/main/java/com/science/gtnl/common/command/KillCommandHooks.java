@@ -14,7 +14,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.DamageSource;
 
-import com.science.gtnl.utils.selector.EntitySelector;
+import com.gtnllib.command.selector.EntitySelector;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 

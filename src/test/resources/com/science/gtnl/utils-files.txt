@@ -69,11 +69,6 @@ utils/recipes/metadata/ResourceCollectionModuleMetadata.java
 utils/recipes/metadata/RocketAssemblerInputSlotsMetadata.java
 utils/recipes/metadata/SolorMuonCatalystMetadata.java
 utils/recipes/metadata/SteamFusionMetadata.java
-utils/render/SpoceEffect.java
-utils/selector/EntitySelector.java
-utils/selector/SelectorFilter.java
-utils/selector/SelectorParser.java
-utils/selector/SelectorPlayer.java
 utils/structure/GTNLStructureErrors.java
 utils/text/AnimatedText.java
 utils/text/AnimatedTooltipHandler.java
