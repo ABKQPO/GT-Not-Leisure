@@ -11,20 +11,35 @@ BASELINE="src/test/resources/compat/compat-snapshot.txt"
 
 mkdir -p "$RUN_DIR" build
 echo "eula=true" > "$RUN_DIR/eula.txt"
+# RFG otherwise asks about online-mode before starting a server in a fresh directory. The input pipe below
+# only sends stop after startup, so that prompt would deadlock CI. Do not overwrite an existing dev config.
+if [[ ! -f "$RUN_DIR/server.properties" ]]; then
+  cat > "$RUN_DIR/server.properties" <<'PROPERTIES'
+online-mode=true
+server-ip=127.0.0.1
+server-port=0
+PROPERTIES
+fi
 rm -f "$LOG" "$SNAPSHOT"
 touch "$LOG"
 
 (
   for _ in $(seq 1 360); do
     if grep -q 'Done (' "$LOG"; then sleep 15; echo stop; break; fi
-    if grep -q -e 'BUILD FAILED' -e 'BUILD SUCCESSFUL' -e 'Crash report saved' -e 'Caught exception from' "$LOG"; then
+    if grep -q -e 'GTNL_SERVER_CHECK_EXIT=' -e 'BUILD FAILED' -e 'BUILD SUCCESSFUL' -e 'Crash report saved' -e 'Caught exception from' "$LOG"; then
       echo stop
       break
     fi
     sleep 5
   done
   sleep 30
-) | GTNL_COMPAT_SNAPSHOT="$SNAPSHOT" timeout 2400 ./gradlew --no-daemon "$TASK" > "$LOG" 2>&1
+) | (
+  GTNL_COMPAT_SNAPSHOT="$SNAPSHOT" timeout 2400 ./gradlew --no-daemon "$TASK"
+  status=$?
+  # Release the input producer even if Gradle exits before printing its usual success/failure banner.
+  echo "GTNL_SERVER_CHECK_EXIT=$status"
+  exit "$status"
+) > "$LOG" 2>&1
 gradle_status=${PIPESTATUS[1]}
 
 failed=0
