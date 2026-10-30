@@ -40,7 +40,7 @@ public class ArchitectureContracts {
         "utils/recipes/RecipeBuilder.java");
 
     // GT's RecipeMapFrontend still takes ModularUI 1 types; GT machines still on ModularUI 1 open cover tabs through
-    // createWindow; the modularUI mixins patch ModularUI 1 itself; the Eternal GregTech Workshop is unfinished.
+    // createWindow; the modularUI mixins patch ModularUI 1 itself.
     public static final List<String> MUI1_ALLOWED = List.of(
         "common/gui/recipe/",
         "common/material/GTNLRecipeMaps.java",
@@ -48,9 +48,7 @@ public class ArchitectureContracts {
         "common/gui/WirelessSteamCoverUIFactory.java",
         "common/machine/cover/VoidCover.java",
         "common/machine/cover/WirelessSteamCover.java",
-        "mixins/late/modularUI/",
-        "common/machine/multiblock/module/eternalGregTechWorkshop/",
-        "common/gui/modularui/GTNLMui2ItemHandlerAdapter.java");
+        "mixins/late/modularUI/");
 
     // GTNLLib's WorldListener is one object per world plus a root that owns the map, so the card registers the root.
     public static final String MANUAL_EVENT_REGISTRATION = "loader/WorldLoader.java";

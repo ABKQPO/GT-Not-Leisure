@@ -22,6 +22,7 @@ import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.utils.Alignment;
 import com.cleanroommc.modularui.utils.Alignment.MainAxis;
+import com.cleanroommc.modularui.utils.item.ItemStackHandler;
 import com.cleanroommc.modularui.value.sync.BigIntSyncValue;
 import com.cleanroommc.modularui.value.sync.BooleanSyncValue;
 import com.cleanroommc.modularui.value.sync.DoubleSyncValue;
@@ -51,7 +52,6 @@ import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.textfield.TextFieldWidget;
 import com.google.common.math.LongMath;
 import com.science.gtnl.common.gui.GTNLMui2Textures;
-import com.science.gtnl.common.gui.modularui.GTNLMui2ItemHandlerAdapter;
 import com.science.gtnl.common.gui.modularui.GTNLMultiBlockBaseGui;
 import com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.EternalGregTechWorkshop;
 import com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EGTWUpgradeStorage;
@@ -1692,11 +1692,11 @@ public class EternalGregTechWorkshopGui extends GTNLMultiBlockBaseGui<EternalGre
     }
 
     private SlotGroupWidget createUpgradeInputSlots(PanelSyncManager syncManager) {
-        GTNLMui2ItemHandlerAdapter adapter = new GTNLMui2ItemHandlerAdapter(multiblock.getUpgradeInputHandlerForGui());
+        ItemStackHandler inputs = multiblock.getUpgradeInputHandlerForGui();
         String[] matrix = { "ssss", "ssss", "ssss", "ssss" };
         return SlotGroupWidget.builder()
             .matrix(matrix)
-            .key('s', index -> new ItemSlot().slot(new ModularSlot(adapter, index).slotGroup(UPGRADE_INPUT_SLOT_GROUP)))
+            .key('s', index -> new ItemSlot().slot(new ModularSlot(inputs, index).slotGroup(UPGRADE_INPUT_SLOT_GROUP)))
             .build()
             .rightRel(0);
     }
