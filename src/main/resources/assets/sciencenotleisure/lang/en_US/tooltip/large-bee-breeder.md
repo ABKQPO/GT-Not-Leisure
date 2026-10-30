@@ -10,6 +10,8 @@ Breeding waits when voltage is too low; producing archived species also requires
 Starts with {var:parallels} parallel, {var:attemptSeconds} seconds per attempt and {var:baseEu} EU/t per parallel
 Requires HV; each higher voltage tier doubles the parallel limit
 Each overclock uses 4 times the EU/t per parallel and halves breeding time
+Each active parallel can consume 2 royal jelly from the input buses for one extra lossy overclock per attempt
+This uses 4 times the EU/t and halves breeding time again; insufficient jelly or power leaves the normal cycle unchanged
 Starting from HV glass, each higher glass tier doubles EU/t and adds {var:glassChance}% success chance
 Runs fewer parallels when power is limited; waits if there is not enough power for one
 Each input princess produces one target princess and one target drone upon completion

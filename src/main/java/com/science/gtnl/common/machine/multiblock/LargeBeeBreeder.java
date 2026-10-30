@@ -21,10 +21,12 @@ import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 
@@ -84,6 +86,7 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
     private static final int INPUT_SCAN_INTERVAL = 100;
     private static final int FOUNDATION_SCAN_INTERVAL = 200;
     private static final int BASE_PARALLEL_STEPS = 1;
+    private static final int ROYAL_JELLY_PER_PARALLEL = 2;
 
     private static final byte OPERATION_NONE = 0;
     private static final byte OPERATION_BREEDING = 1;
@@ -273,7 +276,7 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
     @Nonnull
     @Override
     public CheckRecipeResult checkProcessing() {
-        scanInputBuses();
+        List<ItemStack> inputs = scanInputBuses();
         activeOperation = OPERATION_NONE;
         activeBreedingBatch.clear();
         activeFoundationsChecked = false;
@@ -307,7 +310,7 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
             ItemStack drone = BeeBreedingHelper.createDrone(targetBeeSpecies);
             mOutputItems = drone == null ? new ItemStack[] { princess } : new ItemStack[] { princess, drone };
             activeOperation = OPERATION_OUTPUT;
-            prepareBreedingCycle(eutPerAttempt);
+            prepareBreedingCycle(1, inputs);
             return CheckRecipeResultRegistry.SUCCESSFUL;
         }
 
@@ -350,7 +353,7 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
         activeFoundationsChecked = true;
         allTasksBlocked = false;
         missingDroneSpecies = "";
-        prepareBreedingCycle(getEnergyCostPerTick(batch.size()));
+        prepareBreedingCycle(batch.size(), inputs);
         return CheckRecipeResultRegistry.SUCCESSFUL;
     }
 
@@ -374,6 +377,39 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
         mEfficiency = 10000;
         mEfficiencyIncrease = 10000;
         lEUt = -eut;
+    }
+
+    private void prepareBreedingCycle(int parallels, List<ItemStack> inputs) {
+        long eut = getEnergyCostPerTick(parallels);
+        prepareBreedingCycle(eut);
+        if (mMaxProgresstime <= 1 || eut > Math.max(0L, getMaxInputPower()) / 4) return;
+
+        ItemStack royalJelly = ModsItemlist.ForestryRoyalJelly.get(1);
+        if (royalJelly == null) return;
+        int required = parallels * ROYAL_JELLY_PER_PARALLEL;
+        int available = 0;
+        List<ItemStack> jellyStacks = new ArrayList<>();
+        Set<ItemStack> seen = Collections.newSetFromMap(new IdentityHashMap<>());
+        for (ItemStack input : inputs) {
+            if (input == null || input.stackSize <= 0
+                || !seen.add(input)
+                || !GTUtility.areStacksEqual(input, royalJelly)) continue;
+            jellyStacks.add(input);
+            available += Math.min(input.stackSize, required - available);
+            if (available == required) break;
+        }
+        if (available < required) return;
+
+        for (ItemStack jelly : jellyStacks) {
+            int consumed = Math.min(jelly.stackSize, required);
+            jelly.stackSize -= consumed;
+            required -= consumed;
+            if (required == 0) break;
+        }
+        mMaxProgresstime = createBreedingOverclockCalculator(1).getDuration();
+        lEUt = -(eut * 4);
+        updateSlots();
+        markBaseTileDirty();
     }
 
     private void updateActiveVoltageTier() {
@@ -523,7 +559,7 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
         markBreedingChanged();
     }
 
-    private void scanInputBuses() {
+    private List<ItemStack> scanInputBuses() {
         ArrayList<ItemStack> inputs = getStoredInputs();
         List<ItemStack> toRemove = new ArrayList<>();
 
@@ -555,6 +591,7 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
             markBreedingChanged();
         }
         if (isFoundationScanDue()) refreshFoundationInputs(inputs);
+        return inputs;
     }
 
     private boolean isFoundationScanDue() {
@@ -818,7 +855,12 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
     }
 
     private GTNLOverclockCalculator createBreedingOverclockCalculator() {
-        int voltageUpgrades = Math.max(0, Math.min(getBreedingVoltageTier(), VoltageIndex.MAX) - BASE_VOLTAGE_TIER);
+        return createBreedingOverclockCalculator(0);
+    }
+
+    private GTNLOverclockCalculator createBreedingOverclockCalculator(int extraOverclocks) {
+        int voltageUpgrades = Math.max(0, Math.min(getBreedingVoltageTier(), VoltageIndex.MAX) - BASE_VOLTAGE_TIER)
+            + extraOverclocks;
         return new GTNLOverclockCalculator().setRecipeEUt(BASE_EUT_PER_BREEDING)
             .setEUt(BASE_EUT_PER_BREEDING << (2 * voltageUpgrades))
             .setDuration(TICKS_PER_BREEDING)
