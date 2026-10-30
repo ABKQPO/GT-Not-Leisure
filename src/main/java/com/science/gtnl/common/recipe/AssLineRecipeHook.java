@@ -1,4 +1,4 @@
-package com.science.gtnl.utils.recipes;
+package com.science.gtnl.common.recipe;
 
 import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 

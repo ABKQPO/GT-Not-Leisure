@@ -17,7 +17,7 @@ import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import com.science.gtnl.common.crafting.batch.BatchDispatchHooks;
 import com.science.gtnl.common.crafting.batch.BatchDispatchHooks.Context;
-import com.science.gtnl.utils.crafting.CraftingBatchPlanner.CommitResult;
+import com.science.gtnl.common.crafting.batch.CraftingBatchPlanner.CommitResult;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.crafting.ICraftingMedium;

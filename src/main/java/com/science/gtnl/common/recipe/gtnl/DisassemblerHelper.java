@@ -1,4 +1,4 @@
-package com.science.gtnl.utils.recipes;
+package com.science.gtnl.common.recipe.gtnl;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,10 +17,10 @@ import com.github.bsideup.jabel.Desugar;
 import com.glodblock.github.common.item.ItemFluidPacket;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
-import com.science.gtnl.common.recipe.gtnl.ShimmerRecipes;
 import com.science.gtnl.compat.newhorizons.NHCoreCircuits;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.ModsItemlist;
+import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import appeng.api.AEApi;
 import appeng.api.util.AEColor;

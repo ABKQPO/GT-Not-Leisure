@@ -20,8 +20,6 @@ import com.science.gtnl.compat.chisel.ChiselCompat;
 import com.science.gtnl.utils.ChiselPatternDetails;
 import com.science.gtnl.utils.GTNLNBTTagList;
 import com.science.gtnl.utils.LargeInventoryCrafting;
-import com.science.gtnl.utils.crafting.ExactStackCacheCommit;
-import com.science.gtnl.utils.crafting.ExactStackCacheCommitImpl;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.Upgrades;

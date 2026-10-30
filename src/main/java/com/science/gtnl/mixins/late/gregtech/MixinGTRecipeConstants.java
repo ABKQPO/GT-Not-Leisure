@@ -4,8 +4,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
+import com.science.gtnl.common.recipe.AssLineRecipeHook;
 import com.science.gtnl.config.MainConfig;
-import com.science.gtnl.utils.recipes.AssLineRecipeHook;
 
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTRecipeConstants;

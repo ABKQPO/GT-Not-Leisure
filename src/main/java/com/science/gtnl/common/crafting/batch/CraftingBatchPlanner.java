@@ -1,4 +1,4 @@
-package com.science.gtnl.utils.crafting;
+package com.science.gtnl.common.crafting.batch;
 
 import java.util.Deque;
 import java.util.List;

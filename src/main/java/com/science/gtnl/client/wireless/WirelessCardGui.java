@@ -64,7 +64,6 @@ import com.gtnllib.gui.widget.Breadcrumb;
 import com.gtnllib.gui.widget.CycleDropdown;
 import com.gtnllib.gui.widget.FadingNotice;
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.common.wireless.WirelessCardClientView;
 import com.science.gtnl.common.wireless.WirelessCardContainer;
 import com.science.gtnl.common.wireless.WirelessCardLayout;
 import com.science.gtnl.common.wireless.WirelessCardVisualisation;

@@ -1,4 +1,4 @@
-package com.science.gtnl.utils.machine.oreProcessing;
+package com.science.gtnl.common.recipe.gtnl.oreProcessing;
 
 import net.minecraft.item.ItemStack;
 

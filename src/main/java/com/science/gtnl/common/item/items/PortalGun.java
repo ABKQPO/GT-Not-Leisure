@@ -42,8 +42,6 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-// Why: DuraDisplay prints a charge percentage only for energy items; reporting shimmer as RF gives the gun the same
-// percentage as the armor and the railgun, while it never takes in or gives out any energy.
 public class PortalGun extends ItemFluidContainer implements IEnergyContainerItem {
 
     public PortalGun(String name, GTNLItemList entry) {

@@ -28,8 +28,8 @@ import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.multiblock.AdvancedInfiniteDrillerGui;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
+import com.science.gtnl.common.machine.voidminer.VMTweakHelper;
 import com.science.gtnl.utils.StructureUtils;
-import com.science.gtnl.utils.machine.VMTweakHelper;
 
 import bartworks.system.material.WerkstoffLoader;
 import gregtech.GTMod;

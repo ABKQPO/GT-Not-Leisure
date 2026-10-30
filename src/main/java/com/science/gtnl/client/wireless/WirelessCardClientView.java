@@ -1,4 +1,4 @@
-package com.science.gtnl.common.wireless;
+package com.science.gtnl.client.wireless;
 
 import static com.science.gtnl.common.wireless.WirelessCardActions.NEXT_PAGE;
 import static com.science.gtnl.common.wireless.WirelessCardActions.OPEN_DETAILS;
@@ -24,8 +24,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.client.wireless.WirelessWorldHighlight;
 import com.science.gtnl.common.me.InterfaceNameLocalization;
+import com.science.gtnl.common.wireless.WirelessCardContainer;
+import com.science.gtnl.common.wireless.WirelessCardLayout;
+import com.science.gtnl.common.wireless.WirelessCardViewCodec;
 
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.relauncher.Side;
@@ -52,11 +54,11 @@ public class WirelessCardClientView {
     private long incomingRevision = -1;
     private int received;
 
-    WirelessCardClientView(WirelessCardContainer container) {
+    public WirelessCardClientView(WirelessCardContainer container) {
         this.container = container;
     }
 
-    void acceptChunk(long revision, int total, int offset, byte[] chunk) {
+    public void acceptChunk(long revision, int total, int offset, byte[] chunk) {
         if (revision < incomingRevision) return;
         if (offset == 0) {
             incoming = new byte[total];

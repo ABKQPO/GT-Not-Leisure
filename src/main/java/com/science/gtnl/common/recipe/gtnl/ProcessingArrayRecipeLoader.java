@@ -1,4 +1,6 @@
-package com.science.gtnl.utils.machine;
+package com.science.gtnl.common.recipe.gtnl;
+
+import com.science.gtnl.common.machine.multiblock.ProcessingArrayManager;
 
 import gregtech.api.enums.SoundResource;
 import gregtech.api.recipe.RecipeMaps;

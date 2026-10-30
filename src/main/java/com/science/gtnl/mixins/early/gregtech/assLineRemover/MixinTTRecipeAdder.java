@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.science.gtnl.utils.recipes.AssLineRecipeHook;
+import com.science.gtnl.common.recipe.AssLineRecipeHook;
 
 import tectech.recipe.TTRecipeAdder;
 

@@ -8,7 +8,7 @@ import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
 import com.gtnllib.client.GTNLLibClient;
 import com.gtnllib.client.fx.world.FxEffects;
 import com.science.gtnl.client.gui.GTNLClientGuiHandler;
-import com.science.gtnl.common.entity.EntityParticleBeam;
+import com.science.gtnl.common.render.entity.EntityParticleBeam;
 import com.science.gtnl.loader.ContentLoaders;
 
 import cpw.mods.fml.client.FMLClientHandler;

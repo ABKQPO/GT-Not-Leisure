@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.science.gtnl.utils.recipes.ReversedRecipeRegistry;
+import com.science.gtnl.common.recipe.gtnl.ReversedRecipeRegistry;
 
 import gregtech.api.util.GTShapelessRecipe;
 import gregtech.common.blocks.ItemMachines;

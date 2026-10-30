@@ -1,6 +1,6 @@
 package com.science.gtnl.loader;
 
-import com.science.gtnl.utils.machine.VMTweakHelper;
+import com.science.gtnl.common.machine.voidminer.VMTweakHelper;
 
 public class VoidMinerLoader implements IContentLoader {
 

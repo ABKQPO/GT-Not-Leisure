@@ -38,7 +38,6 @@ import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.item.ItemUtils;
-import com.science.gtnl.utils.machine.PortalToAlfheimExplosion;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;

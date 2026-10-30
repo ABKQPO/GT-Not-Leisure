@@ -11,7 +11,6 @@ import net.minecraft.util.StatCollector;
 
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.utils.machine.VMTweakHelper;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
 

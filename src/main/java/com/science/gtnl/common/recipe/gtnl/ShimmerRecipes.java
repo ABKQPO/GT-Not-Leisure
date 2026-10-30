@@ -7,8 +7,6 @@ import org.jetbrains.annotations.Nullable;
 
 import com.github.bsideup.jabel.Desugar;
 import com.science.gtnl.config.MainConfig;
-import com.science.gtnl.utils.recipes.DisassemblerHelper;
-import com.science.gtnl.utils.recipes.ReversedRecipeRegistry;
 
 import gregtech.api.util.GTUtility;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;

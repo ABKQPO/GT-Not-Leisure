@@ -1,4 +1,4 @@
-package com.science.gtnl.common.entity;
+package com.science.gtnl.common.render.entity;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;

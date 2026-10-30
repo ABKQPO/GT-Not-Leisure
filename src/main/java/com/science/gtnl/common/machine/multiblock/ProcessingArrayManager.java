@@ -1,4 +1,4 @@
-package com.science.gtnl.utils.machine;
+package com.science.gtnl.common.machine.multiblock;
 
 import net.minecraft.item.ItemStack;
 

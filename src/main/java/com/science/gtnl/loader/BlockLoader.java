@@ -11,6 +11,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import com.gtnllib.registry.Registrar;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.casing.GTNLCasings;
+import com.science.gtnl.common.block.TileEntityMigrationHandler;
 import com.science.gtnl.common.block.blocks.BlockArtificialStarRender;
 import com.science.gtnl.common.block.blocks.BlockBeamFormer;
 import com.science.gtnl.common.block.blocks.BlockCardboardBox;
@@ -90,7 +91,6 @@ import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.text.AnimatedText;
 import com.science.gtnl.utils.text.AnimatedTooltipHandler;
-import com.science.gtnl.utils.world.TileEntityMigrationHandler;
 
 import bartworks.common.loaders.ItemRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;

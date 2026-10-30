@@ -38,7 +38,7 @@ public class WirelessCardViewCodec {
         dimensions.setString(id, world == null ? "" : Objects.toString(DimensionDef.getDimensionName(world), ""));
     }
 
-    static void localizeDimensions(NBTTagCompound data) {
+    public static void localizeDimensions(NBTTagCompound data) {
         NBTTagCompound dimensions = data.getCompoundTag("dimensions");
         for (Object key : dimensions.func_150296_c()) {
             String id = (String) key;
@@ -52,7 +52,7 @@ public class WirelessCardViewCodec {
         for (int i = 0; i < rows.tagCount(); i++) localizePosition(rows.getCompoundTagAt(i), "position", dimensions);
     }
 
-    static void localizePosition(NBTTagCompound data, String key, NBTTagCompound dimensions) {
+    public static void localizePosition(NBTTagCompound data, String key, NBTTagCompound dimensions) {
         String position = data.getString(key);
         int end = position.indexOf(' ');
         String name = position.startsWith("D")
@@ -81,7 +81,7 @@ public class WirelessCardViewCodec {
                 .icon());
     }
 
-    static void localizeInterfaceNames(NBTTagCompound row) {
+    public static void localizeInterfaceNames(NBTTagCompound row) {
         NBTTagList entries = row.getTagList("interfaceNames", 10);
         if (entries.tagCount() == 0) return;
         List<String> names = new ObjectArrayList<>();

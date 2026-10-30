@@ -1,4 +1,4 @@
-package com.science.gtnl.utils.world;
+package com.science.gtnl.common.machine.voidminer;
 
 import java.util.List;
 

@@ -3,8 +3,8 @@ package com.science.gtnl;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
-import com.science.gtnl.common.entity.EntityParticleBeam;
 import com.science.gtnl.common.gui.GTNLGuiHandler;
+import com.science.gtnl.common.render.entity.EntityParticleBeam;
 import com.science.gtnl.loader.ContentLoaders;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;

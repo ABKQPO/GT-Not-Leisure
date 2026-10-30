@@ -1,4 +1,4 @@
-package com.science.gtnl.utils.crafting;
+package com.science.gtnl.common.block.blocks.tile;
 
 import java.util.Objects;
 

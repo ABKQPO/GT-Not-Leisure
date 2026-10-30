@@ -9,20 +9,18 @@ import net.minecraft.inventory.InventoryCrafting;
 
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMEChisel;
+import com.science.gtnl.common.crafting.batch.CraftingBatchPlanner.BatchPlan;
+import com.science.gtnl.common.crafting.batch.CraftingBatchPlanner.CommitResult;
+import com.science.gtnl.common.crafting.batch.CraftingBatchPlanner.MediumStrategy;
+import com.science.gtnl.common.crafting.batch.CraftingBatchPlanner.SessionAllocation;
+import com.science.gtnl.common.crafting.batch.CraftingBatchPlanner.SessionConsumption;
+import com.science.gtnl.common.crafting.batch.CraftingBatchPlanner.SessionSegment;
 import com.science.gtnl.common.machine.multiblock.AssemblerMatrix;
 import com.science.gtnl.mixins.late.appliedEnergistics.AccessorTaskProgress;
 import com.science.gtnl.utils.ChiselPatternDetails;
 import com.science.gtnl.utils.DireCraftingPatternDetails;
 import com.science.gtnl.utils.ECraftingCPUCluster;
 import com.science.gtnl.utils.LargeInventoryCrafting;
-import com.science.gtnl.utils.crafting.CraftingBatchPlanner;
-import com.science.gtnl.utils.crafting.CraftingBatchPlanner.BatchPlan;
-import com.science.gtnl.utils.crafting.CraftingBatchPlanner.CommitResult;
-import com.science.gtnl.utils.crafting.CraftingBatchPlanner.MediumStrategy;
-import com.science.gtnl.utils.crafting.CraftingBatchPlanner.SessionAllocation;
-import com.science.gtnl.utils.crafting.CraftingBatchPlanner.SessionConsumption;
-import com.science.gtnl.utils.crafting.CraftingBatchPlanner.SessionSegment;
-import com.science.gtnl.utils.crafting.CraftingBatchPlannerImpl;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;

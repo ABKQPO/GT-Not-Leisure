@@ -1,4 +1,4 @@
-package com.science.gtnl.utils.machine;
+package com.science.gtnl.common.machine.voidminer;
 
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.WorldEvent;
@@ -6,9 +6,6 @@ import net.minecraftforge.event.world.WorldEvent;
 import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
 import com.science.gtnl.api.IDimensionAbbreviationRegistry;
 import com.science.gtnl.compat.extrautilities.ExtraUtilitiesContent;
-import com.science.gtnl.utils.world.ConfigDimensionAbbreviationResolver;
-import com.science.gtnl.utils.world.DimensionAbbreviationRegistry;
-import com.science.gtnl.utils.world.GalacticGregDimensionAbbreviationResolver;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
