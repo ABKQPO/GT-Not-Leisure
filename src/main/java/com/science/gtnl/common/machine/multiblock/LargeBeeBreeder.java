@@ -75,8 +75,8 @@ import lombok.Getter;
 @IMetaTileEntity.SkipGenerateName
 public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
 
-    private static final long BASE_EUT_PER_BREEDING = 8192L;
-    private static final int BASE_VOLTAGE_TIER = VoltageIndex.IV;
+    private static final long BASE_EUT_PER_BREEDING = 512L;
+    private static final int BASE_VOLTAGE_TIER = VoltageIndex.HV;
     private static final int BASE_GLASS_TIER = VoltageIndex.HV;
     private static final int CHANCE_PER_GLASS_TIER = 2;
 
@@ -358,9 +358,13 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
         allTasksBlocked = true;
         missingDroneSpecies = "";
         return SimpleCheckRecipeResult.ofFailure(switch (requiredTier) {
+            case VoltageIndex.EV -> "bee_breeder_voltage_ev";
+            case VoltageIndex.IV -> "bee_breeder_voltage_iv";
+            case VoltageIndex.LuV -> "bee_breeder_voltage_luv";
             case VoltageIndex.ZPM -> "bee_breeder_voltage_zpm";
+            case VoltageIndex.UV -> "bee_breeder_voltage_uv";
             case VoltageIndex.UHV -> "bee_breeder_voltage_uhv";
-            default -> "bee_breeder_voltage_iv";
+            default -> "bee_breeder_voltage_hv";
         });
     }
 

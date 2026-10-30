@@ -38,8 +38,12 @@ GT5U.gui.text.recipe_result.crash=§4Machine turned off due to crash. Refer to t
 GT5U.gui.text.recipe_result.bee_breeder_unreachable_target=Current species archive cannot reach the target species!
 GT5U.gui.text.recipe_result.bee_breeder_missing_drone=Species archive is missing a required parent!
 GT5U.gui.text.recipe_result.bee_breeder_missing_foundation=Missing mutation foundation. Waiting for input.
+GT5U.gui.text.recipe_result.bee_breeder_voltage_hv=Insufficient voltage. Requires HV. Waiting for a power upgrade.
+GT5U.gui.text.recipe_result.bee_breeder_voltage_ev=Insufficient voltage. Requires EV. Waiting for a power upgrade.
 GT5U.gui.text.recipe_result.bee_breeder_voltage_iv=Insufficient voltage. Requires IV. Waiting for a power upgrade.
+GT5U.gui.text.recipe_result.bee_breeder_voltage_luv=Insufficient voltage. Requires LuV. Waiting for a power upgrade.
 GT5U.gui.text.recipe_result.bee_breeder_voltage_zpm=Insufficient voltage. Requires ZPM. Waiting for a power upgrade.
+GT5U.gui.text.recipe_result.bee_breeder_voltage_uv=Insufficient voltage. Requires UV. Waiting for a power upgrade.
 GT5U.gui.text.recipe_result.bee_breeder_voltage_uhv=Insufficient voltage. Requires UHV. Waiting for a power upgrade.
 
 gtnl.gui.config.general=GTNL General Config

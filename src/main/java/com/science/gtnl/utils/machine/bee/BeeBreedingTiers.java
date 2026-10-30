@@ -44,8 +44,12 @@ public final class BeeBreedingTiers {
                     : switch (entry.substring(separator + 1)
                         .trim()
                         .toUpperCase(Locale.ROOT)) {
+                    case "HV" -> VoltageIndex.HV;
+                    case "EV" -> VoltageIndex.EV;
                     case "IV" -> VoltageIndex.IV;
+                    case "LUV" -> VoltageIndex.LuV;
                     case "ZPM" -> VoltageIndex.ZPM;
+                    case "UV" -> VoltageIndex.UV;
                     case "UHV" -> VoltageIndex.UHV;
                     default -> -1;
                     };
