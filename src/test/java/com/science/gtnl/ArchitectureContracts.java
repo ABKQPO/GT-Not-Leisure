@@ -133,6 +133,8 @@ public class ArchitectureContracts {
         .compile("^public class (\\w+)[^{]*implements[^{]*\\bIModCompat\\b", Pattern.MULTILINE);
     private static final Pattern EVENT_REGISTRATION = Pattern
         .compile("(EVENT_BUS|TERRAIN_GEN_BUS|ORE_GEN_BUS|bus\\(\\))\\s*\\.\\s*register\\(");
+    public static final Pattern SUBSCRIBER_STATIC_METHOD = Pattern.compile(
+        "((?:[ \\t]*@[^\\n]*\\n)+)[ \\t]*(?:public |private |protected )?static\\s+([\\w<>\\[\\],.? ]+?)\\s+(\\w+)\\(([^)]*)\\)");
     private static final Pattern SUBSCRIBE_METHOD = Pattern.compile(
         "@SubscribeEvent[^\\n]*\\n(?:\\s*@[^\\n]*\\n)*\\s*((?:public|private|protected)?\\s*(?:static\\s+)?)\\w+ (\\w+)\\(");
     private static final Pattern FINAL_CLASS = Pattern.compile(
@@ -300,6 +302,25 @@ public class ArchitectureContracts {
                     path + " handler "
                         + handler.group(2)
                         + " is not static; GTNHLib refuses to start with a non-static @SubscribeEvent method");
+                Matcher sided = SUBSCRIBER_STATIC_METHOD.matcher(text);
+                while (sided.find()) if (!sided.group(1)
+                    .contains("@EventBusSubscriber.Condition")
+                    && (sided.group(1)
+                        .contains("@SideOnly")
+                        || sided.group(1)
+                            .contains("@SubscribeEvent")))
+                    check(
+                        sided.group(2)
+                            .equals("void")
+                            && !sided.group(4)
+                                .contains(",")
+                            && !sided.group(4)
+                                .isBlank(),
+                        path + " method "
+                            + sided.group(3)
+                            + " is static and carries @SideOnly or @SubscribeEvent in an @EventBusSubscriber class, so"
+                            + " GTNHLib treats it as an event handler and refuses to start unless it takes one event and"
+                            + " returns void");
             }
             if ((path.startsWith("common/item/") || path.startsWith("common/block/")) && SELF_REGISTRATION.matcher(text)
                 .find())

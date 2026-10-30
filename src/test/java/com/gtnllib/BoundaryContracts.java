@@ -44,6 +44,8 @@ public class BoundaryContracts {
     private static final Set<String> LEGACY_LANG_KEYS = legacyLangKeys();
     private static final Pattern EMPTY_PRIVATE_CONSTRUCTOR = Pattern
         .compile("^[ \\t]*private[ \\t]+\\w+\\(\\)[ \\t]*\\{[ \\t]*\\}", Pattern.MULTILINE);
+    private static final Pattern SUBSCRIBER_STATIC_METHOD = Pattern.compile(
+        "((?:[ \\t]*@[^\\n]*\\n)+)[ \\t]*(?:public |private |protected )?static\\s+([\\w<>\\[\\],.? ]+?)\\s+(\\w+)\\(([^)]*)\\)");
     private static final Pattern INCLUDE = Pattern.compile("#include \"([^\"]+)\"");
     private static final int MIN_SOURCES = 40;
 
@@ -161,6 +163,26 @@ public class BoundaryContracts {
                 !EMPTY_PRIVATE_CONSTRUCTOR.matcher(source)
                     .find(),
                 name + " declares an empty private constructor; a class with only static members needs none");
+            if (source.contains("@EventBusSubscriber")) {
+                Matcher sided = SUBSCRIBER_STATIC_METHOD.matcher(source);
+                while (sided.find()) if (!sided.group(1)
+                    .contains("@EventBusSubscriber.Condition")
+                    && (sided.group(1)
+                        .contains("@SideOnly")
+                        || sided.group(1)
+                            .contains("@SubscribeEvent")))
+                    check(
+                        sided.group(2)
+                            .equals("void")
+                            && !sided.group(4)
+                                .contains(",")
+                            && !sided.group(4)
+                                .isBlank(),
+                        name + " method "
+                            + sided.group(3)
+                            + " is a static @SideOnly or @SubscribeEvent method of an @EventBusSubscriber class, so"
+                            + " GTNHLib refuses to start unless it takes one event and returns void");
+            }
             Matcher namespaced = NAMESPACED.matcher(source);
             while (namespaced.find()) check(
                 GTNLLib.MODID.equals(namespaced.group(1)),

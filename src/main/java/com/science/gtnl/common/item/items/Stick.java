@@ -263,7 +263,6 @@ public class Stick extends Item implements IItemStackExtra, IKeyHandler {
         }
     }
 
-    @SideOnly(Side.CLIENT)
     public static ItemStack tooltipStack(ItemStack stack) {
         if (stack.getItem() instanceof Stick stick && !stick.isShiftDown() && MainConfig.item.stick.enableStickItem)
             return getDisguisedStack(stack);
