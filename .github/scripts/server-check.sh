@@ -14,7 +14,7 @@ BASELINE="src/test/resources/compat/compat-snapshot.txt"
 case "$MODE" in
   host) ;;
   library)
-    LOG="build/library-server-check.log"
+    LOG="build/library-server-check-${TASK##*:}.log"
     SNAPSHOT="$PWD/build/library-unexpected-host-snapshot.txt"
     ;;
   *) echo "Unknown server check mode: $MODE" >&2; exit 2 ;;

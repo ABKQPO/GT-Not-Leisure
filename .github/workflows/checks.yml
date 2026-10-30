@@ -67,8 +67,11 @@ jobs:
       - name: Start the server, check the load and the compat snapshot
         run: .github/scripts/server-check.sh :runServer25 run/server_new
 
-      - name: Start GTNLLib with only its own runtime dependencies
+      - name: Start GTNLLib on Java 25 with only its own runtime dependencies
         run: .github/scripts/server-check.sh :gtnllib:runServer25 gtnllib/run/server_new library
+
+      - name: Start GTNLLib on Java 8 with only its own runtime dependencies
+        run: .github/scripts/server-check.sh :gtnllib:runServer gtnllib/run/server library
 
       - name: Keep the server log and snapshot
         if: always()
@@ -77,6 +80,6 @@ jobs:
           name: server-check
           path: |
             build/server-check.log
-            build/library-server-check.log
+            build/library-server-check-*.log
             build/compat-snapshot.txt
             build/library-unexpected-host-snapshot.txt

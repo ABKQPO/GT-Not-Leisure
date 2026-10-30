@@ -81,7 +81,8 @@ GregTech；跨模块共用的断言和主题检查放在 `src/testFixtures`，�
 每个套件在独立进程中报告断言和失败，不依赖其他套件的初始化副作用。
 
 `verifyModuleArtifacts` 检查实际 jar 的模组元数据、coremod、访问权限声明、refmap、代码与资源归属、
-许可文件及多版本字节码。CI 分别启动完整 GTNL 服务器和 GTNLLib 独立服务器；前者还核对存档兼容快照。
+许可文件及多版本字节码。CI 在 Java 25 上启动完整 GTNL 服务器并核对存档兼容快照，
+再分别在 Java 25、Java 8 上启动 GTNLLib 独立服务器，各次启动保留单独日志。
 
 ## 第三方代码
 
