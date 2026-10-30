@@ -247,15 +247,15 @@ public class BlazeBlastFurnace extends MultiMachineBase<BlazeBlastFurnace> imple
     public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
         super.onPostTick(aBaseMetaTileEntity, aTick);
         if (this.mStartUpCheck < 0) {
-            startRecipeProcessing();
             if (this.mMaxProgresstime > 0 && aTick % 20 == 0) {
+                startRecipeProcessing();
                 int baseAmount = 10 * GTUtility.getTier(-lEUt) * GTUtility.getTier(-lEUt) * mMultiTier;
                 if (!this.depleteInputFromRestrictedHatches(this.mFluidBlazeInputHatch, baseAmount)) {
                     this.causeMaintenanceIssue();
                     this.stopMachine(ShutDownReasonRegistry.outOfFluid(Materials.Blaze.getMolten(baseAmount)));
                 }
+                endRecipeProcessing();
             }
-            endRecipeProcessing();
         }
     }
 

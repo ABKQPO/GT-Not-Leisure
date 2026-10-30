@@ -11,6 +11,7 @@ import com.science.gtnl.ApiSignatureContracts;
 import com.science.gtnl.ArchitectureContracts;
 import com.science.gtnl.client.portalgun.PortalGunContracts;
 import com.science.gtnl.common.gui.equipment.EquipmentTheme;
+import com.science.gtnl.common.item.items.PortableFurnaceContracts;
 import com.science.gtnl.common.machine.hatch.HatchFluidDrainContracts;
 import com.science.gtnl.common.machine.multiblock.AssemblerMatrixTasksContracts;
 import com.science.gtnl.common.steam.GlobalSteamSaveContracts;
@@ -53,6 +54,7 @@ public class CelestweaveContractTest {
         GlobalSteamSaveContracts.run();
         AssemblerMatrixTasksContracts.run();
         HatchFluidDrainContracts.run();
+        PortableFurnaceContracts.run();
         GTNLLibContractTest.finish("Celestweave");
     }
 

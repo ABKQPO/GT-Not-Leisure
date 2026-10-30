@@ -111,8 +111,6 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
 
     @Override
     public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
-        startRecipeProcessing();
-
         if (excessFuel > 2000 && mProgresstime > 0 && mProgresstime % 20 == 0) {
             excessFuel += (int) Math.floor(drillTier * excessFuel / 2000.0);
         }
@@ -124,6 +122,7 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
 
         if (mProgresstime > 0) {
             if (mProgresstime % 5 == 0 && excessFuel >= 2000) {
+                startRecipeProcessing();
                 int pyrotheumConsumption = getPyrotheumConsumption();
                 ArrayList<FluidStack> storedFluids = getStoredFluids();
                 for (FluidStack tFluid : storedFluids) {
@@ -160,6 +159,7 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
                         }
                     }
                 }
+                endRecipeProcessing();
             }
         } else if (aTick % 20 == 0 && !aBaseMetaTileEntity.isActive()) {
             excessFuel -= 4;
@@ -178,7 +178,6 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
             hatch.setHeatValue((float) percent);
         }
 
-        endRecipeProcessing();
         super.onPostTick(aBaseMetaTileEntity, aTick);
     }
 

@@ -96,14 +96,14 @@ public class SteamCactusWonder extends SteamMultiMachineBase<SteamCactusWonder> 
     @Override
     public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
         super.onPostTick(aBaseMetaTileEntity, aTick);
-        startRecipeProcessing();
         if (aBaseMetaTileEntity.isAllowedToWork()) {
             if (aTick % 20 == 0) {
+                startRecipeProcessing();
                 addFuel();
+                endRecipeProcessing();
             }
             outputSteam();
         }
-        endRecipeProcessing();
     }
 
     @Override

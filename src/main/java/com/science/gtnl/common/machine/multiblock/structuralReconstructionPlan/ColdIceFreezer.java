@@ -96,15 +96,15 @@ public class ColdIceFreezer extends MultiMachineBase<ColdIceFreezer> implements 
     public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
         super.onPostTick(aBaseMetaTileEntity, aTick);
         if (this.mStartUpCheck < 0) {
-            startRecipeProcessing();
             if (this.mMaxProgresstime > 0 && aTick % 20 == 0) {
+                startRecipeProcessing();
                 int baseAmount = 10 * GTUtility.getTier(-lEUt) * GTUtility.getTier(-lEUt);
                 if (!this.depleteInputFromRestrictedHatches(this.mFluidIceInputHatch, baseAmount)) {
                     this.causeMaintenanceIssue();
                     this.stopMachine(ShutDownReasonRegistry.outOfFluid(Materials.Water.getSolid(baseAmount)));
                 }
+                endRecipeProcessing();
             }
-            endRecipeProcessing();
         }
     }
 

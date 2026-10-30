@@ -163,6 +163,7 @@ public class PortableItem extends Item {
     public void onUpdate(ItemStack stack, World world, Entity player, int slot, boolean isSelected) {
         if (world.isRemote) return;
         if (stack.getItemDamage() != PortableType.FURNACE.getMeta()) return;
+        if (isIdleFurnace(stack.getTagCompound())) return;
 
         IInventory inv = getFurnaceInventory(stack);
 
@@ -234,6 +235,25 @@ public class PortableItem extends Item {
         tag.setInteger("CurrentItemBurnTime", currentItemBurnTime);
         stack.setTagCompound(tag);
         saveFurnaceInventory.save(stack, inv);
+    }
+
+    public static boolean isIdleFurnace(NBTTagCompound tag) {
+        if (tag == null || !tag.hasKey("Items", 9)
+            || !tag.hasKey("BurnTime", 3)
+            || !tag.hasKey("CookTime", 3)
+            || !tag.hasKey("CurrentItemBurnTime", 3)) return false;
+        if (tag.getInteger("BurnTime") != 0 || tag.getInteger("CookTime") != 0
+            || tag.getInteger("CurrentItemBurnTime") != 0) return false;
+        NBTTagList items = tag.getTagList("Items", 10);
+        int lastSlot = 0;
+        for (int i = 0; i < items.tagCount(); i++) {
+            NBTTagCompound item = items.getCompoundTagAt(i);
+            int slot = item.getByte("Slot") & 255;
+            // Slot 0 is the input; anything the save would reorder, drop or rewrite takes the full path.
+            if (slot <= lastSlot || slot > 2 || ItemStack.loadItemStackFromNBT(item) == null) return false;
+            lastSlot = slot;
+        }
+        return true;
     }
 
     public static boolean isFireproof(ItemStack stack) {
