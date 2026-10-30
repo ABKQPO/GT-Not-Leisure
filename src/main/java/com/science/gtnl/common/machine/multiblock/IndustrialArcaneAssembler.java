@@ -30,7 +30,6 @@ import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
-import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -238,15 +237,6 @@ public class IndustrialArcaneAssembler extends MultiMachineBase<IndustrialArcane
     @Override
     public String getMachineModeKey() {
         return "gtnl.machine.industrial_arcane_assembler.mode." + machineMode;
-    }
-
-    @Override
-    @Deprecated
-    public void setMachineModeIcons() {
-        // TODO: Remove this mui1 fallback after the Industrial Arcane Assembler GUI no longer supports mui1 startup
-        // paths.
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_LPF_FLUID);
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_LPF_METAL);
     }
 
     @Override
