@@ -70,6 +70,7 @@ GTNLLib 的 mixin 在 `com.gtnllib.mixins`，登记表是 `GTNLLibMixins`，配�
 开发启动请指定完整任务路径：GTNL 用 `:runClient25` / `:runServer25`，仅 GTNLLib 用
 `:gtnllib:runClient25` / `:gtnllib:runServer25`，避免 Gradle 同时选择两个项目的同名启动任务。
 独立运行包含 GTNHLib、MUI2 和 MUI2 初始化所需的 Baubles Expanded；现代 Java 的启动依赖由构建插件提供。
+正式安装也需要这三个前置模组，GTNLLib 会在加载前检查它们是否存在。
 `gtnllib/build.gradle` 显式声明基础库和可选对接的编译依赖；GTNL、GregTech 及宿主的 Minecraft
 访问权限修改不在编译路径中。原来的 `compileGTNLLibBoundary` 入口保留为模块编译任务的别名。
 

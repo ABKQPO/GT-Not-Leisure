@@ -20,7 +20,7 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
     modid = GTNLLib.MODID,
     name = GTNLLib.NAME,
     useMetadata = true,
-    dependencies = "required-after:gtnhlib;required-after:modularui2",
+    dependencies = "required-after:gtnhlib;required-after:modularui2;required-after:Baubles",
     acceptedMinecraftVersions = "1.7.10",
     guiFactory = "com.gtnllib.config.GTNLLibGuiFactory")
 public class GTNLLib {
