@@ -39,7 +39,10 @@ public class ArchitectureContracts {
     // GT's RecipeMapFrontend still takes ModularUI 1 types; GT machines still on ModularUI 1 open cover tabs through
     // createWindow; the modularUI mixins patch ModularUI 1 itself.
     public static final List<String> MUI1_ALLOWED = List.of(
-        "common/gui/recipe/",
+        "common/gui/recipe/GTNLRecipeFrontend.java",
+        // QFT inherits GT's specialized frontend; the rocket page draws recipe-dependent NASA slots.
+        "common/gui/recipe/ExtendQFTFrontend.java",
+        "common/gui/recipe/RocketAssemblerFrontend.java",
         "common/material/GTNLRecipeMaps.java",
         "common/gui/VoidCoverUIFactory.java",
         "common/gui/WirelessSteamCoverUIFactory.java",

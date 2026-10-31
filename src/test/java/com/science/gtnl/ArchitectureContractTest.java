@@ -11,6 +11,7 @@ public final class ArchitectureContractTest {
         ApiSignatureContracts.run();
         PacketSideContracts.run();
         ConfigMigrationContracts.run();
+        RecipeFrontendContracts.run();
         finish("Architecture");
     }
 }

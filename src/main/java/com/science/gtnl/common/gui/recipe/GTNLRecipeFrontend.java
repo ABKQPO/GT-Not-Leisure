@@ -4,19 +4,26 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.github.bsideup.jabel.Desugar;
+import com.gtnewhorizons.modularui.api.ModularUITextures;
+import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.drawable.UITexture;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
+import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.science.gtnl.ScienceNotLeisure;
 
+import gregtech.api.enums.TieredVariant;
 import gregtech.api.recipe.BasicUIPropertiesBuilder;
 import gregtech.api.recipe.NEIRecipePropertiesBuilder;
 import gregtech.api.recipe.RecipeMapFrontend;
 import gregtech.api.util.MethodsReturnNonnullByDefault;
 import gregtech.common.gui.modularui.UIHelper;
+import gregtech.nei.GTNEIDefaultHandler;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 // GT's frontend API still takes ModularUI 1 types. Keep them in this class so that pages describe slots in plain
@@ -66,6 +73,119 @@ public class GTNLRecipeFrontend extends RecipeMapFrontend {
         return new Size(width, height);
     }
 
+    public static Pos2d position(int x, int y) {
+        return new Pos2d(x, y);
+    }
+
+    protected boolean borderless() {
+        return false;
+    }
+
+    protected Slot progressOffset() {
+        return null;
+    }
+
+    protected Slot logoOffset() {
+        return null;
+    }
+
+    protected Slot specialItemSlot() {
+        return null;
+    }
+
+    @Override
+    public Pos2d getSpecialItemPosition() {
+        Slot at = specialItemSlot();
+        return at == null ? super.getSpecialItemPosition() : position(at.x(), at.y());
+    }
+
+    @Override
+    public void addProgressBar(ModularWindow.Builder builder, GTNEIDefaultHandler.NEITemplateContext ctx) {
+        Slot offset = progressOffset();
+        if (offset == null) {
+            super.addProgressBar(builder, ctx);
+            return;
+        }
+        super.addProgressBar(
+            builder,
+            new GTNEIDefaultHandler.NEITemplateContext(
+                ctx.itemInputsInventory,
+                ctx.itemOutputsInventory,
+                ctx.specialSlotInventory,
+                ctx.fluidInputsInventory,
+                ctx.fluidOutputsInventory,
+                ctx.progressSupplier,
+                ctx.recipeSupplier,
+                position(offset.x(), offset.y())));
+    }
+
+    @Override
+    public ModularWindow.Builder createNEITemplate(GTNEIDefaultHandler.NEITemplateContext ctx) {
+        if (!borderless()) return super.createNEITemplate(ctx);
+
+        // Remove the regular background texture with the border.
+        ModularWindow.Builder builder = ModularWindow.builder(neiProperties.recipeBackgroundSize);
+
+        if (uiProperties.useProgressBar) {
+            addProgressBar(builder, ctx);
+        }
+
+        UIHelper.forEachSlots(
+            (i, backgrounds, pos) -> builder.widget(
+                SlotWidget.phantom(ctx.itemInputsInventory, i)
+                    .setBackground(backgrounds)
+                    .setPos(pos)
+                    .setSize(18, 18)),
+            (i, backgrounds, pos) -> builder.widget(
+                SlotWidget.phantom(ctx.itemOutputsInventory, i)
+                    .setBackground(backgrounds)
+                    .setPos(pos)
+                    .setSize(18, 18)),
+            (i, backgrounds, pos) -> {
+                if (uiProperties.useSpecialSlot) builder.widget(
+                    SlotWidget.phantom(ctx.specialSlotInventory, 0)
+                        .setBackground(backgrounds)
+                        .setPos(pos)
+                        .setSize(18, 18));
+            },
+            (i, backgrounds, pos) -> builder.widget(
+                SlotWidget.phantom(ctx.fluidInputsInventory, i)
+                    .setBackground(backgrounds)
+                    .setPos(pos)
+                    .setSize(18, 18)),
+            (i, backgrounds, pos) -> builder.widget(
+                SlotWidget.phantom(ctx.fluidOutputsInventory, i)
+                    .setBackground(backgrounds)
+                    .setPos(pos)
+                    .setSize(18, 18)),
+            ModularUITextures.ITEM_SLOT,
+            ModularUITextures.FLUID_SLOT,
+            uiProperties,
+            uiProperties.maxItemInputs,
+            uiProperties.maxItemOutputs,
+            uiProperties.maxFluidInputs,
+            uiProperties.maxFluidOutputs,
+            TieredVariant.STANDARD,
+            ctx.windowOffset);
+
+        addGregTechLogo(builder, ctx.windowOffset);
+
+        for (Pair<IDrawable, Pair<Size, Pos2d>> specialTexture : uiProperties.specialTextures) {
+            builder.widget(
+                new DrawableWidget().setDrawable(specialTexture.getLeft())
+                    .setSize(
+                        specialTexture.getRight()
+                            .getLeft())
+                    .setPos(
+                        specialTexture.getRight()
+                            .getRight()
+                            .add(ctx.windowOffset)));
+        }
+
+        return builder;
+
+    }
+
     protected Slot logoSlot() {
         return new Slot(uiProperties.logoPos.x, uiProperties.logoPos.y);
     }
@@ -89,6 +209,8 @@ public class GTNLRecipeFrontend extends RecipeMapFrontend {
     @Override
     public void addGregTechLogo(ModularWindow.Builder builder, Pos2d windowOffset) {
         Slot at = logoSlot();
+        Slot offset = logoOffset();
+        if (offset != null) windowOffset = position(offset.x(), offset.y());
         builder.widget(
             new DrawableWidget().setDrawable(logo == Logo.STEAM ? PICTURE_GTNL_STEAM_LOGO : PICTURE_GTNL_LOGO)
                 .setSize(18, 18)
