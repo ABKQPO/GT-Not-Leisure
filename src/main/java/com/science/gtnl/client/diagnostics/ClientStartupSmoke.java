@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import galaxyspace.core.gui.GSGuiMainMenu;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -61,8 +62,7 @@ public final class ClientStartupSmoke {
             client.shutdown();
             return;
         }
-        // GalaxySpace replaces the main menu with a GuiScreen that does not extend GuiMainMenu.
-        if (!(client.currentScreen instanceof GuiMainMenu) && !"galaxyspace.core.gui.GSGuiMainMenu".equals(screen)) {
+        if (!(client.currentScreen instanceof GuiMainMenu) && !(client.currentScreen instanceof GSGuiMainMenu)) {
             menuTicks = 0;
             return;
         }

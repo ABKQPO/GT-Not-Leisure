@@ -12,9 +12,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public final class InterfaceTextureCompat {
 
-    private InterfaceTextureCompat() {}
-
-    /** AE2 requests dyed fronts that older GTNL resource packs do not provide. */
     public static IIconRegister withColoredFallback(IIconRegister registry, String baseTexture) {
         String coloredPrefix = baseTexture.replace(":", ":interface/") + "_";
         return name -> registry
