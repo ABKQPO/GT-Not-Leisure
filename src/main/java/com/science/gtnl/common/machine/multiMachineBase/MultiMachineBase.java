@@ -88,7 +88,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     public static final Optional<Byte>[] HATCH_COLOR_OPTIONS = createHatchColorOptions();
     private static final String PARALLEL_CONTROLLER_TOOLTIP_KEY = "gtnl.structure.tooltip.parallel_controller";
     protected static final String WIRELESS_UPGRADE_TOOLTIP_KEY = "gtnl.structure.tooltip.wireless_upgrade";
-    private static final String GLASS_LIMIT_TOOLTIP_KEY = "GT5U.MBTT.Structure.GlassEnergyLimit";
+    private static final String GLASS_LIMIT_TOOLTIP_KEY = "GT5U.MBTT.Structure.EnergyHatchGlassTier";
     private static final String GLASS_LIMIT_TIER_TOOLTIP_KEY = "GT5U.MBTT.Structure.GlassEnergyLimitTier";
     // GT joins the two halves with a fixed English comma, which reads wrong in other languages.
     private static final String GLASS_LIMIT_LINE_KEY = "gtnl.structure.tooltip.glass_energy_limit";

@@ -51,7 +51,7 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
     private static final String LAST_JOIN_KEY = "gtnl.structure.tooltip.join.last";
     private static final String PART_TIER_KEY = "gtnl.structure.tooltip.part.tier";
     private static final String EFFECT_KEY = "gtnl.structure.tooltip.effect.";
-    // GT 5.09.54.205 has no hatch or mechanic tooltip colors yet; these match newer GT versions.
+    // GT 5.09.54.265 has no hatch or mechanic tooltip colors yet; these match newer GT versions.
     public static final EnumChatFormatting HATCH_COLOR = EnumChatFormatting.GREEN;
     public static final EnumChatFormatting MECHANIC_COLOR = EnumChatFormatting.LIGHT_PURPLE;
 
