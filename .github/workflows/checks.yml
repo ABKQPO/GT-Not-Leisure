@@ -43,6 +43,7 @@ jobs:
           ./gradlew --console=plain --build-cache build :compileJava --rerun :gtnllib:compileJava --rerun 2>&1 | tee build/compile-check.log
           node --test .github/scripts/check-deprecations.test.cjs
           node --test .github/scripts/check-client-resources.test.cjs
+          node --check tools/testing/run-runtime-tests.cjs
           node --test tools/testing/*.test.cjs
           node .github/scripts/check-deprecations.cjs build/compile-check.log src/test/resources/compat/deprecations.json
 

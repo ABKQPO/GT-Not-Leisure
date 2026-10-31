@@ -140,7 +140,8 @@ public class GTNLSteamMultiBlockBaseGui extends MTEMultiBlockBaseGui<MTESteamMul
     }
 
     private IWidget createRecipeOcButton() {
-        return new ButtonWidget<>().size(18, 18)
+        return new ButtonWidget<>().name("gtnlSteamRecipeOcButton")
+            .size(18, 18)
             .marginLeft(4)
             .overlay(GTGuiTextures.OVERLAY_BUTTON_BATCH_MODE_ON)
             .onMousePressed(mouseButton -> {
@@ -169,7 +170,8 @@ public class GTNLSteamMultiBlockBaseGui extends MTEMultiBlockBaseGui<MTESteamMul
                     .padding(3)
                     .child(makeRecipeOcTitleWidget())
                     .child(
-                        new TextFieldWidget().value(recipeOcSyncer)
+                        new TextFieldWidget().name("gtnlSteamRecipeOcField")
+                            .value(recipeOcSyncer)
                             .setFormatAsInteger(true)
                             .numbersInt(0, 4)
                             .scrollValues(1, 4, 64, 256)

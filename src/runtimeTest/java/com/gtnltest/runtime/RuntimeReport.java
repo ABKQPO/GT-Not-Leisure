@@ -33,10 +33,16 @@ public final class RuntimeReport {
         public String screenshot;
         public String screenClass;
         public int windowId;
+        public final List<String> checks = new ObjectArrayList<>();
+        public final List<String> additionalScreenshots = new ObjectArrayList<>();
 
         Result(RuntimeScenario scenario) {
-            id = scenario.id();
-            scope = scenario.scope();
+            this(scenario.id(), scenario.scope());
+        }
+
+        Result(String id, String scope) {
+            this.id = id;
+            this.scope = scope;
         }
     }
 

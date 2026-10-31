@@ -207,6 +207,8 @@ val runConfigs = listOf(
 )
 
 val runtimeTests = sourceSets.create("runtimeTest") {
+    resources.srcDir("tools/testing")
+    resources.include("gui-expectations.json")
     compileClasspath += sourceSets.main.get().output + sourceSets.main.get().compileClasspath
     runtimeClasspath += sourceSets.main.get().runtimeClasspath
 }

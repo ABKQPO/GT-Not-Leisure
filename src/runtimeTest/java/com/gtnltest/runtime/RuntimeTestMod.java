@@ -90,7 +90,7 @@ public final class RuntimeTestMod {
         RuntimeReport.Result result = report.results.get(index);
         try {
             if (!started) {
-                String skip = RuntimeCatalog.skipReason(scenario);
+                String skip = scenario.skipReason();
                 if (skip != null) {
                     result.status = RuntimeReport.Status.SKIP;
                     result.detail = skip;

@@ -29,19 +29,22 @@ public class HumongousDualInputHatchGui extends MTEHatchBaseGui<HumongousDualInp
     @Override
     protected int getBasePanelWidth() {
         DualInputHatchGui.SlotLayout layout = DualInputHatchGui.SlotLayout.of(machine);
-        return super.getBasePanelWidth() + Math.max(0, SLOT_SIZE * (layout.totalColumns() - 9));
+        return super.getBasePanelWidth() + Math.max(0, SLOT_SIZE * (layout.totalColumns() - 9))
+            + (layout.visibleRows() > 12 ? 4 : 0);
     }
 
     @Override
     protected int getBasePanelHeight() {
         DualInputHatchGui.SlotLayout layout = DualInputHatchGui.SlotLayout.of(machine);
-        return super.getBasePanelHeight() + (layout.visibleRows() > 4 ? (layout.visibleRows() - 3) * SLOT_SIZE : 0);
+        int rows = Math.min(12, layout.visibleRows());
+        return super.getBasePanelHeight() + (rows > 4 ? (rows - 3) * SLOT_SIZE : 0);
     }
 
     @Override
     protected ParentWidget<?> createContentSection(ModularPanel panel, PanelSyncManager syncManager) {
         DualInputHatchGui.SlotLayout layout = DualInputHatchGui.SlotLayout.of(machine);
-        return super.createContentSection(panel, syncManager).child(createSlotGroup(syncManager, layout).center());
+        return super.createContentSection(panel, syncManager)
+            .child(DualInputHatchGui.slotViewport(createSlotGroup(syncManager, layout), layout));
     }
 
     public Flow createSlotGroup(PanelSyncManager syncManager, DualInputHatchGui.SlotLayout layout) {

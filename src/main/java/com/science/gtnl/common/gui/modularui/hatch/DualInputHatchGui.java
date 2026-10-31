@@ -1,11 +1,14 @@
 package com.science.gtnl.common.gui.modularui.hatch;
 
 import com.cleanroommc.modularui.api.drawable.IDrawable;
+import com.cleanroommc.modularui.api.widget.IWidget;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.value.sync.FluidSlotSyncHandler;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.cleanroommc.modularui.widget.ParentWidget;
+import com.cleanroommc.modularui.widget.ScrollWidget;
 import com.cleanroommc.modularui.widget.Widget;
+import com.cleanroommc.modularui.widget.scroll.VerticalScrollData;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.layout.Grid;
 import com.cleanroommc.modularui.widgets.slot.FluidSlot;
@@ -28,19 +31,34 @@ public class DualInputHatchGui extends MTEHatchBaseGui<DualInputHatch> {
     @Override
     protected int getBasePanelWidth() {
         SlotLayout layout = SlotLayout.of(machine);
-        return super.getBasePanelWidth() + Math.max(0, SLOT_SIZE * (layout.totalColumns() - 9));
+        return super.getBasePanelWidth() + Math.max(0, SLOT_SIZE * (layout.totalColumns() - 9))
+            + (layout.visibleRows() > 12 ? 4 : 0);
     }
 
     @Override
     protected int getBasePanelHeight() {
         SlotLayout layout = SlotLayout.of(machine);
-        return super.getBasePanelHeight() + (layout.visibleRows() > 4 ? (layout.visibleRows() - 3) * SLOT_SIZE : 0);
+        int rows = Math.min(12, layout.visibleRows());
+        return super.getBasePanelHeight() + (rows > 4 ? (rows - 3) * SLOT_SIZE : 0);
     }
 
     @Override
     protected ParentWidget<?> createContentSection(ModularPanel panel, PanelSyncManager syncManager) {
         SlotLayout layout = SlotLayout.of(machine);
-        return super.createContentSection(panel, syncManager).child(createSlotGroup(syncManager, layout).center());
+        return super.createContentSection(panel, syncManager)
+            .child(slotViewport(createSlotGroup(syncManager, layout), layout));
+    }
+
+    static IWidget slotViewport(Flow slots, SlotLayout layout) {
+        if (layout.visibleRows() <= 12) return slots.center();
+        // Keep the title and player inventory visible at 720p without dropping any slots.
+        return new ScrollWidget<>(new VerticalScrollData()).name("gtnlDualInputSlots")
+            .size(layout.totalColumns() * SLOT_SIZE + 4, 12 * SLOT_SIZE)
+            .center()
+            .child(
+                slots.name("gtnlDualInputSlotGrid")
+                    .top(0)
+                    .left(0));
     }
 
     public Flow createSlotGroup(PanelSyncManager syncManager, SlotLayout layout) {

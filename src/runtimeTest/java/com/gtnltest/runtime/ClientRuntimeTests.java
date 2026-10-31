@@ -27,6 +27,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.cleanroommc.modularui.screen.ModularScreen;
+import com.science.gtnl.common.machine.multiblock.steam.LargeSteamFurnace;
+import com.science.gtnl.utils.enums.GTNLMachineID;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -34,7 +36,6 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
-import gregtech.api.metatileentity.implementations.MTEMultiBlockBase;
 
 /** Native containers and GL frames in an isolated integrated server. No physical input or TCP claim. */
 @SideOnly(Side.CLIENT)
@@ -47,6 +48,7 @@ public final class ClientRuntimeTests extends RuntimeProxy {
         WAIT_TILE,
         OPEN,
         SCREEN,
+        INTERACT,
         CLOSE,
         FINISH
     }
@@ -55,12 +57,13 @@ public final class ClientRuntimeTests extends RuntimeProxy {
     private final ConcurrentLinkedQueue<Runnable> serverWork = new ConcurrentLinkedQueue<>();
     private Path destination;
     private RuntimeReport report;
-    private List<MachinePersistenceScenario> machines;
+    private List<MachineCatalogEntry> machines;
     private RuntimeFixture fixture;
     private Stage stage = Stage.MENU;
     private CompletableFuture<?> pending;
     private int index, elapsed, frameCount, expectedWindow;
     private GuiScreen observed;
+    private GuiInteractionScenario interaction;
     private boolean enabled;
 
     @Override
@@ -70,28 +73,10 @@ public final class ClientRuntimeTests extends RuntimeProxy {
         report = new RuntimeReport();
         machines = RuntimeCatalog.machines();
         String selected = System.getenv("GTNL_TEST_CASE");
-        if (selected != null && !selected.isEmpty()) machines.removeIf(
-            machine -> !selected.equals(
-                machine.id()
-                    .replace(".persistence", ".gui")));
+        if (selected != null && !selected.isEmpty()) machines.removeIf(machine -> !selected.equals(machine.guiId()));
         require(!machines.isEmpty(), "GUI scenario selection must not be empty");
-        for (MachinePersistenceScenario machine : machines) {
-            report.results.add(new RuntimeReport.Result(new RuntimeScenario() {
-
-                public String id() {
-                    return machine.id()
-                        .replace(".persistence", ".gui");
-                }
-
-                public String scope() {
-                    return "unformed-machine-native-gui-lifecycle";
-                }
-
-                public boolean tick(RuntimeFixture ignored, int ticks) {
-                    return true;
-                }
-            }));
-        }
+        for (MachineCatalogEntry machine : machines)
+            report.results.add(new RuntimeReport.Result(machine.guiId(), "unformed-machine-native-gui-lifecycle"));
         enabled = true;
         save();
         FMLCommonHandler.instance()
@@ -108,7 +93,7 @@ public final class ClientRuntimeTests extends RuntimeProxy {
 
     @SubscribeEvent
     public void renderTick(TickEvent.RenderTickEvent event) {
-        if (enabled && stage == Stage.SCREEN
+        if (enabled && (stage == Stage.SCREEN || stage == Stage.INTERACT)
             && event.phase == TickEvent.Phase.END
             && observed != null
             && Minecraft.getMinecraft().currentScreen == observed) frameCount++;
@@ -178,6 +163,10 @@ public final class ClientRuntimeTests extends RuntimeProxy {
                     require(elapsed < 200, "server did not activate the synchronized machine");
                     if (pending.isDone()) {
                         Opened opened = (Opened) pending.join();
+                        if (opened.windowId < 0) {
+                            pending = submit(this::open);
+                            break;
+                        }
                         RuntimeReport.Result result = report.results.get(index);
                         if (opened.skip != null) {
                             result.status = RuntimeReport.Status.SKIP;
@@ -217,6 +206,10 @@ public final class ClientRuntimeTests extends RuntimeProxy {
                         } else pending = submit(() -> player().openContainer == player().inventoryContainer);
                     }
                 }
+                case INTERACT -> {
+                    require(elapsed < 400, "native GUI interaction did not complete: " + interaction.progress());
+                    if (interaction.tick(ModularScreen.getCurrent(), report.results.get(index))) close(client);
+                }
                 case FINISH -> {
                     require(elapsed < 300, "server did not clean the final GUI fixture");
                     if (pending.isDone()) {
@@ -237,6 +230,10 @@ public final class ClientRuntimeTests extends RuntimeProxy {
 
     private void captureAndClose(Minecraft client, GuiContainer screen) throws Exception {
         require(screen.width > 0 && screen.height > 0, "GUI has no drawable viewport");
+        RuntimeReport.Result result = report.results.get(index);
+        result.screenshot = capture(client, result.id);
+        result.screenClass = screen.getClass()
+            .getName();
         ModularScreen mui = ModularScreen.getCurrent();
         if (mui != null) {
             var area = mui.getMainPanel()
@@ -248,8 +245,29 @@ public final class ClientRuntimeTests extends RuntimeProxy {
                     && area.y + area.height <= screen.height,
                 "MUI2 main panel is clipped: " + area + " viewport=" + screen.width + "x" + screen.height);
         }
-        RuntimeReport.Result result = report.results.get(index);
-        String filename = String.format(java.util.Locale.ROOT, "%04d-%s.png", index, result.id);
+        result.detail = (mui == null ? "legacy/native" : "MUI2") + " window rendered";
+        if (machines.get(index)
+            .type() == GTNLMachineID.LARGE_STEAM_FURNACE) {
+            interaction = new SteamFurnaceGuiScenario(
+                () -> submit(
+                    () -> ((LargeSteamFurnace) ((IGregTechTileEntity) fixture.world
+                        .getTileEntity(RuntimeFixture.X, RuntimeFixture.Y, RuntimeFixture.Z))
+                            .getMetaTileEntity()).recipeOcCount),
+                label -> capture(client, result.id + "-" + label),
+                () -> frameCount);
+            stage = Stage.INTERACT;
+            elapsed = 0;
+        } else if (mui != null && GuiTestSupport.find(mui.getMainPanel(), "gtnlDualInputSlots") != null) {
+            interaction = new HatchScrollGuiScenario(
+                label -> capture(client, result.id + "-" + label),
+                () -> frameCount);
+            stage = Stage.INTERACT;
+            elapsed = 0;
+        } else close(client);
+    }
+
+    private String capture(Minecraft client, String label) throws Exception {
+        String filename = String.format(java.util.Locale.ROOT, "%04d-%s.png", index, label);
         ScreenShotHelper.saveScreenshot(
             destination.getParent()
                 .toFile(),
@@ -265,11 +283,11 @@ public final class ClientRuntimeTests extends RuntimeProxy {
         require(
             frame != null && frame.getWidth() == client.displayWidth && frame.getHeight() == client.displayHeight,
             "screenshot must decode into a complete frame at the actual window resolution");
-        result.screenshot = "screenshots/" + filename;
-        result.screenClass = screen.getClass()
-            .getName();
-        result.detail = (mui == null ? "legacy/native" : "MUI2")
-            + " window rendered; awaiting server close acknowledgement";
+        return "screenshots/" + filename;
+    }
+
+    private void close(Minecraft client) {
+        report.results.get(index).detail += "; awaiting server close acknowledgement";
         client.thePlayer.closeScreen();
         stage = Stage.CLOSE;
         elapsed = 0;
@@ -288,14 +306,14 @@ public final class ClientRuntimeTests extends RuntimeProxy {
         }
         report.results.get(index).status = RuntimeReport.Status.RUNNING;
         save();
-        MachinePersistenceScenario machine = machines.get(index);
+        MachineCatalogEntry machine = machines.get(index);
         pending = submit(() -> prepare(machine));
         stage = Stage.PREPARE;
         elapsed = 0;
     }
 
-    private Opened prepare(MachinePersistenceScenario machine) {
-        String skip = RuntimeCatalog.skipReason(machine);
+    private Opened prepare(MachineCatalogEntry machine) {
+        String skip = machine.skipReason();
         if (skip != null) return new Opened(0, skip);
         EntityPlayerMP player = player();
         WorldServer world = (WorldServer) player.worldObj;
@@ -316,7 +334,7 @@ public final class ClientRuntimeTests extends RuntimeProxy {
         WorldServer world = (WorldServer) player.worldObj;
         IGregTechTileEntity tile = (IGregTechTileEntity) world
             .getTileEntity(RuntimeFixture.X, RuntimeFixture.Y, RuntimeFixture.Z);
-        require(tile.getTimer() > 5, "placed machine has not completed native initialization");
+        if (tile.getTimer() <= 5) return new Opened(-1, null);
         world.getBlock(RuntimeFixture.X, RuntimeFixture.Y, RuntimeFixture.Z)
             .onBlockActivated(
                 world,
@@ -330,11 +348,18 @@ public final class ClientRuntimeTests extends RuntimeProxy {
                 0.5F,
                 0.5F);
         if (player.openContainer == player.inventoryContainer) {
-            require(
-                !(tile.getMetaTileEntity() instanceof MTEMultiBlockBase),
-                "multiblock controller did not open its required GUI");
-            return new Opened(0, "This registered machine exposes no server container on activation");
+            String reason = GuiExpectations.noContainerReason(
+                machines.get(index)
+                    .guiId());
+            require(reason != null, "machine did not open its required GUI");
+            return new Opened(0, reason);
         }
+        require(
+            GuiExpectations.noContainerReason(
+                machines.get(index)
+                    .guiId())
+                == null,
+            "machine now opens a GUI; remove its obsolete no-container exception");
         return new Opened(player.openContainer.windowId, null);
     }
 

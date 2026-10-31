@@ -5,6 +5,10 @@ public interface RuntimeScenario {
 
     String id();
 
+    default String skipReason() {
+        return null;
+    }
+
     default String scope() {
         return "server-behavior";
     }
