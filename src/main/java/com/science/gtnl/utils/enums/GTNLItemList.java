@@ -1226,6 +1226,7 @@ public enum GTNLItemList implements IItemContainer {
     SmallInfusionMatrix,
     SmallArcaneAssembler,
     IndustrialCrucible,
+    LargeBeeBreeder,
     ExplosionDynamoHatch,
     AutoConfigurationMaintenanceHatch,
     SterileConfigurationMaintenanceHatch,

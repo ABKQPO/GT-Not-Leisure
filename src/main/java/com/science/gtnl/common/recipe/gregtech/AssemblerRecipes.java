@@ -3360,6 +3360,19 @@ public class AssemblerRecipes implements IRecipePool {
             .eut(TierEU.RECIPE_LV)
             .addTo(As);
 
+        RecipeBuilder.builder()
+            .itemInputs(
+                ModsItemlist.ForestryRoyalJelly.get(64),
+                ModsItemlist.ForestryAlveary.get(32),
+                ItemList.Machine_IndustrialApiary.get(32),
+                new Object[] { OrePrefixes.circuit.get(Materials.UHV), 16 })
+            .circuit(17)
+            .itemOutputs(GTNLItemList.LargeBeeBreeder.get(1))
+            .fluidInputs(Materials.SolderingAlloy.getMolten(576000))
+            .duration(36000 * SECONDS)
+            .eut(TierEU.RECIPE_UHV)
+            .addTo(As);
+
         loadLampRecipes();
         loadWirelessHatch();
         loadLaserHatch();

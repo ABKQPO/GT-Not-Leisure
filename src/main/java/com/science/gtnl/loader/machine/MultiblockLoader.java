@@ -1,8 +1,12 @@
 package com.science.gtnl.loader.machine;
 
+import net.minecraft.block.Block;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 
 import com.gtnllib.client.tooltip.AnimatedTooltipHandler;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.multiblock.AdvancedInfiniteDriller;
 import com.science.gtnl.common.machine.multiblock.AdvancedRareEarthCentrifugal;
 import com.science.gtnl.common.machine.multiblock.AssemblerMatrix;
@@ -28,6 +32,7 @@ import com.science.gtnl.common.machine.multiblock.GenerationEarthEngine;
 import com.science.gtnl.common.machine.multiblock.GrandAssemblyLine;
 import com.science.gtnl.common.machine.multiblock.IndustrialArcaneAssembler;
 import com.science.gtnl.common.machine.multiblock.LapotronChip;
+import com.science.gtnl.common.machine.multiblock.LargeBeeBreeder;
 import com.science.gtnl.common.machine.multiblock.LargeBioLab;
 import com.science.gtnl.common.machine.multiblock.LargeBrewer;
 import com.science.gtnl.common.machine.multiblock.LargeCircuitAssembler;
@@ -212,9 +217,12 @@ import com.science.gtnl.common.machine.multiblock.wireless.TreeDiagram;
 import com.science.gtnl.common.machine.multiblock.wireless.VortexMatterCentrifuge;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.GTNLMachineID;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.text.AnimatedText;
 
 import gregtech.api.enums.Mods;
+import gregtech.api.enums.Textures;
+import gregtech.api.render.TextureFactory;
 
 public class MultiblockLoader {
 
@@ -1450,6 +1458,20 @@ public class MultiblockLoader {
                 "NameHighwayToHell",
                 StatCollector.translateToLocal("gtnl.machine.highway_to_hell.name")));
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.HighwayToHell.get(1), AnimatedText.GT_NOT_LEISURE);
+
+        ItemStack beeCasing = ModsItemlist.VillageNamesYellowConcrete.get(1);
+        Textures.BlockIcons.setCasingTextureForId(
+            GTNLCasings.YellowConcrete.getTextureId(),
+            beeCasing != null && beeCasing.getItem() instanceof ItemBlock
+                ? TextureFactory.of(Block.getBlockFromItem(beeCasing.getItem()), beeCasing.getItemDamage())
+                : Textures.BlockIcons.getCasingTextureForId(10));
+
+        GTNLItemList.LargeBeeBreeder.set(
+            new LargeBeeBreeder(
+                GTNLMachineID.LARGE_BEE_BREEDER.ID,
+                "LargeBeeBreeder",
+                StatCollector.translateToLocal("gtnl.machine.large_bee_breeder.name")));
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeBeeBreeder.get(1), AnimatedText.GT_NOT_LEISURE);
 
         // Special Machine
         GTNLItemList.CheatOreProcessingFactory.set(

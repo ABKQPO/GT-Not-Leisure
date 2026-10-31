@@ -11,6 +11,8 @@ import com.gtnewhorizon.gtnhlib.util.data.BlockSupplier;
 import com.science.gtnl.common.block.casings.casing.MetaCasing;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.loader.BlockLoader;
+import com.science.gtnl.utils.enums.ModsItemlist;
+import com.science.gtnl.utils.item.ItemUtils;
 
 import bartworks.system.material.WerkstoffLoader;
 import gregtech.api.casing.ICasing;
@@ -130,7 +132,11 @@ public enum GTNLCasings implements ICasing {
     ReboltedBronzeCasing(() -> WerkstoffLoader.BWBlockCasingsAdvanced, 31_766 + 300, GTNLMaterials.Bronze.getId()),
     BoltedNeutroniumCasing(() -> WerkstoffLoader.BWBlockCasings, 31_766 + 129, GTNLMaterials.Neutronium.getId()),
     ReboltedNeutroniumCasing(() -> WerkstoffLoader.BWBlockCasingsAdvanced, 31_766 + 129,
-        GTNLMaterials.Neutronium.getId()),;
+        GTNLMaterials.Neutronium.getId()),
+
+    // Reserve the end of GTNL's texture page for external casing textures.
+    YellowConcrete(() -> ItemUtils.getBlockFromItemStack(ModsItemlist.VillageNamesYellowConcrete.get(1)), 4,
+        GTUtility.getTextureId(MetaCasing.TEXTURE_PAGE_INDEX, (byte) 127));
 
     public final BlockSupplier blockGetter;
     private volatile Block block;

@@ -329,6 +329,16 @@ public enum ModsItemlist {
 
     // 钻石凿子
     ChiselDiamondChisel(Mods.Chisel.ID, "diamondChisel", 0),
+    // 黄色汉麻混凝土
+    ChiselYellowHempcrete(Mods.Chisel.ID, "hempcrete", 4),
+    // 棕色汉麻混凝土
+    ChiselBrownHempcrete(Mods.Chisel.ID, "hempcrete", 12),
+    // 黑色汉麻混凝土
+    ChiselBlackHempcrete(Mods.Chisel.ID, "hempcrete", 15),
+    // 橙色羊毛黏土
+    ChiselOrangeWoolenClay(Mods.Chisel.ID, "woolen_clay", 1),
+    // 棕色羊毛黏土
+    ChiselBrownWoolenClay(Mods.Chisel.ID, "woolen_clay", 12),
 
     // 创造模式内存
     ComputronicsOCSpecialParts(Mods.Computronics.ID, "computronics.ocSpecialParts", 0),
@@ -464,6 +474,10 @@ public enum ModsItemlist {
     EtFuturumRequiemBlueIce(Mods.EtFuturumRequiem.ID, "blue_ice", 0),
     // 深板岩圆石
     EtFuturumRequiemCobbledDeepslate(Mods.EtFuturumRequiem.ID, "cobbled_deepslate", 0),
+    // 橙色混凝土
+    EtFuturumRequiemOrangeConcrete(Mods.EtFuturumRequiem.ID, "concrete", 1),
+    // 棕色混凝土
+    EtFuturumRequiemBrownConcrete(Mods.EtFuturumRequiem.ID, "concrete", 12),
     // 深板岩
     EtFuturumRequiemDeepslate(Mods.EtFuturumRequiem.ID, "deepslate", 0),
     // 鞘翅
@@ -503,6 +517,8 @@ public enum ModsItemlist {
     // 不死图腾
     EtFuturumRequiemTotemOfUndying(Mods.EtFuturumRequiem.ID, "totem_of_undying", 0),
 
+    // 浅蓝色彩色方块
+    ExtraUtilitiesLightBlueLapisCaelestis(Mods.ExtraUtilities.ID, "greenscreen", 3),
     // 七重压缩圆石
     ExtraUtilitiesCompressedCobbleSeven(Mods.ExtraUtilities.ID, "cobblestone_compressed", 6),
     // 八重压缩圆石
@@ -1154,6 +1170,9 @@ public enum ModsItemlist {
     USEmeraldSingularity(Mods.UniversalSingularities.ID, "universal.vanilla.singularity", 1),
     // 钻石奇点
     USDiamondSingularity(Mods.UniversalSingularities.ID, "universal.vanilla.singularity", 2),
+
+    // 黄色混凝土
+    VillageNamesYellowConcrete("VillageNames", "concrete", 4),
 
     // 无限之蛋
     WitcheryInfinityegg(Mods.Witchery.ID, "infinityegg", 0),
