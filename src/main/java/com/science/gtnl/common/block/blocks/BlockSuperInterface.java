@@ -14,6 +14,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import com.science.gtnl.common.block.blocks.tile.TileEntitySuperInterface;
 import com.science.gtnl.common.gui.GTNLGuiHandler;
 import com.science.gtnl.common.render.tile.SuperInterfaceRenderer;
+import com.science.gtnl.compat.ae2.InterfaceTextureCompat;
 import com.science.gtnl.utils.enums.GuiType;
 
 import appeng.api.util.IOrientable;
@@ -49,7 +50,7 @@ public class BlockSuperInterface extends BlockInterface {
     public void registerBlockIcons(IIconRegister register) {
         this.iconAlternate = register.registerIcon(RESOURCE_ROOT_ID + ":super_interface_alternate");
         this.iconAlternateArrow = register.registerIcon(RESOURCE_ROOT_ID + ":super_interface_alternate_arrow");
-        super.registerBlockIcons(register);
+        super.registerBlockIcons(InterfaceTextureCompat.withColoredFallback(register, getTextureName()));
     }
 
     @Override
