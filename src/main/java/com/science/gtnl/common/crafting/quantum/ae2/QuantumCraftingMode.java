@@ -14,7 +14,7 @@ import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.PlayerSource;
 
-public final class QuantumCraftingMode {
+public class QuantumCraftingMode {
 
     private static final Set<UUID> ENABLED_PLAYERS = ConcurrentHashMap.newKeySet();
 

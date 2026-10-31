@@ -15,11 +15,11 @@ import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
+import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.CommonElements;
 import com.science.gtnl.utils.enums.GTNLStructureChannels;
-import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import crazypants.enderio.EnderIO;
 import goodgenerator.loader.Loaders;

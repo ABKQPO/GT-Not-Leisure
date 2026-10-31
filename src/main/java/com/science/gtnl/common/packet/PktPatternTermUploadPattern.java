@@ -7,11 +7,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentTranslation;
 
 import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
+import com.gtnllib.network.ServerboundPacket;
+import com.gtnllib.utils.GameUtils;
 import com.science.gtnl.common.machine.multiblock.AssemblerMatrix;
-import com.science.gtnl.common.packet.base.ServerboundPacket;
 import com.science.gtnl.mixins.late.appliedEnergistics.assembler.AccessorContainerPatternTerm;
 import com.science.gtnl.utils.DireCraftingPatternDetails;
-import com.science.gtnl.utils.Utils;
 
 import appeng.api.AEApi;
 import appeng.api.networking.IGridNode;
@@ -68,7 +68,7 @@ public class PktPatternTermUploadPattern extends ServerboundPacket {
                     .blankPattern()
                     .maybeStack(patternStack.stackSize);
                 if (stack.isPresent()) {
-                    Utils.placeItemBackInInventory(player, stack.get());
+                    GameUtils.placeItemBackInInventory(player, stack.get());
                 }
                 patternSlotOUT.putStack(null);
                 return;

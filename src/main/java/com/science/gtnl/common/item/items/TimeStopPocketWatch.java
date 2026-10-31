@@ -2,19 +2,14 @@ package com.science.gtnl.common.item.items;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
-import com.reavaritia.client.render.CustomEntityRenderer;
-import com.science.gtnl.client.GTNLCreativeTabs;
-import com.science.gtnl.utils.enums.GTNLItemList;
+import com.science.gtnl.ScienceNotLeisure;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -26,12 +21,7 @@ public class TimeStopPocketWatch extends Item {
     private boolean playSound = false;
 
     public TimeStopPocketWatch() {
-        this.setUnlocalizedName("gtnl.time_stop_pocket_watch");
-        this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "time_stop_pocket_watch");
         this.setMaxStackSize(1);
-        GameRegistry.registerItem(this, "time_stop_pocket_watch");
-        GTNLItemList.TimeStopPocketWatch.set(new ItemStack(this, 1));
     }
 
     @Override
@@ -49,10 +39,7 @@ public class TimeStopPocketWatch extends Item {
 
         if (nbt.getBoolean(WATCH_ACTIVE_TAG)) {
             if (world.isRemote) {
-                EntityRenderer renderer = Minecraft.getMinecraft().entityRenderer;
-                if (renderer instanceof CustomEntityRenderer customEntityRenderer) {
-                    customEntityRenderer.resetShader();
-                }
+                ScienceNotLeisure.proxy.setTimeStopVisual(false);
             } else {
                 nbt.setBoolean(WATCH_ACTIVE_TAG, false);
                 playSound = false;
@@ -60,10 +47,7 @@ public class TimeStopPocketWatch extends Item {
             setTimeStopped(false);
         } else {
             if (player.worldObj.isRemote) {
-                EntityRenderer renderer = Minecraft.getMinecraft().entityRenderer;
-                if (renderer instanceof CustomEntityRenderer customEntityRenderer) {
-                    customEntityRenderer.activateDesaturateShader(16);
-                }
+                ScienceNotLeisure.proxy.setTimeStopVisual(true);
             } else {
                 if (!playSound) {
                     player.worldObj.playSoundAtEntity(player, RESOURCE_ROOT_ID + ":" + "time.stop", 1.0F, 1.0F);

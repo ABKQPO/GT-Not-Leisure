@@ -4,7 +4,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.common.recipe.AssLineRecipeHook;
+import com.science.gtnl.config.RecipeConfig;
 
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTRecipeConstants;
@@ -14,22 +15,9 @@ public abstract class MixinGTRecipeConstants {
 
     @ModifyVariable(method = "lambda$static$3", at = @At(value = "STORE"), ordinal = 0)
     private static GTRecipe.GTRecipe_WithAlt modifyAssemblyLineRecipe(GTRecipe.GTRecipe_WithAlt r) {
-        int assDuration = r.mDuration;
-        if (!MainConfig.recipe.enableAssemblingLineRecipesTimeChange) return r;
-        int modified = assDuration;
-
-        if (assDuration >= 200000) {
-            modified /= 100;
-        } else if (assDuration >= 40000) {
-            modified /= 10;
-        } else if (assDuration >= 10000) {
-            modified /= 4;
-        } else if (assDuration >= 4000) {
-            modified /= 2;
+        if (RecipeConfig.enableAssemblingLineRecipesTimeChange) {
+            r.mDuration = AssLineRecipeHook.shortenedDuration(r.mDuration);
         }
-
-        r.mDuration = modified;
-
         return r;
     }
 }

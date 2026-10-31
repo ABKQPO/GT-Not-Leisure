@@ -15,23 +15,24 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent;
 
 import com.gtnewhorizon.gtnhlib.blockpos.BlockPos;
-import com.science.gtnl.ClientProxy;
-import com.science.gtnl.client.GTNLCreativeTabs;
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.science.gtnl.common.block.blocks.item.ItemBlockEnderElevator;
 import com.science.gtnl.common.block.blocks.tile.TileEntityEnderElevator;
+import com.science.gtnl.common.entity.LivingSneakEvent;
+import com.science.gtnl.common.item.GTNLCreativeTabs;
+import com.science.gtnl.loader.RenderLoader;
 import com.science.gtnl.utils.ColorUtils;
-import com.science.gtnl.utils.event.LivingSneakEvent;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+@EventBusSubscriber(phase = Phase.PRE)
 public class BlockEnderElevator extends BlockContainer {
 
     public IIcon overlayIcon;
@@ -60,10 +61,6 @@ public class BlockEnderElevator extends BlockContainer {
         this.setLightLevel(1.0f);
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
         GameRegistry.registerBlock(this, ItemBlockEnderElevator.class, "ender_elevator_" + suffix.toLowerCase());
-        MinecraftForge.EVENT_BUS.register(this);
-        FMLCommonHandler.instance()
-            .bus()
-            .register(this);
         if (type == 1) setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.5F, 1.0F);
         else if (type == 2) setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.0625F, 1.0F);
         else setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
@@ -109,7 +106,7 @@ public class BlockEnderElevator extends BlockContainer {
     @SideOnly(Side.CLIENT)
     @Override
     public int getRenderType() {
-        return ClientProxy.ENDER_ELEVATOR_RENDER_ID;
+        return RenderLoader.ENDER_ELEVATOR_RENDER_ID;
     }
 
     @Override
@@ -173,13 +170,13 @@ public class BlockEnderElevator extends BlockContainer {
     }
 
     @SubscribeEvent
-    public void onLivingUpdate(LivingEvent.LivingJumpEvent event) {
+    public static void onLivingUpdate(LivingEvent.LivingJumpEvent event) {
         EntityLivingBase entity = event.entityLiving;
         handleElevatorDetection(entity, true);
     }
 
     @SubscribeEvent
-    public void onLivingUpdate(LivingSneakEvent event) {
+    public static void onLivingUpdate(LivingSneakEvent event) {
         if (!event.isSneaking()) return;
         EntityLivingBase entity = event.entityLiving;
         handleElevatorDetection(entity, false);

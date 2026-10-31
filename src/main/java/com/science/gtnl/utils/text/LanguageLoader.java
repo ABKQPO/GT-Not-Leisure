@@ -1,11 +1,20 @@
 package com.science.gtnl.utils.text;
 
+import java.io.File;
+import java.util.Map;
+
+import net.minecraft.client.Minecraft;
+import net.minecraftforge.common.config.Property;
+
 import com.science.gtnl.common.material.GTNLMaterials;
-import com.science.gtnl.utils.Utils;
+import com.science.gtnl.mixins.early.gregtech.AccessorGTLanguageManager;
+import com.science.gtnl.mixins.early.minecraft.AccessorStringTranslate;
 
 import bartworks.system.material.Werkstoff;
 import bartworks.system.material.WerkstoffLoader;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.registry.LanguageRegistry;
+import gregtech.api.GregTechAPI;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.util.GTLanguageManager;
@@ -369,7 +378,89 @@ public class LanguageLoader {
         itemPipePrefixLocalized = true;
     }
 
+    // GT 5.09.54.205 itself still names items, pipes and recipe maps through GTLanguageManager. GTNL code reaches it
+    // only through the methods below, so moving to plain StatCollector when GT does is a change to this file alone.
+    public static void addGTEnglishName(String key, String english) {
+        GTLanguageManager.addStringLocalization(key, english);
+    }
+
+    public static String gtTranslation(String key) {
+        return GTLanguageManager.getTranslation(key);
+    }
+
+    public static boolean gtUsesPlaceholders() {
+        return GTLanguageManager.i18nPlaceholder;
+    }
+
     public static String addStringLocalization(String trimmedKey, String text) {
-        return Utils.storeTranslation(trimmedKey, text);
+        return LanguageLoader.storeTranslation(trimmedKey, text);
+    }
+
+    public static synchronized String storeTranslation(String trimmedKey, String text) {
+        return storeTranslation(trimmedKey, text, "en_US");
+    }
+
+    public static synchronized String storeTranslation(String trimmedKey, String text, String language) {
+        String translation = writeToLangFile(trimmedKey, text);
+        AccessorGTLanguageManager.getLangMap()
+            .put(trimmedKey, translation);
+        AccessorGTLanguageManager.getStringTranslateLanguageListFallBack()
+            .put(trimmedKey, translation);
+        Map<String, String> langList = ((AccessorStringTranslate) AccessorStringTranslate.getInstance())
+            .getLanguageList();
+        if (langList != null) langList.put(trimmedKey, translation);
+        AccessorGTLanguageManager.getTempMap()
+            .put(trimmedKey, translation);
+        if (FMLCommonHandler.instance()
+            .getCurrentLanguage() != null) {
+            LanguageRegistry.instance()
+                // Inject only after the client language is selected.
+                .injectLanguage(language, AccessorGTLanguageManager.getTempMap());
+        }
+        AccessorGTLanguageManager.getTempMap()
+            .clear();
+        return translation;
+    }
+
+    public static synchronized String writeToLangFile(String trimmedKey, String text) {
+        Property tProperty = GTLanguageManager.sEnglishFile.get("LanguageFile", trimmedKey, text);
+        if (AccessorGTLanguageManager.getHasUnsavedEntry() && GregTechAPI.sPostloadFinished) {
+            GTLanguageManager.sEnglishFile.save();
+            AccessorGTLanguageManager.setHasUnsavedEntry(false);
+        }
+        String translation = tProperty.getString();
+        if (tProperty.wasRead()) {
+            if (!text.equals(translation)) {
+                tProperty.set(text);
+                AccessorGTLanguageManager.callMarkFileDirty();
+                return text;
+            }
+        } else {
+            AccessorGTLanguageManager.callMarkFileDirty();
+        }
+        return translation;
+    }
+
+    // With no client language selected GT reloads nothing; English is loaded instead. Returns whether GT's
+    // own reload is skipped.
+    public static boolean reloadGTLanguageInEnglishIfNoneSelected(Map<String, String> languageMap) {
+        if (!GregTechAPI.sFullLoadFinished || GTLanguageManager.sEnglishFile == null) return false;
+        if (FMLCommonHandler.instance()
+            .getSide()
+            .isServer()) return false;
+
+        Minecraft minecraft = Minecraft.getMinecraft();
+        if (minecraft == null || minecraft.getLanguageManager() == null
+            || minecraft.getLanguageManager()
+                .getCurrentLanguage() != null) {
+            return false;
+        }
+
+        File configFile = GTLanguageManager.sEnglishFile.getConfigFile();
+        if (configFile == null) return true;
+
+        GTLanguageManager.LanguageCode = "en_US";
+        GTLanguageManager.reloadLanguageWithEnglish(configFile.getParentFile(), languageMap);
+        return true;
     }
 }

@@ -2,9 +2,12 @@ package com.science.gtnl.mixins;
 
 import com.gtnewhorizon.gtnhmixins.builders.IMixins;
 import com.gtnewhorizon.gtnhmixins.builders.MixinBuilder;
+import com.gtnllib.mod.ModList;
 import com.science.gtnl.asm.GTNLEarlyCoreMod;
-import com.science.gtnl.config.MainConfig;
-import com.science.gtnl.utils.enums.ModList;
+import com.science.gtnl.config.ItemConfig;
+import com.science.gtnl.config.MachineConfig;
+import com.science.gtnl.config.MinecraftConfig;
+import com.science.gtnl.config.OtherConfig;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -50,37 +53,13 @@ public enum Mixins implements IMixins {
     MINECRAFT_KILL_ENHANCE(
         new MixinBuilder("Mixins for Kill Command Enhance").addCommonMixins("minecraft.MixinCommandKill")
             .setPhase(Phase.EARLY)
-            .setApplyIf(() -> MainConfig.minecraft.enableKillEnhance)),
+            .setApplyIf(() -> MinecraftConfig.enableKillEnhance)),
 
     MINECRAFT_CLIENT(Side.CLIENT, "minecraft.AccessorEntityRenderer", "minecraft.AccessorGuiChat",
         "minecraft.MixinMinecraft", "minecraft.MixinModelBiped", "minecraft.MixinMinecraftRailgunClick",
         "minecraft.MixinRenderPlayerFirstPersonArm", "minecraft.MixinWorldClient", "minecraft.MixinItemRendererRailgun",
         // "minecraft.MixinSimpleReloadableResourceManager",
         "minecraft.MixinGuiContainer", "minecraft.MixinGuiFlatPresets"),
-
-    TEXT_EFFECTS_COMMON(Side.CLIENT, "texteffect.MixinEnumChatFormattingTextEffects"),
-
-    TEXT_EFFECTS_CLIENT(Side.CLIENT, "texteffect.MixinFontRendererTextEffects", "texteffect.MixinGuiNewChatTextEffects",
-        "texteffect.MixinGuiTextFieldTextEffects"),
-
-    TEXT_EFFECTS_ANGELICA(new MixinBuilder("Optional Angelica text effect batching")
-        .addClientMixins("texteffect.angelica.MixinFontBatchTextEffects")
-        .setPhase(Phase.EARLY)
-        .addRequiredMod(ModList.Angelica)),
-
-    TEXT_EFFECTS_NEI(
-        new MixinBuilder("Optional NEI text effect input").addClientMixins("texteffect.MixinNEIFormattedTextField")
-            .setPhase(Phase.LATE)
-            .addRequiredMod(ModList.NotEnoughItems)),
-
-    SUPER_CREEPER(new MixinBuilder("Mixins for Super Creeper logic")
-        .addCommonMixins(
-            "superCreeper.AccessorEntityCreeper",
-            "superCreeper.MixinEntityAICreeperSwell",
-            "superCreeper.MixinEntityCreeper",
-            "superCreeper.MixinEntitySpider")
-        .setPhase(Phase.EARLY)
-        .setApplyIf(() -> MainConfig.super_creeper.enableSuperCreeper)),
 
     NEI_CHEAT_ICON(new MixinBuilder("Mixins for NEI Special Cheat Icon")
         .addCommonMixins(
@@ -90,7 +69,7 @@ public enum Mixins implements IMixins {
             "notEnoughItems.MixinLayoutManager",
             "notEnoughItems.MixinLayoutStyleMinecraft")
         .setPhase(Phase.EARLY)
-        .setApplyIf(() -> MainConfig.other.not_enough_items.enableSpecialCheatIcon)),
+        .setApplyIf(() -> OtherConfig.not_enough_items.enableSpecialCheatIcon)),
 
     STICK_RENDER(new MixinBuilder("Mixins for Stick item rendering")
         .addClientMixins(
@@ -99,7 +78,7 @@ public enum Mixins implements IMixins {
             "stick.MixinLayoutManager",
             "stick.MixinRenderItem")
         .setPhase(Phase.EARLY)
-        .setApplyIf(() -> MainConfig.item.stick.enableStickItem)),
+        .setApplyIf(() -> ItemConfig.stick.enableStickItem)),
 
     WIRELESS_TILE_DATA(new MixinBuilder("ME wireless link persistence")
         .addCommonMixins("appliedEnergistics.wireless.MixinWirelessTileData")
@@ -177,6 +156,7 @@ public enum Mixins implements IMixins {
             "appliedEnergistics.AccessorPartInterface",
             "appliedEnergistics.AccessorTileInterface",
             "appliedEnergistics.MixinAdaptorIInventory",
+            "appliedEnergistics.AccessorWrapperMCISidedInventory",
             "appliedEnergistics.MixinDualityInterface",
             "appliedEnergistics.MixinEntityTinyTNTPrimed",
             "appliedEnergistics.MixinTileIOPort",
@@ -186,19 +166,13 @@ public enum Mixins implements IMixins {
             "appliedEnergistics.MixinCraftingCPUCluster",
             "appliedEnergistics.AccessorTaskProgress",
             "appliedEnergistics.MixinSessionCraftCount",
-            "appliedEnergistics.quamtumComputer.AccessorOptimizePattern",
-            "appliedEnergistics.quamtumComputer.AccessorPacketCraftingTreeData",
-            "appliedEnergistics.quamtumComputer.MixinContainerOptimizePatterns",
-            "appliedEnergistics.quamtumComputer.MixinCraftingGridCache",
-            "appliedEnergistics.quamtumComputer.MixinCraftingCPUStatus",
-            "appliedEnergistics.quamtumComputer.MixinCraftingCPUClusterQuantumJob",
-            "appliedEnergistics.quamtumComputer.MixinContainerCraftConfirm",
-            "bartwork.MixinItemRegistry",
-            "bartwork.MixinMultipleMetalLoader",
-            "bartwork.MixinSimpleMetalLoader",
-            "bartwork.MixinWerkstoff",
-            "bartwork.MixinWerkstoffLoader",
-            "bartwork.MixinMoltenCellLoader",
+            "appliedEnergistics.quantum.AccessorOptimizePattern",
+            "appliedEnergistics.quantum.AccessorPacketCraftingTreeData",
+            "appliedEnergistics.quantum.MixinContainerOptimizePatterns",
+            "appliedEnergistics.quantum.MixinCraftingGridCache",
+            "appliedEnergistics.quantum.MixinCraftingCPUStatus",
+            "appliedEnergistics.quantum.MixinCraftingCPUClusterQuantumJob",
+            "appliedEnergistics.quantum.MixinContainerCraftConfirm",
             "botania.AccessorEntityDoppleganger",
             "draconicEvolution.AccessorCustomArmorHandler",
             "draconicEvolution.MixinCustomArmorHandler",
@@ -252,10 +226,10 @@ public enum Mixins implements IMixins {
             "appliedEnergistics.MixinTESRWrapperBeamRange",
             "appliedEnergistics.assembler.MixinGuiMEMonitorable",
             "appliedEnergistics.assembler.MixinGuiPatternTerm",
-            "appliedEnergistics.quamtumComputer.MixinGuiCraftingCPUTable",
-            "appliedEnergistics.quamtumComputer.MixinGuiCraftAmount",
-            "appliedEnergistics.quamtumComputer.MixinGuiCraftConfirm",
-            "appliedEnergistics.quamtumComputer.MixinGuiCraftingTree")
+            "appliedEnergistics.quantum.MixinGuiCraftingCPUTable",
+            "appliedEnergistics.quantum.MixinGuiCraftAmount",
+            "appliedEnergistics.quantum.MixinGuiCraftConfirm",
+            "appliedEnergistics.quantum.MixinGuiCraftingTree")
         .setPhase(Phase.LATE)),
 
     APPLIED_ENERGISTICS_PROCESSING_PATTERN(new MixinBuilder("Applied Energistics processing pattern capacity mixins")
@@ -304,12 +278,12 @@ public enum Mixins implements IMixins {
             "gregtech.MixinMTEVoidMinerBaseGui",
             "gregtech.MixinMTEVoidMiners")
         .setPhase(Phase.LATE)
-        .setApplyIf(() -> MainConfig.machine.enableVoidMinerTweak)
+        .setApplyIf(() -> MachineConfig.enableVoidMinerTweak)
         .addExcludedMod(ModList.VMTweak)),
 
     GREGTECH_MAIN_FACING(new MixinBuilder().addCommonMixins("gregtech.MixinMTEBasicMachineFacing")
         .setPhase(Phase.LATE)
-        .setApplyIf(() -> MainConfig.machine.allowMainFacingInteraction)),
+        .setApplyIf(() -> MachineConfig.allowMainFacingInteraction)),
 
     GALAXY_SPACE(new MixinBuilder("Galaxy Space Mixin").addCommonMixins("galaxySpace.MixinRocketRecipeHandler")
         .setPhase(Phase.LATE)
@@ -357,13 +331,13 @@ public enum Mixins implements IMixins {
             "overpowered.MixinGregtechWailaDataProvider",
             "overpowered.MixinParallelHelper")
         .setPhase(Phase.LATE)
-        .setApplyIf(() -> MainConfig.machine.enableRecipeOutputChance)
+        .setApplyIf(() -> MachineConfig.enableRecipeOutputChance)
         .addExcludedMod(ModList.Overpowered)),
 
     OVERPOWERED_TST_CHANGE(
         new MixinBuilder("Overpowered TST Mixin Changes").addCommonMixins("overpowered.MixinGTCM_ParallelHelper")
             .setPhase(Phase.LATE)
-            .setApplyIf(() -> MainConfig.machine.enableRecipeOutputChance)
+            .setApplyIf(() -> MachineConfig.enableRecipeOutputChance)
             .addRequiredMod(ModList.TwistSpaceTechnology)
             .addExcludedMod(ModList.Overpowered)),
 
@@ -396,12 +370,12 @@ public enum Mixins implements IMixins {
             "gregtech.MixinMTEPurificationUnitUVTreatment",
             "gregtech.MixinMTEPurificationUnitDegasser")
         .setPhase(Phase.LATE)
-        .setApplyIf(() -> MainConfig.machine.enablePurificationPlantBuff)),
+        .setApplyIf(() -> MachineConfig.enablePurificationPlantBuff)),
 
     STICK_LATE(new MixinBuilder("Stick Late Mixins")
         .addCommonMixins("stick.MixinTooltipHandlerWaila", "stick.MixinOreDictTooltipHandler")
         .setPhase(Phase.LATE)
-        .setApplyIf(() -> MainConfig.item.stick.enableStickItem)),
+        .setApplyIf(() -> ItemConfig.stick.enableStickItem)),
 
     AUTO_STRUCTURE_TOOLTIP(new MixinBuilder("Automatic multiblock structure tooltips")
         .addCommonMixins(

@@ -1,30 +1,21 @@
 package com.science.gtnl.common.item.items.bauble;
 
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-
 import java.util.List;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 
-import org.lwjgl.opengl.GL11;
-
-import com.science.gtnl.client.GTNLCreativeTabs;
+import com.science.gtnl.client.render.PhysicsCapeRenderer;
 import com.science.gtnl.common.item.BaubleItem;
-import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import baubles.api.BaubleType;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.enums.GTValues;
@@ -34,20 +25,9 @@ import vazkii.botania.api.item.IBaubleRender;
 
 public class PhysicsCape extends BaubleItem implements IBaubleRender {
 
-    private static final ResourceLocation texture = new ResourceLocation(
-        RESOURCE_ROOT_ID + ":" + "textures/models/armor/physics_cape.png");
-
-    @SideOnly(Side.CLIENT)
-    private static ModelBiped model;
-
     public PhysicsCape() {
-        this.setUnlocalizedName("gtnl.physics_cape");
-        this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "physics_cape");
         this.setMaxDamage(2000);
         this.setMaxStackSize(1);
-        GameRegistry.registerItem(this, "physics_cape");
-        GTNLItemList.PhysicsCape.set(new ItemStack(this, 1));
     }
 
     @Override
@@ -147,17 +127,6 @@ public class PhysicsCape extends BaubleItem implements IBaubleRender {
     @Override
     @SideOnly(Side.CLIENT)
     public void onPlayerBaubleRender(ItemStack stack, RenderPlayerEvent event, IBaubleRender.RenderType type) {
-        if (type == IBaubleRender.RenderType.BODY) {
-            Minecraft.getMinecraft().renderEngine.bindTexture(texture);
-            IBaubleRender.Helper.rotateIfSneaking(event.entityPlayer);
-            boolean armor = event.entityPlayer.getCurrentArmor(2) != null;
-            GL11.glTranslatef(0F, armor ? -0.07F : -0.01F, 0F);
-
-            float s = 0.1F;
-            GL11.glScalef(s, s, s);
-            if (model == null) model = new ModelBiped();
-
-            model.bipedBody.render(1F);
-        }
+        PhysicsCapeRenderer.render(event, type);
     }
 }

@@ -6,9 +6,9 @@ import net.minecraft.entity.player.InventoryPlayer;
 import org.lwjgl.input.Mouse;
 
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.common.gui.container.ContainerUniversalBusIO;
 import com.science.gtnl.common.packet.SwitchToCustomGuiPacket;
 import com.science.gtnl.common.part.PartUniversalExportBus;
-import com.science.gtnl.container.ContainerUniversalBusIO;
 import com.science.gtnl.utils.enums.GuiType;
 
 import appeng.api.config.SchedulingMode;

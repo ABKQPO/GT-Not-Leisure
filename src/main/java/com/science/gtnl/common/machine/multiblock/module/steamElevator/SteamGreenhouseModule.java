@@ -1,13 +1,10 @@
 package com.science.gtnl.common.machine.multiblock.module.steamElevator;
 
-import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
 import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +15,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
@@ -28,32 +24,15 @@ import com.google.common.collect.ImmutableMap;
 import com.gtnewhorizon.cropsnh.api.ISeedData;
 import com.gtnewhorizon.cropsnh.utility.CropsNHUtils;
 import com.gtnewhorizon.cropsnh.utility.IFDropTable;
-import com.gtnewhorizon.gtnhlib.util.data.ItemId;
-import com.gtnewhorizons.modularui.api.drawable.ItemDrawable;
-import com.gtnewhorizons.modularui.api.drawable.Text;
-import com.gtnewhorizons.modularui.api.math.MainAxisAlignment;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
-import com.gtnewhorizons.modularui.common.builder.UIInfo;
-import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
-import com.gtnewhorizons.modularui.common.widget.CycleButtonWidget;
-import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
-import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
-import com.gtnewhorizons.modularui.common.widget.DynamicPositionedRow;
-import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
-import com.gtnewhorizons.modularui.common.widget.Scrollable;
-import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.science.gtnl.api.IGreenHouse;
-import com.science.gtnl.common.gui.CircularGaugeDrawable;
-import com.science.gtnl.common.gui.modularui.SteamGreenhouseModuleGui;
-import com.science.gtnl.utils.enums.GTNLItemList;
+import com.science.gtnl.common.greenhouse.GreenHouseModes;
+import com.science.gtnl.common.greenhouse.GreenHouseRecipeInfo;
+import com.science.gtnl.common.gui.modularui.multiblock.SteamGreenhouseModuleGui;
+import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseMode;
-import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseModes;
 import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseStoredCrop;
 import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseViewMode;
-import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
-import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IOutputBus;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
@@ -64,9 +43,7 @@ import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
-import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
@@ -77,10 +54,6 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
     private static final int RUN_TICKS = 60 * SECONDS;
     private static final UITexture[] MODE_ICONS = { GTGuiTextures.OVERLAY_BUTTON_ALLOW_INPUT,
         GTGuiTextures.OVERLAY_BUTTON_CYCLIC, GTGuiTextures.OVERLAY_BUTTON_ALLOW_OUTPUT };
-
-    @Deprecated
-    public static final UIInfo<?, ?> GreenhouseUI = GreenHouseMode
-        .createGreenhouseUI(GreenHouseMode.MUIContainer_Greenhouse::new);
 
     public Collection<GreenHouseMode.EIGMigrationHolder> toMigrate;
     public Object2DoubleOpenHashMap<ItemStack> synchedGUIDropTracker = new Object2DoubleOpenHashMap<>();
@@ -278,47 +251,8 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
 
     @Override
     public String generateCurrentRecipeInfoString() {
-        double maxProgressSeconds = getSafeMaxProgressSeconds();
-        double progressPercent = getSafeProgressPercent();
-        StringBuilder ret = new StringBuilder(
-            EnumChatFormatting.WHITE + StatCollector.translateToLocal("GT5U.gui.text.progress"))
-                .append(String.format("%,.2f", (double) this.mProgresstime / 20))
-                .append("s / ")
-                .append(String.format("%,.2f", maxProgressSeconds))
-                .append("s (")
-                .append(String.format("%,.1f", progressPercent))
-                .append("%)\n");
-        Object2IntOpenHashMap<ItemId> outputCounts = getOutputItemCounts(mOutputItems);
-        ObjectArrayList<Map.Entry<ItemStack, Double>> sortedDrops = new ObjectArrayList<>(
-            this.industrialFarmGuiDropTracker.entrySet());
-        sortedDrops.sort(
-            Comparator.comparing(
-                a -> a.getKey()
-                    .toString()
-                    .toLowerCase()));
-
-        for (Map.Entry<ItemStack, Double> drop : sortedDrops) {
-            int outputSize = outputCounts.getInt(ItemId.createNoCopy(drop.getKey()));
-            ret.append(EnumChatFormatting.AQUA)
-                .append(
-                    drop.getKey()
-                        .getDisplayName())
-                .append(EnumChatFormatting.WHITE)
-                .append(": ");
-            if (outputSize == 0) {
-                ret.append(String.format("%.2f", drop.getValue() * 100))
-                    .append("%\n");
-            } else {
-                ret.append(EnumChatFormatting.GOLD)
-                    .append(
-                        String.format(
-                            "x%d %s(+%.2f/s)\n",
-                            outputSize,
-                            EnumChatFormatting.WHITE,
-                            outputSize / maxProgressSeconds));
-            }
-        }
-        return ret.toString();
+        return GreenHouseRecipeInfo
+            .describe(mProgresstime, mMaxProgresstime, mOutputItems, industrialFarmGuiDropTracker.entrySet());
     }
 
     @Override
@@ -376,141 +310,6 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
     @Override
     protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
         return new SteamGreenhouseModuleGui(this).withMachineModeIcons(MODE_ICONS);
-    }
-
-    @Deprecated
-    public void addConfigurationWidgets(DynamicPositionedRow configurationElements, UIBuildContext buildContext) {
-        // TODO: Remove this MUI1 configuration button after Steam Greenhouse Module only uses MUI2.
-        buildContext.addSyncedWindow(GreenHouseMode.CONFIGURATION_WINDOW_ID, this::createConfigurationWindow);
-        configurationElements.setSynced(false);
-        configurationElements.widget(
-            new ButtonWidget().setOnClick(
-                (clickData, widget) -> {
-                    if (!widget.isClient()) widget.getContext()
-                        .openSyncedWindow(GreenHouseMode.CONFIGURATION_WINDOW_ID);
-                })
-                .setBackground(GTUITextures.BUTTON_STANDARD, GTUITextures.OVERLAY_BUTTON_CYCLIC)
-                .addTooltip(StatCollector.translateToLocal("gtnl.machine.eden_garden.view.configuration"))
-                .setSize(16, 16));
-    }
-
-    @Override
-    @Deprecated
-    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
-        // TODO: Remove this MUI1 fallback after Steam Greenhouse Module only uses MUI2.
-        isInInventory = !getBaseMetaTileEntity().isActive();
-
-        builder.widget(new FakeSyncWidget.LongSyncer(this::getTotalSteamCapacityLong, val -> uiSteamCapacity = val));
-        builder.widget(new FakeSyncWidget.LongSyncer(this::getLongTotalSteamStored, val -> uiSteamStored = val));
-        builder.widget(
-            new FakeSyncWidget.IntegerSyncer(this::getTotalSteamStoredOfAnyType, val -> uiSteamStoredOfAllTypes = val));
-
-        builder.widget(
-            new DrawableWidget().setDrawable(GTUITextures.PICTURE_SCREEN_BLACK)
-                .setPos(4, 4)
-                .setSize(190, 85)
-                .setEnabled(w -> !isInInventory));
-        builder.widget(
-            new CycleButtonWidget().setToggle(() -> isInInventory, i -> isInInventory = i)
-                .setTextureGetter(
-                    i -> i == 0 ? new Text(StatCollector.translateToLocal("gtnl.machine.eden_garden.view.inventory"))
-                        : new Text(StatCollector.translateToLocal("gtnl.machine.eden_garden.view.status")))
-                .setBackground(GTUITextures.BUTTON_STANDARD)
-                .setPos(140, 91)
-                .setSize(55, 16));
-
-        final DynamicPositionedColumn screenElements = new DynamicPositionedColumn();
-        drawTexts(screenElements, null);
-        builder.widget(
-            new Scrollable().setVerticalScroll()
-                .widget(screenElements.setPos(10, 0))
-                .setPos(0, 7)
-                .setSize(190, 79)
-                .setEnabled(w -> !isInInventory));
-
-        builder.widget(createPowerSwitchButton(builder))
-            .widget(createVoidExcessButton(builder))
-            .widget(createInputSeparationButton(builder))
-            .widget(createBatchModeButton(builder))
-            .widget(createLockToSingleRecipeButton(builder))
-            .widget(createStructureUpdateButton(builder));
-
-        if (supportsMachineInfo()) {
-            builder.widget(createMachineInfoButton(builder));
-            buildContext.addSyncedWindow(MACHINE_INFO_WINDOW_ID, this::createMachineInfo);
-        }
-
-        DynamicPositionedRow configurationElements = new DynamicPositionedRow();
-        addConfigurationWidgets(configurationElements, buildContext);
-
-        builder.widget(
-            configurationElements.setSpace(2)
-                .setAlignment(MainAxisAlignment.SPACE_BETWEEN)
-                .setPos(getRecipeLockingButtonPos().add(18, 0)));
-
-        builder.widget(
-            new DrawableWidget().setDrawable(this.tierMachine == 2 ? STEAM_GAUGE_STEEL_BG : STEAM_GAUGE_BG)
-                .dynamicTooltip(() -> {
-                    List<String> ret = new ObjectArrayList<>();
-                    ret.add(
-                        StatCollector.translateToLocal("gtnl.machine.steam.total_capacity") + uiSteamStored
-                            + "/"
-                            + uiSteamCapacity
-                            + "L");
-                    if (uiSteamStored == 0 && uiSteamStoredOfAllTypes != 0) {
-                        ret.add(EnumChatFormatting.RED + "Found steam of wrong type!");
-                    }
-                    return ret;
-                })
-                .setTooltipShowUpDelay(TOOLTIP_DELAY)
-                .setUpdateTooltipEveryTick(true)
-                .setSize(64, 42)
-                .setPos(-64, 100));
-
-        builder.widget(
-            new DrawableWidget().setDrawable(new CircularGaugeDrawable(() -> (float) uiSteamStored / uiSteamCapacity))
-                .setPos(-64 + 21, 100 + 21)
-                .setSize(18, 4));
-
-        builder.widget(
-            new ItemDrawable(GTNLItemList.FakeItemSiren.get(1)).asWidget()
-                .setPos(-64 + 21 - 7, 100 - 20)
-                .setEnabled(w -> uiSteamStored == 0));
-    }
-
-    @Override
-    public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
-        screenElements.widget(new FakeSyncWidget<>(() -> {
-            Object2DoubleOpenHashMap<ItemStack> ret = new Object2DoubleOpenHashMap<>();
-
-            for (Map.Entry<ItemStack, Double> drop : this.industrialFarmGuiDropTracker.entrySet()) {
-                ret.addTo(drop.getKey(), drop.getValue());
-            }
-
-            return ret;
-        }, h -> this.synchedGUIDropTracker = h, (buffer, h) -> {
-            buffer.writeVarIntToBuffer(h.size());
-            for (Object2DoubleMap.Entry<ItemStack> itemStackDoubleEntry : h.object2DoubleEntrySet()) {
-                try {
-                    buffer.writeItemStackToBuffer(itemStackDoubleEntry.getKey());
-                    buffer.writeDouble(itemStackDoubleEntry.getDoubleValue());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }, buffer -> {
-            int len = buffer.readVarIntFromBuffer();
-            Object2DoubleOpenHashMap<ItemStack> ret = new Object2DoubleOpenHashMap<>(len);
-            for (int i = 0; i < len; i++) {
-                try {
-                    ret.put(buffer.readItemStackFromBuffer(), buffer.readDouble());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            return ret;
-        }));
-        super.drawTexts(screenElements, inventorySlot);
     }
 
     @Override
@@ -668,61 +467,6 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
             aPlayer,
             "gtnl.machine.eden_garden.message.setup_phase_changed.format",
             new ChatComponentTranslation(phaseKey));
-    }
-
-    @Deprecated
-    public void tryChangeMode(EntityPlayer aPlayer) {
-        // TODO: Remove this legacy MUI1 greenhouse mode toggle after Steam Greenhouse only exposes MUI2 machine modes.
-        if (this.mMaxProgresstime > 0) {
-            GTUtility.sendChatTrans(aPlayer, "gtnl.machine.eden_garden.message.mode_running");
-            return;
-        }
-        if (!this.storedCrops.isEmpty()) {
-            GTUtility.sendChatTrans(aPlayer, "gtnl.machine.eden_garden.message.mode_has_seeds");
-            return;
-        }
-        this.mode = GreenHouseModes.getNextMode(this.mode);
-        GTUtility.sendChatTrans(aPlayer, "gtnl.machine.eden_garden.message.mode_changed", this.mode.getName());
-    }
-
-    @Deprecated
-    public void tryChangeHumidityMode(EntityPlayer aPlayer) {
-        // TODO: Remove this legacy humidity toggle after CropsNH biome checks are the only growth environment control.
-        this.useNoHumidity = !this.useNoHumidity;
-        if (this.useNoHumidity) {
-            GTUtility.sendChatTrans(aPlayer, "gtnl.machine.eden_garden.message.no_humidity_enabled");
-        } else {
-            GTUtility.sendChatTrans(aPlayer, "gtnl.machine.eden_garden.message.no_humidity_disabled");
-        }
-    }
-
-    public int getTotalSeedCount() {
-        return getTotalStoredCropCount();
-    }
-
-    public double getSafeMaxProgressSeconds() {
-        return Math.max(mMaxProgresstime / 20.0D, 0.05D);
-    }
-
-    public double getSafeProgressPercent() {
-        if (mMaxProgresstime <= 0) {
-            return 0;
-        }
-        return (double) mProgresstime / mMaxProgresstime * 100;
-    }
-
-    public Object2IntOpenHashMap<ItemId> getOutputItemCounts(ItemStack[] outputItems) {
-        Object2IntOpenHashMap<ItemId> outputCounts = new Object2IntOpenHashMap<>(
-            outputItems == null ? 0 : outputItems.length);
-        if (outputItems == null) {
-            return outputCounts;
-        }
-        for (ItemStack outputItem : outputItems) {
-            if (outputItem != null && outputItem.stackSize > 0) {
-                outputCounts.addTo(ItemId.createNoCopy(outputItem), outputItem.stackSize);
-            }
-        }
-        return outputCounts;
     }
 
     private void dropStoredStack(IGregTechTileEntity mte, ItemStack stack) {

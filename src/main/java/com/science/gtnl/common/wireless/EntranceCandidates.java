@@ -24,7 +24,7 @@ public class EntranceCandidates {
         return new Batch<>(members, occupied, neighbours).select(missing, eligible, rank, capacity, order);
     }
 
-    public static final class Batch<N> {
+    public static class Batch<N> {
 
         private final Set<N> members;
         private final Function<N, Iterable<N>> neighbours;

@@ -19,16 +19,20 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.reavaritia.common.items.InfinitySword;
 import com.science.gtnl.common.equipment.EquipmentEnergy;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.common.packet.CelestweaveFxPacket;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ItemConfig;
+import com.science.gtnl.config.ReAvaritiaConfig;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
+@EventBusSubscriber(phase = Phase.PRE)
 public class CelestweaveShield {
 
     private static final String LIGHTNING = "gtnl.celestweave.lightning";
@@ -49,7 +53,7 @@ public class CelestweaveShield {
     public static boolean bypass(DamageSource source, float amount) {
         if (source == DamageSource.outOfWorld && amount >= Float.MAX_VALUE / 2) return true;
         if ("administrative.kill".equals(source.damageType)) return true;
-        return MainConfig.re_avaritia.infinity_sword.enableBypass
+        return ReAvaritiaConfig.infinity_sword.enableBypass
             && source.getSourceOfDamage() instanceof EntityPlayer attacker
             && attacker.isSneaking()
             && source.damageType != null
@@ -58,7 +62,7 @@ public class CelestweaveShield {
 
     public static boolean canAbsorb(EntityPlayer player) {
         if (EquipmentEnergy.free(player) || CelestweaveEnergy.availableSet(player) > 0) return true;
-        return MainConfig.item.celestweave.enableWirelessFallback && EquipmentEnergy.wirelessAvailable(player) >= 1;
+        return ItemConfig.celestweave.enableWirelessFallback && EquipmentEnergy.wirelessAvailable(player) >= 1;
     }
 
     public static boolean environment(DamageSource source) {
@@ -75,7 +79,7 @@ public class CelestweaveShield {
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)
-    public void attack(LivingAttackEvent event) {
+    public static void attack(LivingAttackEvent event) {
         if (!(event.entityLiving instanceof EntityPlayerMP player)) return;
         DamageSource source = event.source;
         long now = player.worldObj.getTotalWorldTime();
@@ -98,7 +102,7 @@ public class CelestweaveShield {
         float last = invulnerable ? player.lastDamage : 0F;
         float incoming = amount - last;
         if (incoming <= 0) return;
-        var config = MainConfig.item.celestweave;
+        var config = ItemConfig.celestweave;
         float cap = Math.min(incoming, config.maxAbsorbPerHit);
         if (cap <= 0) return;
         double cost = Math.min(cap * config.shieldEuPerDamage, config.maxEuPerHit);
@@ -130,7 +134,7 @@ public class CelestweaveShield {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public void hurt(LivingHurtEvent event) {
+    public static void hurt(LivingHurtEvent event) {
         if (!(event.entityLiving instanceof EntityPlayerMP player)) return;
         HANDLED.remove(player);
         Absorb absorb = PENDING.remove(player);
@@ -139,7 +143,7 @@ public class CelestweaveShield {
     }
 
     private static boolean reflect(EntityPlayerMP player, ItemStack chest, DamageSource source, float amount) {
-        var config = MainConfig.item.celestweave;
+        var config = ItemConfig.celestweave;
         if (source.isProjectile() && CelestweaveModuleSetting.REFLECT_PROJECTILE.on(chest)
             && CelestweaveEnergy.drain(player, CelestweaveArmor.CHEST, chest, config.reflectEu)) {
             Entity projectile = source.getSourceOfDamage();
@@ -156,7 +160,7 @@ public class CelestweaveShield {
     }
 
     private static void strike(EntityPlayerMP player, ItemStack chest, EntityLivingBase attacker, float amount) {
-        var config = MainConfig.item.celestweave;
+        var config = ItemConfig.celestweave;
         double radius = config.reflectRadius;
         List<EntityLivingBase> targets = new ObjectArrayList<>();
         for (Object entry : player.worldObj
@@ -190,12 +194,12 @@ public class CelestweaveShield {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public void death(LivingDeathEvent event) {
+    public static void death(LivingDeathEvent event) {
         if (!(event.entityLiving instanceof EntityPlayerMP player)) return;
         DamageSource source = event.source;
         if (source == DamageSource.outOfWorld || bypass(source, Float.MAX_VALUE)) return;
         ItemStack chest = CelestweaveData.piece(player, CelestweaveArmor.CHEST);
-        if (!shielded(chest) || !CelestweaveEnergy.drainWithWireless(player, MainConfig.item.celestweave.deathSaveEu))
+        if (!shielded(chest) || !CelestweaveEnergy.drainWithWireless(player, ItemConfig.celestweave.deathSaveEu))
             return;
         event.setCanceled(true);
         player.setHealth(1F);

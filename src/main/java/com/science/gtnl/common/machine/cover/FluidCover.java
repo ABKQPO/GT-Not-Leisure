@@ -15,9 +15,8 @@ import gregtech.api.interfaces.tileentity.ICoverable;
 import gregtech.api.interfaces.tileentity.IMachineProgress;
 import gregtech.api.metatileentity.BaseMetaTileEntity;
 import gregtech.api.metatileentity.CommonMetaTileEntity;
-import gregtech.common.covers.CoverLegacyData;
 
-public class FluidCover extends CoverLegacyData {
+public class FluidCover extends IntDataCover {
 
     public Fluid fluid;
     public String description;
@@ -62,7 +61,7 @@ public class FluidCover extends CoverLegacyData {
     }
 
     @Override
-    public void readDataFromNbt(NBTBase nbt) {
+    protected void readDataFromNbt(NBTBase nbt) {
         if (nbt instanceof NBTTagCompound compound) {
             this.coverData = compound.getInteger("CoverData");
             this.description = compound.getString("Description");
@@ -80,7 +79,7 @@ public class FluidCover extends CoverLegacyData {
     }
 
     @Override
-    public @NotNull NBTBase saveDataToNbt() {
+    protected @NotNull NBTBase saveDataToNbt() {
         NBTTagCompound compound = new NBTTagCompound();
         compound.setInteger("CoverData", this.coverData);
         compound.setString("Description", this.description);
@@ -106,5 +105,4 @@ public class FluidCover extends CoverLegacyData {
             commonMetaTile.fill(new FluidStack(this.fluid, current), true);
         }
     }
-
 }

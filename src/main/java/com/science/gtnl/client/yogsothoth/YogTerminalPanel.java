@@ -35,7 +35,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 
 @SideOnly(Side.CLIENT)
-public final class YogTerminalPanel extends FloatingWindowPanel {
+public class YogTerminalPanel extends FloatingWindowPanel {
 
     private static final int TITLE_COLOR = 0xE6DAFF;
 
@@ -217,7 +217,7 @@ public final class YogTerminalPanel extends FloatingWindowPanel {
         YogTerminalClient.clickEntry(inventory(), YogTerminalClient.selectedToken(), index, button);
     }
 
-    private final class HeaderButton extends ButtonWidget<HeaderButton> {
+    private class HeaderButton extends ButtonWidget<HeaderButton> {
 
         private final UITexture icon;
         private final BooleanSupplier visible;
@@ -248,7 +248,7 @@ public final class YogTerminalPanel extends FloatingWindowPanel {
         }
     }
 
-    private final class GridWidget extends Widget<GridWidget> implements Interactable, IViewport {
+    private class GridWidget extends Widget<GridWidget> implements Interactable, IViewport {
 
         GridWidget() {
             tooltipPos(RichTooltip.Pos.NEXT_TO_MOUSE).tooltipAutoUpdate(true)

@@ -12,7 +12,6 @@ import static gregtech.api.enums.HatchElement.OutputBus;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,10 +32,10 @@ import com.cleanroommc.modularui.utils.item.ItemStackHandler;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.science.gtnl.api.mixinHelper.IResearchStationMarker;
-import com.science.gtnl.common.gui.modularui.ResearchCenterGui;
+import com.science.gtnl.common.gui.modularui.multiblock.ResearchCenterGui;
+import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.mixins.late.tecTech.AccessorMTEResearchStation;
 import com.science.gtnl.utils.StructureUtils;
-import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.casing.Casings;
@@ -645,7 +644,7 @@ public class ResearchCenter extends MTEResearchStation implements IResearchStati
 
     private int countResearchItems(ItemStack researchItem, List<ItemStack> plannedConsumes) {
         int count = 0;
-        ArrayList<ItemStack> inputs = getStoredInputs();
+        List<ItemStack> inputs = getStoredInputs();
         for (ItemStack input : inputs) {
             if (GTUtility.areStacksEqual(researchItem, input, true)) {
                 count += input.stackSize;
@@ -756,7 +755,7 @@ public class ResearchCenter extends MTEResearchStation implements IResearchStati
 
     private int countDepletableItems(ItemStack stack) {
         int count = 0;
-        ArrayList<ItemStack> inputs = getStoredInputs();
+        List<ItemStack> inputs = getStoredInputs();
         for (ItemStack input : inputs) {
             if (GTUtility.areStacksEqual(stack, input)) {
                 count += input.stackSize;

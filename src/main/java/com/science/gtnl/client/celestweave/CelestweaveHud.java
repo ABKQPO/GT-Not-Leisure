@@ -15,6 +15,8 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 import org.lwjgl.opengl.GL11;
 
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.gtnllib.client.fx.FxEasing;
 import com.gtnllib.client.hud.HudEditor;
 import com.gtnllib.client.hud.HudLayout;
@@ -30,14 +32,14 @@ import com.science.gtnl.common.celestweave.CelestweaveModule;
 import com.science.gtnl.common.celestweave.CelestweaveModuleSetting;
 import com.science.gtnl.common.equipment.EquipmentEnergy;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
-import com.science.gtnl.config.MainConfig;
-import com.science.gtnl.utils.Utils;
+import com.science.gtnl.config.ItemConfig;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
+@EventBusSubscriber(side = Side.CLIENT, phase = Phase.PRE)
 public class CelestweaveHud {
 
     private static final int HIT_LIFETIME = 900, SAVE_LIFETIME = 1400, READY_FLASH = 350, WINDOW_MS = 12000,
@@ -98,7 +100,7 @@ public class CelestweaveHud {
     }
 
     @SubscribeEvent
-    public void overlay(RenderGameOverlayEvent.Post event) {
+    public static void overlay(RenderGameOverlayEvent.Post event) {
         if (event.type != RenderGameOverlayEvent.ElementType.ALL || !HudLayout.enabled()) return;
         Minecraft minecraft = Minecraft.getMinecraft();
         EntityPlayer player = minecraft.thePlayer;
@@ -137,7 +139,7 @@ public class CelestweaveHud {
         boolean nowFlying = look.flightActive && player.capabilities.isFlying;
         if (flying && !nowFlying) landedAt = now;
         flying = nowFlying;
-        long dashLife = MainConfig.item.celestweave.dashCooldown * 50L, dashAge = now - state.dashAt;
+        long dashLife = ItemConfig.celestweave.dashCooldown * 50L, dashAge = now - state.dashAt;
         boolean dashing = dashAge >= 0 && dashAge < dashLife + READY_FLASH;
         ItemStack boots = look.worn[CelestweaveArmor.BOOTS];
         coreSignature = (status * 4 + (flying ? 2 : 0) + (low ? 1 : 0)) * 31 + wakes;
@@ -276,11 +278,11 @@ public class CelestweaveHud {
         int glowColor, float slide, float alpha) {
         String percent = Math.round(fraction * 100) + "%";
         String energy = StatCollector
-            .translateToLocalFormatted("item.gtnl.celestweave.hud.energy", Utils.shortFormat((long) stored));
+            .translateToLocalFormatted("item.gtnl.celestweave.hud.energy", MathUtils.shortFormat((long) stored));
         String flow = Math.abs(rate) < 0.5F ? ""
             : StatCollector.translateToLocalFormatted(
                 "item.gtnl.celestweave.hud.rate",
-                (rate > 0 ? "-" : "+") + Utils.shortFormat(Math.round(Math.abs(rate))));
+                (rate > 0 ? "-" : "+") + MathUtils.shortFormat(Math.round(Math.abs(rate))));
         String eta = rate >= 0.5F ? duration(stored / rate / 20) : "";
         int split = font.getStringWidth(percent) + 4;
         float second = 19 + (font.getStringWidth(flow) + (eta.isEmpty() ? 0 : font.getStringWidth(eta) + 6)) * SMALL;

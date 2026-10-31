@@ -7,13 +7,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
-import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.part.PartEnergyAcceptor;
-import com.science.gtnl.utils.enums.GTNLItemList;
 
 import appeng.api.AEApi;
 import appeng.api.parts.IPartItem;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -21,13 +18,9 @@ public class ItemPartEnergyAcceptor extends Item implements IPartItem {
 
     public ItemPartEnergyAcceptor() {
         setMaxStackSize(64);
-        setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
-        setUnlocalizedName("gtnl.part_energy_acceptor");
-        GameRegistry.registerItem(this, "part_energy_acceptor");
         AEApi.instance()
             .partHelper()
             .setItemBusRenderer(this);
-        GTNLItemList.PartEnergyAcceptor.set(new ItemStack(this));
     }
 
     @Override

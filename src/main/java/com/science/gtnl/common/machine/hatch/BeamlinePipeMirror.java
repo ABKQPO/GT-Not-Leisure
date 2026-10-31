@@ -160,4 +160,34 @@ public class BeamlinePipeMirror extends MTEBeamlinePipe {
         }
         return null;
     }
+
+    // Pipes passed on the way are marked used.
+    public static MTEHatchInputBeamline findInputAlongMirrors(IGregTechTileEntity outputBase) {
+        ForgeDirection front = outputBase.getFrontFacing();
+        ForgeDirection opposite = front.getOpposite();
+
+        for (short dist = 1; dist <= 129; dist++) {
+            IGregTechTileEntity tGTTileEntity = outputBase.getIGregTechTileEntityAtSideAndDistance(front, dist);
+            if (tGTTileEntity == null) return null;
+
+            IMetaTileEntity aMetaTileEntity = tGTTileEntity.getMetaTileEntity();
+            if (aMetaTileEntity instanceof BeamlinePipeMirror tMirror) {
+                tGTTileEntity = tMirror.bendAround(opposite);
+                if (tGTTileEntity == null) return null;
+
+                aMetaTileEntity = tGTTileEntity.getMetaTileEntity();
+                opposite = tMirror.chainedFrontFacing;
+            }
+
+            if (aMetaTileEntity instanceof MTEHatchInputBeamline inputBeamline
+                && opposite == tGTTileEntity.getFrontFacing()) {
+                return inputBeamline;
+            } else if (aMetaTileEntity instanceof MTEBeamlinePipe beamlinePipe) {
+                beamlinePipe.markUsed();
+            } else {
+                return null;
+            }
+        }
+        return null;
+    }
 }

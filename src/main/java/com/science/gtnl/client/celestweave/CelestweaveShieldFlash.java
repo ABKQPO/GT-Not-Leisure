@@ -13,6 +13,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.gtnllib.client.fx.world.FxArcRenderer;
 import com.gtnllib.client.fx.world.FxCamera;
 import com.gtnllib.client.fx.world.FxRenderHelper;
@@ -26,6 +28,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
+@EventBusSubscriber(side = Side.CLIENT, phase = Phase.PRE)
 public class CelestweaveShieldFlash {
 
     private static final Random RNG = new Random();
@@ -115,7 +118,7 @@ public class CelestweaveShieldFlash {
     }
 
     @SubscribeEvent
-    public void render(RenderWorldLastEvent event) {
+    public static void render(RenderWorldLastEvent event) {
         Minecraft minecraft = Minecraft.getMinecraft();
         World world = minecraft.theWorld;
         long now = Minecraft.getSystemTime();

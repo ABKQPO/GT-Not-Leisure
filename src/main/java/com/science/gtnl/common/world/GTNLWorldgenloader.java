@@ -7,16 +7,15 @@ import net.minecraft.world.gen.feature.WorldGenLakes;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.event.terraingen.DecorateBiomeEvent;
 
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.compat.visualprospecting.OreVeinTypes;
 import com.science.gtnl.loader.BlockLoader;
-import com.science.gtnl.mixins.late.visualProspecting.AccessorVeinTypeCaching;
-import com.science.gtnl.utils.enums.GTNLOreMixer;
-import com.sinthoras.visualprospecting.database.veintypes.VeinType;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import gregtech.api.enums.Mods;
-import gregtech.common.OreMixBuilder;
 
+@EventBusSubscriber(phase = Phase.PRE)
 public class GTNLWorldgenloader {
 
     public static void registry() {
@@ -24,31 +23,18 @@ public class GTNLWorldgenloader {
             oreMix.addGTOreLayer();
         }
 
-        if (Mods.VisualProspecting.isModLoaded()) {
-            registerVisualProspectingVeins();
-        }
+        OreVeinTypes.register();
 
         ScienceNotLeisure.LOG.info("Started Galactic Greg ore gen code");
     }
 
-    private static void registerVisualProspectingVeins() {
-        for (GTNLOreMixer oreMix : GTNLOreMixer.values()) {
-            AccessorVeinTypeCaching.getVeinTypes()
-                .put(oreMix.oreMixBuilder.oreMixName, new VeinType(oreMix.oreMixBuilder));
-        }
-        for (OreMixBuilder vein : GTNLVeinCatalog.additionalVeins()) {
-            AccessorVeinTypeCaching.getVeinTypes()
-                .put(vein.oreMixName, new VeinType(vein));
-        }
-    }
-
     @SubscribeEvent
-    public void onDecorateBiome(DecorateBiomeEvent.Decorate event) {
+    public static void onDecorateBiome(DecorateBiomeEvent.Decorate event) {
         if (event.type != DecorateBiomeEvent.Decorate.EventType.LAKE) return;
         generateFluidLake(event.world, event.rand, event.chunkX, event.chunkZ);
     }
 
-    public void generateFluidLake(World world, Random random, int xChunk, int zChunk) {
+    public static void generateFluidLake(World world, Random random, int xChunk, int zChunk) {
         if (random == null) return;
         int xPos, yPos, zPos;
 

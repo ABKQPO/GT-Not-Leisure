@@ -2,7 +2,6 @@ package com.science.gtnl.utils.enums;
 
 import java.util.Locale;
 
-// Why: the early coremod loads MainConfig before mixins, so Minecraft or mod classes here break other mixins.
 public enum PortalGunPortalEffect {
 
     PIXEL_SWIRL(Kind.SPRITE, OrbStyle.GLOW, 0xCC59FF26, 0xFFD9FFA6, "portal_gun_portal", 24, 1, 50, 76, 36, 32),

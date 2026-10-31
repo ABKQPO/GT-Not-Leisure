@@ -2,9 +2,10 @@ package com.science.gtnl.client.railgun;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.gtnllib.client.fx.world.FxMuzzleAnchor;
 import com.gtnllib.client.fx.world.FxShockwaveRenderer;
 import com.gtnllib.client.fx.world.FxVisibility;
@@ -14,14 +15,14 @@ import com.science.gtnl.common.equipment.EquipmentSound;
 import com.science.gtnl.common.packet.RailgunBeamChainFxPacket;
 import com.science.gtnl.common.packet.RailgunFireFxPacket;
 import com.science.gtnl.common.railgun.RailgunChargeTier;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ClientConfig;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
+@EventBusSubscriber(side = Side.CLIENT, phase = Phase.PRE)
 public class RailgunClientFx {
 
     private static final int IMPACT_SPARKS = 24;
@@ -31,20 +32,7 @@ public class RailgunClientFx {
     private static final double SHOT_HEARING_RANGE = 256, CHAIN_HEARING_RANGE = 16;
 
     public static void register() {
-        MinecraftForge.EVENT_BUS.register(new RailgunClientFx());
-        MinecraftForge.EVENT_BUS.register(new RailgunBeamRenderer());
-        MinecraftForge.EVENT_BUS.register(new RailgunOrbRenderer());
-        MinecraftForge.EVENT_BUS.register(new RailgunHudRenderer());
         HudRegistry.register(RailgunHudRenderer.CHARGE);
-        FMLCommonHandler.instance()
-            .bus()
-            .register(new RailgunCameraShake());
-        FMLCommonHandler.instance()
-            .bus()
-            .register(new RailgunClientInput());
-        FMLCommonHandler.instance()
-            .bus()
-            .register(new RailgunSounds());
     }
 
     public static void playFire(RailgunFireFxPacket packet) {
@@ -132,8 +120,8 @@ public class RailgunClientFx {
         return FxVisibility.allowed(
             FxVisibility.isViewer(shooterId),
             FxVisibility.distanceToViewer(at),
-            MainConfig.client.enableRailgunShowOthersFx,
-            MainConfig.client.railgunFxDistance);
+            ClientConfig.enableRailgunShowOthersFx,
+            ClientConfig.railgunFxDistance);
     }
 
     private static void shockwave(Vec3d at, double radius, int lifetime) {
@@ -166,7 +154,7 @@ public class RailgunClientFx {
     }
 
     @SubscribeEvent
-    public void unload(WorldEvent.Unload event) {
+    public static void unload(WorldEvent.Unload event) {
         if (!event.world.isRemote) return;
         RailgunBeamRenderer.clear();
         RailgunOrbRenderer.clear();

@@ -3,13 +3,17 @@ package com.science.gtnl.common.packet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 
+import com.gtnllib.network.ClientboundPacket;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.GTNLInputHandler;
-import com.science.gtnl.common.packet.base.ClientboundPacket;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class RestorePreviousGuiPacket extends ClientboundPacket {
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void handleClient(Minecraft minecraft) {
         if (minecraft == null || minecraft.thePlayer == null) {
             ScienceNotLeisure.LOG.error("Cannot restore previous GUI without an active client player");

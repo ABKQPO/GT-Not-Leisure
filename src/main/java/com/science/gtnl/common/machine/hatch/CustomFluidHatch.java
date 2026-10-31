@@ -14,20 +14,13 @@ import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
-import com.gtnewhorizons.modularui.api.drawable.UITexture;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
-import com.gtnewhorizons.modularui.common.widget.FluidSlotWidget;
-import com.science.gtnl.common.gui.modularui.CustomFluidHatchGui;
+import com.science.gtnl.common.gui.modularui.hatch.CustomFluidHatchGui;
 import com.science.gtnl.mixins.early.gregtech.AccessorMTEHatch;
-import com.science.gtnl.utils.FluidIdUtils;
-import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.GTMod;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
-import gregtech.api.interfaces.modularui.IAddGregtechLogo;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatch;
@@ -37,11 +30,11 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @IMetaTileEntity.SkipGenerateName
 @IMetaTileEntity.SkipGenerateDescription
-public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
+public class CustomFluidHatch extends MTEHatch {
 
     public Set<GTUtility.FluidId> mLockedFluids;
     public int mFluidCapacity;
-    public UITexture uiTexture = ItemUtils.PICTURE_GTNL_LOGO;
+    public boolean steamLogo;
     public final String nameKey;
 
     public CustomFluidHatch(Set<GTUtility.FluidId> aFluid, int aAmount, int aID, String aName, String aNameKey,
@@ -62,7 +55,7 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
     }
 
     public CustomFluidHatch(Set<GTUtility.FluidId> aFluid, int aAmount, int aID, String aName, String aNameKey,
-        int aTier, UITexture aUITexture) {
+        int aTier, boolean steamLogo) {
         super(
             aID,
             aName,
@@ -75,7 +68,7 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
                     + "L" });
         this.mLockedFluids = aFluid;
         this.mFluidCapacity = aAmount;
-        this.uiTexture = aUITexture;
+        this.steamLogo = steamLogo;
         this.nameKey = aNameKey;
     }
 
@@ -104,11 +97,11 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
     }
 
     public CustomFluidHatch(Set<GTUtility.FluidId> aFluid, int aAmount, String aName, int aTier, String[] aDescription,
-        ITexture[][][] aTextures, UITexture aUITexture, String aNameKey) {
+        ITexture[][][] aTextures, boolean steamLogo, String aNameKey) {
         super(aName, aTier, 3, aDescription, aTextures);
         this.mLockedFluids = aFluid;
         this.mFluidCapacity = aAmount;
-        this.uiTexture = aUITexture;
+        this.steamLogo = steamLogo;
         this.nameKey = aNameKey;
     }
 
@@ -133,7 +126,7 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
             this.mTier,
             this.mDescriptionArray,
             this.mTextures,
-            this.uiTexture,
+            this.steamLogo,
             this.nameKey);
     }
 
@@ -285,23 +278,6 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
     }
 
     public boolean usesSteamLogoForMui2() {
-        return uiTexture == ItemUtils.PICTURE_GTNL_STEAM_LOGO;
-    }
-
-    @Override
-    @Deprecated
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        // TODO: Remove this mui1 fallback after CustomFluidHatch mui2 parity is verified.
-        builder.widget(
-            new DrawableWidget().setDrawable(uiTexture)
-                .setSize(18, 18)
-                .setPos(151, 62));
-    }
-
-    @Override
-    @Deprecated
-    public FluidSlotWidget createFluidSlot() {
-        // TODO: Remove this mui1 fallback after CustomFluidHatch mui2 parity is verified.
-        return super.createFluidSlot().setFilter(this::acceptsFluid);
+        return steamLogo;
     }
 }

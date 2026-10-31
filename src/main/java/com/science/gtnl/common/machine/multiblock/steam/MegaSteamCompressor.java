@@ -20,11 +20,11 @@ import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
+import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.BlockIcons;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
-import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.GregTechAPI;
 import gregtech.api.casing.Casings;
@@ -174,11 +174,6 @@ public class MegaSteamCompressor extends SteamMultiMachineBase<MegaSteamCompress
     @Override
     public double getEUtDiscount() {
         return 1 << (2 * Math.min(4, recipeOcCount));
-    }
-
-    @Override
-    public double getDurationModifier() {
-        return 1.0 / (1 << Math.min(4, recipeOcCount));
     }
 
     @Override

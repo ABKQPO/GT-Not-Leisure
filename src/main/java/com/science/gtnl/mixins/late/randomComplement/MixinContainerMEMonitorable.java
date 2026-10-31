@@ -8,8 +8,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.science.gtnl.utils.RCAEBaseContainer;
-import com.science.gtnl.utils.RCWirelessTerminalGuiObject;
+import com.science.gtnl.api.mixinHelper.RCAEBaseContainer;
+import com.science.gtnl.api.mixinHelper.RCWirelessTerminalGuiObject;
 
 import appeng.api.storage.ITerminalHost;
 import appeng.container.AEBaseContainer;

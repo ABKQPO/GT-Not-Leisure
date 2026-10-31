@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
-import com.science.gtnl.utils.enums.ModList;
+import com.science.gtnl.ScienceNotLeisure;
 
 import bartworks.common.loaders.ItemRegistry;
 
@@ -26,9 +26,9 @@ public class MixinItemRegistry {
     private static void modifyRealGlass2Textures(Args args) {
         String[] originalTextures = args.get(1);
         String[] newTextures = Arrays.copyOf(originalTextures, originalTextures.length + 2);
-        newTextures[originalTextures.length] = ModList.ScienceNotLeisure.ID
+        newTextures[originalTextures.length] = ScienceNotLeisure.MODID
             + ":ShirabonReinforcedBoronSilicateGlassBlockTransparent";
-        newTextures[originalTextures.length + 1] = ModList.ScienceNotLeisure.ID
+        newTextures[originalTextures.length + 1] = ScienceNotLeisure.MODID
             + ":QuarkGluonReinforcedBoronSilicateGlassBlockTransparent";
         args.set(1, newTextures);
     }

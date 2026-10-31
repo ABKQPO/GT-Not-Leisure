@@ -6,14 +6,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import cpw.mods.fml.common.Optional;
-import gregtech.api.enums.Mods;
+import com.science.gtnl.compat.thaumicenergistics.InfusionProviders;
+
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import thaumcraft.api.ThaumcraftApiHelper;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.aspects.IEssentiaTransport;
-import thaumicenergistics.common.tiles.TileEssentiaProvider;
 
 public class TileEntityMultiEssentiaInputHatch extends TileEntityEssentiaHatch implements IMultiEssentiaContainer {
 
@@ -103,11 +102,6 @@ public class TileEntityMultiEssentiaInputHatch extends TileEntityEssentiaHatch i
     }
 
     @Override
-    public boolean reduceStoredEssentia(Aspect aspect, int amount) {
-        return takeFromContainer(aspect, amount);
-    }
-
-    @Override
     public boolean isConnectable(ForgeDirection face) {
         return isValidFace(face);
     }
@@ -115,11 +109,6 @@ public class TileEntityMultiEssentiaInputHatch extends TileEntityEssentiaHatch i
     @Override
     public boolean canInputFrom(ForgeDirection face) {
         return isValidFace(face);
-    }
-
-    @Override
-    public boolean canOutputTo(ForgeDirection face) {
-        return false;
     }
 
     @Override
@@ -131,17 +120,12 @@ public class TileEntityMultiEssentiaInputHatch extends TileEntityEssentiaHatch i
 
         TileEntity neighbor = worldObj
             .getTileEntity(xCoord + face.offsetX, yCoord + face.offsetY, zCoord + face.offsetZ);
-        return isEssentiaProvider(neighbor) ? providerRequest : null;
+        return InfusionProviders.isEssentiaProvider(neighbor) ? providerRequest : null;
     }
 
     @Override
     public int getSuctionAmount(ForgeDirection face) {
         return canInputFrom(face) && getTotalAmount() < MAX_CAPACITY ? SUCTION : 0;
-    }
-
-    @Override
-    public int takeEssentia(Aspect aspect, int amount, ForgeDirection face) {
-        return 0;
     }
 
     @Override
@@ -159,16 +143,6 @@ public class TileEntityMultiEssentiaInputHatch extends TileEntityEssentiaHatch i
     public int getEssentiaAmount(ForgeDirection face) {
         Aspect aspect = getEssentiaType(face);
         return aspect == null ? 0 : storage.getAmount(aspect);
-    }
-
-    @Override
-    public int getMinimumSuction() {
-        return 0;
-    }
-
-    @Override
-    public boolean renderExtendedTube() {
-        return false;
     }
 
     @Override
@@ -225,7 +199,7 @@ public class TileEntityMultiEssentiaInputHatch extends TileEntityEssentiaHatch i
             if (sourceAspect == null || !doesContainerAccept(sourceAspect)) continue;
 
             int requested = Math.min(remainingBudget, source.getEssentiaAmount(sourceSide));
-            if (sourceAspect == providerRequest && isEssentiaProvider(tile)) {
+            if (sourceAspect == providerRequest && InfusionProviders.isEssentiaProvider(tile)) {
                 requested = Math.min(requested, getRemainingDemand(providerRequest));
             }
             if (requested <= 0) continue;
@@ -266,21 +240,12 @@ public class TileEntityMultiEssentiaInputHatch extends TileEntityEssentiaHatch i
         for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS) {
             TileEntity neighbor = worldObj
                 .getTileEntity(xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ);
-            if (isEssentiaProvider(neighbor)) return true;
+            if (InfusionProviders.isEssentiaProvider(neighbor)) return true;
         }
         return false;
     }
 
-    private static boolean isEssentiaProvider(TileEntity tile) {
-        return tile != null && Mods.ThaumicEnergistics.isModLoaded() && isEssentiaProviderCompat(tile);
-    }
-
-    @Optional.Method(modid = "thaumicenergistics")
-    private static boolean isEssentiaProviderCompat(TileEntity tile) {
-        return tile instanceof TileEssentiaProvider;
-    }
-
-    private static final class EssentiaDemand {
+    private static class EssentiaDemand {
 
         private final int targetAmount;
         private final long expiresAt;

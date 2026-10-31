@@ -22,6 +22,7 @@ import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 
 import com.cleanroommc.modularui.factory.GuiFactories;
+import com.gtnllib.utils.GameUtils;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
 import com.science.gtnl.common.packet.GetTileEntityNBTRequestPacket;
@@ -47,6 +48,12 @@ public class ClientUtils {
         IChatComponent component = new ChatComponentTranslation(messageKey, range);
         component.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.WHITE));
         Minecraft.getMinecraft().ingameGUI.func_110326_a(component.getFormattedText(), true);
+    }
+
+    public static void showSubtitleWithSuffix(String messageKey, String suffix) {
+        IChatComponent component = new ChatComponentTranslation(messageKey);
+        component.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.WHITE));
+        Minecraft.getMinecraft().ingameGUI.func_110326_a(component.getFormattedText() + suffix, true);
     }
 
     public static boolean onBeforePickBlock(EntityPlayer playerMP, World world, boolean useAE) {
@@ -118,7 +125,7 @@ public class ClientUtils {
     }
 
     public static boolean onPickEntity(EntityPlayer player, double range, boolean useAE) {
-        MovingObjectPosition target = Utils.rayTrace(player, false, true, true, range);
+        MovingObjectPosition target = GameUtils.rayTrace(player, false, true, true, range);
         if (target == null || target.typeOfHit != MovingObjectPosition.MovingObjectType.ENTITY) {
             return false;
         }
@@ -151,7 +158,7 @@ public class ClientUtils {
     }
 
     public static boolean onPickBlockNBTRange(EntityPlayer player, World world, double reachDistance, boolean useAE) {
-        MovingObjectPosition target = Utils.rayTraceBlock(player, reachDistance);
+        MovingObjectPosition target = GameUtils.rayTraceBlock(player, reachDistance);
         if (target == null || target.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK) return false;
 
         int x = target.blockX;
@@ -185,7 +192,7 @@ public class ClientUtils {
     }
 
     public static boolean onPickBlockRange(EntityPlayer player, World world, double reachDistance, boolean useAE) {
-        MovingObjectPosition target = Utils.rayTraceBlock(player, reachDistance);
+        MovingObjectPosition target = GameUtils.rayTraceBlock(player, reachDistance);
 
         if (target == null || target.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK) {
             return false;

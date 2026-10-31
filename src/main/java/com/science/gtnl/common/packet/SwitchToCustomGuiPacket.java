@@ -5,8 +5,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import com.science.gtnl.CommonProxy;
-import com.science.gtnl.common.packet.base.ServerboundPacket;
+import com.gtnllib.network.ServerboundPacket;
+import com.science.gtnl.common.gui.GTNLGuiHandler;
 import com.science.gtnl.utils.enums.GuiType;
 
 import appeng.container.AEBaseContainer;
@@ -56,7 +56,7 @@ public class SwitchToCustomGuiPacket extends ServerboundPacket {
             if (context != null) {
                 TileEntity te = context.getTile();
                 if (te != null) {
-                    CommonProxy.openGui(
+                    GTNLGuiHandler.openGui(
                         player,
                         guiTypes[guiID],
                         directions[sideOrdinal],

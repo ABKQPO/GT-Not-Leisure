@@ -6,7 +6,9 @@ import java.util.function.Function;
 
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.client.event.GuiScreenEvent.DrawScreenEvent;
-import net.minecraftforge.common.MinecraftForge;
+
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 
 import codechicken.nei.api.API;
 import codechicken.nei.guihook.GuiContainerManager;
@@ -17,13 +19,11 @@ import cpw.mods.fml.relauncher.SideOnly;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
-public final class FloatingWindows {
+@EventBusSubscriber(side = Side.CLIENT, phase = Phase.PRE)
+public class FloatingWindows {
 
-    private static final FloatingWindows INSTANCE = new FloatingWindows();
     private static final List<Function<GuiScreen, ? extends FloatingWindowPanel>> PROVIDERS = new ObjectArrayList<>();
     private static boolean initialized;
-
-    private FloatingWindows() {}
 
     public static void register(Function<GuiScreen, ? extends FloatingWindowPanel> provider) {
         init();
@@ -33,7 +33,6 @@ public final class FloatingWindows {
     private static void init() {
         if (initialized) return;
         initialized = true;
-        MinecraftForge.EVENT_BUS.register(INSTANCE);
         FloatingWindowNEIHandler nei = new FloatingWindowNEIHandler();
         API.registerNEIGuiHandler(nei);
         GuiContainerManager.objectHandlers.addFirst(nei);
@@ -65,13 +64,13 @@ public final class FloatingWindows {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void prepareFrame(DrawScreenEvent.Pre event) {
+    public static void prepareFrame(DrawScreenEvent.Pre event) {
         FloatingWindowLayer.beginFrame(event.gui);
         for (FloatingWindowPanel window : windows(event.gui)) window.prepareFrame();
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void finishFrame(DrawScreenEvent.Post event) {
+    public static void finishFrame(DrawScreenEvent.Post event) {
         FloatingWindowLayer.endFrame(event.gui);
     }
 }

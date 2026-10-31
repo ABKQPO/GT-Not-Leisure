@@ -1,6 +1,5 @@
 package com.science.gtnl.common.item.items;
 
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static net.minecraft.util.EnumChatFormatting.AQUA;
 import static net.minecraft.util.EnumChatFormatting.GRAY;
 import static net.minecraft.util.EnumChatFormatting.GREEN;
@@ -34,8 +33,7 @@ import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.gtnewhorizon.gtnhlib.item.ItemStackNBT;
 import com.gtnllib.utils.HotbarMessages;
-import com.science.gtnl.client.GTNLCreativeTabs;
-import com.science.gtnl.client.WirelessCardGui;
+import com.science.gtnl.client.wireless.WirelessCardGui;
 import com.science.gtnl.common.wireless.AutomaticWirelessEntrances;
 import com.science.gtnl.common.wireless.WirelessCardBinding;
 import com.science.gtnl.common.wireless.WirelessCardContainer;
@@ -49,7 +47,6 @@ import com.science.gtnl.common.wireless.WirelessFrequencies;
 import com.science.gtnl.common.wireless.WirelessFrequency;
 import com.science.gtnl.common.wireless.WirelessOperations;
 import com.science.gtnl.mixins.late.appliedEnergistics.wireless.AccessorTileController;
-import com.science.gtnl.utils.enums.GTNLItemList;
 
 import appeng.api.exceptions.FailedConnection;
 import appeng.api.networking.IGridNode;
@@ -60,7 +57,6 @@ import appeng.api.parts.SelectedPart;
 import baubles.api.BaubleType;
 import baubles.api.expanded.BaubleExpandedSlots;
 import baubles.api.expanded.IBaubleExpanded;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -70,12 +66,7 @@ public class WirelessFrequencyCard extends Item implements IBaubleExpanded, IGui
     private static final int UPGRADE_INTERVAL = 20;
 
     public WirelessFrequencyCard() {
-        setUnlocalizedName("gtnl.wireless_frequency_card");
-        setTextureName(RESOURCE_ROOT_ID + ":wireless_frequency_card");
-        setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         setMaxStackSize(1);
-        GameRegistry.registerItem(this, "wireless_frequency_card");
-        GTNLItemList.WirelessFrequencyCard.set(new ItemStack(this));
     }
 
     @Override

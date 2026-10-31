@@ -25,7 +25,7 @@ import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
  * the way back around a cycle, from the request that craft makes down to it. The nodes of the tree are private to
  * {@link GuiCraftingTree}, so they are read by reflection.
  */
-public final class CraftingTreeRings {
+public class CraftingTreeRings {
 
     /**
      * A cycle of the tree: the request it is entered by, then the crafts and requests down to the ones that lead back

@@ -1,12 +1,18 @@
 package com.science.gtnl.loader;
 
+import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 
+import com.gtnllib.client.tooltip.AnimatedTooltipHandler;
+import com.gtnllib.registry.Registrar;
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.casing.GTNLCasings;
+import com.science.gtnl.common.block.TileEntityMigrationHandler;
 import com.science.gtnl.common.block.blocks.BlockArtificialStarRender;
 import com.science.gtnl.common.block.blocks.BlockBeamFormer;
 import com.science.gtnl.common.block.blocks.BlockCardboardBox;
@@ -33,7 +39,44 @@ import com.science.gtnl.common.block.blocks.BlockSuperDualInterface;
 import com.science.gtnl.common.block.blocks.BlockSuperInterface;
 import com.science.gtnl.common.block.blocks.BlockWaterCandle;
 import com.science.gtnl.common.block.blocks.BlocksCompressedStargate;
+import com.science.gtnl.common.block.blocks.item.ItemBlockArtificialStarRender;
+import com.science.gtnl.common.block.blocks.item.ItemBlockBeamFormer;
+import com.science.gtnl.common.block.blocks.item.ItemBlockCardboardBox;
+import com.science.gtnl.common.block.blocks.item.ItemBlockDimensionRespawnAnchor;
+import com.science.gtnl.common.block.blocks.item.ItemBlockDirePatternEncoder;
+import com.science.gtnl.common.block.blocks.item.ItemBlockEssentiaHatch;
+import com.science.gtnl.common.block.blocks.item.ItemBlockLaserBeacon;
+import com.science.gtnl.common.block.blocks.item.ItemBlockMEChisel;
+import com.science.gtnl.common.block.blocks.item.ItemBlockMultiEssentiaInputHatch;
+import com.science.gtnl.common.block.blocks.item.ItemBlockMultiEssentiaJar;
+import com.science.gtnl.common.block.blocks.item.ItemBlockMultiEssentiaTube;
+import com.science.gtnl.common.block.blocks.item.ItemBlockNanoPhagocytosisPlantRender;
+import com.science.gtnl.common.block.blocks.item.ItemBlockPigmeeFumo;
+import com.science.gtnl.common.block.blocks.item.ItemBlockPlayerDoll;
+import com.science.gtnl.common.block.blocks.item.ItemBlockPlayerLeash;
+import com.science.gtnl.common.block.blocks.item.ItemBlockSearedLadder;
+import com.science.gtnl.common.block.blocks.item.ItemBlockSuperDualInterface;
+import com.science.gtnl.common.block.blocks.item.ItemBlockSuperInterface;
+import com.science.gtnl.common.block.blocks.tile.TileEntityArtificialStar;
+import com.science.gtnl.common.block.blocks.tile.TileEntityBeamFormer;
+import com.science.gtnl.common.block.blocks.tile.TileEntityCardboardBox;
+import com.science.gtnl.common.block.blocks.tile.TileEntityDimensionRespawnAnchor;
+import com.science.gtnl.common.block.blocks.tile.TileEntityDirePatternEncoder;
 import com.science.gtnl.common.block.blocks.tile.TileEntityEnderElevator;
+import com.science.gtnl.common.block.blocks.tile.TileEntityEssentiaHatch;
+import com.science.gtnl.common.block.blocks.tile.TileEntityLaserBeacon;
+import com.science.gtnl.common.block.blocks.tile.TileEntityMEChisel;
+import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaInputHatch;
+import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
+import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaTube;
+import com.science.gtnl.common.block.blocks.tile.TileEntityNanoPhagocytosisPlant;
+import com.science.gtnl.common.block.blocks.tile.TileEntityPigmeeFumo;
+import com.science.gtnl.common.block.blocks.tile.TileEntityPlayerDoll;
+import com.science.gtnl.common.block.blocks.tile.TileEntitySearedLadder;
+import com.science.gtnl.common.block.blocks.tile.TileEntitySuperDenseEnergyCell;
+import com.science.gtnl.common.block.blocks.tile.TileEntitySuperDualInterface;
+import com.science.gtnl.common.block.blocks.tile.TileEntitySuperInterface;
+import com.science.gtnl.common.block.blocks.tile.TileEntityWaterCandle;
 import com.science.gtnl.common.block.casings.base.ItemBlockBase;
 import com.science.gtnl.common.block.casings.base.MetaBlockBase;
 import com.science.gtnl.common.block.casings.casing.MetaCasing;
@@ -44,16 +87,22 @@ import com.science.gtnl.common.block.casings.glass.ItemBlockGlass;
 import com.science.gtnl.common.block.casings.glass.MetaBlockGlass;
 import com.science.gtnl.common.block.casings.glow.ItemBlockGlow;
 import com.science.gtnl.common.block.casings.glow.MetaBlockGlow;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.common.item.GTNLCreativeTabs;
+import com.science.gtnl.config.MachineConfig;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.text.AnimatedText;
-import com.science.gtnl.utils.text.AnimatedTooltipHandler;
 
 import bartworks.common.loaders.ItemRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
+import gregtech.api.GregTechAPI;
 import gregtech.api.util.GTRecipeBuilder;
 
 public class BlockLoader {
+
+    public static final Registrar BLOCKS = new Registrar(
+        "gtnl.",
+        ScienceNotLeisure.RESOURCE_ROOT_ID,
+        GTNLCreativeTabs.GTNotLeisureBlock);
 
     public static BlockSaplingBrickuoia saplingBrickuoia;
     public static BlockCardboardBox cardboardBox;
@@ -107,28 +156,137 @@ public class BlockLoader {
         MetaCasing.TEXTURE_PAGE_INDEX);
 
     public static void registryBlocks() {
-        playerLeash = new BlockPlayerLeash();
-        searedLadder = new BlockSearedLadder();
-        direPatternEncoder = new BlockDirePatternEncoder();
-        meChisel = new BlockMEChisel();
-        superInterface = new BlockSuperInterface();
-        superDualInterface = new BlockSuperDualInterface();
-        superDenseEnergyCell = new BlockSuperDenseEnergyCell();
-        beamFormer = new BlockBeamFormer();
-        cardboardBox = new BlockCardboardBox();
+        playerLeash = BLOCKS.block("player_leash", new BlockPlayerLeash())
+            .itemBlock(ItemBlockPlayerLeash.class)
+            .texture("planks_oak")
+            .bind(GTNLItemList.PlayerLeash::set)
+            .register();
+        searedLadder = BLOCKS.block("seared_ladder", new BlockSearedLadder())
+            .itemBlock(ItemBlockSearedLadder.class)
+            .texture(RESOURCE_ROOT_ID + ":seared_ladder/fancy_bricks")
+            .tile(TileEntitySearedLadder.class, "seared_ladder_tile_entity")
+            .bind(GTNLItemList.SearedLadder::set)
+            .then(BlockSearedLadder::registerItemProperties)
+            .register();
+        direPatternEncoder = BLOCKS.block("dire_pattern_encoder", new BlockDirePatternEncoder())
+            .itemBlock(ItemBlockDirePatternEncoder.class)
+            .tile(TileEntityDirePatternEncoder.class, "dire_pattern_encoder_tile_entity")
+            .bind(GTNLItemList.DirePatternEncoder::set)
+            .register();
+        meChisel = BLOCKS.block("me_chisel", new BlockMEChisel())
+            .itemBlock(ItemBlockMEChisel.class)
+            .noTexture()
+            .tile(TileEntityMEChisel.class, "me_chisel_tile_entity")
+            .bind(GTNLItemList.MEChisel::set)
+            .then(BlockMEChisel::registerItemProperties)
+            .register();
+        superInterface = BLOCKS.block("super_interface", new BlockSuperInterface())
+            .itemBlock(ItemBlockSuperInterface.class)
+            .tile(TileEntitySuperInterface.class, "super_interface_tile_entity")
+            .bind(GTNLItemList.SuperInterface::set)
+            .register();
+        superDualInterface = BLOCKS.block("super_dual_interface", new BlockSuperDualInterface())
+            .itemBlock(ItemBlockSuperDualInterface.class)
+            .tile(TileEntitySuperDualInterface.class, "super_dual_interface_tile_entity")
+            .bind(GTNLItemList.SuperDualInterface::set)
+            .register();
+        BlockSuperDenseEnergyCell energyCell = new BlockSuperDenseEnergyCell();
+        superDenseEnergyCell = BLOCKS.block("super_dense_energy_cell", energyCell)
+            .itemBlock(energyCell.getItemBlockClass())
+            .noTexture()
+            .tile(TileEntitySuperDenseEnergyCell.class, "super_dense_energy_cell_tile_entity")
+            .bind(GTNLItemList.SuperDenseEnergyCell::set)
+            .register();
+        beamFormer = BLOCKS.block("beam_former", new BlockBeamFormer())
+            .itemBlock(ItemBlockBeamFormer.class)
+            .texture(RESOURCE_ROOT_ID + ":beam_former/beam_former_block_model")
+            .tile(TileEntityBeamFormer.class, "beam_former_tile_entity")
+            .bind(GTNLItemList.BlockBeamFormer::set)
+            .register();
+        cardboardBox = BLOCKS.block("cardboard_box", new BlockCardboardBox())
+            .itemBlock(ItemBlockCardboardBox.class)
+            .noTexture()
+            .tile(TileEntityCardboardBox.class, "cardboard_box_tile_entity")
+            .bind(GTNLItemList.CardboardBox::set)
+            .register();
         eternalGregTechWorkshopRender = new BlockEternalGregTechWorkshopRender();
-        nanoPhagocytosisPlantRender = new BlockNanoPhagocytosisPlantRender();
-        artificialStarRender = new BlockArtificialStarRender();
-        playerDoll = new BlockPlayerDoll();
-        pigmeeFumo = new BlockPigmeeFumo();
-        laserBeacon = new BlockLaserBeacon();
-        waterCandle = new BlockWaterCandle();
-        dimensionRespawnAnchor = new BlockDimensionRespawnAnchor();
+        nanoPhagocytosisPlantRender = BLOCKS
+            .block("nano_phagocytosis_plant_render", new BlockNanoPhagocytosisPlantRender())
+            .itemBlock(ItemBlockNanoPhagocytosisPlantRender.class)
+            .lang("gtnl.nano_phagocytosis_plant_renderer")
+            .noTexture()
+            .tile(TileEntityNanoPhagocytosisPlant.class, "nano_phagocytosis_plant_render_tile_entity")
+            .bind(GTNLItemList.NanoPhagocytosisPlantRender::set)
+            .register();
+        artificialStarRender = BLOCKS.block("artificial_star_render", new BlockArtificialStarRender())
+            .itemBlock(ItemBlockArtificialStarRender.class)
+            .lang("gtnl.artificial_star_renderer")
+            .noTexture()
+            .tile(TileEntityArtificialStar.class, "artificial_star_render_tile_entity")
+            .bind(GTNLItemList.ArtificialStarRender::set)
+            .register();
+        playerDoll = BLOCKS.block("player_doll", new BlockPlayerDoll())
+            .itemBlock(ItemBlockPlayerDoll.class)
+            .noTexture()
+            .tab(GTNLCreativeTabs.GTNotLeisurePlayerDoll)
+            .tile(TileEntityPlayerDoll.class, "player_doll_tile_entity")
+            .bind(GTNLItemList.PlayerDoll::set)
+            .register();
+        pigmeeFumo = BLOCKS.block("pigmee_fumo", new BlockPigmeeFumo())
+            .itemBlock(ItemBlockPigmeeFumo.class)
+            .texture(RESOURCE_ROOT_ID + ":blocks/pigmee_fumo")
+            .tile(TileEntityPigmeeFumo.class, "pigmee_fumo_tile_entity")
+            .bind(GTNLItemList.PigmeeFumo::set)
+            .then(BlockPigmeeFumo::registerItemProperties)
+            .register();
+        laserBeacon = BLOCKS.block("laser_beacon", new BlockLaserBeacon())
+            .itemBlock(ItemBlockLaserBeacon.class)
+            .noTexture()
+            .tile(TileEntityLaserBeacon.class, "laser_beacon_tile_entity")
+            .bind(GTNLItemList.LaserBeacon::set)
+            .then(block -> GregTechAPI.registerMachineBlock(block, -1))
+            .register();
+        waterCandle = BLOCKS.block("water_candle", new BlockWaterCandle())
+            .tile(TileEntityWaterCandle.class, "water_candle_tile_entity")
+            .bind(GTNLItemList.WaterCandle::set)
+            .register();
+        dimensionRespawnAnchor = BLOCKS.block("dimension_respawn_anchor", new BlockDimensionRespawnAnchor())
+            .itemBlock(ItemBlockDimensionRespawnAnchor.class)
+            .noTexture()
+            .tab(null)
+            .tile(TileEntityDimensionRespawnAnchor.class, "dimension_respawn_anchor_tile_entity")
+            .bind(GTNLItemList.DimensionRespawnAnchor::set)
+            .register();
 
-        essentiaHatch = new BlockEssentiaHatch();
-        multiEssentiaInputHatch = new BlockMultiEssentiaInputHatch();
-        multiEssentiaJar = new BlockMultiEssentiaJar();
-        multiEssentiaTube = new BlockMultiEssentiaTube();
+        essentiaHatch = BLOCKS.block("essentia_hatch", new BlockEssentiaHatch())
+            .itemBlock(ItemBlockEssentiaHatch.class)
+            .tab(GTNLCreativeTabs.GTNotLeisureMachine)
+            .tile(TileEntityEssentiaHatch.class, "essentia_hatch_tile_entity")
+            .bind(GTNLItemList.EssentiaHatch::set)
+            .then(block -> GregTechAPI.registerMachineBlock(block, -1))
+            .register();
+        multiEssentiaInputHatch = BLOCKS.block("multi_essentia_input_hatch", new BlockMultiEssentiaInputHatch())
+            .itemBlock(ItemBlockMultiEssentiaInputHatch.class)
+            .texture(RESOURCE_ROOT_ID + ":essentia_hatch")
+            .tab(GTNLCreativeTabs.GTNotLeisureMachine)
+            .tile(TileEntityMultiEssentiaInputHatch.class, "multi_essentia_input_hatch_tile_entity")
+            .bind(GTNLItemList.MultiEssentiaInputHatch::set)
+            .then(block -> GregTechAPI.registerMachineBlock(block, -1))
+            .register();
+        multiEssentiaJar = BLOCKS.block("multi_essentia_jar", new BlockMultiEssentiaJar())
+            .itemBlock(ItemBlockMultiEssentiaJar.class)
+            .noTexture()
+            .tile(TileEntityMultiEssentiaJar.class, "multi_essentia_jar_tile_entity")
+            .bind(GTNLItemList.MultiEssentiaJar::set)
+            .register();
+        multiEssentiaTube = BLOCKS.block("multi_essentia_tube", new BlockMultiEssentiaTube())
+            .itemBlock(ItemBlockMultiEssentiaTube.class)
+            .noTexture()
+            .tile(TileEntityMultiEssentiaTube.class, "multi_essentia_tube_tile_entity")
+            .then(
+                block -> GTNLItemList.MultiEssentiaTube
+                    .set(new ItemStack(block, 1, BlockMultiEssentiaTube.BUFFER_METADATA)))
+            .register();
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EssentiaHatch.get(1), AnimatedText.GT_NOT_LEISURE);
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MultiEssentiaInputHatch.get(1), AnimatedText.GT_NOT_LEISURE);
         AnimatedTooltipHandler
@@ -611,9 +769,9 @@ public class BlockLoader {
                 metaCasing02,
                 new String[] { StatCollector.translateToLocalFormatted(
                     "gtnl.block.quantum_computer_casing.tooltip.0",
-                    MainConfig.machine.quantum_computer.maxMultiblockSize,
-                    MainConfig.machine.quantum_computer.maxMultiblockSize,
-                    MainConfig.machine.quantum_computer.maxMultiblockSize) }));
+                    MachineConfig.quantum_computer.maxMultiblockSize,
+                    MachineConfig.quantum_computer.maxMultiblockSize,
+                    MachineConfig.quantum_computer.maxMultiblockSize) }));
         GTNLItemList.QuantumComputerUnit
             .set(MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.QuantumComputerUnit.getBlockMeta(), metaCasing02));
         GTNLItemList.QuantumComputerCraftingStorage128M.set(
@@ -628,7 +786,7 @@ public class BlockLoader {
                 metaCasing02,
                 new String[] { StatCollector.translateToLocalFormatted(
                     "gtnl.block.quantum_computer_data_entangler.tooltip.0",
-                    MainConfig.machine.quantum_computer.maxDataEntangler) }));
+                    MachineConfig.quantum_computer.maxDataEntangler) }));
         GTNLItemList.QuantumComputerAccelerator.set(
             MetaItemBlockCasing.initMetaBlockCasing(
                 GTNLCasings.QuantumComputerAccelerator.getBlockMeta(),
@@ -640,7 +798,7 @@ public class BlockLoader {
                 metaCasing02,
                 new String[] { StatCollector.translateToLocalFormatted(
                     "gtnl.block.quantum_computer_multi_threader.tooltip.0",
-                    MainConfig.machine.quantum_computer.maxMultiThreader) }));
+                    MachineConfig.quantum_computer.maxMultiThreader) }));
         GTNLItemList.QuantumComputerCore.set(
             MetaItemBlockCasing.initMetaBlockCasing(
                 GTNLCasings.QuantumComputerCore.getBlockMeta(),
@@ -681,5 +839,24 @@ public class BlockLoader {
             GTNLItemList.SaplingBrickuoia.get(1),
             () -> StatCollector.translateToLocal("gtnl.block.giant_brickuoia_sapling.tooltip.2"));
         OreDictionary.registerOre("treeSapling", new ItemStack(saplingBrickuoia, 1, GTRecipeBuilder.WILDCARD));
+    }
+
+    public static class Card implements IContentLoader {
+
+        @Override
+        public String name() {
+            return "blocks";
+        }
+
+        @Override
+        public void preInit() {
+            registry();
+            registerTreeBrickuoia();
+        }
+
+        @Override
+        public void postInit() {
+            TileEntityMigrationHandler.register();
+        }
     }
 }

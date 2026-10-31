@@ -1,7 +1,6 @@
 package com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.EnumMap;
 import java.util.stream.Stream;
 
@@ -9,11 +8,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 
-import com.gtnewhorizons.modularui.api.forge.ItemStackHandler;
-import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
+import com.cleanroommc.modularui.utils.item.ItemStackHandler;
 
 import gregtech.api.util.GTUtility;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 
 public class EGTWUpgradeStorage {
@@ -103,16 +100,6 @@ public class EGTWUpgradeStorage {
         return prereqStream.anyMatch(UpgradeData::isActive);
     }
 
-    public boolean checkSplit(EternalGregTechWorkshopUpgrade upgrade, int maxSplitUpgrades) {
-        if (EternalGregTechWorkshopUpgrade.SPLIT_UPGRADES.contains(upgrade)) {
-            return EternalGregTechWorkshopUpgrade.SPLIT_UPGRADES.stream()
-                .map(unlockedUpgrades::get)
-                .filter(UpgradeData::isActive)
-                .count() < maxSplitUpgrades;
-        }
-        return true;
-    }
-
     public boolean checkCost(EternalGregTechWorkshopUpgrade upgrade, int availableShards) {
         if (upgrade.getShardCost() > availableShards) return false;
         return !upgrade.hasExtraCost() || isCostPaid(upgrade);
@@ -160,10 +147,6 @@ public class EGTWUpgradeStorage {
         return unlockedUpgrades.size();
     }
 
-    public Collection<EternalGregTechWorkshopUpgrade> getAllUpgrades() {
-        return unlockedUpgrades.keySet();
-    }
-
     public void serializeToNBT(NBTTagCompound nbt, boolean force) {
         if (!force && !hasAnyProgress()) return;
 
@@ -199,24 +182,6 @@ public class EGTWUpgradeStorage {
                 }
             }
         }
-    }
-
-    /** Sync widget to sync a single upgrade. */
-    public FakeSyncWidget<?> getSyncer(EternalGregTechWorkshopUpgrade upgrade) {
-        return new FakeSyncWidget<>(
-            () -> unlockedUpgrades.get(upgrade),
-            val -> unlockedUpgrades.put(upgrade, val),
-            UpgradeData::writeToBuffer,
-            UpgradeData::readFromBuffer);
-    }
-
-    /** Sync widget to sync the full upgrade tree. */
-    public FakeSyncWidget<?> getFullSyncer() {
-        return new FakeSyncWidget.ListSyncer<>(() -> new ObjectArrayList<>(unlockedUpgrades.values()), val -> {
-            for (int i = 0; i < val.size(); i++) {
-                unlockedUpgrades.put(EternalGregTechWorkshopUpgrade.VALUES[i], val.get(i));
-            }
-        }, UpgradeData::writeToBuffer, UpgradeData::readFromBuffer);
     }
 
     public void resetAll() {

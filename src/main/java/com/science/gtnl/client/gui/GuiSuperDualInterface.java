@@ -10,10 +10,10 @@ import org.lwjgl.input.Mouse;
 
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.block.blocks.tile.TileEntitySuperDualInterface;
+import com.science.gtnl.common.gui.container.ContainerSuperInterface;
 import com.science.gtnl.common.packet.SwitchSuperDualInterfaceGuiPacket;
 import com.science.gtnl.common.packet.SwitchToCustomGuiPacket;
 import com.science.gtnl.common.part.PartSuperDualInterface;
-import com.science.gtnl.container.ContainerSuperInterface;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.GuiType;
 

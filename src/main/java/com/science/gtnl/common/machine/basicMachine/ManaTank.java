@@ -7,7 +7,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
-import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -17,34 +16,19 @@ import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
-import com.gtnewhorizons.modularui.api.drawable.Text;
-import com.gtnewhorizons.modularui.api.math.Alignment;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
-import com.gtnewhorizons.modularui.common.widget.CycleButtonWidget;
-import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
-import com.gtnewhorizons.modularui.common.widget.FluidSlotWidget;
-import com.gtnewhorizons.modularui.common.widget.SlotWidget;
-import com.gtnewhorizons.modularui.common.widget.TextWidget;
-import com.science.gtnl.common.gui.modularui.ManaTankGui;
-import com.science.gtnl.common.gui.modularui.widget.FluidLockWidget;
+import com.science.gtnl.common.gui.modularui.singleblock.ManaTankGui;
+import com.science.gtnl.common.machine.hatch.ManaScan;
 import com.science.gtnl.common.material.GTNLMaterials;
-import com.science.gtnl.utils.item.ItemUtils;
+import com.science.gtnl.utils.text.LanguageLoader;
 
-import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
-import gregtech.api.metatileentity.BaseTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
-import gregtech.api.util.GTLanguageManager;
 import gregtech.api.util.GTUtility;
 import gregtech.common.tileentities.storage.MTEDigitalTankBase;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import vazkii.botania.api.subtile.ManaHelper;
-import vazkii.botania.api.subtile.SubTileEntity;
 import vazkii.botania.api.subtile.SubTileGenerating;
-import vazkii.botania.common.block.tile.TileSpecialFlower;
 import vazkii.botania.common.block.tile.mana.TilePool;
 
 public class ManaTank extends MTEDigitalTankBase {
@@ -142,8 +126,8 @@ public class ManaTank extends MTEDigitalTankBase {
         if (aBaseMetaTileEntity.isClientSide()) return;
 
         if (aBaseMetaTileEntity.isAllowedToWork() && aTick % 128 == 0) {
-            List<TilePool> pools = findManaPoolsInRange(aBaseMetaTileEntity);
-            List<SubTileGenerating> flowers = findGeneratingFlowersInRange(aBaseMetaTileEntity);
+            List<TilePool> pools = ManaScan.pools(aBaseMetaTileEntity, MANA_POOL_RADIUS);
+            List<SubTileGenerating> flowers = ManaScan.generatingFlowers(aBaseMetaTileEntity, MANA_FLOWER_RADIUS);
 
             if (!flowers.isEmpty()) {
                 processFlowerManaTransfer(flowers);
@@ -152,7 +136,7 @@ public class ManaTank extends MTEDigitalTankBase {
             if (!pools.isEmpty()) {
                 if (isLiquidizerMode) {
                     for (TilePool pool : pools) {
-                        if (isDropMetaValid(pool)) {
+                        if (ManaScan.isDropMetaValid(pool)) {
                             fillChamberToMax();
                             return;
                         }
@@ -206,8 +190,8 @@ public class ManaTank extends MTEDigitalTankBase {
             final FluidStack tContents = FluidStack
                 .loadFluidStackFromNBT(stack.stackTagCompound.getCompoundTag("mFluid"));
             if (tContents != null && tContents.amount > 0) {
-                GTLanguageManager.addStringLocalization("TileEntity_TANK_INFO", "Contains Fluid: ");
-                GTLanguageManager.addStringLocalization("TileEntity_TANK_AMOUNT", "Fluid Amount: ");
+                LanguageLoader.addGTEnglishName("TileEntity_TANK_INFO", "Contains Fluid: ");
+                LanguageLoader.addGTEnglishName("TileEntity_TANK_AMOUNT", "Fluid Amount: ");
                 tooltip.add(
                     StatCollector.translateToLocal("TileEntity_TANK_INFO") + EnumChatFormatting.YELLOW
                         + tContents.getLocalizedName()
@@ -232,156 +216,6 @@ public class ManaTank extends MTEDigitalTankBase {
     @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
         return new ManaTankGui(this).build(data, syncManager, uiSettings);
-    }
-
-    @Override
-    @Deprecated
-    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
-        // TODO: Remove this mui1 fallback after ManaTank mui2 rollout is complete.
-        fluidTank.setAllowOverflow(allowOverflow());
-        fluidTank.setPreventDraining(mLockFluid);
-
-        FluidSlotWidget fluidSlotWidget = new FluidSlotWidget(fluidTank);
-        builder.widget(
-            new DrawableWidget().setDrawable(GTUITextures.PICTURE_SCREEN_BLACK)
-                .setPos(7, 16)
-                .setSize(71, 45))
-            .widget(
-                new SlotWidget(inventoryHandler, getInputSlot())
-                    .setBackground(getGUITextureSet().getItemSlot(), GTUITextures.OVERLAY_SLOT_IN)
-                    .setPos(79, 16))
-            .widget(
-                new SlotWidget(inventoryHandler, getOutputSlot()).setAccess(true, false)
-                    .setBackground(getGUITextureSet().getItemSlot(), GTUITextures.OVERLAY_SLOT_OUT)
-                    .setPos(79, 43))
-            .widget(
-                fluidSlotWidget.setOnClickContainer(widget -> onEmptyingContainerWhenEmpty())
-                    .setBackground(GTUITextures.TRANSPARENT)
-                    .setPos(58, 41))
-            .widget(
-                new TextWidget(StatCollector.translateToLocal("GT5U.machines.digitaltank.fluid.amount"))
-                    .setDefaultColor(COLOR_TEXT_WHITE.get())
-                    .setPos(10, 20))
-            .widget(
-                new TextWidget().setStringSupplier(() -> numberFormat.format(mFluid != null ? mFluid.amount : 0))
-                    .setDefaultColor(COLOR_TEXT_WHITE.get())
-                    .setPos(10, 30))
-            .widget(
-                new DrawableWidget().setDrawable(GTUITextures.PICTURE_SCREEN_BLACK)
-                    .setPos(98, 16)
-                    .setSize(71, 45))
-            .widget(new FluidLockWidget(this).setPos(149, 41))
-            .widget(
-                new TextWidget(StatCollector.translateToLocal("GT5U.machines.digitaltank.lockfluid.label"))
-                    .setDefaultColor(COLOR_TEXT_WHITE.get())
-                    .setPos(101, 20))
-            .widget(TextWidget.dynamicText(() -> {
-                FluidStack fluidStack = FluidRegistry.getFluidStack(MANA_FLUID_NAME, 1);
-                return new Text(
-                    fluidStack != null ? fluidStack.getLocalizedName()
-                        : StatCollector.translateToLocal("GT5U.machines.digitaltank.lockfluid.empty"));
-            })
-                .setDefaultColor(COLOR_TEXT_WHITE.get())
-                .setTextAlignment(Alignment.CenterLeft)
-                .setMaxWidth(65)
-                .setPos(101, 30))
-            .widget(new CycleButtonWidget().setToggle(() -> mOutputFluid, val -> {
-                mOutputFluid = val;
-                if (!mOutputFluid) {
-                    GTUtility.sendChatTrans(buildContext.getPlayer(), "Interaction_DESCRIPTION_Index_262");
-                } else {
-                    GTUtility.sendChatTrans(buildContext.getPlayer(), "Interaction_DESCRIPTION_Index_263");
-                }
-            })
-                .setVariableBackground(GTUITextures.BUTTON_STANDARD_TOGGLE)
-                .setStaticTexture(GTUITextures.OVERLAY_BUTTON_AUTOOUTPUT_FLUID)
-                .setGTTooltip(() -> mTooltipCache.getData("GT5U.machines.digitaltank.autooutput.tooltip"))
-                .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
-                .setPos(7, 63)
-                .setSize(18, 18))
-            .widget(new CycleButtonWidget().setToggle(() -> mLockFluid, val -> {
-                lockFluid(true);
-                fluidTank.setPreventDraining(mLockFluid);
-
-                String inBrackets;
-                if (mLockFluid) {
-                    if (mFluid == null) {
-                        setLockedFluid(FluidRegistry.getFluid(MANA_FLUID_NAME));
-                        inBrackets = GTUtility
-                            .trans("264", "currently none, will be locked to the next that is put in");
-                    } else {
-                        setLockedFluid(getDrainableStack().getFluid());
-                        inBrackets = getDrainableStack().getLocalizedName();
-                    }
-                    GTUtility.sendChatTrans(
-                        buildContext.getPlayer(),
-                        "Interaction_DESCRIPTION_Index_265_Format",
-                        inBrackets);
-                } else {
-                    fluidTank.drain(0, true);
-                    GTUtility.sendChatTrans(buildContext.getPlayer(), "Interaction_DESCRIPTION_Index_266");
-                }
-                fluidSlotWidget.notifyTooltipChange();
-            })
-                .setVariableBackground(GTUITextures.BUTTON_STANDARD_TOGGLE)
-                .setStaticTexture(GTUITextures.OVERLAY_BUTTON_LOCK)
-                .setGTTooltip(() -> mTooltipCache.getData("GT5U.machines.digitaltank.lockfluid.tooltip"))
-                .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
-                .setPos(25, 63)
-                .setSize(18, 18))
-            .widget(new CycleButtonWidget().setToggle(() -> mAllowInputFromOutputSide, val -> {
-                mAllowInputFromOutputSide = val;
-                if (!mAllowInputFromOutputSide) {
-                    GTUtility.sendChatTrans(buildContext.getPlayer(), "gt.interact.desc.input_from_output_off");
-                } else {
-                    GTUtility.sendChatTrans(buildContext.getPlayer(), "gt.interact.desc.input_from_output_on");
-                }
-            })
-                .setVariableBackground(GTUITextures.BUTTON_STANDARD_TOGGLE)
-                .setStaticTexture(GTUITextures.OVERLAY_BUTTON_INPUT_FROM_OUTPUT_SIDE)
-                .setGTTooltip(() -> mTooltipCache.getData("GT5U.machines.digitaltank.inputfromoutput.tooltip"))
-                .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
-                .setPos(43, 63)
-                .setSize(18, 18))
-            .widget(new CycleButtonWidget().setToggle(() -> mVoidFluidPart, val -> {
-                mVoidFluidPart = val;
-                fluidTank.setAllowOverflow(allowOverflow());
-                if (!mVoidFluidPart) {
-                    GTUtility.sendChatTrans(buildContext.getPlayer(), "Interaction_DESCRIPTION_Index_267");
-                } else {
-                    GTUtility.sendChatTrans(buildContext.getPlayer(), "Interaction_DESCRIPTION_Index_268");
-                }
-            })
-                .setVariableBackground(GTUITextures.BUTTON_STANDARD_TOGGLE)
-                .setStaticTexture(GTUITextures.OVERLAY_BUTTON_TANK_VOID_EXCESS)
-                .setGTTooltip(() -> mTooltipCache.getData("GT5U.machines.digitaltank.voidoverflow.tooltip"))
-                .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
-                .setPos(98, 63)
-                .setSize(18, 18))
-            .widget(new CycleButtonWidget().setToggle(() -> mVoidFluidFull, val -> {
-                mVoidFluidFull = val;
-                fluidTank.setAllowOverflow(allowOverflow());
-                if (!mVoidFluidFull) {
-                    GTUtility.sendChatTrans(buildContext.getPlayer(), "Interaction_DESCRIPTION_Index_269");
-                } else {
-                    GTUtility.sendChatTrans(buildContext.getPlayer(), "Interaction_DESCRIPTION_Index_270");
-                }
-            })
-                .setVariableBackground(GTUITextures.BUTTON_STANDARD_TOGGLE)
-                .setStaticTexture(GTUITextures.OVERLAY_BUTTON_TANK_VOID_ALL)
-                .setGTTooltip(() -> mTooltipCache.getData("GT5U.machines.digitaltank.voidfull.tooltip"))
-                .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
-                .setPos(116, 63)
-                .setSize(18, 18));
-    }
-
-    @Deprecated
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        // TODO: Remove this mui1 fallback after ManaTank mui2 rollout is complete.
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
-                .setSize(18, 18)
-                .setPos(151, 62));
     }
 
     @Override
@@ -461,7 +295,7 @@ public class ManaTank extends MTEDigitalTankBase {
         int capacity = getCapacity();
 
         for (TilePool pool : pools) {
-            if (isDropMetaValid(pool)) continue;
+            if (ManaScan.isDropMetaValid(pool)) continue;
 
             int currentMana = pool.getCurrentMana();
             if (currentMana <= 0) continue;
@@ -481,7 +315,7 @@ public class ManaTank extends MTEDigitalTankBase {
         int fluidAmount = getFluidAmount();
 
         for (TilePool pool : pools) {
-            if (isDropMetaValid(pool)) continue;
+            if (ManaScan.isDropMetaValid(pool)) continue;
 
             int availableSpace = pool.getAvailableSpaceForMana();
 
@@ -522,56 +356,6 @@ public class ManaTank extends MTEDigitalTankBase {
                 flower.sync();
             }
         }
-    }
-
-    private List<TilePool> findManaPoolsInRange(IGregTechTileEntity aBaseMetaTileEntity) {
-        World world = aBaseMetaTileEntity.getWorld();
-        int x = aBaseMetaTileEntity.getXCoord();
-        int y = aBaseMetaTileEntity.getYCoord();
-        int z = aBaseMetaTileEntity.getZCoord();
-
-        List<TilePool> pools = new ObjectArrayList<>();
-
-        for (int dx = -MANA_POOL_RADIUS; dx <= MANA_POOL_RADIUS; dx++) {
-            for (int dy = -MANA_POOL_RADIUS; dy <= MANA_POOL_RADIUS; dy++) {
-                for (int dz = -MANA_POOL_RADIUS; dz <= MANA_POOL_RADIUS; dz++) {
-                    TileEntity te = world.getTileEntity(x + dx, y + dy, z + dz);
-                    if (te instanceof TilePool pool) {
-                        pools.add(pool);
-                    }
-                }
-            }
-        }
-        return pools;
-    }
-
-    private List<SubTileGenerating> findGeneratingFlowersInRange(IGregTechTileEntity aBaseMetaTileEntity) {
-        World world = aBaseMetaTileEntity.getWorld();
-        int x = aBaseMetaTileEntity.getXCoord();
-        int y = aBaseMetaTileEntity.getYCoord();
-        int z = aBaseMetaTileEntity.getZCoord();
-
-        List<SubTileGenerating> flowers = new ObjectArrayList<>();
-
-        for (int dx = -MANA_FLOWER_RADIUS; dx <= MANA_FLOWER_RADIUS; dx++) {
-            for (int dy = -MANA_FLOWER_RADIUS; dy <= MANA_FLOWER_RADIUS; dy++) {
-                for (int dz = -MANA_FLOWER_RADIUS; dz <= MANA_FLOWER_RADIUS; dz++) {
-                    TileEntity te = world.getTileEntity(x + dx, y + dy, z + dz);
-                    if (te instanceof TileSpecialFlower flowerTile) {
-                        SubTileEntity subTile = flowerTile.getSubTile();
-                        if (subTile instanceof SubTileGenerating) {
-                            flowers.add((SubTileGenerating) subTile);
-                        }
-                    }
-                }
-            }
-        }
-        return flowers;
-    }
-
-    private boolean isDropMetaValid(TilePool pool) {
-        int meta = pool.getBlockMetadata();
-        return meta == 1;
     }
 
     private static FluidStack createFluidStack(int amount) {

@@ -22,7 +22,7 @@ import com.science.gtnl.common.packet.RailgunFireFxPacket;
 import com.science.gtnl.common.packet.RailgunRecoilFxPacket;
 import com.science.gtnl.common.railgun.RailgunChainResolver.Hit;
 import com.science.gtnl.common.railgun.RailgunChainResolver.Kind;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ItemConfig;
 
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSets;
@@ -95,8 +95,6 @@ public class RailgunFireService {
     }
 
     private static final Map<UUID, ChargeSession> CHARGING = new Object2ObjectOpenHashMap<>();
-
-    private RailgunFireService() {}
 
     public static void beginCharge(EntityPlayerMP player, ItemStack stack) {
         long now = now(player);
@@ -176,7 +174,7 @@ public class RailgunFireService {
     }
 
     public static double chargeCostUpTo(int units, double rate) {
-        var config = MainConfig.item.railgun;
+        var config = ItemConfig.railgun;
         rate = Math.max(1, Math.min(MAX_RATE, rate));
         int ticks = ticksFor(
             Math.max(0, Math.min((int) (ElectromagneticRailgun.USE_DURATION * MAX_RATE), units)),
@@ -192,7 +190,7 @@ public class RailgunFireService {
     }
 
     public static double shotCost(RailgunChargeTier tier) {
-        return Math.max(0, tier.shotEu()) + tier.lightning * Math.max(0, MainConfig.item.railgun.ehvLightningEu);
+        return Math.max(0, tier.shotEu()) + tier.lightning * Math.max(0, ItemConfig.railgun.ehvLightningEu);
     }
 
     public static void noEnergy(EntityPlayerMP player) {

@@ -4,16 +4,14 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
-import com.dreammaster.item.NHItemList;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
+import com.science.gtnl.compat.newhorizons.NHCoreRecipes;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
-import cpw.mods.fml.common.Optional;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
@@ -115,70 +113,7 @@ public class TheTwilightForestRecipes implements IRecipePool {
             .eut(TierEU.RECIPE_UHV)
             .addTo(TTFR);
 
-        if (Mods.NewHorizonsCoreMod.isModLoaded()) loadNHRecipe();
-    }
-
-    @Optional.Method(modid = "dreamcraft")
-    public void loadNHRecipe() {
-        RecipeBuilder.builder()
-            .itemInputs(GTNLItemList.NagaBook.get(0))
-            .itemOutputs(
-                ModsItemlist.NagaTrophy.get(1),
-                ModsItemlist.TwilightForestItemNagaScale.get(32),
-                NHItemList.NagaScaleFragment.get(32),
-                NHItemList.NagaScaleChip.get(64))
-            .outputChances(1000, 10000, 5000, 2500)
-            .duration(600)
-            .eut(TierEU.RECIPE_UHV)
-            .addTo(TTFR);
-
-        RecipeBuilder.builder()
-            .itemInputs(GTNLItemList.LichBook.get(0))
-            .itemOutputs(
-                ModsItemlist.LichTrophy.get(1),
-                NHItemList.LichBone.get(32),
-                NHItemList.LichBoneFragment.get(32),
-                NHItemList.LichBoneChip.get(64),
-                new ItemStack(Items.ender_pearl, 32),
-                new ItemStack(Items.book, 32),
-                new ItemStack(Items.paper, 32))
-            .outputChances(1000, 10000, 5000, 2500, 5000, 7500, 7500)
-            .duration(600)
-            .eut(TierEU.RECIPE_UHV)
-            .addTo(TTFR);
-
-        RecipeBuilder.builder()
-            .itemInputs(GTNLItemList.UrGhastBook.get(0))
-            .itemOutputs(
-                ModsItemlist.UrGhastTrophy.get(1),
-                ModsItemlist.TwilightForestItemFieryTears.get(12),
-                ModsItemlist.TwilightForestItemCarminite.get(16),
-                NHItemList.CarminiteFragment.get(32),
-                NHItemList.CarminiteChip.get(64),
-                ModsItemlist.TwilightForestItemSteeleafIngot.get(16),
-                new ItemStack(Blocks.redstone_block, 4))
-            .outputChances(1000, 10000, 10000, 5000, 2500, 5000, 7500)
-            .duration(600)
-            .eut(TierEU.RECIPE_UHV)
-            .addTo(TTFR);
-
-        RecipeBuilder.builder()
-            .itemInputs(GTNLItemList.SnowQueenBook.get(0))
-            .itemOutputs(
-                ModsItemlist.SnowQueenTrophy.get(1),
-                NHItemList.SnowQueenBlood.get(16),
-                NHItemList.SnowQueenBloodDrop.get(32),
-                new ItemStack(Blocks.packed_ice, 32),
-                new ItemStack(Items.snowball, 64),
-                ModsItemlist.TwilightForestAuroraBrick.get(64),
-                ModsItemlist.TwilightForestTileAuroraPillar.get(64),
-                ModsItemlist.TwilightForestItemIronwoodIngot.get(32),
-                ModsItemlist.TwilightForestItemKnightMetal.get(32),
-                ModsItemlist.TwilightForestItemArcticFur.get(32))
-            .outputChances(1000, 7500, 5000, 8000, 10000, 7500, 7500, 5000, 5000, 8000)
-            .duration(600)
-            .eut(TierEU.RECIPE_UHV)
-            .addTo(TTFR);
+        NHCoreRecipes.twilightForest();
     }
 
 }

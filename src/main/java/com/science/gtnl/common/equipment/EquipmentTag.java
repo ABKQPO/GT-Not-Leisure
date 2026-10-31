@@ -6,8 +6,6 @@ import net.minecraftforge.common.util.Constants;
 
 public class EquipmentTag {
 
-    private EquipmentTag() {}
-
     public static NBTTagCompound child(ItemStack stack, String key) {
         NBTTagCompound tag = stack == null ? null : stack.getTagCompound();
         return tag != null && tag.hasKey(key, Constants.NBT.TAG_COMPOUND) ? tag.getCompoundTag(key)

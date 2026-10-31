@@ -12,7 +12,7 @@ import com.science.gtnl.common.yogsothoth.YogToken;
  * Stored terminals are also exposed as virtual slots of {@code BaublesApi.getBaubles(player)}, so mods that look for
  * terminals there need nothing else; mods that only scan the main inventory can use these.
  */
-public final class YogSothothApi {
+public class YogSothothApi {
 
     /** An AE wireless terminal handler or an {@link IYogTerminal}. */
     public static boolean isTerminal(ItemStack stack) {

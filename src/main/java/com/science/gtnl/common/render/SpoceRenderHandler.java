@@ -14,8 +14,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
-import com.science.gtnl.utils.render.BuckyBallGeometry;
-import com.science.gtnl.utils.render.SpoceEffect;
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -23,6 +23,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
+@EventBusSubscriber(side = Side.CLIENT, phase = Phase.PRE)
 public class SpoceRenderHandler {
 
     public static final float[] buildBuf = new float[1 << 16];
@@ -31,7 +32,7 @@ public class SpoceRenderHandler {
     public static final int UPDATE_VERT = 15;
 
     @SubscribeEvent
-    public void onClientTick(TickEvent.ClientTickEvent event) {
+    public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.START) return;
         Minecraft mc = Minecraft.getMinecraft();
         World world = mc.theWorld;
@@ -60,7 +61,7 @@ public class SpoceRenderHandler {
     }
 
     @SubscribeEvent
-    public void onRenderWorldLast(RenderWorldLastEvent event) {
+    public static void onRenderWorldLast(RenderWorldLastEvent event) {
         Minecraft mc = Minecraft.getMinecraft();
         World world = mc.theWorld;
         if (world == null) return;
@@ -78,7 +79,7 @@ public class SpoceRenderHandler {
         }
     }
 
-    public void renderEffect(World world, SpoceEffect effect, double px, double py, double pz, float partial) {
+    public static void renderEffect(World world, SpoceEffect effect, double px, double py, double pz, float partial) {
         float interp = effect.getInterp(partial);
         float time = (world.getTotalWorldTime() + partial) * effect.rotSpeed;
 
@@ -124,7 +125,7 @@ public class SpoceRenderHandler {
         GL11.glPopMatrix();
     }
 
-    public float[] getLayerVerts(World world, SpoceEffect effect, SpoceEffect.Layer layer, float interp) {
+    public static float[] getLayerVerts(World world, SpoceEffect effect, SpoceEffect.Layer layer, float interp) {
         if (interp < 0.99f) return buildGeometry(world, effect, layer.radius * interp);
         if (layer.dirty) {
             layer.cachedVerts = buildGeometry(world, effect, layer.radius);
@@ -133,7 +134,7 @@ public class SpoceRenderHandler {
         return layer.cachedVerts;
     }
 
-    public float[] buildGeometry(World world, SpoceEffect effect, double radius) {
+    public static float[] buildGeometry(World world, SpoceEffect effect, double radius) {
         buildCount = 0;
         int radInt = (int) Math.ceil(radius + 1.0);
         int cx = (int) Math.floor(effect.x), cy = (int) Math.floor(effect.y), cz = (int) Math.floor(effect.z);

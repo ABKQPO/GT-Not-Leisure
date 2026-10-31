@@ -9,9 +9,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChatComponentTranslation;
 
+import com.gtnllib.network.ClientboundPacket;
 import com.gtnllib.utils.HotbarMessages;
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.common.packet.base.ClientboundPacket;
 
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 
@@ -19,8 +19,6 @@ public class EquipmentNet {
 
     private static final int GUI_THROTTLE_TICKS = 5;
     private static final Map<EntityPlayer, Long> LAST_GUI = Collections.synchronizedMap(new WeakHashMap<>());
-
-    private EquipmentNet() {}
 
     public static void sendAround(Entity entity, ClientboundPacket packet, double range) {
         ScienceNotLeisure.network.sendToAllAround(

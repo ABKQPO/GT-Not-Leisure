@@ -6,12 +6,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.api.IConfigurationMaintenance;
+import com.science.gtnl.common.machine.hatch.MaintenanceHooks;
 
 import gregtech.api.interfaces.tileentity.IVoidable;
 import gregtech.api.logic.ProcessingLogic;
-import gregtech.api.metatileentity.implementations.MTEHatchMaintenance;
 import gregtech.api.metatileentity.implementations.MTEMultiBlockBase;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.util.GTRecipe;
@@ -30,19 +28,7 @@ public class MixinProcessingLogic {
     @Inject(method = "applyRecipe", at = @At("TAIL"))
     private void modifyRecipeBeforeValidation(GTRecipe recipe, ParallelHelper helper, OverclockCalculator calculator,
         CheckRecipeResult result, CallbackInfoReturnable<CheckRecipeResult> cir) {
-        if (machine instanceof MTEMultiBlockBase mte) {
-            try {
-                for (MTEHatchMaintenance maintenance : mte.mMaintenanceHatches) {
-                    if (maintenance instanceof IConfigurationMaintenance customMaintenance
-                        && customMaintenance.isConfiguration()) {
-                        duration = (int) Math.max(1, duration * customMaintenance.getConfigTime() / 100.0);
-                        return;
-                    }
-                }
-            } catch (Exception e) {
-                ScienceNotLeisure.LOG.warn("Error reading IConfigurationMaintenance from MTE: {}", mte, e);
-            }
-        }
+        if (machine instanceof MTEMultiBlockBase mte) duration = MaintenanceHooks.configuredDuration(mte, duration);
     }
 
 }

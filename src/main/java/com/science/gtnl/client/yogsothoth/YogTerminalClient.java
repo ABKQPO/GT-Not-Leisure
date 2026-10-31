@@ -21,27 +21,28 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.play.client.C0BPacketEntityAction;
 import net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent;
 import net.minecraftforge.client.event.MouseEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import com.cleanroommc.modularui.api.IMuiScreen;
 import com.cleanroommc.modularui.screen.OpenScreenEvent;
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.floatingwindow.FloatingWindowHost;
 import com.science.gtnl.client.floatingwindow.FloatingWindows;
 import com.science.gtnl.common.packet.CreativeScreenPacket;
+import com.science.gtnl.common.packet.YogTerminalActionPacket;
 import com.science.gtnl.common.yogsothoth.YogBaublesView;
 import com.science.gtnl.common.yogsothoth.YogRecord;
-import com.science.gtnl.common.yogsothoth.YogTerminalActionPacket;
 import com.science.gtnl.common.yogsothoth.YogTerminalLocks;
 import com.science.gtnl.common.yogsothoth.YogTerminals;
 import com.science.gtnl.common.yogsothoth.YogToken;
+import com.science.gtnl.config.YogTerminalClientConfig;
 
 import baubles.common.container.InventoryBaubles;
 import baubles.common.lib.PlayerHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -55,9 +56,9 @@ import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 @SideOnly(Side.CLIENT)
-public final class YogTerminalClient {
+@EventBusSubscriber(side = Side.CLIENT, phase = Phase.PRE)
+public class YogTerminalClient {
 
-    private static final YogTerminalClient INSTANCE = new YogTerminalClient();
     private static final YogTerminalLayout LAYOUT = new YogTerminalLayout();
     private static final Map<UUID, View> VIEWS = new Object2ObjectOpenHashMap<>();
     private static final Map<UUID, Assembly> ASSEMBLIES = new Object2ObjectOpenHashMap<>();
@@ -86,20 +87,14 @@ public final class YogTerminalClient {
     private static boolean awaitingScreen;
     private static boolean creativeScreen;
 
-    private YogTerminalClient() {}
-
     public static void init() {
-        YogTerminalClientConfig.load(LAYOUT);
-        MinecraftForge.EVENT_BUS.register(INSTANCE);
-        FMLCommonHandler.instance()
-            .bus()
-            .register(INSTANCE);
+        YogTerminalClientConfig.restore(LAYOUT);
         FloatingWindows.register(YogTerminalClient::window);
         YogBaublesView.setClientEntries(YogTerminalClient::carriedEntries);
         YogTerminals.setClient(YogTerminalClient::stored, YogTerminalClient::opened);
     }
 
-    static final class View {
+    public static class View {
 
         final UUID id;
         int generation;
@@ -122,7 +117,7 @@ public final class YogTerminalClient {
         }
     }
 
-    private static final class Assembly {
+    private static class Assembly {
 
         long revision;
         NBTTagCompound[] parts;
@@ -409,7 +404,7 @@ public final class YogTerminalClient {
     }
 
     @SubscribeEvent
-    public void open(OpenScreenEvent event) {
+    public static void open(OpenScreenEvent event) {
         checkConnection();
         saveWindow();
         if (window != null) window.detach();
@@ -417,12 +412,12 @@ public final class YogTerminalClient {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void initGui(InitGuiEvent.Post event) {
+    public static void initGui(InitGuiEvent.Post event) {
         if (!(event.gui instanceof IMuiScreen)) attach(event);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void initNativeGui(InitGuiEvent.Post event) {
+    public static void initNativeGui(InitGuiEvent.Post event) {
         if (event.gui instanceof IMuiScreen) attach(event);
     }
 
@@ -450,7 +445,7 @@ public final class YogTerminalClient {
     }
 
     @SubscribeEvent
-    public void tick(TickEvent.ClientTickEvent event) {
+    public static void tick(TickEvent.ClientTickEvent event) {
         Minecraft mc = Minecraft.getMinecraft();
         if (event.phase == TickEvent.Phase.START) {
             checkConnection();
@@ -499,12 +494,12 @@ public final class YogTerminalClient {
 
     // Fired inside the input loops, before vanilla handles the drop and pick block keys in the same tick.
     @SubscribeEvent
-    public void keyInput(InputEvent.KeyInputEvent event) {
+    public static void keyInput(InputEvent.KeyInputEvent event) {
         handleWorldInput();
     }
 
     @SubscribeEvent
-    public void mouseInput(InputEvent.MouseInputEvent event) {
+    public static void mouseInput(InputEvent.MouseInputEvent event) {
         handleWorldInput();
     }
 
@@ -531,7 +526,7 @@ public final class YogTerminalClient {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void leftClick(PlayerInteractEvent event) {
+    public static void leftClick(PlayerInteractEvent event) {
         if (event.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK
             && event.entityPlayer == Minecraft.getMinecraft().thePlayer
             && heldDisguise()) {
@@ -541,7 +536,7 @@ public final class YogTerminalClient {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void attack(AttackEntityEvent event) {
+    public static void attack(AttackEntityEvent event) {
         if (event.entityPlayer == Minecraft.getMinecraft().thePlayer && heldDisguise()) event.setCanceled(true);
     }
 
@@ -551,7 +546,7 @@ public final class YogTerminalClient {
     }
 
     @SubscribeEvent
-    public void mouse(MouseEvent event) {
+    public static void mouse(MouseEvent event) {
         Minecraft mc = Minecraft.getMinecraft();
         if (mc.currentScreen != null || mc.thePlayer == null) return;
         if (event.button == 2 && event.buttonstate) {

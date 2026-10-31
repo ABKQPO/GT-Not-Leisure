@@ -14,7 +14,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.item.ItemExpireEvent;
@@ -26,19 +25,21 @@ import net.minecraftforge.event.entity.player.PlayerEvent.StartTracking;
 import net.minecraftforge.event.entity.player.PlayerFlyableFallEvent;
 
 import com.google.common.collect.MapMaker;
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.equipment.EquipmentNet;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.common.packet.CelestweaveConcealPacket;
 import com.science.gtnl.common.packet.CelestweaveFxPacket;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ItemConfig;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
+@EventBusSubscriber(phase = Phase.PRE)
 public class CelestweaveServerEvents {
 
     public static final String SOULBOUND_TAG = "GTNLCelestweaveSoulbound", CONCEALED_TAG = "GTNLCelestweaveConcealed";
@@ -49,21 +50,6 @@ public class CelestweaveServerEvents {
     private static final float MINING_PENALTY_COMPENSATION = 5F;
     private static final Map<EntityPlayer, Tracked> TRACKED = new MapMaker().weakKeys()
         .makeMap();
-    private static boolean registered;
-
-    private CelestweaveServerEvents() {}
-
-    public static void register() {
-        if (registered) return;
-        registered = true;
-        CelestweaveServerEvents handler = new CelestweaveServerEvents();
-        CelestweaveShield shield = new CelestweaveShield();
-        MinecraftForge.EVENT_BUS.register(handler);
-        MinecraftForge.EVENT_BUS.register(shield);
-        FMLCommonHandler.instance()
-            .bus()
-            .register(handler);
-    }
 
     public static void sendFx(Entity entity, CelestweaveFxPacket.Type type, double x, double y, double z) {
         if (entity instanceof EntityPlayer player && concealed(player)) return;
@@ -102,8 +88,7 @@ public class CelestweaveServerEvents {
     private static int jumpLevel(EntityPlayer player) {
         ItemStack boots = CelestweaveData.piece(player, CelestweaveArmor.BOOTS);
         if (boots == null || !CelestweaveData.active(boots, CelestweaveModule.WALK_ASSIST)
-            || !CelestweaveEnergy
-                .affords(player, CelestweaveArmor.BOOTS, boots, MainConfig.item.celestweave.walkEuPerTick))
+            || !CelestweaveEnergy.affords(player, CelestweaveArmor.BOOTS, boots, ItemConfig.celestweave.walkEuPerTick))
             return 1;
         return CelestweaveModuleSetting.WALK_JUMP.get(boots);
     }
@@ -129,7 +114,7 @@ public class CelestweaveServerEvents {
     }
 
     @SubscribeEvent
-    public void playerTickStart(TickEvent.PlayerTickEvent event) {
+    public static void playerTickStart(TickEvent.PlayerTickEvent event) {
         if (event.phase != TickEvent.Phase.START) return;
         EntityPlayer player = event.player;
         if (!player.isClientWorld()) return;
@@ -137,7 +122,7 @@ public class CelestweaveServerEvents {
     }
 
     @SubscribeEvent
-    public void playerTick(TickEvent.PlayerTickEvent event) {
+    public static void playerTick(TickEvent.PlayerTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
         EntityPlayer player = event.player;
         if (!player.isClientWorld()) return;
@@ -188,22 +173,22 @@ public class CelestweaveServerEvents {
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void expire(ItemExpireEvent event) {
+    public static void expire(ItemExpireEvent event) {
         CelestweaveBackpack.discard(event.entityItem.getEntityItem());
     }
 
     @SubscribeEvent
-    public void joinWorld(EntityJoinWorldEvent event) {
+    public static void joinWorld(EntityJoinWorldEvent event) {
         if (!event.world.isRemote && event.entity instanceof EntityItem drop) CelestweaveBackpack.trackDrop(drop);
     }
 
     @SubscribeEvent
-    public void serverTick(TickEvent.ServerTickEvent event) {
+    public static void serverTick(TickEvent.ServerTickEvent event) {
         if (event.phase == TickEvent.Phase.END) CelestweaveBackpack.discardDestroyedDrops();
     }
 
     @SubscribeEvent
-    public void startTracking(StartTracking event) {
+    public static void startTracking(StartTracking event) {
         if (!(event.target instanceof EntityPlayer target) || !(event.entityPlayer instanceof EntityPlayerMP viewer))
             return;
         CelestweaveFlight.startTracking(target, viewer);
@@ -211,7 +196,7 @@ public class CelestweaveServerEvents {
     }
 
     @SubscribeEvent
-    public void fall(LivingFallEvent event) {
+    public static void fall(LivingFallEvent event) {
         if (!(event.entityLiving instanceof EntityPlayer player)) return;
         int jump = jumpLevel(player);
         if (jump > 1) event.distance = Math.max(0, event.distance - FALL_REDUCTION_PER_LEVEL * (jump - 1));
@@ -221,19 +206,19 @@ public class CelestweaveServerEvents {
     }
 
     @SubscribeEvent
-    public void flyableFall(PlayerFlyableFallEvent event) {
+    public static void flyableFall(PlayerFlyableFallEvent event) {
         landFx(event.entityPlayer, event.distance);
     }
 
     @SubscribeEvent
-    public void jump(LivingEvent.LivingJumpEvent event) {
+    public static void jump(LivingEvent.LivingJumpEvent event) {
         if (!(event.entityLiving instanceof EntityPlayer player) || player.isSneaking()) return;
         int jump = jumpLevel(player);
         if (jump > 1) player.motionY += JUMP_BOOST * Math.pow(jump - 1, JUMP_EXPONENT);
     }
 
     @SubscribeEvent
-    public void breakSpeed(BreakSpeed event) {
+    public static void breakSpeed(BreakSpeed event) {
         EntityPlayer player = event.entityPlayer;
         if (!CelestweaveEnergy.activeAndHasEnergy(player, CelestweaveArmor.BOOTS, CelestweaveModule.DIG_AFFINITY))
             return;
@@ -245,7 +230,7 @@ public class CelestweaveServerEvents {
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void death(LivingDeathEvent event) {
+    public static void death(LivingDeathEvent event) {
         if (!(event.entityLiving instanceof EntityPlayerMP player)) return;
         CelestweaveEnergy.flush(player);
         CelestweaveReach.reset(player);
@@ -293,14 +278,14 @@ public class CelestweaveServerEvents {
     }
 
     @SubscribeEvent
-    public void respawn(PlayerEvent.PlayerRespawnEvent event) {
+    public static void respawn(PlayerEvent.PlayerRespawnEvent event) {
         CelestweaveReach.forget(event.player);
         CelestweaveBehaviors.forget(event.player);
         restoreSoulbound(event.player);
     }
 
     @SubscribeEvent
-    public void login(PlayerEvent.PlayerLoggedInEvent event) {
+    public static void login(PlayerEvent.PlayerLoggedInEvent event) {
         restoreSoulbound(event.player);
         if (!(event.player instanceof EntityPlayerMP player)) return;
         CelestweaveFlight.restore(player);
@@ -308,7 +293,7 @@ public class CelestweaveServerEvents {
     }
 
     @SubscribeEvent
-    public void logout(PlayerEvent.PlayerLoggedOutEvent event) {
+    public static void logout(PlayerEvent.PlayerLoggedOutEvent event) {
         CelestweaveEnergy.flush(event.player);
         CelestweaveReach.forget(event.player);
         CelestweaveBehaviors.forget(event.player);
@@ -318,7 +303,7 @@ public class CelestweaveServerEvents {
     }
 
     @SubscribeEvent
-    public void dimension(PlayerEvent.PlayerChangedDimensionEvent event) {
+    public static void dimension(PlayerEvent.PlayerChangedDimensionEvent event) {
         CelestweaveFlight.changedDimension(event.player);
     }
 }

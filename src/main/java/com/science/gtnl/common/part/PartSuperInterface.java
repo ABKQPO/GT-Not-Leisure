@@ -4,9 +4,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Vec3;
 
-import com.science.gtnl.CommonProxy;
 import com.science.gtnl.api.ICustomGui;
 import com.science.gtnl.api.mixinHelper.IDualityInterface;
+import com.science.gtnl.common.gui.GTNLGuiHandler;
 import com.science.gtnl.mixins.late.appliedEnergistics.AccessorPartInterface;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.GuiType;
@@ -51,7 +51,7 @@ public class PartSuperInterface extends PartInterface implements ICustomGui {
         if (p.isSneaking()) {
             return false;
         }
-        CommonProxy.openGui(
+        GTNLGuiHandler.openGui(
             p,
             GuiType.SuperInterfaceGUI,
             this.getSide(),

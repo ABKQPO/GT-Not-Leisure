@@ -11,14 +11,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.brandon3055.draconicevolution.common.items.armor.CustomArmorHandler;
 import com.reavaritia.common.items.InfinitySword;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ReAvaritiaConfig;
 
 @Mixin(value = CustomArmorHandler.class, remap = false)
 public abstract class MixinCustomArmorHandler {
 
     @Inject(method = "onLivingDeath", at = @At(value = "HEAD"), cancellable = true)
     private void injectDeath(LivingDeathEvent event, CallbackInfo ci) {
-        if (!MainConfig.re_avaritia.infinity_sword.enableBypass) return;
+        if (!ReAvaritiaConfig.infinity_sword.enableBypass) return;
         Entity entity = event.source.getSourceOfDamage();
         if (!(entity instanceof EntityPlayer player)) return;
         if (!player.isSneaking()) return;

@@ -10,8 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 
-import com.science.gtnl.client.GTNLCreativeTabs;
-import com.science.gtnl.utils.BucketHandler;
+import com.science.gtnl.common.item.GTNLCreativeTabs;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 
@@ -24,7 +23,7 @@ public class GTNLItemBucket extends ItemBucket {
         bucket.init();
 
         FluidContainerRegistry.registerFluidContainer(fluid, new ItemStack(bucket), new ItemStack(Items.bucket));
-        BucketHandler.INSTANCE.registerFluid(fluid.getBlock(), bucket);
+        BucketHandler.registerFluid(fluid.getBlock(), bucket);
 
         return bucket;
     }

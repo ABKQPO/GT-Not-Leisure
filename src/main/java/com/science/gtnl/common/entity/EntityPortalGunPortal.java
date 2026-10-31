@@ -21,7 +21,7 @@ import com.gtnllib.utils.Vec3d;
 import com.science.gtnl.common.portalgun.PortalGunGeometry;
 import com.science.gtnl.common.portalgun.PortalGunPairs;
 import com.science.gtnl.common.portalgun.PortalGunPlacement;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ItemConfig;
 
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import cpw.mods.fml.relauncher.Side;
@@ -128,7 +128,7 @@ public class EntityPortalGunPortal extends Entity implements IEntityAdditionalSp
             return false;
         NBTTagCompound data = entity.getEntityData();
         if (coolingDown(data.getInteger(COOLDOWN), tick)) return false;
-        int pairCooldown = MainConfig.item.portal_gun.pairCooldownTicks;
+        int pairCooldown = ItemConfig.portal_gun.pairCooldownTicks;
         if (pairCooldown <= 0 || !pairKey(gunId, pair).equals(data.getString(PAIR))
             || !coolingDown(data.getInteger(PAIR_UNTIL), tick, pairCooldown)) return true;
         // Why: while the entity still touches the pair the wait restarts, so nothing standing or falling in a portal
@@ -168,7 +168,7 @@ public class EntityPortalGunPortal extends Entity implements IEntityAdditionalSp
         NBTTagCompound data = entity.getEntityData();
         data.setInteger(COOLDOWN, tick + ARRIVAL_COOLDOWN);
         data.setString(PAIR, pairKey(gunId, pair));
-        data.setInteger(PAIR_UNTIL, tick + MainConfig.item.portal_gun.pairCooldownTicks);
+        data.setInteger(PAIR_UNTIL, tick + ItemConfig.portal_gun.pairCooldownTicks);
         entity.fallDistance = 0;
         entity.motionX = motion.x();
         entity.motionY = motion.y();

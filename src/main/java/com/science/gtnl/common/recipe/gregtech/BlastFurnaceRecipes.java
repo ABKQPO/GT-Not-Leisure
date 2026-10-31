@@ -2,13 +2,13 @@ package com.science.gtnl.common.recipe.gregtech;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;
+import com.science.gtnl.compat.forestry.ForestryRecipes;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import bartworks.system.material.WerkstoffLoader;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.interfaces.IRecipeMap;
@@ -18,8 +18,6 @@ import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipeBuilder;
 import gregtech.api.util.GTRecipeConstants;
 import gregtech.api.util.GTUtility;
-import gregtech.common.items.CombType;
-import gregtech.loaders.misc.GTBees;
 import gtPlusPlus.core.util.minecraft.ItemUtils;
 
 public class BlastFurnaceRecipes implements IRecipePool {
@@ -80,19 +78,6 @@ public class BlastFurnaceRecipes implements IRecipePool {
             .metadata(GTRecipeConstants.COIL_HEAT, 7500)
             .addTo(BFR);
 
-        if (Mods.Forestry.isModLoaded()) {
-            RecipeBuilder.builder()
-                .itemInputs(
-                    ItemList.Brittle_Netherite_Scrap.get(1),
-                    GTBees.combs.getStackForType(CombType.NETHERITE, 32))
-                .circuit(2)
-                .fluidInputs(Materials.HellishMetal.getMolten(1 * GTRecipeBuilder.INGOTS))
-                .itemOutputs(ItemList.Intensely_Bonded_Netherite_Nanoparticles.get(2))
-                .fluidOutputs(Materials.Thaumium.getMolten(2 * GTRecipeBuilder.NUGGETS))
-                .duration(15 * GTRecipeBuilder.SECONDS)
-                .eut(TierEU.RECIPE_ZPM)
-                .metadata(GTRecipeConstants.COIL_HEAT, 7500)
-                .addTo(BFR);
-        }
+        ForestryRecipes.blastFurnace();
     }
 }

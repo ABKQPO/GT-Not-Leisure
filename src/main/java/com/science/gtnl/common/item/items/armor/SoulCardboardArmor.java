@@ -11,10 +11,9 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.EnumHelper;
 
-import com.science.gtnl.client.GTNLCreativeTabs;
+import com.science.gtnl.common.item.GTNLCreativeTabs;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
@@ -28,10 +27,6 @@ public class SoulCardboardArmor extends ItemArmor {
         .addArmorMaterial("SOUL_CARDBOARD", 20, new int[] { 2, 5, 4, 1 }, 20);
 
     private static final int RENDER_INDEX = 2;
-
-    static {
-        MinecraftForge.EVENT_BUS.register(new SoulCardboardArmorHandler());
-    }
 
     private final String itemId;
 

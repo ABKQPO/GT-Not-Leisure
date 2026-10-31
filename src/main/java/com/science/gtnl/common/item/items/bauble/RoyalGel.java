@@ -1,35 +1,26 @@
 package com.science.gtnl.common.item.items.bauble;
 
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 
-import com.science.gtnl.client.GTNLCreativeTabs;
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.science.gtnl.common.item.BaubleItem;
-import com.science.gtnl.utils.enums.GTNLItemList;
 
 import baubles.api.BaubleType;
 import baubles.api.BaublesApi;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+@EventBusSubscriber(phase = Phase.PRE)
 public class RoyalGel extends BaubleItem {
 
     public RoyalGel() {
-        this.setUnlocalizedName("gtnl.royal_gel");
         this.setMaxStackSize(1);
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "royal_gel");
-        this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        GameRegistry.registerItem(this, "royal_gel");
-        GTNLItemList.RoyalGel.set(new ItemStack(this, 1));
-        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override
@@ -49,7 +40,7 @@ public class RoyalGel extends BaubleItem {
     }
 
     @SubscribeEvent
-    public void onPlayerAttacked(LivingAttackEvent event) {
+    public static void onPlayerAttacked(LivingAttackEvent event) {
         if (!(event.entityLiving instanceof EntityPlayerMP player)) return;
         if (!(event.source.getSourceOfDamage() instanceof EntitySlime)) return;
 
@@ -58,7 +49,7 @@ public class RoyalGel extends BaubleItem {
         }
     }
 
-    private boolean hasRoyalGelEquipped(EntityPlayerMP player) {
+    private static boolean hasRoyalGelEquipped(EntityPlayerMP player) {
         if (BaublesApi.getBaubles(player) == null) return false;
 
         for (int i = 0; i < BaublesApi.getBaubles(player)

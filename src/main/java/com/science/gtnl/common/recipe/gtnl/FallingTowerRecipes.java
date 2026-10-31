@@ -5,7 +5,6 @@ import net.minecraft.item.ItemStack;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.enums.ModsItemlist;
-import com.science.gtnl.utils.recipes.MeteorRecipeData;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import WayofTime.alchemicalWizardry.common.summoning.meteor.Meteor;

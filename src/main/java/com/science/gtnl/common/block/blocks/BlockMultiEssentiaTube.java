@@ -10,28 +10,19 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-import com.science.gtnl.ClientProxy;
-import com.science.gtnl.client.GTNLCreativeTabs;
-import com.science.gtnl.common.block.blocks.item.ItemBlockMultiEssentiaTube;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaTube;
-import com.science.gtnl.utils.enums.GTNLItemList;
+import com.science.gtnl.loader.RenderLoader;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import thaumcraft.common.blocks.BlockTube;
 
 public class BlockMultiEssentiaTube extends BlockTube {
 
-    private static final int BUFFER_METADATA = 4;
+    public static final int BUFFER_METADATA = 4;
 
     public BlockMultiEssentiaTube() {
         super();
-        setBlockName("gtnl.multi_essentia_tube");
-        setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
-        GameRegistry.registerBlock(this, ItemBlockMultiEssentiaTube.class, "multi_essentia_tube");
-        GameRegistry.registerTileEntity(TileEntityMultiEssentiaTube.class, "multi_essentia_tube_tile_entity");
-        GTNLItemList.MultiEssentiaTube.set(new ItemStack(this, 1, BUFFER_METADATA));
     }
 
     @Override
@@ -74,7 +65,7 @@ public class BlockMultiEssentiaTube extends BlockTube {
     @SideOnly(Side.CLIENT)
     @Override
     public int getRenderType() {
-        return ClientProxy.MULTI_ESSENTIA_TUBE_RENDER_ID;
+        return RenderLoader.MULTI_ESSENTIA_TUBE_RENDER_ID;
     }
 
     @Override

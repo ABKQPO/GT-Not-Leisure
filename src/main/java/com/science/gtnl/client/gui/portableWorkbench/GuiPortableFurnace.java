@@ -9,7 +9,7 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
-import com.science.gtnl.container.portableWorkbench.ContainerPortableFurnace;
+import com.science.gtnl.common.gui.container.portableWorkbench.ContainerPortableFurnace;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

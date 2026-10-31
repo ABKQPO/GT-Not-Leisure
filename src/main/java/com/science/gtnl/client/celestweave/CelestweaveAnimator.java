@@ -32,8 +32,6 @@ public class CelestweaveAnimator {
     private static int sparL, sparR, foreL, foreR, fieldL, fieldR;
     private static CelestweaveFrames bound;
 
-    private CelestweaveAnimator() {}
-
     static void bind(CelestweaveFrames frames) {
         bound = frames;
         rotor = idx("core.rotor");

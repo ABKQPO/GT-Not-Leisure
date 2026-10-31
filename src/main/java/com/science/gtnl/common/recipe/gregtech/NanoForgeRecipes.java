@@ -3,16 +3,14 @@ package com.science.gtnl.common.recipe.gregtech;
 import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 import static gregtech.api.util.GTRecipeConstants.NANO_FORGE_TIER;
 
-import com.dreammaster.item.NHItemList;
 import com.science.gtnl.api.IRecipePool;
+import com.science.gtnl.compat.newhorizons.NHCoreRecipes;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
-import cpw.mods.fml.common.Optional;
 import goodgenerator.items.GGMaterial;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
@@ -69,36 +67,7 @@ public class NanoForgeRecipes implements IRecipePool {
             .eut(40_000_000)
             .addTo(NFR);
 
-        if (Mods.NewHorizonsCoreMod.isModLoaded()) loadNHRecipe();
+        NHCoreRecipes.nanoForge();
     }
 
-    @Optional.Method(modid = "dreamcraft")
-    public void loadNHRecipe() {
-        RecipeBuilder.builder()
-            .itemInputs(
-                NHItemList.RadoxPolymerLens.get(0),
-                GGMaterial.metastableOganesson.get(OrePrefixes.block, 8),
-                ItemList.Circuit_Chip_SoC2.get(64),
-                ItemList.Circuit_Chip_SoC2.get(64))
-            .itemOutputs(GGMaterial.metastableOganesson.get(OrePrefixes.nanite, 1))
-            .fluidInputs(Materials.UUMatter.getFluid(500_000))
-            .metadata(NANO_FORGE_TIER, 2)
-            .duration(300 * SECONDS)
-            .eut(40_000_000)
-            .addTo(NFR);
-
-        RecipeBuilder.builder()
-            .itemInputs(
-                NHItemList.ChromaticLens.get(0),
-                GGMaterial.extremelyUnstableNaquadah.get(OrePrefixes.block, 16),
-                ItemList.Circuit_Chip_QPIC.get(64),
-                ItemList.Circuit_Chip_QPIC.get(64),
-                ItemList.Circuit_Chip_QPIC.get(64))
-            .itemOutputs(GGMaterial.extremelyUnstableNaquadah.get(OrePrefixes.nanite, 1))
-            .fluidInputs(Materials.UUMatter.getFluid(1000_000))
-            .metadata(NANO_FORGE_TIER, 2)
-            .duration(300 * SECONDS)
-            .eut(40_000_000)
-            .addTo(NFR);
-    }
 }

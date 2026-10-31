@@ -2,7 +2,6 @@ package com.science.gtnl.common.part;
 
 import java.io.IOException;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -16,12 +15,12 @@ import net.minecraftforge.common.util.ForgeDirection;
 import org.jetbrains.annotations.NotNull;
 
 import com.gtnewhorizon.gtnhlib.blockpos.BlockPos;
+import com.gtnllib.world.IBlockStateListener;
 import com.science.gtnl.api.IBeamFormer;
-import com.science.gtnl.api.IBlockStateListener;
 import com.science.gtnl.common.beamformer.BeamFormerLink;
 import com.science.gtnl.common.item.items.ItemPartBeamFormer;
 import com.science.gtnl.common.render.beamformer.BeamFormerRenderHelper;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.MachineConfig;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridConnection;
@@ -79,7 +78,7 @@ public class PartBeamFormer extends GTNLBasePartState implements IBlockStateList
         this.getProxy()
             .setFlags(GridFlags.PREFERRED);
         this.getProxy()
-            .setIdlePowerUsage(MainConfig.machine.beamFormerEnergyConsume);
+            .setIdlePowerUsage(MachineConfig.beamFormerEnergyConsume);
     }
 
     @Override
@@ -316,7 +315,7 @@ public class PartBeamFormer extends GTNLBasePartState implements IBlockStateList
     @SideOnly(Side.CLIENT)
     public void renderDynamic(final double x, final double y, final double z, final IPartRenderHelper rh,
         final RenderBlocks renderer) {
-        BeamFormerRenderHelper.renderDynamic(this, x, y, z, Minecraft.getMinecraft().timer.renderPartialTicks);
+        BeamFormerRenderHelper.renderDynamic(this, x, y, z);
     }
 
     @Override

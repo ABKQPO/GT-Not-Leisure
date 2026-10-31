@@ -6,7 +6,7 @@ import net.minecraft.network.PacketBuffer;
 import com.cleanroommc.modularui.value.sync.SyncHandler;
 import com.science.gtnl.api.stellar.StellarIrisUpgradeDefinition;
 import com.science.gtnl.api.stellar.StellarIrisUpgradeRegistry;
-import com.science.gtnl.utils.world.stellar.StellarIrisUpgradeManager;
+import com.science.gtnl.common.stellar.StellarIrisUpgradeManager;
 
 public class StellarIrisUpgradeActionSyncHandler extends SyncHandler<StellarIrisUpgradeActionSyncHandler> {
 

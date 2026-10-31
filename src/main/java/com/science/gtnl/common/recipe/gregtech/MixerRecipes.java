@@ -11,7 +11,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.RecipeConfig;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModsItemlist;
@@ -370,7 +370,7 @@ public class MixerRecipes implements IRecipePool {
             .addTo(MCR)
             .addTo(MNCR);
 
-        if (MainConfig.recipe.enableDeleteRecipe) loadDeleteRecipe();
+        if (RecipeConfig.enableDeleteRecipe) loadDeleteRecipe();
     }
 
     public void loadDeleteRecipe() {

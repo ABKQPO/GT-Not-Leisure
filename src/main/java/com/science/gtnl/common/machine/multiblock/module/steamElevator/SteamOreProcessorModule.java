@@ -22,12 +22,10 @@ import net.minecraftforge.oredict.OreDictionary;
 import org.jetbrains.annotations.NotNull;
 
 import com.cleanroommc.modularui.drawable.UITexture;
+import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
-import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
-import gnu.trove.map.hash.TIntIntHashMap;
 import gregtech.api.enums.Materials;
-import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.modularui2.GTGuiTextures;
@@ -39,6 +37,7 @@ import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -296,19 +295,6 @@ public class SteamOreProcessorModule extends SteamElevatorModuleBase {
     @Override
     protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
         return super.getGui().withMachineModeIcons(MODE_ICONS);
-    }
-
-    @Override
-    @Deprecated
-    public void setMachineModeIcons() {
-        // TODO: Remove this mui1 fallback after the Steam Ore Processor Module GUI is fully ported to mui2.
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_LPF_FLUID);
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_LPF_METAL);
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_BENDING);
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_WASHPLANT);
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_CHEMBATH);
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_SIMPLEWASHER);
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_BENDING);
     }
 
     @Override
@@ -647,25 +633,25 @@ public class SteamOreProcessorModule extends SteamElevatorModuleBase {
     }
 
     public void doCompress(List<ItemStack> aList) {
-        TIntIntHashMap rProduct = new TIntIntHashMap();
+        Int2IntOpenHashMap rProduct = new Int2IntOpenHashMap();
         for (ItemStack stack : aList) {
             int tID = GTUtility.stackToInt(stack);
             if (mVoidStone && GTUtility.areStacksEqual(getStone(), stack)) {
                 continue;
             }
             if (tID != 0) {
-                rProduct.adjustOrPutValue(tID, stack.stackSize, stack.stackSize);
+                rProduct.addTo(tID, stack.stackSize);
             }
         }
         midProduct = new ItemStack[rProduct.size()];
 
         int cnt = 0;
-        var i = rProduct.iterator();
-
-        while (i.hasNext()) {
-            i.advance();
-            ItemStack stack = GTUtility.intToStack(i.key());
-            midProduct[cnt] = GTUtility.copyAmountUnsafe(i.value(), stack);
+        var entries = rProduct.int2IntEntrySet()
+            .fastIterator();
+        while (entries.hasNext()) {
+            var entry = entries.next();
+            ItemStack stack = GTUtility.intToStack(entry.getIntKey());
+            midProduct[cnt] = GTUtility.copyAmountUnsafe(entry.getIntValue(), stack);
             cnt++;
         }
     }

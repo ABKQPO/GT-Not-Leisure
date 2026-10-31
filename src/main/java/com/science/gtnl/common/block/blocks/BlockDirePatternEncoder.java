@@ -5,40 +5,24 @@ import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
-import com.science.gtnl.CommonProxy;
-import com.science.gtnl.client.GTNLCreativeTabs;
-import com.science.gtnl.common.block.blocks.item.ItemBlockDirePatternEncoder;
 import com.science.gtnl.common.block.blocks.tile.TileEntityDirePatternEncoder;
-import com.science.gtnl.utils.enums.GTNLItemList;
+import com.science.gtnl.common.gui.GTNLGuiHandler;
 import com.science.gtnl.utils.enums.GuiType;
 
 import appeng.block.AEBaseTileBlock;
-import cpw.mods.fml.common.registry.GameRegistry;
+import appeng.client.texture.FlippableIcon;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockDirePatternEncoder extends AEBaseTileBlock {
 
-    @SideOnly(Side.CLIENT)
-    private IIcon sideIcon;
-    @SideOnly(Side.CLIENT)
-    private IIcon bottomIcon;
-
     public BlockDirePatternEncoder() {
         super(Material.iron);
         setHardness(50.0F);
         setResistance(2000.0F);
-        setBlockName("gtnl.dire_pattern_encoder");
         setHarvestLevel("pickaxe", 3);
-        setBlockTextureName(RESOURCE_ROOT_ID + ":dire_pattern_encoder");
-        setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
-        GameRegistry.registerBlock(this, ItemBlockDirePatternEncoder.class, "dire_pattern_encoder");
-        GameRegistry.registerTileEntity(TileEntityDirePatternEncoder.class, "dire_pattern_encoder_tile_entity");
-        GTNLItemList.DirePatternEncoder.set(new ItemStack(this, 1));
         setTileEntity(TileEntityDirePatternEncoder.class);
     }
 
@@ -50,26 +34,19 @@ public class BlockDirePatternEncoder extends AEBaseTileBlock {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister register) {
-        super.registerBlockIcons(register);
-        sideIcon = register.registerIcon(RESOURCE_ROOT_ID + ":dire_pattern_encoder_side");
-        bottomIcon = register.registerIcon(RESOURCE_ROOT_ID + ":dire_pattern_encoder_bottom");
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public IIcon getIcon(int side, int metadata) {
-        return switch (side) {
-            case 0 -> bottomIcon;
-            case 1 -> blockIcon;
-            default -> sideIcon;
-        };
+        FlippableIcon top = new FlippableIcon(register.registerIcon(RESOURCE_ROOT_ID + ":dire_pattern_encoder"));
+        FlippableIcon side = new FlippableIcon(register.registerIcon(RESOURCE_ROOT_ID + ":dire_pattern_encoder_side"));
+        FlippableIcon bottom = new FlippableIcon(
+            register.registerIcon(RESOURCE_ROOT_ID + ":dire_pattern_encoder_bottom"));
+        blockIcon = top;
+        getRendererInstance().updateIcons(bottom, top, side, side, side, side);
     }
 
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int par6, float par7,
         float par8, float par9) {
         if (!world.isRemote) {
-            CommonProxy.openGui(player, GuiType.DirePatternEncoderGUI, null, world, x, y, z);
+            GTNLGuiHandler.openGui(player, GuiType.DirePatternEncoderGUI, null, world, x, y, z);
             return true;
         }
         return super.onBlockActivated(world, x, y, z, player, par6, par7, par8, par9);

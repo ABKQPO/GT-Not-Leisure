@@ -20,6 +20,7 @@ import com.cleanroommc.modularui.screen.ModularContainer;
 import com.cleanroommc.modularui.value.sync.SyncHandler;
 import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.client.wireless.WirelessCardClientView;
 import com.science.gtnl.common.item.items.WirelessFrequencyCard;
 
 import cpw.mods.fml.relauncher.Side;

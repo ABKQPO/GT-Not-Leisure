@@ -10,7 +10,7 @@ import com.google.common.base.Preconditions;
 
 import appeng.api.config.FuzzyMode;
 
-final class FuzzySearch {
+public class FuzzySearch {
 
     @VisibleForTesting
     static final KeyComparator COMPARATOR = new KeyComparator();

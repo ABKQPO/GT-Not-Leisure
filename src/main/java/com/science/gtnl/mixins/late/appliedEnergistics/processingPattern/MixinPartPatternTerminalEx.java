@@ -11,8 +11,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.science.gtnl.api.mixinHelper.IProcessingPatternOverflowAccess;
-import com.science.gtnl.utils.appliedEnergistics.processingPattern.ProcessingPatternCapacity;
-import com.science.gtnl.utils.appliedEnergistics.processingPattern.ProcessingPatternInventoryData;
+import com.science.gtnl.common.me.processingPattern.ProcessingPatternCapacity;
+import com.science.gtnl.common.me.processingPattern.ProcessingPatternInventoryData;
 
 import appeng.api.storage.StorageName;
 import appeng.api.storage.data.IAEStack;
@@ -49,15 +49,11 @@ public abstract class MixinPartPatternTerminalEx extends PartPatternTerminal {
 
     @Inject(method = "setInverted", at = @At("HEAD"), cancellable = true)
     private void gtnl$setInvertedWithOpenedCapacity(boolean inverted, CallbackInfo callbackInfo) {
-        if (!ProcessingPatternCapacity.isEnabled()) {
-            return;
-        }
+        if (!ProcessingPatternCapacity.isEnabled()) return;
         IAEStackInventory hidden = this
             .getAEInventoryByName(inverted ? StorageName.CRAFTING_INPUT : StorageName.CRAFTING_OUTPUT);
-        int slotsPerSide = hidden.getSizeInventory();
-        if (slotsPerSide / ProcessingPatternCapacity.SLOTS_PER_PAGE == ProcessingPatternCapacity.pageCount()) {
-            return;
-        }
+        if (hidden.getSizeInventory() / ProcessingPatternCapacity.SLOTS_PER_PAGE
+            == ProcessingPatternCapacity.pageCount()) return;
         this.inverted = inverted;
         ProcessingPatternInventoryData.clearHiddenSlots(hidden);
         callbackInfo.cancel();
@@ -84,28 +80,14 @@ public abstract class MixinPartPatternTerminalEx extends PartPatternTerminal {
     /** Selects the orientation that can display the encoded pattern. */
     @Inject(method = "exPatternTerminalCall", at = @At("HEAD"), cancellable = true)
     private void gtnl$exPatternTerminalCall(IAEStack<?>[] in, IAEStack<?>[] out, CallbackInfo callbackInfo) {
-        if (!ProcessingPatternCapacity.isEnabled()) {
-            return;
-        }
+        if (!ProcessingPatternCapacity.isEnabled()) return;
         ((IProcessingPatternOverflowAccess) this).gtnl$clearProcessingPatternOverflow();
-        int inputsCount = 0;
-        int outputCount = 0;
-
-        for (IAEStack<?> input : in) {
-            if (input != null) {
-                inputsCount++;
-            }
-        }
-
-        for (IAEStack<?> output : out) {
-            if (output != null) {
-                outputCount++;
-            }
-        }
-
-        int smallSideCapacity = this.getAEInventoryByName(StorageName.CRAFTING_INPUT)
-            .getSizeInventory() / 4;
-        this.setInverted(inputsCount <= smallSideCapacity && outputCount >= smallSideCapacity);
+        this.setInverted(
+            ProcessingPatternInventoryData.invertFor(
+                in,
+                out,
+                this.getAEInventoryByName(StorageName.CRAFTING_INPUT)
+                    .getSizeInventory()));
         this.setActivePage(0);
         callbackInfo.cancel();
     }

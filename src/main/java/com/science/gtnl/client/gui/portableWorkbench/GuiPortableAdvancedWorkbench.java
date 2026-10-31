@@ -6,7 +6,7 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
-import com.science.gtnl.container.portableWorkbench.ContainerPortableAdvancedWorkbench;
+import com.science.gtnl.common.gui.container.portableWorkbench.ContainerPortableAdvancedWorkbench;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

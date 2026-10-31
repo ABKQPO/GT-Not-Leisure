@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.packet.TickratePacket;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.DebugConfig;
 import com.science.gtnl.mixins.early.minecraft.AccessorMinecraft;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -147,7 +147,7 @@ public class TickrateAPI {
             ScienceNotLeisure.LOG.info("Ignoring invalid tickrate: {}", tickrate);
             return;
         }
-        if (MainConfig.debug.enableDebugMode) ScienceNotLeisure.LOG.info("Updating client tickrate to {}", tickrate);
+        if (DebugConfig.enableDebugMode) ScienceNotLeisure.LOG.info("Updating client tickrate to {}", tickrate);
         TICKS_PER_SECOND = tickrate;
         Minecraft mc = Minecraft.getMinecraft();
         if (mc == null) return; // Oops!
@@ -159,7 +159,7 @@ public class TickrateAPI {
             ScienceNotLeisure.LOG.info("Ignoring invalid tickrate: {}", tickrate);
             return;
         }
-        if (MainConfig.debug.enableDebugMode) ScienceNotLeisure.LOG.info("Updating server tickrate to {}", tickrate);
+        if (DebugConfig.enableDebugMode) ScienceNotLeisure.LOG.info("Updating server tickrate to {}", tickrate);
         MILISECONDS_PER_TICK = (long) (1000L / tickrate);
     }
 }

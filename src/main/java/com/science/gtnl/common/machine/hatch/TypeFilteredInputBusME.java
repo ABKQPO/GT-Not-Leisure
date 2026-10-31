@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.hatch;
 
 import java.util.function.Predicate;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
@@ -14,24 +13,14 @@ import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
-import com.gtnewhorizons.modularui.api.math.Alignment;
-import com.gtnewhorizons.modularui.api.math.Color;
-import com.gtnewhorizons.modularui.api.math.Size;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
-import com.gtnewhorizons.modularui.common.widget.TextWidget;
-import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
-import com.gtnewhorizons.modularui.common.widget.textfield.TextFieldWidget;
-import com.science.gtnl.common.gui.modularui.TypeFilteredInputBusMEGui;
+import com.science.gtnl.common.gui.modularui.hatch.TypeFilteredInputBusMEGui;
 import com.science.gtnl.utils.enums.GTNLItemList;
-import com.science.gtnl.utils.machine.ItemFilteredList;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.IGridProxyable;
 import gregtech.api.enums.GTValues;
-import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
@@ -201,100 +190,6 @@ public class TypeFilteredInputBusME extends OredictInputBusME {
     @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
         return new TypeFilteredInputBusMEGui(this).build(data, syncManager, uiSettings);
-    }
-
-    @Override
-    @Deprecated
-    public ModularWindow createStackSizeConfigurationWindow(EntityPlayer player) {
-        // TODO: Remove this mui1 fallback after TypeFilteredInputBusME mui2 parity is verified.
-        final int WIDTH = 78;
-        final int HEIGHT = 237;
-        final int PARENT_WIDTH = getGUIWidth();
-        final int PARENT_HEIGHT = getGUIHeight();
-
-        ModularWindow.Builder builder = ModularWindow.builder(WIDTH, HEIGHT);
-        builder.setBackground(GTUITextures.BACKGROUND_SINGLEBLOCK_DEFAULT);
-        builder.setGuiTint(getGUIColorization());
-        builder.setDraggable(true);
-        builder.setPos(
-            (size, window) -> Alignment.Center.getAlignedPos(size, new Size(PARENT_WIDTH, PARENT_HEIGHT))
-                .add(
-                    Alignment.TopRight.getAlignedPos(new Size(PARENT_WIDTH, PARENT_HEIGHT), new Size(WIDTH, HEIGHT))
-                        .add(WIDTH - 3, 0)));
-
-        builder.widget(
-            TextWidget.localised("GT5U.machines.stocking_bus.min_stack_size")
-                .setPos(3, 2)
-                .setSize(74, 14))
-            .widget(
-                new NumericWidget().setSetter(val -> minAutoPullStackSize = (int) val)
-                    .setGetter(() -> minAutoPullStackSize)
-                    .setBounds(1, Integer.MAX_VALUE)
-                    .setScrollValues(1, 4, 64)
-                    .setTextAlignment(Alignment.Center)
-                    .setTextColor(Color.WHITE.normal)
-                    .setSize(70, 18)
-                    .setPos(3, 18)
-                    .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD));
-
-        builder.widget(
-            TextWidget.localised("GT5U.machines.stocking_bus.refresh_time")
-                .setPos(3, 42)
-                .setSize(74, 14))
-            .widget(
-                new NumericWidget().setSetter(val -> autoPullRefreshTime = (int) val)
-                    .setGetter(() -> autoPullRefreshTime)
-                    .setBounds(1, Integer.MAX_VALUE)
-                    .setScrollValues(1, 4, 64)
-                    .setTextAlignment(Alignment.Center)
-                    .setTextColor(Color.WHITE.normal)
-                    .setSize(70, 18)
-                    .setPos(3, 58)
-                    .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD));
-
-        builder.widget(
-            TextWidget.localised("gtnl.hatch.type_filtered_input_bus_me.info.mod_id")
-                .setPos(3, 120)
-                .setSize(60, 14))
-            .widget(
-                new TextFieldWidget().setSetter(this::setModid)
-                    .setGetter(() -> modid != null ? modid : "")
-                    .setTextAlignment(Alignment.Center)
-                    .setScrollBar()
-                    .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD)
-                    .setPos(3, 136)
-                    .setSize(70, 14)
-                    .attachSyncer(new FakeSyncWidget.StringSyncer(this::getModid, this::setModid), builder));
-
-        builder.widget(
-            TextWidget.localised("gtnl.hatch.type_filtered_input_bus_me.info.item_id")
-                .setPos(3, 154)
-                .setSize(60, 14))
-            .widget(
-                new TextFieldWidget().setSetter(this::setNameFilter)
-                    .setGetter(() -> name != null ? name : "")
-                    .setTextAlignment(Alignment.Center)
-                    .setScrollBar()
-                    .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD)
-                    .setPos(3, 170)
-                    .setSize(70, 16)
-                    .attachSyncer(new FakeSyncWidget.StringSyncer(this::getNameFilter, this::setNameFilter), builder));
-
-        builder.widget(
-            TextWidget.localised("gtnl.hatch.type_filtered_input_bus_me.info.item_meta")
-                .setPos(3, 188)
-                .setSize(60, 14))
-            .widget(
-                new NumericWidget().setSetter(val -> setMetaFilter((int) val))
-                    .setGetter(() -> meta)
-                    .setTextAlignment(Alignment.Center)
-                    .setScrollBar()
-                    .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD)
-                    .setPos(3, 204)
-                    .setSize(70, 16)
-                    .attachSyncer(new FakeSyncWidget.IntegerSyncer(this::getMetaFilter, this::setMetaFilter), builder));
-
-        return builder.build();
     }
 
     @Override

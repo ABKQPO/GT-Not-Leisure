@@ -18,6 +18,8 @@ import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.input.Mouse;
 
 import com.cleanroommc.modularui.api.widget.Interactable;
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.gui.IBookmarkGroupDropTarget;
 import com.science.gtnl.common.item.items.Stick;
@@ -53,8 +55,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.util.AssemblyLineUtils;
 import gregtech.common.items.ItemFluidDisplay;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
+@EventBusSubscriber(side = Side.CLIENT, phase = Phase.PRE)
 public class GTNLInputHandler implements IContainerInputHandler {
 
     public static final GTNLInputHandler INSTANCE = new GTNLInputHandler();
@@ -71,10 +75,6 @@ public class GTNLInputHandler implements IContainerInputHandler {
     public static GuiScreen LAST_GUI_SCREEN = null;
 
     public List<ItemStack> draggedBookmarkGroup;
-
-    public GTNLInputHandler() {
-        GuiContainerManager.addInputHandler(this);
-    }
 
     public static Map<String, BooleanSupplier> createKeyBindings() {
         Map<String, BooleanSupplier> keyBindings = new Object2ObjectOpenHashMap<>(2);
@@ -153,7 +153,7 @@ public class GTNLInputHandler implements IContainerInputHandler {
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onClientTick(TickEvent.ClientTickEvent event) {
+    public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (INPUT_COOLDOWN_TICKS > 0) {
             INPUT_COOLDOWN_TICKS--;
         }
@@ -161,12 +161,12 @@ public class GTNLInputHandler implements IContainerInputHandler {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onInputEvent(final InputEvent.KeyInputEvent event) {
+    public static void onInputEvent(final InputEvent.KeyInputEvent event) {
         tryHandlePickBlockInput();
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onInputEvent(final InputEvent.MouseInputEvent event) {
+    public static void onInputEvent(final InputEvent.MouseInputEvent event) {
         tryHandlePickBlockInput();
     }
 
@@ -237,7 +237,7 @@ public class GTNLInputHandler implements IContainerInputHandler {
             this.draggedBookmarkGroup = group.getBookmarkItems()
                 .stream()
                 .map(BookmarkItem::getItemStack)
-                .collect(Collectors.toList());
+                .collect(Collectors.toCollection(ObjectArrayList::new));
         }
     }
 

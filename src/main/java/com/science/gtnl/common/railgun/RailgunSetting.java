@@ -6,12 +6,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.Constants;
 
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ItemConfig;
 
 public enum RailgunSetting {
 
-    TERRAIN("terrain", false, stack -> MainConfig.item.railgun.enableTerrain),
-    PVP("pvp", false, stack -> MainConfig.item.railgun.enablePlayerDamage),
+    TERRAIN("terrain", false, stack -> ItemConfig.railgun.enableTerrain),
+    PVP("pvp", false, stack -> ItemConfig.railgun.enablePlayerDamage),
     SPLASH("splash", true, null),
     CHAIN("chain", true, null),
     EHV_BEAM("ehvBeam", false, stack -> RailgunData.modules(stack)

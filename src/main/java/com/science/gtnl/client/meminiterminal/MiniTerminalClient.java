@@ -1,9 +1,7 @@
 package com.science.gtnl.client.meminiterminal;
 
 import java.io.IOException;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import net.minecraft.client.Minecraft;
@@ -19,20 +17,23 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent;
-import net.minecraftforge.common.MinecraftForge;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import com.cleanroommc.modularui.api.IMuiScreen;
 import com.cleanroommc.modularui.screen.OpenScreenEvent;
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.floatingwindow.FloatingWindowHost;
 import com.science.gtnl.client.floatingwindow.FloatingWindows;
 import com.science.gtnl.common.item.items.ItemMEMiniPortableTerminal;
 import com.science.gtnl.common.meminiterminal.MiniTerminalPinSettings;
-import com.science.gtnl.common.meminiterminal.MiniTerminalRequestPacket;
-import com.science.gtnl.common.meminiterminal.MiniTerminalUpdatePacket;
+import com.science.gtnl.common.packet.MiniTerminalRequestPacket;
+import com.science.gtnl.common.packet.MiniTerminalUpdatePacket;
+import com.science.gtnl.compat.bogosorter.MiniTerminalBogoCompat;
+import com.science.gtnl.config.MiniTerminalClientConfig;
 
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
@@ -46,7 +47,6 @@ import appeng.helpers.MonitorableAction;
 import appeng.util.Platform;
 import codechicken.nei.guihook.GuiContainerManager;
 import codechicken.nei.recipe.GuiRecipe;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -54,19 +54,15 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.longs.LongLinkedOpenHashSet;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 
 @SideOnly(Side.CLIENT)
-public final class MiniTerminalClient {
+@EventBusSubscriber(side = Side.CLIENT, phase = Phase.PRE)
+public class MiniTerminalClient {
 
     private static final int MAX_CACHED_VIEWS = 8;
-    private static final MiniTerminalClient INSTANCE = new MiniTerminalClient();
-    private static final Map<UUID, MiniTerminalModel> VIEWS = new LinkedHashMap<>(MAX_CACHED_VIEWS, 0.75f, true) {
-
-        @Override
-        protected boolean removeEldestEntry(Map.Entry<UUID, MiniTerminalModel> eldest) {
-            return size() > MAX_CACHED_VIEWS;
-        }
-    };
+    private static final Object2ObjectLinkedOpenHashMap<UUID, MiniTerminalModel> VIEWS = new Object2ObjectLinkedOpenHashMap<>(
+        MAX_CACHED_VIEWS);
 
     private static final MiniTerminalLayout LAYOUT = new MiniTerminalLayout();
     private static final LongLinkedOpenHashSet RETIRED_SESSIONS = new LongLinkedOpenHashSet();
@@ -96,21 +92,14 @@ public final class MiniTerminalClient {
     private static String name = "ME";
     private static String network = "";
 
-    private MiniTerminalClient() {}
-
     public static void init() {
-        MiniTerminalClientConfig.load(LAYOUT);
-        MiniTerminalBogoCompat.init();
-        MinecraftForge.EVENT_BUS.register(INSTANCE);
-        FMLCommonHandler.instance()
-            .bus()
-            .register(INSTANCE);
+        MiniTerminalClientConfig.restore(LAYOUT);
         FloatingWindows.register(MiniTerminalClient::overlay);
         GuiContainerManager.addSlotClickHandler(new MiniTerminalNEIAdapter());
     }
 
     @SubscribeEvent
-    public void open(OpenScreenEvent event) {
+    public static void open(OpenScreenEvent event) {
         MiniTerminalClientConfig.saveWindow(LAYOUT);
         checkConnection();
         if (selected != null && event.getScreen() instanceof GuiContainer gui
@@ -124,12 +113,12 @@ public final class MiniTerminalClient {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void initGui(InitGuiEvent.Post event) {
+    public static void initGui(InitGuiEvent.Post event) {
         if (!(event.gui instanceof IMuiScreen)) attachPanel(event);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void initNativePanel(InitGuiEvent.Post event) {
+    public static void initNativePanel(InitGuiEvent.Post event) {
         if (event.gui instanceof IMuiScreen) attachPanel(event);
     }
 
@@ -185,7 +174,7 @@ public final class MiniTerminalClient {
     }
 
     @SubscribeEvent
-    public void tick(TickEvent.ClientTickEvent event) {
+    public static void tick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
         checkConnection();
         Minecraft mc = Minecraft.getMinecraft();
@@ -369,7 +358,7 @@ public final class MiniTerminalClient {
 
             try {
                 MiniTerminalModel view = VIEWS
-                    .get(UUID.fromString(data.getString(MiniTerminalUpdatePacket.TERMINAL_ID_KEY)));
+                    .getAndMoveToLast(UUID.fromString(data.getString(MiniTerminalUpdatePacket.TERMINAL_ID_KEY)));
                 if (view != null) view.readSettings(data.getCompoundTag("config"), data.getLong("actionId"));
             } catch (IllegalArgumentException ignored) {}
             return;
@@ -410,7 +399,7 @@ public final class MiniTerminalClient {
                 MiniTerminalModel old = model();
                 VIEWS.remove(null);
                 selected = id;
-                VIEWS.put(id, old);
+                cacheView(id, old);
             }
             session = incoming;
             waiting = false;
@@ -630,7 +619,17 @@ public final class MiniTerminalClient {
     }
 
     public static MiniTerminalModel model() {
-        return VIEWS.computeIfAbsent(selected, key -> new MiniTerminalModel());
+        MiniTerminalModel view = VIEWS.getAndMoveToLast(selected);
+        if (view == null) {
+            view = new MiniTerminalModel();
+            cacheView(selected, view);
+        }
+        return view;
+    }
+
+    private static void cacheView(UUID id, MiniTerminalModel view) {
+        VIEWS.putAndMoveToLast(id, view);
+        if (VIEWS.size() > MAX_CACHED_VIEWS) VIEWS.removeFirst();
     }
 
     public static MiniTerminalInventoryPanel overlay() {

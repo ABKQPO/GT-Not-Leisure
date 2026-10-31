@@ -7,6 +7,8 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 import org.lwjgl.opengl.GL11;
 
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.gtnllib.utils.ColorMath;
 import com.gtnllib.utils.Vec3d;
 import com.science.gtnl.client.celestweave.CelestweaveClientEvents.HitOrigin;
@@ -16,6 +18,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
+@EventBusSubscriber(side = Side.CLIENT, phase = Phase.PRE)
 public class CelestweaveScreenGlow {
 
     private static final int HIT_LIFETIME = 450, SAVE_LIFETIME = 900;
@@ -45,7 +48,7 @@ public class CelestweaveScreenGlow {
     }
 
     @SubscribeEvent
-    public void overlay(RenderGameOverlayEvent.Pre event) {
+    public static void overlay(RenderGameOverlayEvent.Pre event) {
         if (event.type != RenderGameOverlayEvent.ElementType.HELMET) return;
         Minecraft minecraft = Minecraft.getMinecraft();
         EntityPlayer player = minecraft.thePlayer;

@@ -39,20 +39,15 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
-import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
-import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
-import com.gtnewhorizons.modularui.common.widget.SlotWidget;
-import com.gtnewhorizons.modularui.common.widget.TextWidget;
+import com.gtnllib.utils.GameUtils;
 import com.science.gtnl.api.IStackVault;
 import com.science.gtnl.api.casing.GTNLCasings;
-import com.science.gtnl.common.gui.modularui.SingularityDataHubGui;
-import com.science.gtnl.common.gui.modularui.VaultTypeCountFormatter;
+import com.science.gtnl.common.gui.modularui.multiblock.SingularityDataHubGui;
 import com.science.gtnl.common.machine.hatch.VaultPortHatch;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
+import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.StructureUtils;
-import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.BlockIcons;
-import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import appeng.api.storage.data.AEStackTypeRegistry;
 import appeng.api.storage.data.IAEFluidStack;
@@ -83,6 +78,7 @@ import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.tileentities.machines.MTEHatchCraftingInputME;
 import gregtech.common.tileentities.machines.MTEHatchInputBusME;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
@@ -190,21 +186,6 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
     @Override
     protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
         return new SingularityDataHubGui(this);
-    }
-
-    @Override
-    @Deprecated
-    public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
-        super.drawTexts(screenElements, inventorySlot);
-        screenElements
-            .widget(
-                new TextWidget()
-                    .setStringSupplier(
-                        () -> VaultTypeCountFormatter
-                            .createTypeCountText(typeCountPayloadForGui, "gtnl.gui.singularity_data_hub.type_count"))
-                    .setDefaultColor(COLOR_TEXT_WHITE.get())
-                    .setEnabled(true))
-            .widget(new FakeSyncWidget.StringSyncer(this::getTypeCountPayloadForGui, this::setTypeCountPayloadFromGui));
     }
 
     @Override
@@ -452,7 +433,7 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
 
     @Override
     public String[] getInfoData() {
-        ArrayList<String> ll = new ArrayList<>();
+        List<String> ll = new ObjectArrayList<>();
         for (IAEStackType<?> type : AEStackTypeRegistry.getAllTypes()) {
             IItemList<?> store = STORE_STACKS.get(type);
             if (store == null || store.isEmpty()) continue;
@@ -478,7 +459,7 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
         return ll.toArray(new String[0]);
     }
 
-    private <T extends IAEStack<T>> void addStoredTypeInfo(ArrayList<String> info, IAEStackType<T> type,
+    private <T extends IAEStack<T>> void addStoredTypeInfo(List<String> info, IAEStackType<T> type,
         IItemList<?> store) {
         info.add(
             EnumChatFormatting.YELLOW
@@ -500,7 +481,7 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
         }
     }
 
-    private void addOperationalTypeInfo(ArrayList<String> info, IAEStackType<?> type) {
+    private void addOperationalTypeInfo(List<String> info, IAEStackType<?> type) {
         String typeName = getTypeName(type);
         info.add(
             IGregTechDeviceInformation.encode(
@@ -540,7 +521,7 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
         }
 
         if (!hasStoredStacks()) return;
-        String uuid = Utils.ensureUUID(aNBT);
+        String uuid = GameUtils.ensureUUID(aNBT);
         NBTTagCompound storeRoot = new NBTTagCompound();
         writeStoredStacks(storeRoot);
 
@@ -567,7 +548,7 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
         if (!locked) {
             aNBT.setBoolean("locked", false);
         }
-        Utils.ensureUUID(aNBT);
+        GameUtils.ensureUUID(aNBT);
         writeStoredStacks(aNBT);
         super.saveNBTData(aNBT);
     }

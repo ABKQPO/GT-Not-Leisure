@@ -1,10 +1,8 @@
 package com.science.gtnl.common.machine.hatch;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.LongBuffer;
 import java.text.DecimalFormat;
-import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -15,20 +13,14 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -36,56 +28,22 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidTank;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
 import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
+import com.cleanroommc.modularui.utils.fluid.FluidStackTank;
 import com.cleanroommc.modularui.utils.item.IItemHandlerModifiable;
+import com.cleanroommc.modularui.utils.item.ItemStackHandler;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.google.common.collect.ImmutableSet;
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
-import com.gtnewhorizons.modularui.api.GlStateManager;
-import com.gtnewhorizons.modularui.api.ModularUITextures;
-import com.gtnewhorizons.modularui.api.drawable.IDrawable;
-import com.gtnewhorizons.modularui.api.drawable.ItemDrawable;
-import com.gtnewhorizons.modularui.api.drawable.Text;
-import com.gtnewhorizons.modularui.api.drawable.TextRenderer;
-import com.gtnewhorizons.modularui.api.fluids.FluidTankLongDelegate;
-import com.gtnewhorizons.modularui.api.fluids.FluidTanksHandler;
-import com.gtnewhorizons.modularui.api.forge.ItemStackHandler;
-import com.gtnewhorizons.modularui.api.math.Alignment;
-import com.gtnewhorizons.modularui.api.math.Color;
-import com.gtnewhorizons.modularui.api.math.Pos2d;
-import com.gtnewhorizons.modularui.api.math.Size;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow.Builder;
-import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
-import com.gtnewhorizons.modularui.api.widget.Interactable;
-import com.gtnewhorizons.modularui.common.fluid.FluidStackTank;
-import com.gtnewhorizons.modularui.common.internal.wrapper.BaseSlot;
-import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
-import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
-import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
-import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
-import com.gtnewhorizons.modularui.common.widget.FluidSlotWidget;
-import com.gtnewhorizons.modularui.common.widget.MultiChildWidget;
-import com.gtnewhorizons.modularui.common.widget.Scrollable;
-import com.gtnewhorizons.modularui.common.widget.SlotGroup;
-import com.gtnewhorizons.modularui.common.widget.SlotWidget;
-import com.gtnewhorizons.modularui.common.widget.TabButton;
-import com.gtnewhorizons.modularui.common.widget.TabContainer;
-import com.gtnewhorizons.modularui.common.widget.TextWidget;
-import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.IRecipeProcessingAwareDualHatch;
-import com.science.gtnl.common.gui.modularui.SuperDualInputHatchMEGui;
-import com.science.gtnl.utils.Utils;
+import com.science.gtnl.common.gui.modularui.hatch.SuperDualInputHatchMEGui;
 import com.science.gtnl.utils.enums.GTNLItemList;
-import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.machine.FluidTankG;
 import com.science.gtnl.utils.machine.ItemStackG;
+import com.science.gtnl.utils.machine.MachineUtils;
 
 import appeng.api.config.Actionable;
 import appeng.api.implementations.IPowerChannelState;
@@ -105,29 +63,18 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
-import appeng.client.render.AppEngRenderItem;
-import appeng.core.AELog;
-import appeng.core.localization.WailaText;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.IGridProxyable;
-import appeng.util.Platform;
 import appeng.util.item.AEFluidStack;
 import appeng.util.item.AEItemStack;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.enums.Dyes;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.ItemList;
-import gregtech.api.enums.Materials;
-import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.Textures;
-import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IDataCopyable;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
-import gregtech.api.interfaces.modularui.IAddGregtechLogo;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.metatileentity.MetaTileEntity;
@@ -138,11 +85,9 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.recipe.check.SimpleCheckRecipeResult;
 import gregtech.api.render.TextureFactory;
-import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
 import gregtech.common.config.MachineStats;
-import gregtech.common.gui.modularui.widget.AESlotWidget;
 import gregtech.common.tileentities.machines.IDualInputHatchWithPattern;
 import gregtech.common.tileentities.machines.IDualInputInventory;
 import gregtech.common.tileentities.machines.IDualInputInventoryWithPattern;
@@ -157,13 +102,13 @@ import mcp.mobius.waila.api.IWailaDataAccessor;
 @IMetaTileEntity.SkipGenerateName
 @IMetaTileEntity.SkipGenerateDescription
 public class SuperDualInputHatchME extends MTEHatchInputBus
-    implements IDualInputHatchWithPattern, IRecipeProcessingAwareDualHatch, IAddGregtechLogo, IDataCopyable,
-    ISmartInputHatch, IPowerChannelState, IGridProxyable, IStackWatcherHost {
+    implements IDualInputHatchWithPattern, IRecipeProcessingAwareDualHatch, IDataCopyable, ISmartInputHatch,
+    IPowerChannelState, IGridProxyable, IStackWatcherHost {
 
     public static int SLOT_COUNT = 100;
     public static final String COPIED_DATA_IDENTIFIER = "superStockingDualHatch";
 
-    public static Utils.VargsFunction<Object[], FluidStack[]> asFluidStack = (s) -> Arrays.stream(s)
+    public static MachineUtils.VargsFunction<Object[], FluidStack[]> asFluidStack = (s) -> Arrays.stream(s)
         .flatMap(Arrays::stream)
         .map(f -> {
             if (f instanceof FluidTank tank) {
@@ -442,660 +387,6 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
         refreshGuiStateOnOpen();
         return new SuperDualInputHatchMEGui(this).build(data, syncManager, uiSettings);
-    }
-
-    @Override
-    @Deprecated
-    public void addUIWidgets(Builder builder, UIBuildContext buildContext) {
-        // TODO: Remove this mui1 fallback after SuperDualInputHatchME mui2 parity is verified.
-        updateAllInformationSlots();
-        SlotWidget[] aeSlotWidgets = new SlotWidget[SLOT_COUNT];
-        builder.setBackground(ModularUITextures.VANILLA_BACKGROUND);
-
-        for (int i = 15; i < SLOT_COUNT + 15; i++) {
-            int slotID = i;
-            buildContext.addSyncedWindow(i, (player) -> createStoredItemStackSizeWindow(player, slotID - 15));
-        }
-
-        for (int i = 15 + SLOT_COUNT; i < SLOT_COUNT + SLOT_COUNT + 15; i++) {
-            int slotID = i;
-            buildContext
-                .addSyncedWindow(i, (player) -> createStoredFluidStackSizeWindow(player, slotID - 15 - SLOT_COUNT));
-        }
-
-        IDrawable tab1 = new ItemDrawable(ItemList.Hatch_Input_Bus_ME_Advanced.get(1)).withFixedSize(18, 18, 4, 6);
-        IDrawable tab2 = new ItemDrawable(ItemList.Hatch_Input_ME_Advanced.get(1)).withFixedSize(18, 18, 4, 6);
-        IDrawable tab3 = new ItemDrawable(GTOreDictUnificator.get(OrePrefixes.gearGt, Materials.Iron, 1))
-            .withFixedSize(18, 18, 4, 6);
-
-        Scrollable itemScrollable = new Scrollable().setVerticalScroll();
-        Scrollable fluidScrollable = new Scrollable().setVerticalScroll();
-
-        MultiChildWidget itemPage = new MultiChildWidget().addChild(
-            SlotGroup.ofItemHandler(inventoryHandlerDisplay, 10)
-                .startFromSlot(0)
-                .endAtSlot(99)
-                .phantom(true)
-                .background(GTUITextures.SLOT_DARK_GRAY)
-                .widgetCreator(slot -> aeSlotWidgets[slot.getSlotIndex()] = new AESlotWidget(slot) {
-
-                    @Override
-                    public List<String> getExtraTooltip() {
-                        List<String> extraLines = new ObjectArrayList<>();
-                        if (i_client[slot.getSlotIndex()] >= 1000) {
-                            extraLines.add(I18n.format("modularui2.amount", i_client[slot.getSlotIndex()]));
-                        }
-                        if (isPhantom()) {
-                            if (canControlAmount()) {
-                                String[] lines = I18n.format("modularui.item.phantom.control")
-                                    .split("\\\\n");
-                                extraLines.addAll(Arrays.asList(lines));
-                            } else if (!interactionDisabled) {
-                                extraLines.add(I18n.format("modularui.phantom.single.clear"));
-                            }
-                        }
-                        return extraLines.isEmpty() ? Collections.emptyList() : extraLines;
-                    }
-
-                    @SideOnly(Side.CLIENT)
-                    public RenderItem setItemRender(RenderItem item) {
-                        RenderItem ri = ModularGui.getItemRenderer();
-                        ModularGui.setItemRenderer(item);
-                        return ri;
-                    }
-
-                    @Override
-                    @SideOnly(Side.CLIENT)
-                    public void drawSlot(Slot slotIn) {
-                        AppEngRenderItem aeRenderItem = new AppEngRenderItem();
-                        AppEngRenderItem.POST_HOOKS.add(HookHolder.SKIP_ITEM_STACK_SIZE_HOOK);
-                        RenderItem pIR = this.setItemRender(aeRenderItem);
-                        try {
-                            IAEItemStack is = Platform.getAEStackInSlot(slotIn);
-                            if (is != null) {
-                                is.setStackSize(i_client[slotIn.getSlotIndex()]);
-                            }
-                            aeRenderItem.setAeStack(is);
-
-                            drawSlot(slotIn, true);
-                        } catch (Exception err) {
-                            AELog.warn("[AppEng] AE prevented crash while drawing slot: " + err);
-                        }
-                        AppEngRenderItem.POST_HOOKS.remove(HookHolder.SKIP_ITEM_STACK_SIZE_HOOK);
-                        this.setItemRender(pIR);
-                    }
-
-                    @SideOnly(Side.CLIENT)
-                    public TextRenderer textRenderer0;
-
-                    {
-                        if (FMLCommonHandler.instance()
-                            .getSide() == Side.CLIENT) {
-                            textRenderer0 = new TextRenderer();
-                        }
-
-                    }
-
-                    @SideOnly(Side.CLIENT)
-                    public void drawSlot(Slot slotIn, boolean drawStackSize) {
-                        super.drawSlot(slotIn, false);
-
-                        if (drawStackSize) {
-
-                            ItemStack itemstack = getItemStackForRendering(slotIn);
-                            if (itemstack != null) {
-
-                                getContext().getScreen()
-                                    .setZ(100f);
-                                ModularGui.getItemRenderer().zLevel = 100.0F;
-                                GlStateManager.enableRescaleNormal();
-                                GlStateManager.enableLighting();
-                                RenderHelper.enableGUIStandardItemLighting();
-                                GlStateManager.enableDepth();
-                                GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-                                GlStateManager.pushMatrix();
-                                // so that item z levels are properly ordered
-                                GlStateManager.translate(0, 0, 150 * getWindowLayer());
-
-                                GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-                                GlStateManager.popMatrix();
-                                long amount = i_client[slotIn.getSlotIndex()];
-                                if (drawStackSize) {
-                                    if (amount < 0) {
-                                        amount = itemstack.stackSize;
-                                    }
-                                    // render the amount overlay
-                                    if (amount > 1) {
-                                        String amountText = numberFormat.formatWithSuffix(amount, new StringBuffer())
-                                            .toString();
-                                        float scale = 1f;
-                                        if (amountText.length() == 3) {
-                                            scale = 0.8f;
-                                        } else if (amountText.length() == 4) {
-                                            scale = 0.6f;
-                                        } else if (amountText.length() > 4) {
-                                            scale = 0.5f;
-                                        }
-                                        textRenderer0.setShadow(true);
-                                        textRenderer0.setScale(scale);
-                                        textRenderer0.setColor(Color.WHITE.normal);
-                                        textRenderer0
-                                            .setAlignment(Alignment.BottomRight, size.width - 1, size.height - 1);
-                                        textRenderer0.setPos(1, 1);
-                                        GlStateManager.disableLighting();
-                                        GlStateManager.disableDepth();
-                                        GlStateManager.disableBlend();
-                                        textRenderer0.draw(amountText);
-                                        GlStateManager.enableLighting();
-                                        GlStateManager.enableDepth();
-                                        GlStateManager.enableBlend();
-                                    }
-                                }
-
-                                GlStateManager.disableDepth();
-                                GL11.glDisable(GL11.GL_BLEND);
-                                ModularGui.getItemRenderer().zLevel = 0.0F;
-                                getContext().getScreen()
-                                    .setZ(0f);
-
-                            }
-                        }
-
-                    }
-
-                }.setOverwriteItemStackTooltip(s -> rewriteItem(slot, s))
-                    .disableInteraction())
-                .build()
-                .setPos(205, 0))
-
-            .addChild(
-                SlotGroup.ofItemHandler(inventoryHandlerMark, 10)
-                    .startFromSlot(0)
-                    .endAtSlot(99)
-                    .phantom(true)
-                    .slotCreator(index -> new BaseSlot(inventoryHandlerMark, index, true) {
-
-                        @Override
-                        public boolean isEnabled() {
-                            return !autoPullItemList && super.isEnabled();
-                        }
-                    })
-                    .widgetCreator(slot -> (SlotWidget) new SlotWidget(slot) {
-
-                        @Override
-                        public ClickResult onClick(int buttonId, boolean doubleClick) {
-                            if (interactionDisabled) return ClickResult.ACCEPT;
-                            if (buttonId == 2) {
-                                ClickData clickData = ClickData.create(buttonId, doubleClick);
-                                syncToServer(15, clickData::writeToPacket);
-                                return ClickResult.SUCCESS;
-                            }
-                            return super.onClick(buttonId, doubleClick);
-                        }
-
-                        @Override
-                        public void readOnServer(int id, PacketBuffer buf) throws IOException {
-                            if (id == 15) click(ClickData.readPacket(buf));
-                            super.readOnServer(id, buf);
-                        }
-
-                        public void click(ClickData clickData) {
-                            if (interactionDisabled) return;
-                            if (clickData.mouseButton == 2) {
-                                getContext().openSyncedWindow(getMcSlot().slotNumber - 21 - SLOT_COUNT);
-                            }
-                        }
-
-                        @Override
-                        public void phantomClick(ClickData clickData, ItemStack cursorStack) {
-                            if (clickData.mouseButton != 0 || !getMcSlot().isEnabled()) return;
-                            int aSlotIndex = getMcSlot().getSlotIndex();
-                            if (cursorStack == null) {
-                                getMcSlot().putStack(null);
-                            } else {
-                                if (containsSuchStack(cursorStack)) return;
-                                getMcSlot().putStack(GTUtility.copyAmount(1, cursorStack));
-                            }
-                            if (getBaseMetaTileEntity().isServerSide()) {
-                                ItemStack newInfo = updateInformationSlot(aSlotIndex, cursorStack);
-                                aeSlotWidgets[getMcSlot().getSlotIndex()].getMcSlot()
-                                    .putStack(newInfo);
-                            }
-                        }
-
-                        @Override
-                        public boolean onMouseScroll(int direction) {
-                            return false;
-                        }
-
-                        @Override
-                        public IDrawable[] getBackground() {
-                            IDrawable slot;
-                            if (autoPullItemList) {
-                                slot = GTUITextures.SLOT_DARK_GRAY;
-                            } else {
-                                slot = ModularUITextures.ITEM_SLOT;
-                            }
-                            return new IDrawable[] { slot, GTUITextures.OVERLAY_SLOT_ARROW_ME };
-                        }
-
-                        @Override
-                        public List<String> getExtraTooltip() {
-                            if (autoPullItemList) {
-                                return Collections.singletonList(
-                                    StatCollector.translateToLocal("GT5U.machines.stocking_bus.cannot_set_slot"));
-                            } else {
-                                return Collections
-                                    .singletonList(StatCollector.translateToLocal("modularui.phantom.single.clear"));
-                            }
-                        }
-
-                        public boolean containsSuchStack(ItemStack tStack) {
-                            for (int i = 0; i < SLOT_COUNT; ++i) {
-                                if (GTUtility.areStacksEqual(i_mark[i], tStack, false)) return true;
-                            }
-                            return false;
-                        }
-                    }.dynamicTooltip(() -> {
-                        if (autoPullItemList) {
-                            return Collections.singletonList(
-                                StatCollector.translateToLocal("GT5U.machines.stocking_bus.cannot_set_slot"));
-                        } else {
-                            return Collections.emptyList();
-                        }
-                    })
-                        .setUpdateTooltipEveryTick(true))
-                    .build()
-                    .setPos(7, 0));
-        itemScrollable.widget(itemPage);
-
-        MultiChildWidget fluidPage = new MultiChildWidget().addChild(
-            SlotGroup.ofFluidTanks(createFluidTankList(f_mark, 1), 10)
-                .phantom(true)
-                .widgetCreator((slotIndex, h) -> (FluidSlotWidget) new FluidSlotWidget(h) {
-
-                    @Override
-                    public void tryClickPhantom(ClickData clickData, ItemStack cursorStack) {
-                        IGregTechTileEntity gtTE = getBaseMetaTileEntity();
-                        if (gtTE.isServerSide() && clickData.mouseButton == 2) {
-                            getContext().openSyncedWindow(slotIndex + 15 + SLOT_COUNT);
-                            return;
-                        }
-
-                        if (clickData.mouseButton != 0 || autoPullItemList) return;
-
-                        FluidStack heldFluid = getFluidForPhantomItem(cursorStack);
-                        if (cursorStack == null) {
-                            f_mark[slotIndex] = null;
-                        } else {
-                            if (containsSuchStack(heldFluid)) return;
-                            f_mark[slotIndex] = heldFluid;
-                        }
-                        if (gtTE.isServerSide()) {
-                            updateInformationSlotF(slotIndex);
-                            detectAndSendChanges(false);
-                        }
-                    }
-
-                    public boolean containsSuchStack(FluidStack tStack) {
-                        for (int i = 0; i < SLOT_COUNT; ++i) {
-                            if (GTUtility.areFluidsEqual(f_mark[i], tStack, false)) {
-                                return true;
-                            }
-                        }
-                        return false;
-                    }
-
-                    @Override
-                    public void tryScrollPhantom(int direction) {}
-
-                    @Override
-                    public IDrawable[] getBackground() {
-                        IDrawable slot;
-                        if (autoPullItemList) {
-                            slot = GTUITextures.SLOT_DARK_GRAY;
-                        } else {
-                            slot = ModularUITextures.FLUID_SLOT;
-                        }
-                        return new IDrawable[] { slot, GTUITextures.OVERLAY_SLOT_ARROW_ME };
-                    }
-
-                    @Override
-                    public void buildTooltip(List<Text> tooltip) {
-                        FluidStack fluid = getContent();
-                        if (fluid != null) {
-                            addFluidNameInfo(tooltip, fluid);
-
-                            if (!autoPullItemList) {
-                                tooltip.add(Text.localised("modularui.phantom.single.clear"));
-                            }
-                        } else {
-                            tooltip.add(
-                                Text.localised("modularui.fluid.empty")
-                                    .format(EnumChatFormatting.WHITE));
-                        }
-
-                        if (autoPullItemList) {
-                            tooltip.add(Text.localised("GT5U.machines.stocking_bus.cannot_set_slot"));
-                        }
-                    }
-                }.setUpdateTooltipEveryTick(true))
-                .build()
-                .setPos(7, 0))
-
-            .addChild(
-                SlotGroup.ofFluidTanks(createFluidTankList(f_display, Integer.MAX_VALUE), 10)
-                    .tankHandlerCreator(s -> new FluidTanksHandler(new FluidTankLongDelegate(s)) {
-
-                        @Override
-                        public long getTankStoredAmount(int tank) {
-                            return f_client[((Supplier<Integer>) s).get()];
-                        }
-
-                    })
-                    .phantom(true)
-                    .widgetCreator((slotIndex, h) -> (FluidSlotWidget) new FluidSlotWidget(h) {
-
-                        @Override
-                        public void tryClickPhantom(ClickData clickData, ItemStack cursorStack) {}
-
-                        @Override
-                        public void tryScrollPhantom(int direction) {}
-
-                        @Override
-                        public void buildTooltip(List<Text> tooltip) {
-                            FluidStack fluid = getContent();
-                            if (fluid != null) {
-                                addFluidNameInfo(tooltip, fluid);
-
-                                tooltip.add(
-                                    Text.localised(
-                                        "modularui.fluid.phantom.amount",
-                                        /* df.format */(f_client[slotIndex])));
-
-                                if (f_client[slotIndex] > Integer.MAX_VALUE) {
-                                    double cp = f_client[slotIndex] * 1d / Integer.MAX_VALUE;
-
-                                    tooltip.add(
-                                        Text.localised("gtnl.hatch.super_dual_input_me.auto_pull.exceeds_int_max"));
-
-                                    tooltip.add(new Text(df2.format(cp) + "*int.max"));
-                                }
-
-                                addAdditionalFluidInfo(tooltip, fluid);
-                                if (!Interactable.hasShiftDown()) {
-                                    tooltip.add(Text.EMPTY);
-                                    tooltip.add(Text.localised("modularui.tooltip.shift"));
-                                }
-                            } else {
-                                tooltip.add(
-                                    Text.localised("modularui.fluid.empty")
-                                        .format(EnumChatFormatting.WHITE));
-                            }
-                        }
-                    }.setUpdateTooltipEveryTick(true))
-                    .background(GTUITextures.SLOT_DARK_GRAY)
-                    .controlsAmount(true)
-                    .build()
-                    .setPos(new Pos2d(205, 0)));
-        fluidScrollable.widget(fluidPage);
-
-        builder.widget(
-            new TabContainer().setButtonSize(28, 32)
-                .addTabButton(
-                    new TabButton(0)
-                        .setBackground(
-                            true,
-                            ModularUITextures.VANILLA_TAB_RIGHT.getSubArea(0f, 0f, 1f, 1 / 3f)
-                                .getSubArea(0, 0, 0.5f, 1f),
-                            tab1)
-                        .setBackground(
-                            false,
-                            ModularUITextures.VANILLA_TAB_RIGHT.getSubArea(0f, 0f, 1f, 1 / 3f)
-                                .getSubArea(0.5f, 0, 1f, 1f),
-                            tab1)
-                        .setPos(getGUIWidth() - 4, 0))
-                .addTabButton(
-                    new TabButton(1)
-                        .setBackground(
-                            true,
-                            ModularUITextures.VANILLA_TAB_RIGHT.getSubArea(0f, 1 / 3f, 1f, 2 / 3f)
-                                .getSubArea(0, 0, 0.5f, 1f),
-                            tab2)
-                        .setBackground(
-                            false,
-                            ModularUITextures.VANILLA_TAB_RIGHT.getSubArea(0f, 1 / 3f, 1f, 2 / 3f)
-                                .getSubArea(0.5f, 0, 1f, 1f),
-                            tab2)
-                        .setPos(getGUIWidth() - 4, 28))
-                .addTabButton(
-                    new TabButton(2)
-                        .setBackground(
-                            true,
-                            ModularUITextures.VANILLA_TAB_RIGHT.getSubArea(0f, 1 / 3f, 1f, 2 / 3f)
-                                .getSubArea(0, 0, 0.5f, 1f),
-                            tab3)
-                        .setBackground(
-                            false,
-                            ModularUITextures.VANILLA_TAB_RIGHT.getSubArea(0f, 1 / 3f, 1f, 2 / 3f)
-                                .getSubArea(0.5f, 0, 1f, 1f),
-                            tab3)
-                        .setPos(getGUIWidth() - 4, 56))
-                .addPage(
-                    itemScrollable.setSize(18 * 21 + 10, 72)
-                        .setPos(0, 9))
-                .addPage(
-                    fluidScrollable.setSize(18 * 21 + 10, 72)
-                        .setPos(0, 9))
-                .addPage(
-                    new MultiChildWidget().addChild(
-                        TextWidget.localised("GT5U.machines.stocking_bus.refresh_time")
-                            .setPos(3, 22)
-                            .setSize(74, 14))
-                        .addChild(
-                            new NumericWidget().setSetter(val -> autoPullRefreshTime = (int) val)
-                                .setGetter(() -> autoPullRefreshTime)
-                                .setBounds(1, Integer.MAX_VALUE)
-                                .setScrollValues(1, 4, 64)
-                                .setTextAlignment(Alignment.Center)
-                                .setTextColor(Color.WHITE.normal)
-                                .setSize(74, 18)
-                                .setPos(3, 3)
-                                .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD))
-                        .addChild(
-                            TextWidget.localised("gtnl.hatch.super_dual_input_me.auto_pull.max_amount")
-                                .setPos(3, 64)
-                                .setSize(70, 14)
-                                .addTooltip(
-                                    StatCollector.translateToLocal(
-                                        "gtnl.hatch.super_dual_input_me.auto_pull.max_amount.tooltip")))
-                        .addChild(
-                            new NumericWidget().setSetter(val -> intmaxs = (int) val)
-                                .setGetter(() -> intmaxs)
-                                .setBounds(1, 10000)
-                                .setScrollValues(1, 10, 100)
-                                .setTextAlignment(Alignment.Center)
-                                .setTextColor(Color.WHITE.normal)
-                                .setSize(74, 18)
-                                .setPos(3, 43)
-                                .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD))
-                        .addChild(
-                            TextWidget.localised("gtnl.hatch.super_dual_input_me.auto_pull.item_min_amount")
-                                .setPos(80, 22)
-                                .setSize(74, 14))
-                        .addChild(
-                            new NumericWidget().setSetter(val -> minAutoPullItemAmount = (long) val)
-                                .setGetter(() -> minAutoPullItemAmount)
-                                .setBounds(1, Long.MAX_VALUE)
-                                .setScrollValues(1, 4, 64)
-                                .setTextAlignment(Alignment.Center)
-                                .setTextColor(Color.WHITE.normal)
-                                .setSize(74, 18)
-                                .setPos(80, 3)
-                                .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD))
-                        .addChild(
-                            TextWidget.localised("gtnl.hatch.super_dual_input_me.auto_pull.fluid_min_amount")
-                                .setPos(80, 64)
-                                .setSize(74, 14))
-                        .addChild(
-                            new NumericWidget().setSetter(val -> minAutoPullFluidAmount = (long) val)
-                                .setGetter(() -> minAutoPullFluidAmount)
-                                .setBounds(1, Long.MAX_VALUE)
-                                .setScrollValues(1, 4, 64)
-                                .setTextAlignment(Alignment.Center)
-                                .setTextColor(Color.WHITE.normal)
-                                .setSize(74, 18)
-                                .setPos(80, 43)
-                                .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD))
-                        .addChild(new ButtonWidget().setOnClick((clickData, widget) -> {
-                            if (clickData.mouseButton == 0) {
-                                if (allowAuto) setAutoPullItemList(!autoPullItemList);
-                            }
-                        })
-                            .setBackground(() -> {
-                                if (autoPullItemList) {
-                                    return new IDrawable[] { GTUITextures.BUTTON_STANDARD_PRESSED,
-                                        GTUITextures.OVERLAY_BUTTON_AUTOPULL_ME };
-                                } else {
-                                    return new IDrawable[] { GTUITextures.BUTTON_STANDARD,
-                                        GTUITextures.OVERLAY_BUTTON_AUTOPULL_ME_DISABLED };
-                                }
-                            })
-                            .addTooltip(
-                                StatCollector.translateToLocal("GT5U.machines.stocking_bus.auto_pull.tooltip.1"))
-                            .setEnabledForce(allowAuto)
-                            .setSize(16, 16)
-                            .setPos(157, 4))));
-
-        builder.widget(
-            new FakeSyncWidget.BooleanSyncer(() -> autoPullItemList, SuperDualInputHatchME.this::setAutoPullItemList)
-                .setSynced(false, true));
-
-        builder.widget(TextWidget.dynamicText(() -> {
-            boolean isActive = isActive();
-            boolean isPowered = isPowered();
-            boolean isBooting = isBooting();
-
-            String state = WailaText.getPowerState(isActive, isPowered, isBooting);
-
-            if (isActive && isPowered) {
-                return new Text(
-                    MessageFormat.format(
-                        "{0}{1}§f ({2})",
-                        EnumChatFormatting.GREEN,
-                        state,
-                        StatCollector
-                            .translateToLocal(isAllowedToWork() ? "GT5U.gui.text.enabled" : "GT5U.gui.text.disabled")));
-            } else {
-                return new Text(EnumChatFormatting.DARK_RED + state);
-            }
-        })
-            .setTextAlignment(Alignment.Center)
-            .setSize(130, 9)
-            .setPos(131, 84));
-
-        for (int ii = 0; ii < SLOT_COUNT; ii++) {
-            int i = ii;
-            builder.widget(new FakeSyncWidget.LongSyncer(() -> {
-                // i_client[i]=i_saved[i];
-                return i_client[i];
-            }, s -> i_client[i] = s).setSynced(false, true)
-
-            );
-        }
-
-        for (int ii = 0; ii < SLOT_COUNT; ii++) {
-            int i = ii;
-            builder.widget(new FakeSyncWidget.LongSyncer(() -> {
-                // f_client[i]=f_shadow[i].gtnl$getFluidAmount();
-                return f_client[i];
-            }, s -> f_client[i] = s).setSynced(false, true));
-        }
-
-        addGregTechLogo(builder);
-    }
-
-    @Deprecated
-    public ModularWindow createStoredItemStackSizeWindow(EntityPlayer player, int slotID) {
-        return createStoredStackSizeWindow(
-            player,
-            slotID,
-            i_stored,
-            "gtnl.hatch.super_dual_input_me.info.configure_item_extraction");
-    }
-
-    @Deprecated
-    public ModularWindow createStoredFluidStackSizeWindow(EntityPlayer player, int slotID) {
-        return createStoredStackSizeWindow(
-            player,
-            slotID,
-            f_stored,
-            "gtnl.hatch.super_dual_input_me.info.configure_fluid_extraction");
-    }
-
-    @Deprecated
-    public ModularWindow createStoredStackSizeWindow(EntityPlayer player, int slotID, long[] storedArray,
-        String titleKey) {
-        final int WIDTH = 110;
-        final int HEIGHT = 66;
-        final int PARENT_WIDTH = getGUIWidth();
-        final int PARENT_HEIGHT = getGUIHeight();
-
-        ModularWindow.Builder builder = ModularWindow.builder(WIDTH, HEIGHT);
-        builder.setBackground(GTUITextures.BACKGROUND_SINGLEBLOCK_DEFAULT);
-        builder.setGuiTint(getGUIColorization());
-        builder.setDraggable(true);
-        builder.setPos(
-            (size, window) -> Alignment.Center.getAlignedPos(size, new Size(PARENT_WIDTH, PARENT_HEIGHT))
-                .add(
-                    Alignment.TopRight.getAlignedPos(new Size(PARENT_WIDTH, PARENT_HEIGHT), new Size(WIDTH, HEIGHT))
-                        .add(WIDTH - 3, 0)));
-
-        builder.widget(
-            TextWidget.localised(titleKey)
-                .setPos(3, 6)
-                .setSize(106, 14))
-            .widget(
-                new TextWidget(
-                    StatCollector.translateToLocal("gtnl.hatch.super_dual_input_me.info.slot") + " " + slotID)
-                        .setPos(3, 20)
-                        .setSize(106, 14))
-            .widget(
-                new NumericWidget().setSetter(val -> storedArray[slotID] = (long) val)
-                    .setGetter(() -> storedArray[slotID])
-                    .setBounds(1, Long.MAX_VALUE)
-                    .setScrollValues(1, 100_000, 1_000_000)
-                    .setTextAlignment(Alignment.Center)
-                    .setTextColor(Color.WHITE.normal)
-                    .setSize(106, 18)
-                    .setPos(3, 36)
-                    .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD)
-                    .attachSyncer(
-                        new FakeSyncWidget.LongSyncer(() -> storedArray[slotID], i -> storedArray[slotID] = i),
-                        builder));
-
-        return builder.build();
-    }
-
-    @Override
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
-                .setSize(18, 18)
-                .setPos(367, 81));
-    }
-
-    public List<String> rewriteItem(BaseSlot slot, List<String> s) {
-
-        int i = slot.getSlotIndex();
-        s.add("size:" + df.format(i_client[i]));
-        if (i_client[i] > Integer.MAX_VALUE) {
-            double cp = i_client[i] * 1d / Integer.MAX_VALUE;
-            s.add(StatCollector.translateToLocal("gtnl.hatch.super_dual_input_me.auto_pull.exceeds_int_max"));
-            s.add(df2.format(cp) + "*int.max");
-
-        }
-        return s;
     }
 
     public void setAutoPullItemList(boolean pullItemList) {
@@ -1602,12 +893,13 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
 
             @Override
             public ItemStack[] getItemInputs() {
-                return Utils.filterStack.apply(Utils.flat(i_shadow), new ItemStack[] { getStackInSlot(0) });
+                return MachineUtils.filterStack
+                    .apply(MachineUtils.flat(i_shadow), new ItemStack[] { getStackInSlot(0) });
             }
 
             @Override
             public FluidStack[] getFluidInputs() {
-                return asFluidStack.apply(Utils.flat(f_shadow));
+                return asFluidStack.apply(MachineUtils.flat(f_shadow));
             }
 
             @Override

@@ -33,7 +33,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
  * makes more of the cycle than it takes cannot make anything on its own, which is what a calculation reports as having
  * no net output.
  */
-public final class RecursivePatternFinder {
+public class RecursivePatternFinder {
 
     private static final int MAX_KEYS = 8192;
 

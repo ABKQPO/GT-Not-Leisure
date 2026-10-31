@@ -17,7 +17,7 @@ import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 /**
  * Tallies a negative or positive amount for sub-variants of a {@link AEKey}.
  */
-abstract class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
+public abstract class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
 
     private final boolean saturating;
 
@@ -136,7 +136,7 @@ abstract class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
      * This variant list is optimized for items that cannot be damaged and thus do not support querying durability
      * ranges via {@link #findFuzzy}.
      */
-    static class UnorderedVariantMap extends VariantCounter {
+    public static class UnorderedVariantMap extends VariantCounter {
 
         // Most primary keys have only one variant. Do not allocate 32 buckets for each such counter.
         private final AEKey2LongMap records;
@@ -181,7 +181,7 @@ abstract class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
      * This variant list is optimized for damageable items, and supports selecting durability ranges with
      * {@link #findFuzzy}.
      */
-    static class FuzzyVariantMap extends VariantCounter {
+    public static class FuzzyVariantMap extends VariantCounter {
 
         private final AEKey2LongMap.AVLTreeMap records = FuzzySearch.createMap2Long();
 

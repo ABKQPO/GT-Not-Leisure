@@ -8,17 +8,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.Constants;
 
+import com.science.gtnl.utils.world.teams.TeamNetworkManager;
+
 import gregtech.api.enums.GTValues;
 import gregtech.common.misc.WirelessNetworkManager;
-import gregtech.common.misc.spaceprojects.SpaceProjectManager;
 
 public class EquipmentEnergy {
 
     public static final String CHARGE = "charge";
     private static final int[] VOLTAGE_TIERS = { 3, 5, 6, 7 };
     private static final double REFILL_SHARE = 0.01;
-
-    private EquipmentEnergy() {}
 
     public static int voltageTier(int energyTier) {
         return VOLTAGE_TIERS[Math.max(0, Math.min(VOLTAGE_TIERS.length - 1, energyTier))];
@@ -77,7 +76,7 @@ public class EquipmentEnergy {
     }
 
     public static UUID wirelessOwner(EntityPlayer player) {
-        return SpaceProjectManager.getLeader(player.getUniqueID());
+        return TeamNetworkManager.wirelessEnergyOwner(player.getUniqueID());
     }
 
     public static double wirelessAvailable(EntityPlayer player) {

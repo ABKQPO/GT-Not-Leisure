@@ -4,11 +4,13 @@ import java.io.IOException;
 
 import net.minecraft.client.Minecraft;
 
+import com.gtnllib.network.ClientboundPacket;
 import com.science.gtnl.client.gui.GuiSuperDualInterfaceFluid;
-import com.science.gtnl.common.packet.base.ClientboundPacket;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.util.item.AEFluidStack;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
@@ -58,6 +60,7 @@ public class SuperDualInterfaceFluidSyncPacket extends ClientboundPacket {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void handleClient(Minecraft minecraft) {
         if (minecraft.currentScreen instanceof GuiSuperDualInterfaceFluid gui) {
             for (Int2ObjectMap.Entry<IAEFluidStack> entry : Int2ObjectMaps.fastIterable(stacks)) {

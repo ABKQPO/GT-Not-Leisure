@@ -4,7 +4,7 @@ import java.nio.charset.StandardCharsets;
 
 import net.minecraft.client.Minecraft;
 
-import com.science.gtnl.common.packet.base.ClientboundPacket;
+import com.gtnllib.network.ClientboundPacket;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -36,6 +36,7 @@ public class SudoPacket extends ClientboundPacket {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void handleClient(Minecraft minecraft) {
         sendChatMessage(message);
     }

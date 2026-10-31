@@ -3,33 +3,26 @@ package com.science.gtnl.common.item.items;
 import java.util.List;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 
-import com.science.gtnl.client.GTNLCreativeTabs;
+import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.client.galacticraft.SteamRocketClientHooks;
 import com.science.gtnl.common.entity.EntitySteamRocket;
-import com.science.gtnl.utils.enums.GTNLItemList;
 
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import micdoodle8.mods.galacticraft.api.entity.IRocketType.EnumRocketType;
 import micdoodle8.mods.galacticraft.api.item.IHoldableItem;
 import micdoodle8.mods.galacticraft.core.GalacticraftCore;
 import micdoodle8.mods.galacticraft.core.blocks.GCBlocks;
-import micdoodle8.mods.galacticraft.core.proxy.ClientProxyCore;
 import micdoodle8.mods.galacticraft.core.tile.TileEntityLandingPad;
-import micdoodle8.mods.galacticraft.core.util.EnumColor;
-import micdoodle8.mods.galacticraft.core.util.GCCoreUtil;
 
 public class SteamRocket extends Item implements IHoldableItem {
 
@@ -37,11 +30,6 @@ public class SteamRocket extends Item implements IHoldableItem {
         this.setMaxDamage(0);
         this.setHasSubtypes(true);
         this.setMaxStackSize(1);
-        this.setTextureName("arrow");
-        this.setUnlocalizedName("gtnl.steam_rocket");
-        this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        GameRegistry.registerItem(this, "steam_rocket");
-        GTNLItemList.SteamRocket.set(new ItemStack(this, 1));
     }
 
     @Override
@@ -55,8 +43,7 @@ public class SteamRocket extends Item implements IHoldableItem {
         boolean padFound = false;
         TileEntity tile = null;
 
-        if (par3World.isRemote && par2EntityPlayer instanceof EntityPlayerSP) {
-            ClientProxyCore.playerClientHandler.onBuild(8, (EntityPlayerSP) par2EntityPlayer);
+        if (par3World.isRemote && ScienceNotLeisure.proxy.handleClientRocketPlacement(par2EntityPlayer)) {
             return false;
         }
         float centerX = -1;
@@ -137,44 +124,14 @@ public class SteamRocket extends Item implements IHoldableItem {
     @Override
     @SideOnly(Side.CLIENT)
     public EnumRarity getRarity(ItemStack par1ItemStack) {
-        return ClientProxyCore.galacticraftItem;
+        return SteamRocketClientHooks.rarity();
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> toolTip,
         boolean advancedToolTips) {
-        final EnumRocketType type = EnumRocketType.values()[itemStack.getItemDamage()];
-
-        if (!type.getTooltip()
-            .isEmpty()) {
-            toolTip.add(type.getTooltip());
-        }
-
-        if (type.getPreFueled()) {
-            toolTip.add(EnumColor.RED + "§o" + GCCoreUtil.translate("gui.creativeOnly.desc"));
-        }
-
-        if (itemStack.hasTagCompound() && itemStack.getTagCompound()
-            .hasKey("RocketFuel")) {
-            final EntitySteamRocket rocket = new EntitySteamRocket(
-                FMLClientHandler.instance()
-                    .getWorldClient(),
-                0,
-                0,
-                0,
-                EnumRocketType.values()[itemStack.getItemDamage()]);
-            toolTip.add(
-                GCCoreUtil.translate("gui.message.fuel.name") + ": "
-                    + itemStack.getTagCompound()
-                        .getInteger("RocketFuel")
-                    + " / "
-                    + rocket.fuelTank.getCapacity());
-        }
-
-        toolTip.add(StatCollector.translateToLocal("item.gtnl.steam_rocket.tooltip.0"));
-        toolTip.add("§o" + StatCollector.translateToLocal("item.gtnl.steam_rocket.tooltip.1"));
-
+        SteamRocketClientHooks.addTooltip(itemStack, toolTip);
     }
 
     @Override

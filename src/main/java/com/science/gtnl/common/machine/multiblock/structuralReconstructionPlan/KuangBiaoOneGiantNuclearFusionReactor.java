@@ -30,18 +30,18 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.gtnllib.utils.MathUtils;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.IWirelessEnergy;
 import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
+import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.common.render.tile.KuangBiaoOneGiantNuclearFusionReactorRenderer;
 import com.science.gtnl.utils.StructureUtils;
-import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
-import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -798,7 +798,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
         public UUID ownerUUID;
         public boolean isRecipeProcessing = false;
         public BigInteger costingEU = BigInteger.ZERO;
-        public String costingEUText = Utils.ZERO_STRING;
+        public String costingEUText = MathUtils.ZERO_STRING;
         public int cycleNum = 100_000;
         public int cycleNow = 0;
 
@@ -1126,7 +1126,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
             maxParallelStored = -1;
             resetParallelTier();
             costingEU = BigInteger.ZERO;
-            costingEUText = Utils.ZERO_STRING;
+            costingEUText = MathUtils.ZERO_STRING;
             totalOverclockedDuration = 0;
             cycleNow = 0;
             if (!wirelessMode) return super.checkProcessing();
@@ -1175,14 +1175,14 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
             BigInteger costEU = BigInteger.valueOf(processingLogic.getCalculatedEut())
                 .multiply(BigInteger.valueOf(processingLogic.getDuration()));
 
-            if (!addEUToGlobalEnergyMap(ownerUUID, costEU.multiply(Utils.NEGATIVE_ONE))) {
+            if (!addEUToGlobalEnergyMap(ownerUUID, costEU.multiply(MathUtils.NEGATIVE_ONE))) {
                 return CheckRecipeResultRegistry.insufficientPower(costEU.longValue());
             }
 
             costingEU = costingEU.add(costEU);
 
-            mOutputItems = Utils.mergeArray(mOutputItems, processingLogic.getOutputItems());
-            mOutputFluids = Utils.mergeArray(mOutputFluids, processingLogic.getOutputFluids());
+            mOutputItems = MathUtils.mergeArray(mOutputItems, processingLogic.getOutputItems());
+            mOutputFluids = MathUtils.mergeArray(mOutputFluids, processingLogic.getOutputFluids());
             totalOverclockedDuration += processingLogic.getDuration();
             maxParallelStored = maxParallelStored - processingLogic.getCurrentParallels();
 

@@ -11,8 +11,8 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.common.gui.container.ContainerSuperInterface;
 import com.science.gtnl.common.packet.SwitchToCustomGuiPacket;
-import com.science.gtnl.container.ContainerSuperInterface;
 import com.science.gtnl.utils.ColorUtils;
 import com.science.gtnl.utils.enums.GuiType;
 

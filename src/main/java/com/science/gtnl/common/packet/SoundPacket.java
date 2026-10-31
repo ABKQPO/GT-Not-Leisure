@@ -6,10 +6,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 
 import com.github.bsideup.jabel.Desugar;
-import com.science.gtnl.common.packet.base.ClientboundPacket;
-import com.science.gtnl.common.packet.client.SoundHandler;
+import com.gtnllib.network.ClientboundPacket;
+import com.science.gtnl.client.SoundHandler;
 
 import cpw.mods.fml.common.network.ByteBufUtils;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
@@ -118,6 +120,7 @@ public class SoundPacket extends ClientboundPacket {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void handleClient(Minecraft minecraft) {
         SoundHandler.handleSoundPacket(this);
     }

@@ -19,8 +19,6 @@ public class RailgunRaycast {
     private static final int CHUNK_SHIFT = 4;
     private static final double EDGE_BACKOFF = 1.0E-3, CROSSING_TIE = 1.0E-9;
 
-    private RailgunRaycast() {}
-
     public record EntityHit(Entity entity, Vec3d position) {}
 
     public record Result(Vec3d blockEnd, MovingObjectPosition block, EntityHit hit) {}

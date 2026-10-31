@@ -13,7 +13,7 @@ import com.science.gtnl.common.item.items.ItemYogSothothTerminal;
 import appeng.api.AEApi;
 import appeng.api.features.IWirelessTermHandler;
 
-public final class YogToken {
+public class YogToken {
 
     public static final String TAG = "gtnlYog";
     public static final String PENDING_TAG = "gtnlYogPending";

@@ -13,13 +13,13 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
+import com.science.gtnl.client.GTNLClientEvents;
+import com.science.gtnl.compat.avaritia.CosmicShader;
+import com.science.gtnl.mixins.early.notEnoughItems.AccessorDrawableResource;
 import com.science.gtnl.utils.ColorUtils;
-import com.science.gtnl.utils.event.SubscribeEventClientUtils;
 
-import cpw.mods.fml.common.Optional;
-import fox.spiteful.avaritia.render.CosmicRenderShenanigans;
+import codechicken.nei.drawable.DrawableResource;
 import gregtech.GTMod;
-import gregtech.api.enums.Mods;
 
 public class WrenchSpecialRender {
 
@@ -57,6 +57,23 @@ public class WrenchSpecialRender {
      * @param textureWidth     纹理宽度
      * @param textureHeight    纹理高度
      */
+    public void draw(int xOffset, int yOffset, int special, DrawableResource drawable) {
+        AccessorDrawableResource fields = (AccessorDrawableResource) drawable;
+        draw(
+            xOffset,
+            yOffset,
+            special,
+            fields.getResourceLocation(),
+            fields.getPaddingLeft(),
+            fields.getPaddingTop(),
+            drawable.x,
+            drawable.y,
+            drawable.width,
+            drawable.height,
+            fields.getTextureWidth(),
+            fields.getTextureHeight());
+    }
+
     public void draw(int xOffset, int yOffset, int special, ResourceLocation resourceLocation, int paddingLeft,
         int paddingTop, int x, int y, int width, int height, int textureWidth, int textureHeight) {
         Minecraft.getMinecraft()
@@ -141,13 +158,13 @@ public class WrenchSpecialRender {
                 break;
 
             case 3:
-                if (Mods.Avaritia.isModLoaded()) {
+                if (CosmicShader.isAvailable()) {
                     renderUniversium(resourceLocation, drawX, drawY, x, y, width, height, textureWidth, textureHeight);
                 }
                 break;
 
             case 4:
-                if (Mods.Avaritia.isModLoaded()) {
+                if (CosmicShader.isAvailable()) {
                     renderCosmic(resourceLocation, drawX, drawY, x, y, width, height, textureWidth, textureHeight);
                 }
                 break;
@@ -165,7 +182,7 @@ public class WrenchSpecialRender {
                 GL11.glDisable(GL11.GL_ALPHA_TEST);
                 GL11.glDisable(GL11.GL_DEPTH_TEST);
 
-                IIcon halonoiseIcon = SubscribeEventClientUtils.haloNoiseIcon;
+                IIcon halonoiseIcon = GTNLClientEvents.haloNoiseIcon;
 
                 if (halonoiseIcon != null) {
                     Minecraft.getMinecraft()
@@ -223,7 +240,6 @@ public class WrenchSpecialRender {
         GL11.glPopMatrix();
     }
 
-    @Optional.Method(modid = "Avaritia")
     public void renderUniversium(ResourceLocation resourceLocation, int drawX, int drawY, int x, int y, int width,
         int height, int textureWidth, int textureHeight) {
         Minecraft.getMinecraft()
@@ -237,11 +253,9 @@ public class WrenchSpecialRender {
         GL11.glDisable(GL11.GL_ALPHA_TEST);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
 
-        CosmicRenderShenanigans.cosmicOpacity = 0.95f;
-        CosmicRenderShenanigans.inventoryRender = true;
-        CosmicRenderShenanigans.useShader();
+        CosmicShader.beginInventory(0.95f);
 
-        IIcon cheatWrenchIcon = SubscribeEventClientUtils.cheatWrenchIcon;
+        IIcon cheatWrenchIcon = GTNLClientEvents.cheatWrenchIcon;
 
         if (cheatWrenchIcon != null) {
             Minecraft.getMinecraft()
@@ -261,15 +275,13 @@ public class WrenchSpecialRender {
             t.addVertexWithUV((float) drawX, (float) drawY, 0, minU, minV);
             t.draw();
 
-            CosmicRenderShenanigans.releaseShader();
-            CosmicRenderShenanigans.inventoryRender = false;
+            CosmicShader.endInventory();
         }
 
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glEnable(GL11.GL_ALPHA_TEST);
     }
 
-    @Optional.Method(modid = "Avaritia")
     public void renderCosmic(ResourceLocation resourceLocation, int drawX, int drawY, int x, int y, int width,
         int height, int textureWidth, int textureHeight) {
         for (int pass = 0; pass < 2; pass++) {

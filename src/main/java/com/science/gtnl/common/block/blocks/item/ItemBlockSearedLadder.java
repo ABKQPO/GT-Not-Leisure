@@ -19,6 +19,5 @@ public class ItemBlockSearedLadder extends ItemBlock {
         tooltip.add(StatCollector.translateToLocal("smeltery.brick.tooltip1"));
         tooltip.add(StatCollector.translateToLocal("smeltery.brick.tooltip2"));
         tooltip.add(StatCollector.translateToLocal("gtnl.block.seared_ladder.tooltip.0"));
-        tooltip.add(StatCollector.translateToLocal("gtnl.block.seared_ladder.tooltip.1"));
     }
 }

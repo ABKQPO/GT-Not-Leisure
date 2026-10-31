@@ -14,7 +14,7 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackType;
 import appeng.util.item.AEItemStackType;
 
-public final class StackKeyFactory {
+public class StackKeyFactory {
 
     private static final Map<IAEStackType<?>, AEKeyType> TYPES = new ConcurrentHashMap<>();
 

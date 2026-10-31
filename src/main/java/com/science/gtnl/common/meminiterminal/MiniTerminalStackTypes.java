@@ -11,7 +11,7 @@ import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.objects.Reference2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Reference2BooleanOpenHashMap;
 
-public final class MiniTerminalStackTypes {
+public class MiniTerminalStackTypes {
 
     private static final int MAX_FILTERS = 32;
 
@@ -38,7 +38,7 @@ public final class MiniTerminalStackTypes {
         return null;
     }
 
-    static void writeFilters(ByteBuf buf, Reference2BooleanMap<IAEStackType<?>> filters) {
+    public static void writeFilters(ByteBuf buf, Reference2BooleanMap<IAEStackType<?>> filters) {
         int count = 0;
         for (IAEStackType<?> type : filters.keySet()) if (type != ITEM_STACK_TYPE) count++;
         buf.writeByte(Math.min(count, MAX_FILTERS));
@@ -50,7 +50,7 @@ public final class MiniTerminalStackTypes {
         }
     }
 
-    static Reference2BooleanMap<IAEStackType<?>> readFilters(ByteBuf buf) {
+    public static Reference2BooleanMap<IAEStackType<?>> readFilters(ByteBuf buf) {
         int count = buf.readUnsignedByte();
         if (count > MAX_FILTERS) throw new IllegalArgumentException("Mini terminal type filters");
         Reference2BooleanMap<IAEStackType<?>> filters = new Reference2BooleanOpenHashMap<>();

@@ -5,9 +5,9 @@ import net.minecraft.item.ItemStack;
 
 import com.cleanroommc.modularui.factory.GuiFactories;
 import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
+import com.gtnllib.network.ServerboundPacket;
 import com.science.gtnl.common.equipment.EquipmentNet;
 import com.science.gtnl.common.equipment.IEquipmentItem;
-import com.science.gtnl.common.packet.base.ServerboundPacket;
 
 import io.netty.buffer.ByteBuf;
 

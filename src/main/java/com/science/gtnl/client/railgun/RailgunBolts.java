@@ -75,8 +75,6 @@ public class RailgunBolts {
         }
     }
 
-    private RailgunBolts() {}
-
     public static int orbArcs(float intensity) {
         float p = MathUtils.clampUnit(intensity, 0F);
         return p < MIN_INTENSITY ? 0 : 1 + Math.round(p * (ORB_MAX_ARCS - 1));

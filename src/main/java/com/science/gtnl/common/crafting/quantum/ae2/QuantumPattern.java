@@ -81,7 +81,7 @@ public class QuantumPattern implements IPatternDetails {
         return "QuantumPattern" + this.shape.outputs;
     }
 
-    static final class Shape {
+    public static class Shape {
 
         private static final int MAX_VARIANT_INSTANCES = 8;
 
@@ -255,7 +255,7 @@ public class QuantumPattern implements IPatternDetails {
         private record SlotTemplate(int slot, StackKey template) {}
     }
 
-    private final class CraftingInput implements IInput {
+    private class CraftingInput implements IInput {
 
         private final int index;
         private final GenericStack[] possibleInputs;
@@ -294,7 +294,7 @@ public class QuantumPattern implements IPatternDetails {
         }
     }
 
-    private final class ProcessingInput implements IInput {
+    private class ProcessingInput implements IInput {
 
         private final int index;
         private final GenericStack[] possibleInputs;

@@ -25,9 +25,9 @@ import com.science.gtnl.api.stellar.StellarIrisNodeDisplay;
 import com.science.gtnl.api.stellar.StellarIrisUpgradeDefinition;
 import com.science.gtnl.api.stellar.StellarIrisUpgradeRegistry;
 import com.science.gtnl.api.stellar.StellarIrisUpgradeTree;
+import com.science.gtnl.common.stellar.StellarIrisTeamSnapshot;
+import com.science.gtnl.common.stellar.StellarIrisUpgradeManager;
 import com.science.gtnl.utils.ColorUtils;
-import com.science.gtnl.utils.world.stellar.StellarIrisTeamSnapshot;
-import com.science.gtnl.utils.world.stellar.StellarIrisUpgradeManager;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;

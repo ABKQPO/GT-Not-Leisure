@@ -5,7 +5,7 @@ import java.awt.Rectangle;
 
 import com.science.gtnl.client.floatingwindow.FloatingWindowGeometry;
 
-public final class YogTerminalLayout extends FloatingWindowGeometry {
+public class YogTerminalLayout extends FloatingWindowGeometry {
 
     public static final int CELL = 18;
     public static final int BORDER = 6;

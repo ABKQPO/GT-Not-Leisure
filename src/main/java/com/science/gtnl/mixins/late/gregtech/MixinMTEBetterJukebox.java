@@ -20,7 +20,6 @@ public class MixinMTEBetterJukebox {
         remap = false)
     private ResourceLocation redirectGetRecordResource(ItemRecord record, String name) {
         ResourceLocation resource = record.getRecordResource(name);
-
         if ("minecraft".equals(resource.getResourceDomain()) && resource.getResourcePath()
             .startsWith("records.")) {
             return new ResourceLocation(
@@ -28,7 +27,6 @@ public class MixinMTEBetterJukebox {
                 resource.getResourcePath()
                     .substring(8));
         }
-
         return resource;
     }
 }

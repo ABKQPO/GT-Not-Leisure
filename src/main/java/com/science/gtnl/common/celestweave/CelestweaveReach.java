@@ -8,7 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ItemConfig;
 
 import vazkii.botania.common.Botania;
 
@@ -16,8 +16,6 @@ public class CelestweaveReach {
 
     private static final Map<UUID, Float> SERVER = new ConcurrentHashMap<>();
     private static final Map<UUID, Float> CLIENT = new ConcurrentHashMap<>();
-
-    private CelestweaveReach() {}
 
     private static Map<UUID, Float> applied(EntityPlayer player) {
         return player.worldObj.isRemote ? CLIENT : SERVER;
@@ -27,7 +25,7 @@ public class CelestweaveReach {
         ItemStack chest = CelestweaveData.piece(player, CelestweaveArmor.CHEST);
         if (chest == null || !CelestweaveData.active(chest, CelestweaveModule.REACH)
             || !CelestweaveEnergy.hasEnergy(player, CelestweaveArmor.CHEST, chest)) return 0F;
-        var config = MainConfig.item.celestweave;
+        var config = ItemConfig.celestweave;
         return switch (CelestweaveModuleSetting.REACH_LEVEL.get(chest)) {
             case 2 -> config.reachLevel3;
             case 1 -> config.reachLevel2;

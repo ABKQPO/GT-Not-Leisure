@@ -1,16 +1,10 @@
 package com.science.gtnl.mixins.late.gregtech;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Stream;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.spongepowered.asm.mixin.Final;
@@ -22,24 +16,13 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.cleanroommc.modularui.utils.item.ItemStackHandler;
-import com.gtnewhorizons.modularui.api.drawable.Text;
-import com.gtnewhorizons.modularui.api.math.Alignment;
-import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
-import com.gtnewhorizons.modularui.common.widget.SlotWidget;
-import com.gtnewhorizons.modularui.common.widget.TextWidget;
-import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.api.mixinHelper.IVoidMinerDimensionOverride;
-import com.science.gtnl.config.MainConfig;
-import com.science.gtnl.utils.enums.ModList;
-import com.science.gtnl.utils.machine.VMTweakHelper;
-import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
+import com.science.gtnl.common.machine.voidminer.IVoidMinerHost;
+import com.science.gtnl.common.machine.voidminer.VoidMinerHooks;
+import com.science.gtnl.common.machine.voidminer.VoidMinerState;
+import com.science.gtnl.compat.vmtweak.VoidMinerTweak;
 
 import bwcrossmod.galacticgreg.MTEVoidMinerBase;
-import bwcrossmod.galacticgreg.VoidMinerUtility;
 import galacticgreg.api.ModDimensionDef;
-import galacticgreg.api.enums.DimensionDef;
-import gregtech.api.enums.GTValues;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEEnhancedMultiBlockBase;
 import gregtech.api.metatileentity.implementations.MTEHatch;
@@ -49,19 +32,14 @@ import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.ExoticEnergyInputHelper;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
-import gtneioreplugin.plugin.block.ModBlocks;
-import gtneioreplugin.plugin.item.ItemDimensionDisplay;
-import gtneioreplugin.util.DimensionHelper;
 
 @Mixin(value = MTEVoidMinerBase.class, remap = false)
 public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<MixinMTEVoidMinerBase>
-    implements IVoidMinerDimensionOverride {
+    implements IVoidMinerHost {
 
     @Shadow
     @Final
     protected byte TIER_MULTIPLIER;
-    @Unique
-    public long gtnl$lEUt;
 
     @Shadow
     protected abstract int getMinTier();
@@ -70,106 +48,92 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
     protected abstract ItemStack nextOre();
 
     @Shadow
-    public boolean blacklist;
-
-    @Shadow
     private ModDimensionDef dimensionDef;
 
     @Shadow
     private boolean canVoidMine;
 
     @Shadow
-    public VoidMinerUtility.DropMap dropMap;
-
-    @Shadow
-    public VoidMinerUtility.DropMap extraDropMap;
-
-    @Shadow
     private int multiplier;
+
     @Shadow
     private float totalWeight;
 
-    @Shadow
-    public ItemStackHandler selected;
+    @Unique
+    private static boolean gtnl$enableMixin = VoidMinerTweak.enabled();
 
     @Unique
-    private static boolean gtnl$enableMixin = !ModList.VMTweak.isModLoaded() && MainConfig.machine.enableVoidMinerTweak;
-
-    @Unique
-    private String vmTweak$warning = "";
-
-    @Unique
-    private int vmTweak$dimChangeVersion = 0;
-
-    @Unique
-    private String vmTweak$activeDropMapDimension = "";
+    private final VoidMinerState gtnl$state = new VoidMinerState();
 
     public MixinMTEVoidMinerBase(String aName) {
         super(aName);
     }
 
-    @Unique
-    private String vmTweak$resolveDimensionKey() {
-        if (!gtnl$enableMixin) return "None";
-        try {
-            return Optional.ofNullable(this.mInventory[1])
-                .filter(s -> s.getItem() instanceof ItemDimensionDisplay)
-                .map(ItemDimensionDisplay::getDimension)
-                .orElse("None");
-        } catch (Exception e) {
-            ScienceNotLeisure.LOG.debug("[VMTweakMixin] Failed to read dimension override slot.", e);
-            return "None";
-        }
+    @Override
+    public VoidMinerState gtnl$state() {
+        return gtnl$state;
+    }
+
+    @Override
+    public byte gtnl$tierMultiplier() {
+        return TIER_MULTIPLIER;
+    }
+
+    @Override
+    public int gtnl$minTier() {
+        return getMinTier();
+    }
+
+    @Override
+    public ItemStack gtnl$nextOre() {
+        return nextOre();
+    }
+
+    @Override
+    public ModDimensionDef gtnl$dimensionDef() {
+        return dimensionDef;
+    }
+
+    @Override
+    public void gtnl$setDimensionDef(ModDimensionDef dimensionDef) {
+        this.dimensionDef = dimensionDef;
+    }
+
+    @Override
+    public void gtnl$setCanVoidMine(boolean canVoidMine) {
+        this.canVoidMine = canVoidMine;
+    }
+
+    @Override
+    public int gtnl$multiplier() {
+        return multiplier;
+    }
+
+    @Override
+    public float gtnl$totalWeight() {
+        return totalWeight;
+    }
+
+    @Override
+    public void gtnl$setTotalWeight(float totalWeight) {
+        this.totalWeight = totalWeight;
     }
 
     @Unique
-    private Optional<String> vmTweak$resolveDimensionNameOverride() {
-        String dimensionKey = vmTweak$resolveDimensionKey();
-        if ("None".equals(dimensionKey)) return Optional.empty();
-
-        return vmTweak$toInternalDimensionName(dimensionKey).or(() -> {
-            Integer dimensionId = VMTweakHelper.DIM_MAPPING.getDimensionId(dimensionKey);
-            if (dimensionId == null) return Optional.empty();
-            return vmTweak$toInternalDimensionName(VMTweakHelper.DIM_MAPPING.getDimensionName(dimensionId));
-        })
-            .or(() -> Optional.of(dimensionKey));
+    private MTEVoidMinerBase<?> gtnl$self() {
+        return (MTEVoidMinerBase<?>) (Object) this;
     }
-
-    @Unique
-    private Optional<String> vmTweak$toInternalDimensionName(String dimensionName) {
-        if (dimensionName == null || dimensionName.isEmpty()) return Optional.empty();
-
-        String internalName = DimensionHelper.ABBR_TO_INTERNAL.get(dimensionName);
-        if (internalName != null) return Optional.of(internalName);
-
-        int fullNameIndex = DimensionHelper.ALL_DIM_NAMES.indexOf(dimensionName);
-        if (fullNameIndex >= 0) {
-            String abbr = DimensionHelper.ALL_DISPLAYED_NAMES.get(fullNameIndex);
-            return Optional.ofNullable(DimensionHelper.ABBR_TO_INTERNAL.get(abbr));
-        }
-
-        if (VoidMinerUtility.dropMapsByDimName.containsKey(dimensionName)) return Optional.of(dimensionName);
-        return Optional.empty();
-    }
-
-    @Unique
-    private String vmTweak$mLastDimensionOverride = "None";
 
     @Inject(method = "saveNBTData", at = @At("HEAD"), require = 1, remap = false)
     public void vmTweak$saveNBT(NBTTagCompound aNBT, CallbackInfo c) {
         if (!gtnl$enableMixin) return;
-        aNBT.setString("mLastDimensionOverride", this.vmTweak$mLastDimensionOverride);
-        aNBT.setString("vmTweak$activeDropMapDimension", this.vmTweak$activeDropMapDimension);
+        gtnl$state.writeDimensionToNBT(aNBT);
     }
 
     @Inject(method = "loadNBTData", at = @At("HEAD"), require = 1, remap = false)
     public void vmTweak$loadNBT(NBTTagCompound aNBT, CallbackInfo c) {
         if (!gtnl$enableMixin) return;
-        this.vmTweak$mLastDimensionOverride = aNBT.getString("mLastDimensionOverride");
-        if (this.vmTweak$mLastDimensionOverride.isEmpty()) {
-            this.vmTweak$mLastDimensionOverride = "None";
-        }
-        this.vmTweak$activeDropMapDimension = aNBT.getString("vmTweak$activeDropMapDimension");
+        gtnl$state.readDimensionFromNBT(aNBT);
     }
 
     @Inject(method = "onFirstTick", at = @At("HEAD"), require = 1, remap = false, cancellable = true)
@@ -177,181 +141,38 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
         if (!gtnl$enableMixin) return;
         ci.cancel();
         super.onFirstTick(aBaseMetaTileEntity);
-        vmTweak$recalculateDropMap();
-        vmTweak$resizeSelected();
+        VoidMinerHooks.recalculateDropMap(gtnl$self());
+        VoidMinerHooks.resizeSelected(gtnl$self());
     }
 
     @Inject(method = "calculateDropMap", at = @At("HEAD"), require = 1, remap = false, cancellable = true)
     private void vmTweak$calculateDropMap(CallbackInfo ci) {
         if (!gtnl$enableMixin) return;
-        vmTweak$recalculateDropMap();
+        VoidMinerHooks.recalculateDropMap(gtnl$self());
         ci.cancel();
     }
 
     @Inject(method = "checkProcessing", at = @At("HEAD"), require = 1, remap = false)
     private void vmTweak$refreshDimensionOverride(CallbackInfoReturnable<CheckRecipeResult> cir) {
         if (!gtnl$enableMixin) return;
-
-        String dimensionKey = vmTweak$resolveDimensionKey();
-        if (!Objects.equals(dimensionKey, this.vmTweak$mLastDimensionOverride)) {
-            vmTweak$recalculateDropMap();
-        }
-    }
-
-    @Unique
-    private void vmTweak$recalculateDropMap() {
-        this.dropMap = null;
-        this.extraDropMap = null;
-        this.totalWeight = 0;
-        this.canVoidMine = false;
-        this.vmTweak$warning = "";
-
-        String dimensionKey = vmTweak$resolveDimensionKey();
-        this.vmTweak$mLastDimensionOverride = dimensionKey;
-        Optional<String> dimensionNameOverride = vmTweak$resolveDimensionNameOverride();
-        boolean hasOverride = dimensionNameOverride.isPresent();
-
-        if (getBaseMetaTileEntity() != null) {
-            this.dimensionDef = DimensionDef.getDefForWorld(getBaseMetaTileEntity().getWorld());
-        }
-
-        if (hasOverride) {
-            String dimensionName = dimensionNameOverride.get();
-            if (VoidMinerUtility.dropMapsByDimName.containsKey(dimensionName)) {
-                this.canVoidMine = true;
-                vmTweak$setDropMaps(dimensionName);
-                vmTweak$resizeSelected();
-                return;
-            }
-            this.vmTweak$warning = "vmtweak.gui.override.error";
-        }
-
-        if (this.dimensionDef == null || !this.dimensionDef.canBeVoidMined()) {
-            this.dropMap = new VoidMinerUtility.DropMap();
-            this.extraDropMap = new VoidMinerUtility.DropMap();
-            if (!this.vmTweak$activeDropMapDimension.isEmpty()) {
-                this.selected.setSize(0);
-                this.vmTweak$dimChangeVersion++;
-            }
-            vmTweak$activeDropMapDimension = "";
-            vmTweak$resizeSelected();
-            return;
-        }
-
-        this.canVoidMine = true;
-        String dimensionName = this.dimensionDef.getDimensionName();
-        vmTweak$setDropMaps(dimensionName);
-
-        if (hasOverride) {
-            this.vmTweak$warning = this.totalWeight > 0 ? "vmtweak.gui.override.failed" : "vmtweak.gui.override.error";
-        }
-        vmTweak$resizeSelected();
-    }
-
-    @Unique
-    private void vmTweak$setDropMaps(String dimensionName) {
-        boolean dimensionChanged = !this.vmTweak$activeDropMapDimension.isEmpty()
-            && !Objects.equals(this.vmTweak$activeDropMapDimension, dimensionName);
-        this.vmTweak$activeDropMapDimension = dimensionName;
-        this.dropMap = VoidMinerUtility.dropMapsByDimName.getOrDefault(dimensionName, new VoidMinerUtility.DropMap());
-        this.extraDropMap = VoidMinerUtility.extraDropsByDimName
-            .getOrDefault(dimensionName, new VoidMinerUtility.DropMap());
-        this.dropMap.isDistributionCached(this.extraDropMap);
-        this.totalWeight = this.dropMap.getTotalWeight() + this.extraDropMap.getTotalWeight();
-        if (dimensionChanged) {
-            this.vmTweak$dimChangeVersion++;
-            vmTweak$resetSelected();
-        }
-    }
-
-    @Unique
-    private void vmTweak$resizeSelected() {
-        if (this.dropMap == null || this.selected == null) return;
-        var ores = this.dropMap.getOres();
-        if (ores == null) return;
-        int oreCount = ores.length;
-        if (this.selected.getSlots() < oreCount) {
-            this.selected.setSize(oreCount);
-        }
-    }
-
-    @Unique
-    private void vmTweak$resetSelected() {
-        if (this.dropMap == null || this.selected == null) return;
-        var ores = this.dropMap.getOres();
-        this.selected.setSize(ores == null ? 0 : ores.length);
+        VoidMinerHooks.refreshDimensionOverride(gtnl$self());
     }
 
     @Inject(method = "getCopiedData", at = @At("HEAD"), require = 1, remap = false, cancellable = true)
     private void vmTweak$getCopiedData(EntityPlayer player, CallbackInfoReturnable<NBTTagCompound> cir) {
         if (!gtnl$enableMixin) return;
-        vmTweak$recalculateDropMap();
-
-        NBTTagCompound tag = new NBTTagCompound();
-        tag.setString("type", MTEVoidMinerBase.COPIED_DATA_IDENTIFIER);
-        tag.setString("dimension", vmTweak$getCopyDimension());
-        tag.setTag("selected", selected.serializeNBT());
-        tag.setBoolean("blacklist", blacklist);
-        cir.setReturnValue(tag);
+        cir.setReturnValue(VoidMinerHooks.copiedData(gtnl$self()));
     }
 
     @Inject(method = "pasteCopiedData", at = @At("HEAD"), require = 1, remap = false, cancellable = true)
     private void vmTweak$pasteCopiedData(EntityPlayer player, NBTTagCompound nbt, CallbackInfoReturnable<Boolean> cir) {
         if (!gtnl$enableMixin) return;
-        vmTweak$recalculateDropMap();
-        if (nbt == null || !MTEVoidMinerBase.COPIED_DATA_IDENTIFIER.equals(nbt.getString("type"))) {
-            cir.setReturnValue(false);
-            return;
-        }
-        if (!vmTweak$getCopyDimension().equals(nbt.getString("dimension"))) {
-            cir.setReturnValue(false);
-            return;
-        }
-
-        this.selected.deserializeNBT(nbt.getCompoundTag("selected"));
-        this.blacklist = nbt.getBoolean("blacklist");
-        cir.setReturnValue(true);
-    }
-
-    @Unique
-    private String vmTweak$getCopyDimension() {
-        return vmTweak$activeDropMapDimension.isEmpty() ? "unknown" : vmTweak$activeDropMapDimension;
-    }
-
-    @Deprecated
-    @Unique
-    private Text vmTweak$getDimensionDisplayName() {
-        if (!gtnl$enableMixin) {
-            return Text.EMPTY;
-        }
-        if (!vmTweak$warning.isEmpty()) {
-            return new Text(EnumChatFormatting.YELLOW + StatCollector.translateToLocal(vmTweak$warning));
-        }
-
-        String ext = null;
-        try {
-            Block block = ModBlocks.getBlock(vmTweak$mLastDimensionOverride);
-            ext = new ItemStack(block).getDisplayName();
-        } catch (Exception e) {
-            ScienceNotLeisure.LOG.debug(
-                "[VMTweakMixin] Failed to get display name for dimension: {}",
-                vmTweak$mLastDimensionOverride,
-                e);
-        }
-
-        return new Text(
-            EnumChatFormatting.YELLOW + StatCollector.translateToLocal("gtnl.gui.void_miner.dimension_override")
-                + (ext == null ? vmTweak$mLastDimensionOverride : ext));
+        cir.setReturnValue(VoidMinerHooks.pasteCopiedData(gtnl$self(), nbt));
     }
 
     @Override
     public long getMaxInputVoltage() {
         if (!gtnl$enableMixin) return super.getMaxInputVoltage();
-        return gtnl$getMaxInputVoltage();
-    }
-
-    @Unique
-    private long gtnl$getMaxInputVoltage() {
         long rVoltage = 0;
         for (MTEHatchEnergy h : GTUtility.validMTEList(mEnergyHatches)) rVoltage += h.getBaseMetaTileEntity()
             .getInputVoltage();
@@ -363,11 +184,6 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
     @Override
     public long getMaxInputEu() {
         if (!gtnl$enableMixin) return super.getMaxInputEu();
-        return gtnl$getMaxInputEu();
-    }
-
-    @Unique
-    public long gtnl$getMaxInputEu() {
         long exoticEu = ExoticEnergyInputHelper.getTotalEuMulti(mExoticEnergyHatches);
         long normalEu = ExoticEnergyInputHelper.getTotalEuMulti(mEnergyHatches);
         return Math.max(exoticEu, normalEu);
@@ -376,20 +192,13 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
     @Override
     public boolean onRunningTick(ItemStack aStack) {
         if (!gtnl$enableMixin) return super.onRunningTick(aStack);
-        return gtnl$onRunningTick(aStack);
-    }
-
-    @Unique
-    public boolean gtnl$onRunningTick(ItemStack aStack) {
-        if (this.gtnl$lEUt > 0) {
-            addEnergyOutput((this.gtnl$lEUt * mEfficiency) / 10000);
+        if (gtnl$state.getEUt() > 0) {
+            addEnergyOutput((gtnl$state.getEUt() * mEfficiency) / 10000);
             return true;
         }
-        if (this.gtnl$lEUt < 0) {
-            if (!drainEnergyInput(getActualEnergyUsage())) {
-                stopMachine(ShutDownReasonRegistry.POWER_LOSS);
-                return false;
-            }
+        if (gtnl$state.getEUt() < 0 && !drainEnergyInput(getActualEnergyUsage())) {
+            stopMachine(ShutDownReasonRegistry.POWER_LOSS);
+            return false;
         }
         return true;
     }
@@ -397,60 +206,25 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
     @Override
     public long getActualEnergyUsage() {
         if (!gtnl$enableMixin) return super.getActualEnergyUsage();
-        return gtnl$getActualEnergyUsage();
-    }
-
-    @Unique
-    public long gtnl$getActualEnergyUsage() {
-        return (-gtnl$lEUt * 10_000) / Math.max(1000, mEfficiency);
+        return (-gtnl$state.getEUt() * 10_000) / Math.max(1000, mEfficiency);
     }
 
     @Inject(method = "loadNBTData", at = @At("TAIL"))
     private void gtnl$injectLoadNBT(NBTTagCompound aNBT, CallbackInfo ci) {
         if (!gtnl$enableMixin) return;
-        this.gtnl$lEUt = aNBT.getLong("mEUt");
+        gtnl$state.setEUt(aNBT.getLong("mEUt"));
     }
 
     @Inject(method = "saveNBTData", at = @At("TAIL"))
     private void gtnl$injectSaveNBT(NBTTagCompound aNBT, CallbackInfo ci) {
         if (!gtnl$enableMixin) return;
-        aNBT.setLong("mEUt", this.gtnl$lEUt);
+        aNBT.setLong("mEUt", gtnl$state.getEUt());
     }
 
     @Override
     public boolean drainEnergyInput(long aEU) {
         if (!gtnl$enableMixin) return super.drainEnergyInput(aEU);
-        return gtnl$drainEnergyInput(aEU);
-    }
-
-    @Unique
-    public boolean gtnl$drainEnergyInput(long aEU) {
-        if (aEU <= 0) return true;
-
-        for (MTEHatchEnergy tHatch : GTUtility.validMTEList(mEnergyHatches)) {
-            long tDrain = Math.min(
-                tHatch.getBaseMetaTileEntity()
-                    .getStoredEU(),
-                aEU);
-            tHatch.getBaseMetaTileEntity()
-                .decreaseStoredEnergyUnits(tDrain, false);
-            aEU -= tDrain;
-
-            if (aEU <= 0) return true;
-        }
-        for (MTEHatch tHatch : GTUtility.validMTEList(mExoticEnergyHatches)) {
-            long tDrain = Math.min(
-                tHatch.getBaseMetaTileEntity()
-                    .getStoredEU(),
-                aEU);
-            tHatch.getBaseMetaTileEntity()
-                .decreaseStoredEnergyUnits(tDrain, false);
-            aEU -= tDrain;
-
-            if (aEU <= 0) return true;
-        }
-
-        return false;
+        return VoidMinerHooks.drainEnergyInput(aEU, mEnergyHatches, mExoticEnergyHatches);
     }
 
     @Inject(method = "consumeNobleGas", at = @At("HEAD"), remap = false, cancellable = true)
@@ -479,115 +253,36 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
     @Inject(method = "setElectricityStats", at = @At("HEAD"), cancellable = true)
     private void injectSetElectricityStats(CallbackInfo ci) {
         if (!gtnl$enableMixin) return;
-        this.gtnl$lEUt = -Math.abs(Math.toIntExact(GTValues.V[this.getMinTier()]));
-        long useEU = getMaxInputEu();
-
-        if (batchMode) {
-            this.mMaxProgresstime = 128;
-        } else {
-            GTNLOverclockCalculator calculator = new GTNLOverclockCalculator().setEUt(useEU)
-                .setRecipeEUt(-gtnl$lEUt)
-                .setDuration(10)
-                .setParallel(1);
-            if (TIER_MULTIPLIER == 3) calculator = calculator.enablePerfectOC();
-
-            calculator = calculator.calculate();
-            this.mMaxProgresstime = calculator.getDuration();
-        }
-
-        this.mOutputItems = GTValues.emptyItemStackArray;
-        this.mProgresstime = 0;
-        this.mEfficiency = this.getCurrentEfficiency(null);
-        this.mEfficiencyIncrease = 10000;
-        this.gtnl$lEUt = useEU > 0 ? -useEU : useEU;
+        VoidMinerHooks.setElectricityStats(gtnl$self(), batchMode);
         ci.cancel();
     }
 
     @Inject(method = "handleOutputs", at = @At("HEAD"), cancellable = true)
     private void injectHandleOutputs(CallbackInfo ci) {
         if (!gtnl$enableMixin) return;
-
-        List<ItemStack> inputOres = this.getStoredInputs()
-            .stream()
-            .filter(GTUtility::isOre)
-            .toList();
-        ItemStack output = this.nextOre();
-
-        GTNLOverclockCalculator calculator = new GTNLOverclockCalculator().setEUt(getMaxInputEu())
-            .setRecipeEUt(Math.abs(Math.toIntExact(GTValues.V[this.getMinTier()])))
-            .setDuration(10 * (batchMode ? 16 : 1))
-            .setParallel(1);
-        if (TIER_MULTIPLIER == 3) calculator = calculator.enablePerfectOC();
-        calculator = calculator.calculate();
-
-        double parallel = calculator.calculateMultiplierUnderOneTick();
-        if (batchMode) {
-            double multiplierParallel = 128d / calculator.getDuration();
-            parallel = (int) Math.max(1, parallel * multiplierParallel);
-        }
-
-        long totalCount = (long) (multiplier * parallel);
-        if (totalCount <= 0) {
-            ci.cancel();
-            return;
-        }
-
-        List<ItemStack> filter = Stream.concat(
-            inputOres.stream(),
-            this.selected.getStacks()
-                .stream()
-                .filter(Objects::nonNull))
-            .toList();
-        boolean keepOutput = filter.isEmpty() || this.blacklist != filter.stream()
-            .anyMatch(is -> GTUtility.areStacksEqual(is, output));
-
-        while (totalCount > 0) {
-            int stackSize = (int) Math.min(Integer.MAX_VALUE, totalCount);
-            ItemStack stackPart = output.copy();
-            stackPart.stackSize = stackSize;
-
-            if (keepOutput) {
-                this.addOutputPartial(stackPart);
-            }
-
-            totalCount -= stackSize;
-        }
-
-        this.updateSlots();
+        VoidMinerHooks.handleOutputs(gtnl$self(), batchMode);
         ci.cancel();
-    }
-
-    @Deprecated
-    @Inject(method = "drawTexts", at = @At("TAIL"), require = 1, remap = false)
-    private void vmTweak$drawDimensionOverride(DynamicPositionedColumn screenElements, SlotWidget inventorySlot,
-        CallbackInfo ci) {
-        if (!gtnl$enableMixin) return;
-        screenElements.addChild(
-            TextWidget.dynamicText(this::vmTweak$getDimensionDisplayName)
-                .setSynced(true)
-                .setDefaultColor(EnumChatFormatting.YELLOW)
-                .setTextAlignment(Alignment.TopLeft)
-                .setEnabled(true));
     }
 
     @Override
     public String getGtnl$overrideDisplayText() {
-        if (!gtnl$enableMixin || "None".equals(vmTweak$mLastDimensionOverride)) return "";
-        if (!vmTweak$warning.isEmpty()) {
-            return "!" + vmTweak$warning;
+        if (!gtnl$enableMixin || !gtnl$state.hasOverride()) return "";
+        if (!gtnl$state.getWarning()
+            .isEmpty()) {
+            return "!" + gtnl$state.getWarning();
         }
-        return vmTweak$mLastDimensionOverride;
+        return gtnl$state.getLastDimensionOverride();
     }
 
     @Override
     public String getGtnl$warning() {
         if (!gtnl$enableMixin) return "";
-        return vmTweak$warning;
+        return gtnl$state.getWarning();
     }
 
     @Override
     public int getGtnl$dimensionChangeVersion() {
         if (!gtnl$enableMixin) return 0;
-        return vmTweak$dimChangeVersion;
+        return gtnl$state.getDimensionChangeVersion();
     }
 }
