@@ -91,14 +91,12 @@ public class TreeDiagramGui extends GTNLMultiBlockBaseGui<TreeDiagram> {
     }
 
     private IWidget makeParallelConfigurator() {
-        IntSyncValue maxParallelSyncer = new IntSyncValue(
-            multiblock::getMaxParallelRecipes,
-            multiblock::setMaxParallelForPanel);
+        IntSyncValue maxParallelSyncer = new IntSyncValue(() -> Math.max(multiblock.getMaxParallelRecipes(), 1));
         BooleanSyncValue alwaysMaxParallelSyncer = new BooleanSyncValue(
             multiblock::isAlwaysMaxParallel,
             multiblock::setAlwaysMaxParallel).allowC2S();
         IntSyncValue powerPanelMaxParallelSyncer = new IntSyncValue(
-            multiblock::getPowerPanelMaxParallel,
+            multiblock::getTrueParallel,
             multiblock::setPowerPanelMaxParallel).allowC2S();
         return Flow.row()
             .fullWidth()

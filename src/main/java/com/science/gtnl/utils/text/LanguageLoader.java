@@ -378,7 +378,7 @@ public class LanguageLoader {
         itemPipePrefixLocalized = true;
     }
 
-    // GT 5.09.54.205 itself still names items, pipes and recipe maps through GTLanguageManager. GTNL code reaches it
+    // GT 5.09.54.265 itself still names items, pipes and recipe maps through GTLanguageManager. GTNL code reaches it
     // only through the methods below, so moving to plain StatCollector when GT does is a change to this file alone.
     public static void addGTEnglishName(String key, String english) {
         GTLanguageManager.addStringLocalization(key, english);
