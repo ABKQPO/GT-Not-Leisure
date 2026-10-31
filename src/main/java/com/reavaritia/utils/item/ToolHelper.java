@@ -42,6 +42,11 @@ public class ToolHelper {
     public static Map<EntityPlayer, List<ItemStack>> hammerdrops = new WeakHashMap<>();
 
     public static void generateMatterCluster(World world, EntityPlayer player, Object2IntMap<ItemStackWrapper> items) {
+        generateMatterCluster(world, player.posX, player.posY + 0.5, player.posZ, items);
+    }
+
+    public static void generateMatterCluster(World world, double x, double y, double z,
+        Object2IntMap<ItemStackWrapper> items) {
         if (items == null || items.isEmpty()) {
             return;
         }
@@ -55,7 +60,7 @@ public class ToolHelper {
         }
 
         for (ItemStack cluster : MatterCluster.makeReAvaritiaClusters(clusterContents)) {
-            EntityItem entity = new EntityItem(world, player.posX, player.posY + 0.5, player.posZ, cluster);
+            EntityItem entity = new EntityItem(world, x, y, z, cluster);
             entity.delayBeforeCanPickup = 0;
             world.spawnEntityInWorld(entity);
         }
