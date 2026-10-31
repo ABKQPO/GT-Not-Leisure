@@ -35,6 +35,7 @@
 
 ## 📑 Table of Contents
 - [📑 Table of Contents](#-table-of-contents)
+- [🔧 Required Dependencies](#-required-dependencies)
 - [✨ Key Mechanics](#-key-mechanics)
 - [🏭 Machinery Showcase](#-machinery-showcase)
 - [🧙‍♂️ Magic \& Cross-Mod Integration](#️-magic--cross-mod-integration)
@@ -48,6 +49,11 @@
 - [📜 Credits \& Attributions](#-credits--attributions)
 
 <hr>
+
+## 🔧 Required Dependencies
+
+*   [GTNLLib (>= 1.1)](https://github.com/GTNotLeisure/GTNLLib)
+*   [BetterQuestingAPI (>= 1.1.3)](https://github.com/GTNotLeisure/BetterQuestingAPI)
 
 ## ✨ Key Mechanics
 
