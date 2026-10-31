@@ -33,9 +33,9 @@ public class IndustrialInfusionCraftingRecipesFrontend extends GTNLRecipeFronten
     private static final int NEI_WINDOW_OFFSET_X = -5;
     private static final int NEI_WINDOW_OFFSET_Y = -11;
     private static final int SLOT_INSET = 1;
-    private static final int ASPECT_COLUMNS = 10;
-    private static final int ASPECT_ROWS = 2;
-    private static final int ASPECT_SPACING = 16;
+    private static final int SLOT_PITCH = 18;
+    private static final int LEGACY_ASPECT_COLUMNS = 10, ADJUSTED_ASPECT_COLUMNS = 9;
+    private static final int LEGACY_ASPECT_SPACING = 16;
     private static final int LEGACY_ASPECT_TOP_PADDING = 4;
 
     private final int itemRowCount;
@@ -49,7 +49,7 @@ public class IndustrialInfusionCraftingRecipesFrontend extends GTNLRecipeFronten
     @Override
     protected NEIRecipePropertiesBuilder modifyNEIProperties(NEIRecipePropertiesBuilder neiPropertiesBuilder) {
         int inputAreaHeight = INPUT_Y_ORIGIN + getItemRowCount() * 18;
-        int aspectAreaHeight = getAspectTopPadding() + ASPECT_ROWS * ASPECT_SPACING + 4;
+        int aspectAreaHeight = getAspectTopPadding() + getAspectRowCount() * getAspectSpacing() + 4;
 
         return neiPropertiesBuilder.recipeBackgroundSize(size(170, inputAreaHeight + aspectAreaHeight));
     }
@@ -74,6 +74,18 @@ public class IndustrialInfusionCraftingRecipesFrontend extends GTNLRecipeFronten
 
     private int getAspectTopPadding() {
         return usesAdjustedLayout() ? 0 : LEGACY_ASPECT_TOP_PADDING;
+    }
+
+    private int getAspectSpacing() {
+        return usesAdjustedLayout() ? SLOT_PITCH : LEGACY_ASPECT_SPACING;
+    }
+
+    private int getAspectColumnCount() {
+        return usesAdjustedLayout() ? ADJUSTED_ASPECT_COLUMNS : LEGACY_ASPECT_COLUMNS;
+    }
+
+    private int getAspectRowCount() {
+        return uiProperties.maxItemInputs == 9 ? 1 : 2;
     }
 
     private int getOutputYOrigin() {
@@ -125,17 +137,17 @@ public class IndustrialInfusionCraftingRecipesFrontend extends GTNLRecipeFronten
             aspectYOrigin = INPUT_Y_ORIGIN + itemRowCount * 18 + LEGACY_ASPECT_TOP_PADDING;
         }
         ItemStack[] aspectStacks = TCRecipeTools.createAspectDisplayStacks(aspects);
+        int columns = getAspectColumnCount();
+        int spacing = getAspectSpacing();
         for (int i = 0; i < aspectStacks.length; i++) {
             ItemStack stack = aspectStacks[i];
             if (stack == null) continue;
 
-            int column = i % ASPECT_COLUMNS;
-            int row = i / ASPECT_COLUMNS;
             neiCachedRecipe.mInputs.add(
                 new PositionedStack(
                     stack,
-                    aspectXOrigin + column * ASPECT_SPACING,
-                    aspectYOrigin + row * ASPECT_SPACING,
+                    aspectXOrigin + (i % columns) * spacing,
+                    aspectYOrigin + (i / columns) * spacing,
                     false));
         }
     }

@@ -2,15 +2,22 @@ package com.science.gtnl.common.recipe.gtnl;
 
 import static thaumcraft.common.config.ConfigBlocks.blockCosmeticSolid;
 
+import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 import com.gtnewhorizon.gtnhlib.util.data.ItemId;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.common.recipe.thaumcraft.TCRecipeTools;
 
+import gregtech.api.enums.GTValues;
 import gregtech.api.enums.TierEU;
 import gregtech.api.interfaces.IRecipeMap;
+import gregtech.api.objects.OreDictItemStack;
 import gregtech.api.recipe.RecipeMetadataKey;
 import gregtech.api.recipe.metadata.SimpleRecipeMetadataKey;
 import thaumcraft.api.aspects.AspectList;
@@ -24,9 +31,31 @@ public class InfusionCraftingRecipes implements IRecipePool {
     public static final RecipeMetadataKey<String> INFUSION_RESEARCH = SimpleRecipeMetadataKey
         .create(String.class, "gtnl_infusion_research");
 
+    private static final Set<String> TIERED_GLASS_ORES = Arrays.stream(GTValues.VN)
+        .map(tier -> "blockGlass" + tier)
+        .collect(Collectors.toSet());
+    private static final String PLAIN_PANE_ORE = "paneGlassColorless", ANY_PANE_ORE = "paneGlass";
+
     private static Object[] createInputs(TCRecipeTools.InfusionCraftingRecipe recipe) {
         ItemStack[] inputs = TCRecipeTools.checkInputSpecial(recipe.getInputItem());
-        return TCRecipeTools.toGTInputs(inputs);
+        Object[] converted = TCRecipeTools.toGTInputs(inputs);
+        // Thaumcraft accepts pedestal items by ore name; only glass keeps that here, other components stay exact.
+        for (int i = 1; i < inputs.length; i++) {
+            if (inputs[i] == null || inputs[i].stackSize <= 0) continue;
+            String glassOre = findGlassOreName(inputs[i]);
+            if (glassOre != null) converted[i] = new OreDictItemStack(glassOre, inputs[i].stackSize);
+        }
+        return converted;
+    }
+
+    private static String findGlassOreName(ItemStack stack) {
+        boolean plainPane = false;
+        for (int oreId : OreDictionary.getOreIDs(stack)) {
+            String oreName = OreDictionary.getOreName(oreId);
+            if (TIERED_GLASS_ORES.contains(oreName)) return oreName;
+            plainPane |= PLAIN_PANE_ORE.equals(oreName);
+        }
+        return plainPane ? ANY_PANE_ORE : null;
     }
 
     @Override
