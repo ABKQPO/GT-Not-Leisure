@@ -9,12 +9,10 @@ import static com.science.gtnl.common.wireless.WirelessCardActions.type;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Comparator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.TreeMap;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
@@ -31,6 +29,7 @@ import com.science.gtnl.compat.nech.NechSearchMatcher;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.ints.Int2ObjectAVLTreeMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -40,7 +39,8 @@ public class WirelessCardClientView {
     public static final int STATES = 6;
     private final WirelessCardContainer container;
     private final NechSearchMatcher matcher = new NechSearchMatcher();
-    private final Map<SortView, List<RowOrder>> orders = new LinkedHashMap<>(16, 0.75f, true);
+    private final Object2ObjectLinkedOpenHashMap<SortView, List<RowOrder>> orders = new Object2ObjectLinkedOpenHashMap<>(
+        16);
     private NBTTagCompound source = new NBTTagCompound();
     private List<Row> roots = List.of();
     private NBTTagCompound groupDisplay = new NBTTagCompound();
@@ -318,11 +318,9 @@ public class WirelessCardClientView {
                 query,
                 dimension,
                 state);
-            orders.put(sortView, sort(rows, orders.getOrDefault(sortView, List.of())));
-            if (orders.size() > 16) orders.remove(
-                orders.keySet()
-                    .iterator()
-                    .next());
+            List<RowOrder> previous = orders.getAndMoveToLast(sortView);
+            orders.putAndMoveToLast(sortView, sort(rows, previous == null ? List.of() : previous));
+            if (orders.size() > 16) orders.removeFirst();
             data.setBoolean("group", machine != null || !typeKey.isEmpty());
             data.setBoolean("typeGroup", !typeKey.isEmpty());
             data.setBoolean("machineGroup", machine != null);
@@ -426,7 +424,7 @@ public class WirelessCardClientView {
     }
 
     private static List<int[]> countDimensions(List<Row> rows) {
-        Map<Integer, int[]> counts = new TreeMap<>();
+        Map<Integer, int[]> counts = new Int2ObjectAVLTreeMap<>();
         for (Row row : rows) for (Row leaf : row.children()
             .isEmpty() ? List.of(row) : row.children()) {
                 int id = leaf.data()

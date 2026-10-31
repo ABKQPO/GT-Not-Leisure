@@ -3,7 +3,6 @@ package com.science.gtnl.common.machine.multiblock;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ExoticDynamo;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -233,7 +232,7 @@ public class ElectrocellGenerator extends MultiMachineBase<ElectrocellGenerator>
         matchedFluid = null;
         outputFluid = null;
 
-        ArrayList<FluidStack> fluidStacks = getStoredFluids();
+        List<FluidStack> fluidStacks = getStoredFluids();
         Object2IntOpenHashMap<Fluid> availableFluids = getAvailableFluidAmounts(fluidStacks);
 
         for (GTRecipe recipe : GTNLRecipeMaps.ElectrocellGeneratorRecipes.getAllRecipes()) {

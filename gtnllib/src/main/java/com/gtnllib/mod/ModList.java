@@ -1,6 +1,5 @@
 package com.gtnllib.mod;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -13,6 +12,7 @@ import com.gtnewhorizon.gtnhmixins.builders.ITargetMod;
 import com.gtnewhorizon.gtnhmixins.builders.TargetModBuilder;
 
 import cpw.mods.fml.common.Loader;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 
 @Getter
@@ -100,7 +100,7 @@ public enum ModList implements IMod, ITargetMod {
     }
 
     public static List<ModList> loadedListedMods() {
-        List<ModList> loaded = new ArrayList<>();
+        List<ModList> loaded = new ObjectArrayList<>();
         for (ModList mod : VALUES) {
             if (mod.showInModList && mod.isModLoaded()) loaded.add(mod);
         }

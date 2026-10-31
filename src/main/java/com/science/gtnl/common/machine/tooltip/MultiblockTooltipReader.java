@@ -1,14 +1,9 @@
 package com.science.gtnl.common.machine.tooltip;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -64,6 +59,12 @@ import gregtech.api.structure.IStructureChannels;
 import gregtech.api.util.tooltip.MarkdownTooltipLoader;
 import gregtech.api.util.tooltip.TooltipHelper;
 import gregtech.common.misc.GTStructureChannels;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 public class MultiblockTooltipReader {
 
@@ -88,7 +89,7 @@ public class MultiblockTooltipReader {
     private static final Pattern ACRONYM_END = Pattern.compile("([A-Z]+)([A-Z][a-z])");
     private static final Pattern LOWER_TO_UPPER = Pattern.compile("([a-z0-9])([A-Z])");
     private static final Map<String, IStructureChannels> KNOWN_CHANNELS = knownChannels();
-    private static final Set<String> NOT_CASING_CHANNELS = new HashSet<>(
+    private static final Set<String> NOT_CASING_CHANNELS = new ObjectOpenHashSet<>(
         Arrays.asList(
             GTStructureChannels.BOROGLASS.get(),
             GTStructureChannels.HEATING_COIL.get(),
@@ -102,7 +103,7 @@ public class MultiblockTooltipReader {
         HatchElement.OutputHatch };
 
     private static Map<String, IStructureChannels> knownChannels() {
-        Map<String, IStructureChannels> channels = new HashMap<>();
+        Map<String, IStructureChannels> channels = new Object2ObjectOpenHashMap<>();
         channels.put(GTStructureChannels.TIER_CASING.get(), GTStructureChannels.TIER_CASING);
         for (IStructureChannels channel : GTStructureChannels.values()) channels.putIfAbsent(channel.get(), channel);
         for (IStructureChannels channel : GTNLStructureChannels.values()) channels.putIfAbsent(channel.get(), channel);
@@ -179,12 +180,12 @@ public class MultiblockTooltipReader {
         }
         String machineType = keyPrefix == null ? null : translatedOrNull(keyPrefix + RECIPE_TYPE_SUFFIX);
         if (machineType == null) machineType = recipeMapNames(machine, controller);
-        List<String> lines = keyPrefix == null ? new ArrayList<>()
+        List<String> lines = keyPrefix == null ? new ObjectArrayList<>()
             : ownLines(keyPrefix, tooltipVars(machine, rules, stats));
         List<String> hatchKeys = structure == null ? Collections.emptyList() : structure.hatchKeys();
-        List<String> features = rules == null ? new ArrayList<>() : featureLines(machine, rules);
+        List<String> features = rules == null ? new ObjectArrayList<>() : featureLines(machine, rules);
         HeatRules heat = rules == null || stats == null ? null : heatRules(machine, rules);
-        List<List<String>> groups = rules == null ? new ArrayList<>() : lineGroups(machine, rules, hatchKeys);
+        List<List<String>> groups = rules == null ? new ObjectArrayList<>() : lineGroups(machine, rules, hatchKeys);
         boolean supportAny = hatchKeys.contains(HatchElement.ExoticEnergy.getDescriptionLangKey());
         boolean supportMultiAmp = !supportAny
             && hatchKeys.contains(HatchElement.MultiAmpEnergy.getDescriptionLangKey());
@@ -214,7 +215,7 @@ public class MultiblockTooltipReader {
     }
 
     private static <T extends MTEEnhancedMultiBlockBase<T>> String recipeMapNames(T machine, T controller) {
-        Set<String> names = new LinkedHashSet<>();
+        Set<String> names = new ObjectLinkedOpenHashSet<>();
         int original = controller.machineMode;
         try {
             for (int mode : machineModes(controller)) {
@@ -234,7 +235,7 @@ public class MultiblockTooltipReader {
     public static List<Integer> machineModes(MTEEnhancedMultiBlockBase<?> controller) {
         if (!controller.supportsMachineModeSwitch()) return Collections.singletonList(controller.machineMode);
         int original = controller.machineMode;
-        List<Integer> modes = new ArrayList<>();
+        List<Integer> modes = new IntArrayList();
         try {
             for (int mode = 0; modes.size() < MAX_MACHINE_MODES
                 && !modes.contains(mode); mode = controller.nextMachineMode()) {
@@ -250,18 +251,18 @@ public class MultiblockTooltipReader {
     private static <T extends MTEEnhancedMultiBlockBase<T>> List<String> featureLines(T machine,
         IMultiblockTooltipRules rules) {
         try {
-            return new ArrayList<>(rules.getTooltipFeatureLines());
+            return new ObjectArrayList<>(rules.getTooltipFeatureLines());
         } catch (RuntimeException e) {
             ScienceNotLeisure.LOG.warn("Cannot read the feature lines of {} for its tooltip", nameOf(machine), e);
-            return new ArrayList<>();
+            return new ObjectArrayList<>();
         }
     }
 
     private static <T extends MTEEnhancedMultiBlockBase<T>> List<List<String>> lineGroups(T machine,
         IMultiblockTooltipRules rules, List<String> hatchKeys) {
-        List<List<String>> groups = new ArrayList<>();
+        List<List<String>> groups = new ObjectArrayList<>();
         try {
-            List<String> hatchLines = new ArrayList<>();
+            List<String> hatchLines = new ObjectArrayList<>();
             for (String hatchKey : hatchKeys) hatchLines.addAll(rules.getTooltipHatchLines(hatchKey));
             if (!hatchLines.isEmpty()) groups.add(hatchLines);
             List<String> upgradeLines = rules.getTooltipUpgradeLines();
@@ -286,7 +287,7 @@ public class MultiblockTooltipReader {
         String name = keyPrefix.substring(keyPrefix.lastIndexOf('.') + 1)
             .replace('_', '-');
         try {
-            return new ArrayList<>(
+            return new ObjectArrayList<>(
                 MarkdownTooltipLoader.STANDARD
                     .loadStandardPath(new ResourceLocation(ScienceNotLeisure.RESOURCE_ROOT_ID, name), vars));
         } catch (RuntimeException e) {
@@ -299,7 +300,7 @@ public class MultiblockTooltipReader {
 
     private static <T extends MTEEnhancedMultiBlockBase<T>> Map<String, Object> tooltipVars(T machine,
         IMultiblockTooltipRules rules, TooltipStats stats) {
-        Map<String, Object> vars = new HashMap<>();
+        Map<String, Object> vars = new Object2ObjectOpenHashMap<>();
         if (stats != null) {
             vars.put("parallels", String.valueOf(stats.parallels()));
             vars.put("speed", TooltipHelper.percentageFormat.format(stats.speed()));
@@ -314,7 +315,7 @@ public class MultiblockTooltipReader {
     }
 
     private static List<String> numberedLines(String prefix) {
-        List<String> lines = new ArrayList<>();
+        List<String> lines = new ObjectArrayList<>();
         for (int index = 0; index < MAX_INFO_LINES; index++) addPlainLine(lines, prefix + "." + index);
         return lines;
     }
@@ -345,7 +346,7 @@ public class MultiblockTooltipReader {
     }
 
     private static List<TieredPart> probedParts(List<IStructureChannels> channels) {
-        List<TieredPart> parts = new ArrayList<>();
+        List<TieredPart> parts = new ObjectArrayList<>();
         parts.add(TieredPart.VOLTAGE);
         if (channels.contains(GTStructureChannels.HEATING_COIL)) parts.add(TieredPart.COIL);
         if (channels.contains(GTStructureChannels.BOROGLASS)) parts.add(TieredPart.GLASS);
@@ -355,7 +356,7 @@ public class MultiblockTooltipReader {
 
     private static List<TierBonus> tierBonuses(IMultiblockTooltipRules rules, List<TieredPart> parts,
         TooltipStats base) {
-        List<TierBonus> bonuses = new ArrayList<>();
+        List<TierBonus> bonuses = new ObjectArrayList<>();
         for (TieredPart part : parts) addTierBonuses(bonuses, rules, part);
         addSwitchBonuses(bonuses, rules, TieredPart.HIGH_PRESSURE, base);
         return bonuses;
@@ -364,7 +365,7 @@ public class MultiblockTooltipReader {
     private static List<TierThreshold> perfectOverclockThresholds(IMultiblockTooltipRules rules, List<TieredPart> parts,
         TooltipStats base, List<String> casingTierNames) {
         if (base.perfectOverclock()) return Collections.emptyList();
-        List<TierThreshold> thresholds = new ArrayList<>();
+        List<TierThreshold> thresholds = new ObjectArrayList<>();
         for (TieredPart part : parts) {
             int firstTier = firstProbeTier(part);
             TooltipStats[] probes = probeTiers(rules, part, part.maxTier + 1 - firstTier);
@@ -407,7 +408,7 @@ public class MultiblockTooltipReader {
     }
 
     public static List<TierBonus> tierBonusesOf(IMultiblockTooltipRules rules, TieredPart part) {
-        List<TierBonus> bonuses = new ArrayList<>();
+        List<TierBonus> bonuses = new ObjectArrayList<>();
         addTierBonuses(bonuses, rules, part);
         return bonuses;
     }
@@ -512,7 +513,7 @@ public class MultiblockTooltipReader {
 
     private static <T extends MTEEnhancedMultiBlockBase<T>> StructureSummary readPrototype(T controller) {
         IStructureDefinition<T> definition = controller.getStructureDefinition();
-        Set<String> channelNames = new LinkedHashSet<>();
+        Set<String> channelNames = new ObjectLinkedOpenHashSet<>();
         List<List<PieceCall>> sizes = recordSizes(controller, channelNames);
         if (sizes.isEmpty()) {
             ScienceNotLeisure.LOG.warn("Cannot find the structure pieces of {} for its tooltip", nameOf(controller));
@@ -530,19 +531,19 @@ public class MultiblockTooltipReader {
         boolean independentTiers = !layered && tiers.size() > 1 && !isAdditive(sizes);
         CheckRecord checks = independentTiers ? null : StructureTooltipHooks.recordChecks(controller);
         List<PieceCall> largest = sizes.get(layered || tiers.size() > 1 ? sizes.size() - 1 : 0);
-        List<List<Cell<T>>> tierCells = new ArrayList<>();
+        List<List<Cell<T>>> tierCells = new ObjectArrayList<>();
         for (List<PieceCall> tier : tiers) tierCells.add(readCells(definition, tier, solid));
         if (layered) tierCells.add(layer);
         List<List<Cell<T>>> largestCells = Collections.singletonList(readCells(definition, largest, solid));
         List<Cell<T>> airCells = readCells(definition, largest, element -> element == air);
-        Map<String, HatchGroup> hatches = new LinkedHashMap<>();
-        List<List<BlockGroup>> tierGroups = new ArrayList<>();
-        List<List<String>> casingRequirements = new ArrayList<>();
-        List<TierDetails> tierDetails = new ArrayList<>();
-        Set<String> hatchKeys = new LinkedHashSet<>();
+        Map<String, HatchGroup> hatches = new Object2ObjectLinkedOpenHashMap<>();
+        List<List<BlockGroup>> tierGroups = new ObjectArrayList<>();
+        List<List<String>> casingRequirements = new ObjectArrayList<>();
+        List<TierDetails> tierDetails = new ObjectArrayList<>();
+        Set<String> hatchKeys = new ObjectLinkedOpenHashSet<>();
         for (int tier = 0; tier < tierCells.size(); tier++) {
             List<Cell<T>> cells = tierCells.get(tier);
-            Map<String, HatchGroup> tierHatches = independentTiers ? new LinkedHashMap<>() : hatches;
+            Map<String, HatchGroup> tierHatches = independentTiers ? new Object2ObjectLinkedOpenHashMap<>() : hatches;
             CheckRecord tierCheck = independentTiers
                 ? StructureTooltipHooks.recordChecks(controller, pieceResults(sizes, tiers.get(tier)))
                 : checks;
@@ -563,20 +564,20 @@ public class MultiblockTooltipReader {
                         toHatchLines(tierHatches, tierCheck.hatchRules()))
                     : null);
         }
-        Map<IStructureElement<T>, Set<String>> elementChannels = new LinkedHashMap<>();
+        Map<IStructureElement<T>, Set<String>> elementChannels = new Object2ObjectLinkedOpenHashMap<>();
         for (List<Cell<T>> cells : tierCells) for (Cell<T> cell : cells) {
-            elementChannels.computeIfAbsent(cell.element(), element -> new LinkedHashSet<>());
+            elementChannels.computeIfAbsent(cell.element(), element -> new ObjectLinkedOpenHashSet<>());
         }
         for (Map.Entry<IStructureElement<T>, Set<String>> entry : elementChannels.entrySet()) {
             StructureTooltipHooks.recordChannels(controller, entry.getKey(), entry.getValue());
             channelNames.addAll(entry.getValue());
         }
-        Set<IStructureChannels> channels = new LinkedHashSet<>();
+        Set<IStructureChannels> channels = new ObjectLinkedOpenHashSet<>();
         for (String channelName : channelNames) {
             IStructureChannels channel = KNOWN_CHANNELS.get(channelName);
             if (channel != null) channels.add(channel);
         }
-        List<Section> sections = new ArrayList<>();
+        List<Section> sections = new ObjectArrayList<>();
         for (int tier = 0; tier < tierGroups.size(); tier++) {
             sections.add(
                 toSection(
@@ -595,9 +596,9 @@ public class MultiblockTooltipReader {
             isHollow(largestCells, airCells),
             controllerPosition(tierCells.get(0)),
             independentTiers ? Collections.emptyList() : toHatchLines(hatches, checks.hatchRules()),
-            new ArrayList<>(hatchKeys),
+            new ObjectArrayList<>(hatchKeys),
             sections,
-            new ArrayList<>(channels),
+            new ObjectArrayList<>(channels),
             casingTierNames(controller, casing),
             casingName(controller, casing),
             layered);
@@ -612,12 +613,12 @@ public class MultiblockTooltipReader {
 
     private static List<List<PieceCall>> recordSizes(MTEEnhancedMultiBlockBase<?> controller,
         Set<String> channelNames) {
-        List<List<PieceCall>> sizes = new ArrayList<>();
+        List<List<PieceCall>> sizes = new ObjectArrayList<>();
         Set<PieceCall> previous = Collections.emptySet();
         for (int stackSize = 1; stackSize <= MAX_PROJECTOR_STACK; stackSize++) {
             List<PieceCall> calls = StructureTooltipHooks.recordConstruct(controller, stackSize, channelNames);
             if (calls.isEmpty()) break;
-            Set<PieceCall> current = new HashSet<>(calls);
+            Set<PieceCall> current = new ObjectOpenHashSet<>(calls);
             if (current.equals(previous)) continue;
             sizes.add(calls);
             previous = current;
@@ -628,10 +629,10 @@ public class MultiblockTooltipReader {
     private static List<List<PieceCall>> structureTiers(List<List<PieceCall>> sizes) {
         if (sizes.size() > MAX_STRUCTURE_TIERS) return sizes.subList(0, 1);
         if (!isAdditive(sizes)) return sizes;
-        List<List<PieceCall>> tiers = new ArrayList<>();
+        List<List<PieceCall>> tiers = new ObjectArrayList<>();
         List<PieceCall> previous = Collections.emptyList();
         for (List<PieceCall> calls : sizes) {
-            List<PieceCall> added = new ArrayList<>(calls);
+            List<PieceCall> added = new ObjectArrayList<>(calls);
             added.removeAll(previous);
             tiers.add(added);
             previous = calls;
@@ -640,7 +641,7 @@ public class MultiblockTooltipReader {
     }
 
     private static Map<PieceCall, Boolean> pieceResults(List<List<PieceCall>> sizes, List<PieceCall> selected) {
-        Map<PieceCall, Boolean> results = new HashMap<>();
+        Map<PieceCall, Boolean> results = new Object2ObjectOpenHashMap<>();
         for (List<PieceCall> size : sizes) for (PieceCall piece : size) results.put(piece, false);
         for (PieceCall piece : selected) results.put(piece, true);
         return results;
@@ -660,7 +661,7 @@ public class MultiblockTooltipReader {
             }
             previous = counts;
         }
-        List<Cell<T>> cells = new ArrayList<>();
+        List<Cell<T>> cells = new ObjectArrayList<>();
         for (Map.Entry<IStructureElement<T>, Integer> entry : layer.entrySet()) {
             for (int i = 0; i < entry.getValue(); i++) cells.add(new Cell<>(entry.getKey(), 0, 0, 0));
         }
@@ -669,23 +670,23 @@ public class MultiblockTooltipReader {
 
     private static boolean isAdditive(List<List<PieceCall>> sizes) {
         for (int i = 1; i < sizes.size(); i++) {
-            if (!new HashSet<>(sizes.get(i)).containsAll(sizes.get(i - 1))) return false;
+            if (!new ObjectOpenHashSet<>(sizes.get(i)).containsAll(sizes.get(i - 1))) return false;
         }
         return true;
     }
 
     private static <T> Map<IStructureElement<T>, Integer> elementCounts(List<Cell<T>> cells) {
-        Map<Position, IStructureElement<T>> placed = new HashMap<>();
+        Map<Position, IStructureElement<T>> placed = new Object2ObjectOpenHashMap<>();
         for (Cell<T> cell : cells) placed.put(new Position(cell.a(), cell.b(), cell.c()), cell.element());
-        Map<IStructureElement<T>, Integer> counts = new HashMap<>();
+        Map<IStructureElement<T>, Integer> counts = new Object2ObjectOpenHashMap<>();
         for (IStructureElement<T> element : placed.values()) counts.merge(element, 1, Integer::sum);
         return counts;
     }
 
     private static <T> Map<IStructureElement<T>, Integer> addedCounts(Map<IStructureElement<T>, Integer> counts,
         Map<IStructureElement<T>, Integer> previous) {
-        Map<IStructureElement<T>, Integer> added = new LinkedHashMap<>();
-        Set<IStructureElement<T>> elements = new LinkedHashSet<>(previous.keySet());
+        Map<IStructureElement<T>, Integer> added = new Object2ObjectLinkedOpenHashMap<>();
+        Set<IStructureElement<T>> elements = new ObjectLinkedOpenHashSet<>(previous.keySet());
         elements.addAll(counts.keySet());
         for (IStructureElement<T> element : elements) {
             int change = counts.getOrDefault(element, 0) - previous.getOrDefault(element, 0);
@@ -697,7 +698,7 @@ public class MultiblockTooltipReader {
 
     private static <T> List<Cell<T>> readCells(IStructureDefinition<T> definition, List<PieceCall> calls,
         Predicate<IStructureElement<T>> kept) {
-        List<Cell<T>> cells = new ArrayList<>();
+        List<Cell<T>> cells = new ObjectArrayList<>();
         for (PieceCall call : calls) {
             int a = 0, b = 0, c = 0;
             for (IStructureElement<T> element : definition.getStructureFor(call.piece())) {
@@ -737,8 +738,8 @@ public class MultiblockTooltipReader {
     }
 
     private static <T> boolean isHollow(List<List<Cell<T>>> tierCells, List<Cell<T>> airCells) {
-        Map<Line, int[]> spansAlongA = new HashMap<>();
-        Map<Line, int[]> spansAlongC = new HashMap<>();
+        Map<Line, int[]> spansAlongA = new Object2ObjectOpenHashMap<>();
+        Map<Line, int[]> spansAlongC = new Object2ObjectOpenHashMap<>();
         for (List<Cell<T>> cells : tierCells) {
             for (Cell<T> cell : cells) {
                 widen(spansAlongA, new Line(cell.b(), cell.c()), cell.a());
@@ -776,18 +777,18 @@ public class MultiblockTooltipReader {
 
     private static <T> List<BlockGroup> readGroups(T controller, List<Cell<T>> cells, int materialTiers,
         IMultiblockTooltipRules rules, Map<String, HatchGroup> hatches) {
-        Map<IStructureElement<T>, Integer> counts = new LinkedHashMap<>();
+        Map<IStructureElement<T>, Integer> counts = new Object2ObjectLinkedOpenHashMap<>();
         for (Cell<T> cell : cells) counts.merge(cell.element(), 1, Integer::sum);
-        List<Map.Entry<IStructureElement<T>, Integer>> entries = new ArrayList<>(counts.entrySet());
+        List<Map.Entry<IStructureElement<T>, Integer>> entries = new ObjectArrayList<>(counts.entrySet());
         entries.sort(
             Map.Entry.<IStructureElement<T>, Integer>comparingByValue()
                 .reversed());
 
-        Map<List<String>, BlockGroup> blocks = new LinkedHashMap<>();
+        Map<List<String>, BlockGroup> blocks = new Object2ObjectLinkedOpenHashMap<>();
         for (Map.Entry<IStructureElement<T>, Integer> entry : entries) {
             int count = entry.getValue();
-            List<String> hatchKeys = new ArrayList<>();
-            List<String> blockKeys = new ArrayList<>();
+            List<String> hatchKeys = new ObjectArrayList<>();
+            List<String> blockKeys = new ObjectArrayList<>();
             for (String key : describe(controller, entry.getKey())) {
                 if (isHatchKey(key)) hatchKeys.add(key);
                 else blockKeys.add(key);
@@ -806,7 +807,7 @@ public class MultiblockTooltipReader {
                 else group.replaceable += count;
             }
 
-            Set<String> countedLines = new HashSet<>();
+            Set<String> countedLines = new ObjectOpenHashSet<>();
             for (String hatchKey : hatchKeys) {
                 String lineKey = rules == null ? hatchKey : rules.getStructureTooltipHatchLine(hatchKey);
                 HatchGroup hatch = hatches.computeIfAbsent(lineKey, key -> new HatchGroup());
@@ -825,7 +826,7 @@ public class MultiblockTooltipReader {
                 }
             }
         }
-        return new ArrayList<>(blocks.values());
+        return new ObjectArrayList<>(blocks.values());
     }
 
     private static <T> List<String> describe(T controller, IStructureElement<T> element) {
@@ -843,7 +844,7 @@ public class MultiblockTooltipReader {
 
     private static <T> List<String> blockNames(T controller, IStructureElement<T> element, List<String> keys,
         List<String> tierNames) {
-        List<String> names = new ArrayList<>();
+        List<String> names = new ObjectArrayList<>();
         for (String key : keys) {
             if (!StatCollector.canTranslate(key)) return placedNamesOr(controller, element, tierNames, keys);
             names.add(StatCollector.translateToLocal(key));
@@ -869,7 +870,7 @@ public class MultiblockTooltipReader {
     }
 
     private static <T> List<String> placedTierNames(T controller, IStructureElement<T> element, int tiers) {
-        List<String> names = new ArrayList<>();
+        List<String> names = new ObjectArrayList<>();
         try {
             for (int tier = 1; tier <= tiers; tier++) {
                 List<String> placed = placedNames(controller, element, tier);
@@ -880,7 +881,7 @@ public class MultiblockTooltipReader {
             ScienceNotLeisure.LOG.debug("Cannot probe the block tiers of {} for its tooltip", nameOf(controller), e);
             return null;
         }
-        return new HashSet<>(names).size() > 1 ? names : null;
+        return new ObjectOpenHashSet<>(names).size() > 1 ? names : null;
     }
 
     private static <T> IStructureElement<T> casingElement(T controller,
@@ -931,7 +932,7 @@ public class MultiblockTooltipReader {
     private static <T> List<String> placedNames(T controller, IStructureElement<T> element, int tier) {
         Iterable<ItemStack> stacks = placedStacks(controller, element, tier);
         if (stacks == null) return null;
-        List<String> names = new ArrayList<>();
+        List<String> names = new ObjectArrayList<>();
         for (ItemStack stack : stacks) names.add(stack.getDisplayName());
         return names;
     }
@@ -963,21 +964,21 @@ public class MultiblockTooltipReader {
 
     private static Section toSection(List<BlockGroup> groups, int materialTiers, IMultiblockTooltipRules rules,
         TierDetails details, List<String> casingRequirements) {
-        List<BlockGroup> sorted = new ArrayList<>(groups);
+        List<BlockGroup> sorted = new ObjectArrayList<>(groups);
         sorted.sort(
             Comparator.comparingInt(BlockGroup::total)
                 .reversed());
-        List<BlockLine> blocks = new ArrayList<>();
-        List<BlockGroup> byTier = new ArrayList<>();
+        List<BlockLine> blocks = new ObjectArrayList<>();
+        List<BlockGroup> byTier = new ObjectArrayList<>();
         for (BlockGroup group : sorted) {
             if (group.byMaterialTier) byTier.add(group);
             else blocks.add(new BlockLine(group.countText(), group.displayName(), group.tierNames != null));
         }
 
-        List<MaterialTier> tiers = new ArrayList<>();
+        List<MaterialTier> tiers = new ObjectArrayList<>();
         if (!byTier.isEmpty()) {
             for (int tier = 1; tier <= materialTiers; tier++) {
-                List<BlockLine> lines = new ArrayList<>();
+                List<BlockLine> lines = new ObjectArrayList<>();
                 for (BlockGroup group : byTier) {
                     lines.add(new BlockLine(group.countText(), group.tierNames.get(tier - 1), false));
                 }
@@ -994,14 +995,14 @@ public class MultiblockTooltipReader {
 
     private static List<HatchLine> toHatchLines(Map<String, HatchGroup> hatches, List<HatchRule> hatchRules) {
         mergeLinkedLines(hatches, hatchRules);
-        List<HatchGroup> groups = new ArrayList<>(hatches.values());
+        List<HatchGroup> groups = new ObjectArrayList<>(hatches.values());
         groups.sort(Comparator.comparingInt(group -> group.order));
-        List<HatchLine> lines = new ArrayList<>();
+        List<HatchLine> lines = new ObjectArrayList<>();
         for (HatchGroup hatch : groups) {
             lines.add(
                 new HatchLine(
                     hatchCount(hatch, hatchRules),
-                    new ArrayList<>(hatch.names),
+                    new ObjectArrayList<>(hatch.names),
                     hatchLocations(hatch, hatchRules)));
         }
         return lines;
@@ -1014,12 +1015,12 @@ public class MultiblockTooltipReader {
                     StatCollector.translateToLocalFormatted("gtnl.structure.tooltip.hatch.per_layer", rule.perLayer()));
             }
         }
-        return new ArrayList<>(hatch.locations);
+        return new ObjectArrayList<>(hatch.locations);
     }
 
     private static void mergeLinkedLines(Map<String, HatchGroup> hatches, List<HatchRule> hatchRules) {
         for (HatchRule rule : hatchRules) {
-            List<String> linked = new ArrayList<>();
+            List<String> linked = new ObjectArrayList<>();
             for (Map.Entry<String, HatchGroup> entry : hatches.entrySet()) {
                 if (!Collections.disjoint(entry.getValue().keys, rule.hatchKeys())) linked.add(entry.getKey());
             }
@@ -1101,9 +1102,9 @@ public class MultiblockTooltipReader {
 
     private static class HatchGroup {
 
-        private final Set<String> keys = new LinkedHashSet<>();
-        private final Set<String> names = new LinkedHashSet<>();
-        private final Set<String> locations = new LinkedHashSet<>();
+        private final Set<String> keys = new ObjectLinkedOpenHashSet<>();
+        private final Set<String> names = new ObjectLinkedOpenHashSet<>();
+        private final Set<String> locations = new ObjectLinkedOpenHashSet<>();
         private int dedicated;
         private boolean replacesBlocks;
         private int order = Integer.MAX_VALUE;

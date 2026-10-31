@@ -449,7 +449,7 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
     }
 
     private static List<String> steamInputHatchKeys() {
-        List<String> keys = new ArrayList<>();
+        List<String> keys = new ObjectArrayList<>();
         for (int id : STEAM_INPUT_HATCH_IDS) {
             IMetaTileEntity hatch = GregTechAPI.METATILEENTITIES[id];
             if (hatch != null) keys.add("gt.blockmachines." + hatch.getMetaName() + ".name");

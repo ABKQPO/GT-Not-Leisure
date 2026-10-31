@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -124,7 +123,7 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
             if (mProgresstime % 5 == 0 && excessFuel >= 2000) {
                 startRecipeProcessing();
                 int pyrotheumConsumption = getPyrotheumConsumption();
-                ArrayList<FluidStack> storedFluids = getStoredFluids();
+                List<FluidStack> storedFluids = getStoredFluids();
                 for (FluidStack tFluid : storedFluids) {
                     if (tFluid == null || tFluid.getFluid() == null) continue;
                     int amount = tFluid.amount;
@@ -265,7 +264,7 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
             excessFuel = 10000;
         }
 
-        ArrayList<FluidStack> storedFluids = getStoredFluids();
+        List<FluidStack> storedFluids = getStoredFluids();
         if (storedFluids.isEmpty()) {
             return CheckRecipeResultRegistry.NO_RECIPE;
         }

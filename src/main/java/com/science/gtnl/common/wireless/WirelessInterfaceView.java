@@ -5,7 +5,6 @@ import static com.gtnewhorizon.gtnhlib.capability.Capabilities.getCapability;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityChest;
@@ -24,6 +23,7 @@ import appeng.helpers.IInterfaceHost;
 import appeng.parts.AEBasePart;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatch;
+import it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
@@ -72,7 +72,7 @@ public class WirelessInterfaceView {
 
     private List<Name> readNames(IWirelessLinkView link) {
         Set<Object> seen = new ReferenceOpenHashSet<>();
-        var names = new TreeMap<String, Name>();
+        Map<String, Name> names = new Object2ObjectAVLTreeMap<>();
         for (var node : link.members()) {
             Object machine = node.getMachine();
             if (!(machine instanceof IInterfaceViewable) && machine instanceof IGregTechTileEntity base)

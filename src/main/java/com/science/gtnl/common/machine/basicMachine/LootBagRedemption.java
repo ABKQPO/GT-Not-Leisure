@@ -1,6 +1,5 @@
 package com.science.gtnl.common.machine.basicMachine;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
@@ -13,7 +12,6 @@ import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
-import com.google.common.collect.Sets;
 import com.science.gtnl.common.gui.modularui.singleblock.GTNLBasicMachineGui;
 import com.science.gtnl.compat.newhorizons.NHCoreItem;
 import com.science.gtnl.mixins.late.enhancedLootBags.AccessorItemLootBag;
@@ -32,6 +30,7 @@ import gregtech.api.metatileentity.implementations.MTEBasicMachine;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTUtility;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -62,7 +61,7 @@ public class LootBagRedemption extends MTEBasicMachine {
         int depth = 0;
         LootGroups.LootGroup group = lgHandler.getGroupByID(bagId);
         // visited groups will be added to this set, so we can ensure that we won't drop into a dead loop.
-        HashSet<LootGroups.LootGroup> visited = Sets.newHashSet();
+        ObjectOpenHashSet<LootGroups.LootGroup> visited = new ObjectOpenHashSet<>();
         do {
             if (!visited.add(group)) {
                 // oops, the group has already been searched, there's a circle in the reference chain!

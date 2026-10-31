@@ -7,12 +7,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -41,6 +39,8 @@ import gregtech.api.metatileentity.implementations.MTETooltipMultiBlockBase;
 import gregtech.api.structure.IStructureChannels;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 public class MultiblockTooltipAudit {
 
@@ -110,7 +110,7 @@ public class MultiblockTooltipAudit {
     }
 
     public static List<MachineReport> auditAll() {
-        List<MachineReport> reports = new ArrayList<>();
+        List<MachineReport> reports = new ObjectArrayList<>();
         IMetaTileEntity[] machines = GregTechAPI.METATILEENTITIES;
         for (int id = 0; id < machines.length; id++) {
             if (machines[id] instanceof MTEMultiBlockBase machine && machine.getClass()
@@ -122,8 +122,8 @@ public class MultiblockTooltipAudit {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private static MachineReport audit(int id, MTEMultiBlockBase machine) {
-        List<String> problems = new ArrayList<>();
-        List<String> notes = new ArrayList<>();
+        List<String> problems = new ObjectArrayList<>();
+        List<String> notes = new ObjectArrayList<>();
         List<String> autoInfo = Collections.emptyList();
         List<String> autoStructure = Collections.emptyList();
         long start = System.nanoTime();
@@ -205,7 +205,7 @@ public class MultiblockTooltipAudit {
     private static <T extends MTEEnhancedMultiBlockBase<T>> List<String> probe(T machine, InfoSummary info,
         StructureSummary structure) {
         IMultiblockTooltipRules rules = (IMultiblockTooltipRules) machine;
-        List<String> problems = new ArrayList<>();
+        List<String> problems = new ObjectArrayList<>();
         List<IStructureChannels> channels = structure == null ? Collections.emptyList() : structure.channels();
         checkPart(problems, rules, info, TieredPart.VOLTAGE, true);
         checkPart(problems, rules, info, TieredPart.COIL, channels.contains(GTStructureChannels.HEATING_COIL));
@@ -222,7 +222,7 @@ public class MultiblockTooltipAudit {
         if (modes.size() <= 1) return;
         int original = machine.machineMode;
         try {
-            List<TooltipStats> stats = new ArrayList<>();
+            List<TooltipStats> stats = new ObjectArrayList<>();
             for (int mode : modes) {
                 machine.machineMode = mode;
                 stats.add(rules.getTooltipStats());
@@ -299,7 +299,7 @@ public class MultiblockTooltipAudit {
     }
 
     private static Set<String> shownFields(IMultiblockTooltipRules rules, StructureSummary structure) {
-        Set<String> shown = new HashSet<>(SHOWN_FIELDS);
+        Set<String> shown = new ObjectOpenHashSet<>(SHOWN_FIELDS);
         List<String> hatchKeys = structure == null ? Collections.emptyList() : structure.hatchKeys();
         for (String hatchKey : hatchKeys) {
             if (!rules.getTooltipHatchLines(hatchKey)
@@ -323,7 +323,7 @@ public class MultiblockTooltipAudit {
     }
 
     private static List<Supplier<TooltipStats>> probeContexts(IMultiblockTooltipRules rules) {
-        List<Supplier<TooltipStats>> contexts = new ArrayList<>();
+        List<Supplier<TooltipStats>> contexts = new ObjectArrayList<>();
         contexts.add(rules::getTooltipStats);
         for (TieredPart part : PROBED_PARTS) {
             int tier = MultiblockTooltipReader.firstProbeTier(part);
@@ -333,7 +333,7 @@ public class MultiblockTooltipAudit {
     }
 
     private static List<Field> stateFields(Class<?> type) {
-        List<Field> fields = new ArrayList<>();
+        List<Field> fields = new ObjectArrayList<>();
         for (Class<?> current = type; current != null && current.getName()
             .startsWith(GTNL_PACKAGE); current = current.getSuperclass()) {
             for (Field field : current.getDeclaredFields()) {
@@ -400,7 +400,7 @@ public class MultiblockTooltipAudit {
     }
 
     private static String displayNames(Set<StatFamily> families) {
-        List<String> names = new ArrayList<>();
+        List<String> names = new ObjectArrayList<>();
         for (StatFamily family : families) names.add(family.displayName());
         return GTNLMultiblockTooltipBuilder.joinPhrases(names);
     }
@@ -418,13 +418,13 @@ public class MultiblockTooltipAudit {
     }
 
     private static List<String> reportLines(List<MachineReport> reports) {
-        List<String> lines = new ArrayList<>();
+        List<String> lines = new ObjectArrayList<>();
         long totalMicros = 0;
         for (MachineReport report : reports) totalMicros += report.micros();
         lines.add(text("title"));
         lines.add(text("summary", reports.size(), suspiciousCount(reports), millis(totalMicros)));
         lines.add(text("slowest"));
-        List<MachineReport> slowest = new ArrayList<>(reports);
+        List<MachineReport> slowest = new ObjectArrayList<>(reports);
         slowest.sort(
             Comparator.comparingLong(MachineReport::micros)
                 .reversed());

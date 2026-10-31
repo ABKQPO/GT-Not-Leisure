@@ -19,7 +19,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
-import com.google.common.collect.Lists;
 import com.gtnllib.utils.MathUtils;
 import com.science.gtnl.api.mixinHelper.IWirelessMode;
 import com.science.gtnl.common.machine.hatch.HatchFluidDrain;
@@ -151,18 +150,24 @@ public class PurificationUnitHooks {
             (double) outputWater.amount * MTEPurificationUnitBase.WATER_BOOST_NEEDED_FLUID
                 * host(unit).gtnl$state()
                     .getEffectiveParallel());
-        return new ObjectArrayList<>(splitLongToFluidStacks(outputWater, totalAmount));
+        List<FluidStack> stacks = new ObjectArrayList<>();
+        splitLongToFluidStacks(outputWater, totalAmount, stacks);
+        return stacks;
     }
 
     public static ArrayList<FluidStack> splitLongToFluidStacks(FluidStack template, long amount) {
         ArrayList<FluidStack> list = new ArrayList<>();
+        splitLongToFluidStacks(template, amount, list);
+        return list;
+    }
+
+    private static void splitLongToFluidStacks(FluidStack template, long amount, List<FluidStack> list) {
         long remaining = amount;
         while (remaining > 0) {
             int split = (int) Math.min(Integer.MAX_VALUE, remaining);
             list.add(new FluidStack(template.getFluid(), split));
             remaining -= split;
         }
-        return list;
     }
 
     public static CheckRecipeResult findRecipeForInputsLong(MTEPurificationUnitBase<?> unit, FluidStack[] fluidInputs,
@@ -191,11 +196,10 @@ public class PurificationUnitHooks {
             .getEffectiveParallel();
         for (int i = 0; i < recipe.mFluidInputs.length; ++i) {
             FluidStack input = recipe.mFluidInputs[i];
-            ArrayList<FluidStack> fluidStacks = new ArrayList<>();
-            fluidStacks.add(input);
+            List<FluidStack> fluidStacks = new ObjectArrayList<>();
             if (i == 0) {
-                fluidStacks = splitLongToFluidStacks(input, input.amount * effectiveParallel);
-            }
+                splitLongToFluidStacks(input, input.amount * effectiveParallel, fluidStacks);
+            } else fluidStacks.add(input);
             depleteInputList(unit, fluidStacks, false);
         }
     }
@@ -247,7 +251,7 @@ public class PurificationUnitHooks {
             Optional<IDualInputInventory> inventoryOpt = tHatch.getFirstNonEmptyInventory();
             if (inventoryOpt.isPresent()) {
                 IDualInputInventory inventory = inventoryOpt.get();
-                for (FluidStack stored : Lists.newArrayList(inventory.getFluidInputs())) {
+                for (FluidStack stored : new ObjectArrayList<>(inventory.getFluidInputs())) {
                     if (stored != null && stored.amount > 0 && stored.isFluidEqual(fluid)) {
                         int deduct = Math.min(stored.amount, fluid.amount);
                         if (doDrain) stored.amount -= deduct;

@@ -2,6 +2,7 @@ package com.science.gtnl.utils.recipes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.OptionalDouble;
 import java.util.function.Function;
@@ -26,6 +27,7 @@ import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.ParallelHelper;
 import gregtech.api.util.VoidProtectionHelper;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SuppressWarnings({ "unused", "UnusedReturnValue" })
 public class GTNLParallelHelper extends ParallelHelper {
@@ -704,7 +706,7 @@ public class GTNLParallelHelper extends ParallelHelper {
             return;
         }
         if (truncatedItemOutputs.length == 0) return;
-        ArrayList<ItemStack> itemOutputsList = new ArrayList<>();
+        List<ItemStack> itemOutputsList = new ObjectArrayList<>();
         for (int i = 0; i < truncatedItemOutputs.length; i++) {
             if (recipe.getOutput(i) == null) continue;
             ItemStack origin = recipe.getOutput(i)
@@ -726,7 +728,7 @@ public class GTNLParallelHelper extends ParallelHelper {
             return;
         }
         if (truncatedFluidOutputs.length == 0) return;
-        ArrayList<FluidStack> fluidOutputsList = new ArrayList<>();
+        List<FluidStack> fluidOutputsList = new ObjectArrayList<>();
         for (int i = 0; i < truncatedFluidOutputs.length; i++) {
             if (recipe.getFluidOutput(i) == null) continue;
             FluidStack origin = recipe.getFluidOutput(i)
@@ -781,6 +783,10 @@ public class GTNLParallelHelper extends ParallelHelper {
     }
 
     public static void addItemsLong(ArrayList<ItemStack> itemList, ItemStack origin, long amount) {
+        addItemsLong((List<ItemStack>) itemList, origin, amount);
+    }
+
+    public static void addItemsLong(List<ItemStack> itemList, ItemStack origin, long amount) {
         if (amount > 0) {
             while (amount > Integer.MAX_VALUE) {
                 itemList.add(GTUtility.copyAmountUnsafe(Integer.MAX_VALUE, origin));
@@ -791,6 +797,10 @@ public class GTNLParallelHelper extends ParallelHelper {
     }
 
     public static void addFluidsLong(ArrayList<FluidStack> fluidList, FluidStack origin, long amount) {
+        addFluidsLong((List<FluidStack>) fluidList, origin, amount);
+    }
+
+    public static void addFluidsLong(List<FluidStack> fluidList, FluidStack origin, long amount) {
         if (amount > 0) {
             while (amount > Integer.MAX_VALUE) {
                 fluidList.add(GTUtility.copyAmount(Integer.MAX_VALUE, origin));

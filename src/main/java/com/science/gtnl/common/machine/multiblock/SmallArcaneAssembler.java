@@ -6,7 +6,6 @@ import static com.science.gtnl.common.recipe.gtnl.ShapedArcaneCraftingRecipes.AR
 import static thaumcraft.common.config.ConfigBlocks.blockCosmeticOpaque;
 import static thaumcraft.common.config.ConfigBlocks.blockCosmeticSolid;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -227,7 +226,7 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
     private void beginChargeCycle(IGregTechTileEntity baseMetaTileEntity) {
         clearChargeCycle();
         ObjectArrayList<Aspect> selectedAspects = new ObjectArrayList<>(PRIMAL_ASPECTS);
-        ArrayList<TileVisNode> visNodes = getNearbyVisNodes(baseMetaTileEntity);
+        List<TileVisNode> visNodes = getNearbyVisNodes(baseMetaTileEntity);
         boolean connectionEffectStarted = false;
         int aspectCount = Math.min(WAND_CHARGE_ASPECT_COUNT, selectedAspects.size());
         for (int i = 0; i < aspectCount; i++) {
@@ -248,7 +247,7 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
         chargeCycleTicksRemaining = WAND_CHARGE_INTERVAL;
     }
 
-    private ArrayList<TileVisNode> getNearbyVisNodes(IGregTechTileEntity baseMetaTileEntity) {
+    private List<TileVisNode> getNearbyVisNodes(IGregTechTileEntity baseMetaTileEntity) {
         long worldTime = baseMetaTileEntity.getWorld()
             .getTotalWorldTime();
         if (worldTime >= nextVisNodeScanTick) {
@@ -256,7 +255,7 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
             nextVisNodeScanTick = worldTime + VIS_NODE_SCAN_INTERVAL;
         }
 
-        ArrayList<TileVisNode> nodes = new ArrayList<>();
+        List<TileVisNode> nodes = new ObjectArrayList<>();
         for (ChunkCoordinates coordinates : visNodeCoordinates) {
             TileEntity tileEntity = baseMetaTileEntity.getWorld()
                 .getTileEntity(coordinates.posX, coordinates.posY, coordinates.posZ);

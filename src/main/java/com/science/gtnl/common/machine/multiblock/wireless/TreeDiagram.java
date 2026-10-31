@@ -4,7 +4,6 @@ import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -57,6 +56,7 @@ import gregtech.api.util.GTRecipe;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gtPlusPlus.core.material.MaterialsElements;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 
 @IMetaTileEntity.SkipGenerateDescription
@@ -533,7 +533,7 @@ public class TreeDiagram extends WirelessEnergyMultiMachineBase<TreeDiagram> imp
             }
             if (truncatedItemOutputs.length == 0) return;
 
-            ArrayList<ItemStack> outputItems = new ArrayList<>(truncatedItemOutputs.length);
+            List<ItemStack> outputItems = new ObjectArrayList<>(truncatedItemOutputs.length);
             for (int outputIndex = 0; outputIndex < truncatedItemOutputs.length; outputIndex++) {
                 ItemStack recipeOutput = recipe.getOutput(outputIndex);
                 if (recipeOutput == null) continue;
@@ -555,7 +555,7 @@ public class TreeDiagram extends WirelessEnergyMultiMachineBase<TreeDiagram> imp
             }
             if (truncatedFluidOutputs.length == 0) return;
 
-            ArrayList<FluidStack> outputFluids = new ArrayList<>(truncatedFluidOutputs.length);
+            List<FluidStack> outputFluids = new ObjectArrayList<>(truncatedFluidOutputs.length);
             for (int outputIndex = 0; outputIndex < truncatedFluidOutputs.length; outputIndex++) {
                 FluidStack recipeOutput = recipe.getFluidOutput(outputIndex);
                 if (recipeOutput == null) continue;

@@ -5,7 +5,6 @@ import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -44,6 +43,7 @@ import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.BlockIcons;
+import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
 
 import gregtech.api.casing.Casings;
@@ -70,7 +70,6 @@ import gregtech.api.util.GTRecipeBuilder;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.MultiblockTooltipBuilder;
-import gregtech.api.util.ParallelHelper;
 import gregtech.api.util.VoidProtectionHelper;
 import gregtech.api.util.tooltip.TooltipHelper;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
@@ -428,9 +427,9 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
 
                 // 溢出保护检查
                 if (protectsExcessItem()) {
-                    ArrayList<ItemStack> pred = new ArrayList<>();
+                    List<ItemStack> pred = new ObjectArrayList<>();
                     ItemStack out = recipe.mOutput.copy();
-                    ParallelHelper.addItemsLong(pred, out, (long) out.stackSize * finalParallel);
+                    GTNLParallelHelper.addItemsLong(pred, out, (long) out.stackSize * finalParallel);
                     VoidProtectionHelper vph = new VoidProtectionHelper();
                     vph.setMachine(this)
                         .setItemOutputs(pred.toArray(new ItemStack[0]))
@@ -540,13 +539,13 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         }
 
         // 最终结算
-        ArrayList<ItemStack> totalOutputs = new ArrayList<>();
+        List<ItemStack> totalOutputs = new ObjectArrayList<>();
 
         GrandAssemblyLineOverclockTool.EnergyTotals totals = new GrandAssemblyLineOverclockTool.EnergyTotals();
 
         for (RecipeTask task : tasks) {
             ItemStack out = task.recipe.mOutput.copy();
-            ParallelHelper.addItemsLong(totalOutputs, out, (long) out.stackSize * task.parallel);
+            GTNLParallelHelper.addItemsLong(totalOutputs, out, (long) out.stackSize * task.parallel);
 
             totals.add(task.adjustedPower, task.adjustedTime, task.parallel);
         }

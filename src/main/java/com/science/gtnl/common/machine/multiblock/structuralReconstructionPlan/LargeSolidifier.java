@@ -46,6 +46,7 @@ import gregtech.api.util.GTRecipe;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.tileentities.machines.IDualInputInventoryWithPattern;
 import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.MTEHatchSolidifier;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 @IMetaTileEntity.SkipGenerateDescription
 @IMetaTileEntity.SkipGenerateName
@@ -149,7 +150,7 @@ public class LargeSolidifier extends GTMMultiMachineBase<LargeSolidifier> implem
                 setInputItems(inputs.inputItems);
                 setInputFluids(inputs.inputFluid);
                 Set<GTRecipe> recipes = findRecipeMatches(RecipeMaps.fluidSolidifierRecipes)
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toCollection(ObjectOpenHashSet::new));
                 if (!recipes.isEmpty()) {
                     dualInvWithPatternToRecipeCache.put(inv, recipes);
                     activeDualInv = inv;

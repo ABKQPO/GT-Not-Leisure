@@ -97,6 +97,11 @@ CI 强制重新编译两个模块，并用 `.github/scripts/check-deprecations.c
 不允许用另一个文件减少的告警抵消新增告警；缓存编译结果不能冒充零告警。
 `verifyArchitecture` 还会比较五个 NEI 页面在不同容量下的槽位和尺寸基线。
 
+可替换的可变集合统一使用 fastutil；访问顺序缓存显式使用 `getAndMoveToLast` / `putAndMoveToLast`。
+`src/test/resources/compat/collections-compatibility.txt` 逐项记录仍需 JDK 具体类型的公开接口、
+上游调用、旧存档序列化和双端队列。架构检查会阻止未说明理由的新增分配。
+弱引用、枚举专用、并发和不可变集合保留原有语义。
+
 ## 第三方代码
 
 `gui/wheel` 的轮盘移植自 AnvilLib（MIT 许可），许可声明见 `src/main/resources/licenses/ANVILLIB-MIT.txt`。

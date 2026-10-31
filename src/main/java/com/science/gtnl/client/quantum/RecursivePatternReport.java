@@ -1,6 +1,5 @@
 package com.science.gtnl.client.quantum;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +22,7 @@ import appeng.client.render.highlighter.BlockPosHighlighter;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntLinkedOpenHashSet;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 
 /**
  * Shows the crafting cycles of a request in the chat and highlights the machines holding their patterns.
@@ -68,7 +68,7 @@ public class RecursivePatternReport {
         }
         player.addChatMessage(
             new ChatComponentTranslation("gtnl.recursive_patterns.header", request.getDisplayName(), cycles.size()));
-        var highlights = new LinkedHashMap<NamedDimensionalCoord, String[]>();
+        var highlights = new Object2ObjectLinkedOpenHashMap<NamedDimensionalCoord, String[]>();
         for (int i = 0; i < cycles.size(); i++) {
             var cycle = cycles.get(i);
             list(player, i + 1, cycle);
@@ -92,7 +92,7 @@ public class RecursivePatternReport {
                 index.blocking()
                     .size(),
                 highlightKeyName()));
-        var highlights = new LinkedHashMap<NamedDimensionalCoord, String[]>();
+        var highlights = new Object2ObjectLinkedOpenHashMap<NamedDimensionalCoord, String[]>();
         for (int i = 0; i < index.cycles()
             .size(); i++) {
             var cycle = index.cycles()
@@ -112,7 +112,7 @@ public class RecursivePatternReport {
         var player = minecraft.thePlayer;
         if (player == null || matches.isEmpty()) return;
         var cycles = new IntLinkedOpenHashSet();
-        var highlights = new LinkedHashMap<NamedDimensionalCoord, String[]>();
+        var highlights = new Object2ObjectLinkedOpenHashMap<NamedDimensionalCoord, String[]>();
         for (var match : matches) {
             cycles.add(match.number());
             collect(highlights, List.of(match.location()));
@@ -165,8 +165,8 @@ public class RecursivePatternReport {
         }
     }
 
-    private static void highlight(EntityClientPlayerMP player,
-        LinkedHashMap<NamedDimensionalCoord, String[]> highlights, IAEStack<?> request) {
+    private static void highlight(EntityClientPlayerMP player, Map<NamedDimensionalCoord, String[]> highlights,
+        IAEStack<?> request) {
         if (highlights.isEmpty()) {
             player.addChatMessage(new ChatComponentTranslation("gtnl.recursive_patterns.no_machines"));
             return;

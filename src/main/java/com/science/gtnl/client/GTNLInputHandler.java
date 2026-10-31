@@ -55,6 +55,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.util.AssemblyLineUtils;
 import gregtech.common.items.ItemFluidDisplay;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
 @EventBusSubscriber(side = Side.CLIENT, phase = Phase.PRE)
@@ -236,7 +237,7 @@ public class GTNLInputHandler implements IContainerInputHandler {
             this.draggedBookmarkGroup = group.getBookmarkItems()
                 .stream()
                 .map(BookmarkItem::getItemStack)
-                .collect(Collectors.toList());
+                .collect(Collectors.toCollection(ObjectArrayList::new));
         }
     }
 

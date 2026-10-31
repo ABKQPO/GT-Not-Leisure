@@ -16,7 +16,6 @@
 package com.science.gtnl.common.crafting.quantum.crafting.inv;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -37,6 +36,7 @@ import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 
 public abstract class CraftingSimulationState implements ICraftingSimulationState {
@@ -249,7 +249,7 @@ public abstract class CraftingSimulationState implements ICraftingSimulationStat
      * Start before using an isolated state whose result may be memoized.
      */
     public void recordInventoryReads() {
-        this.recordedReads = new HashSet<>();
+        this.recordedReads = new ObjectOpenHashSet<>();
     }
 
     public InventorySnapshot snapshotInventoryReads() {

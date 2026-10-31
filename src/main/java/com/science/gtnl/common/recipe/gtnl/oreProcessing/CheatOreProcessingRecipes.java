@@ -1,12 +1,12 @@
 package com.science.gtnl.common.recipe.gtnl.oreProcessing;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.item.ItemStack;
 
-import com.google.common.collect.Sets;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
@@ -26,27 +26,30 @@ import gtnhlanth.common.register.WerkstoffMaterialPool;
 import ic2.core.Ic2Items;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 public class CheatOreProcessingRecipes implements IRecipePool {
 
-    public final Set<OrePrefixes> basicStoneTypes = Sets.newHashSet(
-        OrePrefixes.ore,
-        OrePrefixes.rawOre,
-        OrePrefixes.oreBasalt,
-        OrePrefixes.oreBlackgranite,
-        OrePrefixes.oreRedgranite,
-        OrePrefixes.oreMarble,
-        OrePrefixes.oreNetherrack,
-        OrePrefixes.oreEndstone);
+    public final Set<OrePrefixes> basicStoneTypes = new ObjectOpenHashSet<>(
+        Arrays.asList(
+            OrePrefixes.ore,
+            OrePrefixes.rawOre,
+            OrePrefixes.oreBasalt,
+            OrePrefixes.oreBlackgranite,
+            OrePrefixes.oreRedgranite,
+            OrePrefixes.oreMarble,
+            OrePrefixes.oreNetherrack,
+            OrePrefixes.oreEndstone));
 
-    public final Set<OrePrefixes> basicStoneTypesExceptNormalStone = Sets.newHashSet(
-        OrePrefixes.oreBasalt,
-        OrePrefixes.rawOre,
-        OrePrefixes.oreBlackgranite,
-        OrePrefixes.oreRedgranite,
-        OrePrefixes.oreMarble,
-        OrePrefixes.oreNetherrack,
-        OrePrefixes.oreEndstone);
+    public final Set<OrePrefixes> basicStoneTypesExceptNormalStone = new ObjectOpenHashSet<>(
+        Arrays.asList(
+            OrePrefixes.oreBasalt,
+            OrePrefixes.rawOre,
+            OrePrefixes.oreBlackgranite,
+            OrePrefixes.oreRedgranite,
+            OrePrefixes.oreMarble,
+            OrePrefixes.oreNetherrack,
+            OrePrefixes.oreEndstone));
 
     public final Map<Materials, ItemStack> processingLineMaterials = new Object2ObjectOpenHashMap<>();
 
@@ -75,12 +78,13 @@ public class CheatOreProcessingRecipes implements IRecipePool {
     @Override
     public void loadRecipes() {
         initProcessingLineMaterials();
-        Set<Materials> specialProcesses = Sets.newHashSet(
-            Materials.Samarium,
-            Materials.Cerium,
-            Materials.Naquadah,
-            Materials.NaquadahEnriched,
-            Materials.Naquadria);
+        Set<Materials> specialProcesses = new ObjectOpenHashSet<>(
+            Arrays.asList(
+                Materials.Samarium,
+                Materials.Cerium,
+                Materials.Naquadah,
+                Materials.NaquadahEnriched,
+                Materials.Naquadria));
 
         // generate normal materials' ore processing recipes
         for (int i = 0; i < GregTechAPI.sGeneratedMaterials.length; i++) {

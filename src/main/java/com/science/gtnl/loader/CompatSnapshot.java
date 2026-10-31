@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +35,7 @@ import cpw.mods.fml.relauncher.ReflectionHelper;
 import gnu.trove.map.hash.TObjectByteHashMap;
 import gregtech.api.GregTechAPI;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 // Development tool: when GTNL_COMPAT_SNAPSHOT names a file, the names saves depend on are written there sorted,
 // so a diff of two snapshots shows every registry name, tile entity id, machine id or config key that moved.
@@ -65,7 +65,7 @@ public class CompatSnapshot {
         if (target == null || target.isEmpty()) return;
         verifyExpectedMods("GTNL_EXPECT_ABSENT_MODS", false);
         verifyExpectedMods("GTNL_EXPECT_PRESENT_MODS", true);
-        List<String> lines = new ArrayList<>();
+        List<String> lines = new ObjectArrayList<>();
         String prefix = ScienceNotLeisure.MODID + ":";
         for (Object key : Item.itemRegistry.getKeys()) {
             String name = String.valueOf(key);
@@ -190,7 +190,7 @@ public class CompatSnapshot {
 
     // Client and server must agree on the packet ids, which come from the registration order.
     private static List<String> packets() {
-        List<String> packets = new ArrayList<>();
+        List<String> packets = new ObjectArrayList<>();
         try {
             Object codec = ReflectionHelper
                 .getPrivateValue(SimpleNetworkWrapper.class, ScienceNotLeisure.network, "packetCodec");
@@ -210,13 +210,13 @@ public class CompatSnapshot {
     }
 
     private static List<String> configKeys() {
-        List<String> keys = new ArrayList<>();
+        List<String> keys = new ObjectArrayList<>();
         File file = new File(
             Loader.instance()
                 .getConfigDir(),
             "GTNotLeisure/GTNotLeisure.cfg");
         if (!file.isFile()) return keys;
-        List<String> path = new ArrayList<>();
+        List<String> path = new ObjectArrayList<>();
         try {
             for (String raw : Files.readAllLines(file.toPath(), StandardCharsets.UTF_8)) {
                 String line = raw.trim();

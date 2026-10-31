@@ -3,7 +3,6 @@ package com.science.gtnl.common.machine.multiblock.steam;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static gregtech.api.GregTechAPI.sBlockCasings1;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -161,7 +160,7 @@ public class SteamCactusWonder extends SteamMultiMachineBase<SteamCactusWonder> 
     }
 
     public void addFuel() {
-        ArrayList<ItemStack> storedInputs = getStoredInputs();
+        List<ItemStack> storedInputs = getStoredInputs();
         for (ItemStack stack : storedInputs) {
             for (int i = 0; i < 14; i++) {
                 if (stack.isItemEqual(POSSIBLE_INPUTS[i])) {

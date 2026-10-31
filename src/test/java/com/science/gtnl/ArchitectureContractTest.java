@@ -12,6 +12,7 @@ public final class ArchitectureContractTest {
         PacketSideContracts.run();
         ConfigMigrationContracts.run();
         RecipeFrontendContracts.run();
+        CollectionContracts.run();
         finish("Architecture");
     }
 }

@@ -1,9 +1,7 @@
 package com.science.gtnl.common.machine.tooltip;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -32,6 +30,8 @@ import gregtech.api.metatileentity.implementations.MTEEnhancedMultiBlockBase;
 import gregtech.api.structure.IStructureChannels;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.tooltip.TooltipHelper;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
 
@@ -64,7 +64,7 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
     private static final String CASING_LEVEL_FROM_KEY = TIER_FROM_KEY + "casing_level";
     private static final String HEAT_UNIT = "K";
 
-    private final List<List<String>> pendingGroups = new ArrayList<>();
+    private final List<List<String>> pendingGroups = new ObjectArrayList<>();
     private StructureSummary structure;
     private boolean structureRead;
 
@@ -242,11 +242,11 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
 
     private void addStatLine(String line, List<TierBonus> bonuses, BonusStat... stats) {
         List<BonusStat> shown = Arrays.asList(stats);
-        Map<TierBonus, List<TieredPart>> partsBySameBonus = new LinkedHashMap<>();
+        Map<TierBonus, List<TieredPart>> partsBySameBonus = new Object2ObjectLinkedOpenHashMap<>();
         for (TierBonus bonus : bonuses) {
             if (!shown.contains(bonus.stat())) continue;
             partsBySameBonus
-                .computeIfAbsent(sameBonusAs(partsBySameBonus.keySet(), bonus), ignored -> new ArrayList<>())
+                .computeIfAbsent(sameBonusAs(partsBySameBonus.keySet(), bonus), ignored -> new ObjectArrayList<>())
                 .add(bonus.part());
         }
         String casingName = structure == null ? null : structure.casingName();
@@ -278,7 +278,7 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
     }
 
     public static String partTierText(List<TieredPart> parts, String casingName) {
-        List<String> names = new ArrayList<>();
+        List<String> names = new ObjectArrayList<>();
         for (TieredPart part : parts) names.add(partName(part, casingName));
         return StatCollector.translateToLocalFormatted(PART_TIER_KEY, joinPhrases(names));
     }

@@ -1,6 +1,5 @@
 package com.science.gtnl.common.machine.tooltip;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -22,6 +21,8 @@ import com.science.gtnl.utils.enums.GTNLStructureChannels;
 import gregtech.api.interfaces.IHatchElement;
 import gregtech.api.metatileentity.implementations.MTEEnhancedMultiBlockBase;
 import gregtech.api.structure.error.StructureError;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class StructureTooltipHooks {
 
@@ -88,7 +89,7 @@ public class StructureTooltipHooks {
 
     public static boolean onCheckHatches(Object controller, int min, int max, IHatchElement<?>... elements) {
         if (activeFor(controller) == null) return false;
-        List<String> keys = new ArrayList<>();
+        List<String> keys = new ObjectArrayList<>();
         for (IHatchElement<?> element : elements) keys.addAll(element.getDescriptionLangKeys());
         return onCheckHatchKeys(controller, min, max, keys);
     }
@@ -104,7 +105,7 @@ public class StructureTooltipHooks {
         IHatchElement<?>... elements) {
         Recording recording = activeFor(controller);
         if (recording == null) return false;
-        List<String> keys = new ArrayList<>();
+        List<String> keys = new ObjectArrayList<>();
         for (IHatchElement<?> element : elements) keys.addAll(element.getDescriptionLangKeys());
         HatchRule rule = new HatchRule(keys, minLayers * perLayer, UNLIMITED, perLayer);
         if (!recording.hatchRules.contains(rule)) recording.hatchRules.add(rule);
@@ -144,7 +145,7 @@ public class StructureTooltipHooks {
 
     public static CheckRecord recordChecks(MTEEnhancedMultiBlockBase<?> controller,
         Map<PieceCall, Boolean> pieceResults) {
-        List<StructureError> errors = new ArrayList<>();
+        List<StructureError> errors = new ObjectArrayList<>();
         Runnable check = () -> controller.checkMachine(controller.getBaseMetaTileEntity(), null, errors);
         Recording recording = record(controller, "structure checks", pieceResults, () -> {
             if (controller instanceof IMultiblockTooltipRules rules) rules.runStructureTooltipCheck(check);
@@ -206,9 +207,9 @@ public class StructureTooltipHooks {
 
         private final Object controller;
         private final Map<PieceCall, Boolean> pieceResults;
-        private final List<PieceCall> pieces = new ArrayList<>();
-        private final List<Integer> casingMinimums = new ArrayList<>();
-        private final List<HatchRule> hatchRules = new ArrayList<>();
+        private final List<PieceCall> pieces = new ObjectArrayList<>();
+        private final List<Integer> casingMinimums = new IntArrayList();
+        private final List<HatchRule> hatchRules = new ObjectArrayList<>();
         private RuntimeException failure;
 
         private Recording(Object controller, Map<PieceCall, Boolean> pieceResults) {

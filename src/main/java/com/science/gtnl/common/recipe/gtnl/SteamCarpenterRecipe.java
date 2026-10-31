@@ -1,6 +1,6 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -69,7 +69,7 @@ public class SteamCarpenterRecipe implements IRecipePool {
     }
 
     public void registerLogRecipes() {
-        ArrayList<ItemStack> logStacks = OreDictionary.getOres("logWood");
+        List<ItemStack> logStacks = OreDictionary.getOres("logWood");
         for (ItemStack logStack : logStacks) {
             registerLogRecipe(logStack);
         }
@@ -78,7 +78,7 @@ public class SteamCarpenterRecipe implements IRecipePool {
     public void registerPlankRecipes() {
         Item gtPlank = GTOreDictUnificator.get(OrePrefixes.plate, Materials.Wood, 1L)
             .getItem();
-        ArrayList<ItemStack> plankStacks = OreDictionary.getOres("plankWood");
+        List<ItemStack> plankStacks = OreDictionary.getOres("plankWood");
         for (ItemStack plankStack : plankStacks) {
             if (plankStack.getItem() != gtPlank) {
                 registerPlankRecipe(plankStack);

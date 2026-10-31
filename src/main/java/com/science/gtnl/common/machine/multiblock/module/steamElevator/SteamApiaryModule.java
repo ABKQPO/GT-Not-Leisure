@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock.module.steamElevator;
 
 import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -267,7 +266,7 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
         if (mPrimaryMode < 2) { // input and output mode
             if (mPrimaryMode == MODE_PRIMARY_INPUT && mStorage.size() < mMaxSlots) {
                 World w = getBaseMetaTileEntity().getWorld();
-                ArrayList<ItemStack> inputs = getStoredInputs();
+                List<ItemStack> inputs = getStoredInputs();
                 for (ItemStack input : inputs) {
                     if (BeeManager.beeRoot.getType(input) == EnumBeeType.QUEEN) {
                         SteamApiaryModule.BeeSimulator bs = new SteamApiaryModule.BeeSimulator(
@@ -298,7 +297,7 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
 
                 int maxConsume = mStorage.size() * 40;
                 int toConsume = maxConsume;
-                ArrayList<ItemStack> inputs = getStoredInputs();
+                List<ItemStack> inputs = getStoredInputs();
 
                 for (ItemStack input : inputs) {
                     if (!input.isItemEqual(PluginApiculture.items.royalJelly.getItemStack(1))) continue;
@@ -384,7 +383,7 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
                 if (outputBus.isValidSlot(j)) if (outputBus.getStackInSlot(j) == null) emptySlots++;
         }
         if (emptySlots == 0 && !ignoreEmptiness) return;
-        // Use iterator removal to avoid repeated head-shift costs on ArrayList.
+        // Use iterator removal to avoid repeated head-shift costs on List.
         for (var iterator = list.iterator(); iterator.hasNext();) {
             Y pendingOutput = iterator.next();
             List<ItemStack> toOutputNow = mappingFunction.apply(pendingOutput);

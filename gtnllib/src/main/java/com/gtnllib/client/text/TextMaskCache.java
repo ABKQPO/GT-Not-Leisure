@@ -1,10 +1,5 @@
 package com.gtnllib.client.text;
 
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.shader.Framebuffer;
@@ -20,6 +15,8 @@ import com.gtnllib.client.text.compat.AngelicaTextAdapter.FontSettings;
 import com.gtnllib.client.text.compat.GlyphTextureMetrics;
 import com.gtnllib.text.TextEffectColors;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+
 /** Render-thread-owned, bounded cache of native font coverage masks. */
 public class TextMaskCache {
 
@@ -27,7 +24,7 @@ public class TextMaskCache {
     private static final long MAX_PIXELS = 4L * 1024 * 1024;
     private static final int BITMAP_RESOLUTION = 2;
     private static final int CUSTOM_FONT_RESOLUTION = 4;
-    private final Map<Key, Mask> masks = new LinkedHashMap<>(32, 0.75f, true);
+    private final Object2ObjectLinkedOpenHashMap<Key, Mask> masks = new Object2ObjectLinkedOpenHashMap<>(32);
     private long pixels;
 
     public Mask get(FontRenderer font, String text, float width, float height, float padding) {
@@ -47,7 +44,7 @@ public class TextMaskCache {
             parameters.getShadowOffset(),
             smooth,
             AngelicaTextAdapter.fontSettings());
-        Mask present = masks.get(key);
+        Mask present = masks.getAndMoveToLast(key);
         if (present != null) {
             if (hasAnimatedGlyphs(text)) {
                 capture(font, text, width, height, padding, present.target(), resolution, smooth);
@@ -69,9 +66,9 @@ public class TextMaskCache {
                 throw exception;
             }
         }
-        masks.put(key, mask);
+        masks.putAndMoveToLast(key, mask);
         pixels += mask.pixels();
-        Iterator<Entry<Key, Mask>> iterator = masks.entrySet()
+        var iterator = masks.object2ObjectEntrySet()
             .iterator();
         if (masks.size() > MAX_ENTRIES || pixels > MAX_PIXELS) {
             try (TextRenderState ignored = new TextRenderState()) {

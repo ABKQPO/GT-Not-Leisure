@@ -78,6 +78,7 @@ import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.tileentities.machines.MTEHatchCraftingInputME;
 import gregtech.common.tileentities.machines.MTEHatchInputBusME;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
@@ -432,7 +433,7 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
 
     @Override
     public String[] getInfoData() {
-        ArrayList<String> ll = new ArrayList<>();
+        List<String> ll = new ObjectArrayList<>();
         for (IAEStackType<?> type : AEStackTypeRegistry.getAllTypes()) {
             IItemList<?> store = STORE_STACKS.get(type);
             if (store == null || store.isEmpty()) continue;
@@ -458,7 +459,7 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
         return ll.toArray(new String[0]);
     }
 
-    private <T extends IAEStack<T>> void addStoredTypeInfo(ArrayList<String> info, IAEStackType<T> type,
+    private <T extends IAEStack<T>> void addStoredTypeInfo(List<String> info, IAEStackType<T> type,
         IItemList<?> store) {
         info.add(
             EnumChatFormatting.YELLOW
@@ -480,7 +481,7 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
         }
     }
 
-    private void addOperationalTypeInfo(ArrayList<String> info, IAEStackType<?> type) {
+    private void addOperationalTypeInfo(List<String> info, IAEStackType<?> type) {
         String typeName = getTypeName(type);
         info.add(
             IGregTechDeviceInformation.encode(

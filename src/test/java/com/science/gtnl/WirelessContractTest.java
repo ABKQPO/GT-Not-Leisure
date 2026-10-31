@@ -2,6 +2,7 @@ package com.science.gtnl;
 
 import static com.gtnltest.ContractAssertions.finish;
 
+import com.science.gtnl.common.wireless.MiniTerminalCacheContracts;
 import com.science.gtnl.common.wireless.WirelessAutoConnectContracts;
 import com.science.gtnl.common.wireless.WirelessCardViewContracts;
 import com.science.gtnl.common.wireless.WirelessFrequencyContracts;
@@ -14,6 +15,7 @@ public final class WirelessContractTest {
         WirelessAutoConnectContracts.run();
         WirelessFrequencyContracts.run();
         WirelessCardViewContracts.run();
+        MiniTerminalCacheContracts.run();
         finish("Wireless");
     }
 }

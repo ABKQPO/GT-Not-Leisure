@@ -1,6 +1,5 @@
 package com.science.gtnl.common.crafting.quantum.ae2;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,6 +24,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.helpers.PatternHelper;
 import appeng.me.cache.CraftingGridCache;
 import appeng.util.TunnelPatternExpander;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
@@ -78,13 +78,8 @@ public class QuantumCraftingCache {
         private final Set<AEKey> emitables = new ObjectOpenHashSet<>();
         private final StackKeyFactory keys;
         private final Map<ICraftingPatternDetails, QuantumPattern.Shape> shapes = new Reference2ObjectOpenHashMap<>();
-        private final Map<AEKey, CraftingGraph> graphs = new LinkedHashMap<>(16, 0.75f, true) {
-
-            @Override
-            protected boolean removeEldestEntry(Map.Entry<AEKey, CraftingGraph> eldest) {
-                return size() > MAX_GRAPHS;
-            }
-        };
+        private final Object2ObjectLinkedOpenHashMap<AEKey, CraftingGraph> graphs = new Object2ObjectLinkedOpenHashMap<>(
+            16);
         @Nullable
         private KeyCounter substitutableOutputs;
         @Nullable
@@ -196,12 +191,13 @@ public class QuantumCraftingCache {
 
         @Nullable
         synchronized CraftingGraph peekGraph(AEKey output) {
-            return this.graphs.get(output);
+            return this.graphs.getAndMoveToLast(output);
         }
 
         synchronized void putGraph(AEKey output, CraftingGraph graph) {
             if (graph.cacheRevision() == this.id) {
-                this.graphs.put(output, graph);
+                this.graphs.putAndMoveToLast(output, graph);
+                if (this.graphs.size() > MAX_GRAPHS) this.graphs.removeFirst();
             }
         }
     }

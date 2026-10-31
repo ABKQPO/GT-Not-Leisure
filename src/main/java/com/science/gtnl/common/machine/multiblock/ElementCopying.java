@@ -23,7 +23,6 @@ import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import com.github.bsideup.jabel.Desugar;
-import com.google.common.collect.Lists;
 import com.gtnewhorizon.gtnhlib.util.data.ItemId;
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
@@ -442,7 +441,7 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
             Optional<IDualInputInventory> inventoryOpt = tHatch.getFirstNonEmptyInventory();
             if (inventoryOpt.isPresent()) {
                 IDualInputInventory inventory = inventoryOpt.get();
-                for (FluidStack stored : Lists.newArrayList(inventory.getFluidInputs())) {
+                for (FluidStack stored : new ObjectArrayList<>(inventory.getFluidInputs())) {
                     if (stored != null && stored.amount > 0 && stored.isFluidEqual(fluid)) {
                         int deduct = Math.min(stored.amount, fluid.amount);
                         if (doDrain) stored.amount -= deduct;

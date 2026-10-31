@@ -3,7 +3,6 @@ package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -42,6 +41,7 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @IMetaTileEntity.SkipGenerateDescription
 @IMetaTileEntity.SkipGenerateName
@@ -205,7 +205,7 @@ public class MegaAlloyBlastSmelter extends GTMMultiMachineBase<MegaAlloyBlastSme
         if (!result.wasSuccessful()) return result;
 
         if (mOutputItems != null) {
-            ArrayList<ItemStack> itemList = new ArrayList<>();
+            List<ItemStack> itemList = new ObjectArrayList<>();
 
             for (ItemStack itemStack : mOutputItems) {
                 if (itemStack == null) continue;
@@ -231,7 +231,7 @@ public class MegaAlloyBlastSmelter extends GTMMultiMachineBase<MegaAlloyBlastSme
         }
 
         if (mOutputFluids != null) {
-            ArrayList<FluidStack> fluidList = new ArrayList<>();
+            List<FluidStack> fluidList = new ObjectArrayList<>();
 
             for (FluidStack fluidStack : mOutputFluids) {
                 if (fluidStack == null) continue;

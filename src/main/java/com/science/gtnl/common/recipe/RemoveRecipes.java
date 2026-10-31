@@ -1,6 +1,5 @@
 package com.science.gtnl.common.recipe;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -323,12 +322,12 @@ public class RemoveRecipes {
 
     public static void removeRecipeShapelessDelayed(Object aOutput, Object... aRecipe) {
         if (aOutput == null) return;
-        ArrayList<Object> aRecipeList = new ArrayList<>(Arrays.asList(aRecipe));
+        List<Object> aRecipeList = new ObjectArrayList<>(Arrays.asList(aRecipe));
         addToBuffer(getItemsHashed(aOutput, false), r -> {
             if (!(r instanceof ShapelessOreRecipe) && !(r instanceof ShapelessRecipes)) return false;
             if (aRecipeList.isEmpty()) return true;
             @SuppressWarnings("unchecked")
-            ArrayList<Object> recipe = (ArrayList<Object>) aRecipeList.clone();
+            List<Object> recipe = new ObjectArrayList<>(aRecipeList);
             List<?> rInputs = (r instanceof ShapelessOreRecipe ? ((ShapelessOreRecipe) r).getInput()
                 : ((ShapelessRecipes) r).recipeItems);
             for (Object rInput : rInputs) {
@@ -396,9 +395,9 @@ public class RemoveRecipes {
                     hashedItems.add(ItemId.createNoCopy(stack));
                 }
             }
-        } else if (item instanceof ArrayList) {
+        } else if (item instanceof List) {
             // noinspection unchecked
-            for (ItemStack stack : (ArrayList<ItemStack>) item) {
+            for (ItemStack stack : (List<ItemStack>) item) {
                 ItemStack iCopy = stack.copy();
                 iCopy.stackTagCompound = null;
                 hashedItems.add(ItemId.createNoCopy(iCopy));
@@ -413,7 +412,7 @@ public class RemoveRecipes {
     }
 
     public static void flushBuffer() {
-        final ArrayList<IRecipe> list = (ArrayList<IRecipe>) CraftingManager.getInstance()
+        final List<IRecipe> list = (List<IRecipe>) CraftingManager.getInstance()
             .getRecipeList();
         int i = list.size();
         list.removeIf(r -> {

@@ -12,7 +12,6 @@ import static gregtech.api.enums.HatchElement.OutputBus;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -645,7 +644,7 @@ public class ResearchCenter extends MTEResearchStation implements IResearchStati
 
     private int countResearchItems(ItemStack researchItem, List<ItemStack> plannedConsumes) {
         int count = 0;
-        ArrayList<ItemStack> inputs = getStoredInputs();
+        List<ItemStack> inputs = getStoredInputs();
         for (ItemStack input : inputs) {
             if (GTUtility.areStacksEqual(researchItem, input, true)) {
                 count += input.stackSize;
@@ -756,7 +755,7 @@ public class ResearchCenter extends MTEResearchStation implements IResearchStati
 
     private int countDepletableItems(ItemStack stack) {
         int count = 0;
-        ArrayList<ItemStack> inputs = getStoredInputs();
+        List<ItemStack> inputs = getStoredInputs();
         for (ItemStack input : inputs) {
             if (GTUtility.areStacksEqual(stack, input)) {
                 count += input.stackSize;

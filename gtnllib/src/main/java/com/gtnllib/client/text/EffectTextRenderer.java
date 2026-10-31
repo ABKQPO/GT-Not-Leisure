@@ -1,7 +1,5 @@
 package com.gtnllib.client.text;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 
@@ -26,6 +24,7 @@ import com.gtnllib.client.text.compat.FontBatchBridge;
 import com.gtnllib.text.EffectTextParser;
 import com.gtnllib.text.TextEffectStyle;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 /** Draws marked spans while leaving glyph generation to the current font. */
@@ -38,7 +37,7 @@ public class EffectTextRenderer implements IResourceManagerReloadListener {
     private static BooleanSupplier enabled = () -> true;
     private static int nativeDepth;
     private final TextMaskCache masks = new TextMaskCache();
-    private final Map<LayoutKey, Layout> layouts = new LinkedHashMap<>(32, 0.75f, true);
+    private final Object2ObjectLinkedOpenHashMap<LayoutKey, Layout> layouts = new Object2ObjectLinkedOpenHashMap<>(32);
     private final Set<String> failed = new ObjectOpenHashSet<>();
 
     public static void enabledWith(BooleanSupplier setting) {
@@ -102,15 +101,12 @@ public class EffectTextRenderer implements IResourceManagerReloadListener {
             FontRendering.preprocessText("&q&z&v"),
             FontRendering.hexColorResetsStyles(),
             AngelicaTextAdapter.fontSettings());
-        Layout layout = layouts.get(key);
+        Layout layout = layouts.getAndMoveToLast(key);
         if (layout == null) {
             layout = EffectTextLayout.create(font, text);
             if (text.length() < 16384) {
-                layouts.put(key, layout);
-                if (layouts.size() > 256) layouts.remove(
-                    layouts.keySet()
-                        .iterator()
-                        .next());
+                layouts.putAndMoveToLast(key, layout);
+                if (layouts.size() > 256) layouts.removeFirst();
             }
         }
         return layout;

@@ -645,7 +645,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
 
     @Override
     public List<String> getTooltipFeatureLines() {
-        List<String> lines = new ArrayList<>();
+        List<String> lines = new ObjectArrayList<>();
         int glassTier = getGlassEnergyTierLimit();
         if (glassTier >= 0) {
             lines.add(
@@ -794,7 +794,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
             MultiblockTooltipReader.FIRST_PARALLEL_CONTROLLER_PROBE_TIER);
         TooltipStats high = tooltipStatsWith(null, BASE_TOOLTIP_TIER, LAST_PARALLEL_CONTROLLER_PROBE_TIER);
         List<String> effects = parallelControllerEffects(low, high);
-        List<String> lines = new ArrayList<>();
+        List<String> lines = new ObjectArrayList<>();
         lines.add(
             effects.isEmpty()
                 ? StatCollector.translateToLocalFormatted(PARALLEL_CONTROLLER_TOOLTIP_KEY + ".accepts", hatch)
@@ -821,7 +821,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
 
     private List<String> parallelControllerEffects(TooltipStats low, TooltipStats high) {
         List<TierBonus> bonuses = MultiblockTooltipReader.tierBonusesOf(this, TieredPart.PARALLEL_CONTROLLER);
-        List<String> effects = new ArrayList<>();
+        List<String> effects = new ObjectArrayList<>();
         if (high.parallels() > low.parallels()) {
             effects.add(StatCollector.translateToLocal(PARALLEL_CONTROLLER_TOOLTIP_KEY + ".parallel"));
         }
@@ -875,7 +875,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     @Override
     public List<String> getTooltipUpgradeLines() {
         if (!(this instanceof IWirelessEnergy wireless)) return Collections.emptyList();
-        List<String> lines = new ArrayList<>();
+        List<String> lines = new ObjectArrayList<>();
         String upgrade = wirelessUpgradeLine(wireless);
         if (upgrade != null) lines.add(upgrade);
         lines.addAll(getTooltipWirelessModeLines());
@@ -895,7 +895,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
             wireless.setWirelessUpgrade(installed);
         }
         if (without == null || with == null) return null;
-        List<String> bonuses = new ArrayList<>();
+        List<String> bonuses = new ObjectArrayList<>();
         if (rises(without.speed(), with.speed())) {
             bonuses.add(GTNLMultiblockTooltipBuilder.effectText(BonusStat.SPEED, with.speed() - without.speed()));
         }
@@ -1431,6 +1431,11 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     }
 
     public <E> boolean addToMachineListInternal(ArrayList<E> aList, final IMetaTileEntity aTileEntity,
+        final int aBaseCasingIndex) {
+        return addToMachineListInternal((List<E>) aList, aTileEntity, aBaseCasingIndex);
+    }
+
+    public <E> boolean addToMachineListInternal(List<E> aList, final IMetaTileEntity aTileEntity,
         final int aBaseCasingIndex) {
         if (aTileEntity == null) {
             return false;

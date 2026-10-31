@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -189,7 +188,7 @@ public abstract class LargeBoiler extends EnhancedMultiMachineBase<LargeBoiler> 
             }
         }
 
-        ArrayList<ItemStack> tInputList = getStoredInputs();
+        List<ItemStack> tInputList = getStoredInputs();
         if (!tInputList.isEmpty()) {
             for (ItemStack tInput : tInputList) {
                 if (tInput != GTOreDictUnificator.get(OrePrefixes.bucket, Materials.Lava, 1)) {

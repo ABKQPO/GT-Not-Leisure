@@ -1,6 +1,5 @@
 package com.science.gtnl.common.item.items;
 
-import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -54,6 +53,7 @@ import it.unimi.dsi.fastutil.longs.LongArrayFIFOQueue;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
 
 @EventBusSubscriber(phase = Phase.PRE)
 public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, IGuiHolder<PlayerInventoryGuiData> {
@@ -307,7 +307,7 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, I
         int fortune = EnchantmentHelper.getFortuneModifier(player);
         Object2IntOpenHashMap<ItemStackWrapper> mergedDrops = new Object2IntOpenHashMap<>();
         Set<String> targetOreNames = collectOreNames(targetBlock, targetMeta);
-        IdentityHashMap<Block, Int2BooleanOpenHashMap> oreMatches = new IdentityHashMap<>();
+        Reference2ReferenceOpenHashMap<Block, Int2BooleanOpenHashMap> oreMatches = new Reference2ReferenceOpenHashMap<>();
         int cachedChunkX = Integer.MIN_VALUE;
         int cachedChunkZ = Integer.MIN_VALUE;
         int cachedSectionY = Integer.MIN_VALUE;
@@ -468,7 +468,7 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, I
     }
 
     private static boolean matchesOreDictionary(Block block, int meta, Set<String> targetNames, boolean preciseMode,
-        IdentityHashMap<Block, Int2BooleanOpenHashMap> cache) {
+        Reference2ReferenceOpenHashMap<Block, Int2BooleanOpenHashMap> cache) {
         if (targetNames.isEmpty()) return false;
         Int2BooleanOpenHashMap blockMatches = cache.get(block);
         if (blockMatches == null) {

@@ -1,6 +1,6 @@
 package com.science.gtnl.compat.mobsinfo;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -43,7 +43,7 @@ public class ExtremeExtremeEntityCrusherRecipes {
     public static void onPostMobRegistration(PostMobRegistrationEvent event) {
         String mobType = event.currentMob;
         MobRecipe mobRecipe = event.recipe;
-        ArrayList<MobDrop> drops = event.drops;
+        List<MobDrop> drops = event.drops;
 
         if (drops.isEmpty() || !mobRecipe.isUsableInVial) return;
 

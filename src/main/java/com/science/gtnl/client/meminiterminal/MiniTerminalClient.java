@@ -1,9 +1,7 @@
 package com.science.gtnl.client.meminiterminal;
 
 import java.io.IOException;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import net.minecraft.client.Minecraft;
@@ -56,19 +54,15 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.longs.LongLinkedOpenHashSet;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 
 @SideOnly(Side.CLIENT)
 @EventBusSubscriber(side = Side.CLIENT, phase = Phase.PRE)
 public class MiniTerminalClient {
 
     private static final int MAX_CACHED_VIEWS = 8;
-    private static final Map<UUID, MiniTerminalModel> VIEWS = new LinkedHashMap<>(MAX_CACHED_VIEWS, 0.75f, true) {
-
-        @Override
-        protected boolean removeEldestEntry(Map.Entry<UUID, MiniTerminalModel> eldest) {
-            return size() > MAX_CACHED_VIEWS;
-        }
-    };
+    private static final Object2ObjectLinkedOpenHashMap<UUID, MiniTerminalModel> VIEWS = new Object2ObjectLinkedOpenHashMap<>(
+        MAX_CACHED_VIEWS);
 
     private static final MiniTerminalLayout LAYOUT = new MiniTerminalLayout();
     private static final LongLinkedOpenHashSet RETIRED_SESSIONS = new LongLinkedOpenHashSet();
@@ -364,7 +358,7 @@ public class MiniTerminalClient {
 
             try {
                 MiniTerminalModel view = VIEWS
-                    .get(UUID.fromString(data.getString(MiniTerminalUpdatePacket.TERMINAL_ID_KEY)));
+                    .getAndMoveToLast(UUID.fromString(data.getString(MiniTerminalUpdatePacket.TERMINAL_ID_KEY)));
                 if (view != null) view.readSettings(data.getCompoundTag("config"), data.getLong("actionId"));
             } catch (IllegalArgumentException ignored) {}
             return;
@@ -405,7 +399,7 @@ public class MiniTerminalClient {
                 MiniTerminalModel old = model();
                 VIEWS.remove(null);
                 selected = id;
-                VIEWS.put(id, old);
+                cacheView(id, old);
             }
             session = incoming;
             waiting = false;
@@ -625,7 +619,17 @@ public class MiniTerminalClient {
     }
 
     public static MiniTerminalModel model() {
-        return VIEWS.computeIfAbsent(selected, key -> new MiniTerminalModel());
+        MiniTerminalModel view = VIEWS.getAndMoveToLast(selected);
+        if (view == null) {
+            view = new MiniTerminalModel();
+            cacheView(selected, view);
+        }
+        return view;
+    }
+
+    private static void cacheView(UUID id, MiniTerminalModel view) {
+        VIEWS.putAndMoveToLast(id, view);
+        if (VIEWS.size() > MAX_CACHED_VIEWS) VIEWS.removeFirst();
     }
 
     public static MiniTerminalInventoryPanel overlay() {

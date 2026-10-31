@@ -27,6 +27,8 @@ import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import micdoodle8.mods.galacticraft.api.recipe.INasaWorkbenchRecipe;
 import micdoodle8.mods.galacticraft.core.recipe.NasaWorkbenchRecipe;
@@ -42,7 +44,7 @@ public class RocketAssemblerRecipes implements IRecipePool {
         ModsItemlist.GalaxySpaceTier7RocketSchematic.get(1), ModsItemlist.GalaxySpaceTier8RocketSchematic.get(1) };
 
     public static void loadSteamRocketRecipe() {
-        HashMap<Integer, ItemStack> input = new HashMap<>();
+        Int2ObjectMap<ItemStack> input = new Int2ObjectOpenHashMap<>();
         HashMap<Integer, ItemStack> inputChest;
         input.put(1, ModsItemlist.StevesCartsStandardHull.get(1));
         input.put(2, NHCoreItem.EngineCore.get(1, new ItemStack(Items.arrow)));
