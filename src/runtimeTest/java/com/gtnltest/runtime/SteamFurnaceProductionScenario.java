@@ -77,6 +77,9 @@ final class SteamFurnaceProductionScenario implements RuntimeScenario {
             fixture.world.setBlockToAir(brokenCasing[0], brokenCasing[1], brokenCasing[2]);
             require(!furnace.checkStructure(true, controller), "missing casing must invalidate the structure");
             input.setInventorySlotContents(0, new ItemStack(Blocks.cobblestone, AMOUNT));
+            require(
+                steam.fill(ForgeDirection.UNKNOWN, SteamTypes.STEAM.fluid.getFluidStack(STEAM), true) == STEAM,
+                "native steam hatch must receive the production budget before testing the broken structure");
             controller.enableWorking();
             stage = 1;
             stageStarted = ticks;
@@ -84,12 +87,10 @@ final class SteamFurnaceProductionScenario implements RuntimeScenario {
             require(
                 count(input, Blocks.cobblestone) == AMOUNT && count(output, Blocks.stone) == 0,
                 "an incomplete structure must not consume input or create output");
+            require(remainingSteam() == STEAM, "an incomplete structure must not consume its available steam");
             fixture.world
                 .setBlock(brokenCasing[0], brokenCasing[1], brokenCasing[2], GregTechAPI.sBlockCasings1, 10, 3);
             require(furnace.checkStructure(true, controller), "restoring the casing must restore formation");
-            require(
-                steam.fill(ForgeDirection.UNKNOWN, SteamTypes.STEAM.fluid.getFluidStack(STEAM), true) == STEAM,
-                "native steam hatch must receive the production budget");
             stage = 2;
             stageStarted = ticks;
         } else if (stage == 2) {
@@ -100,7 +101,7 @@ final class SteamFurnaceProductionScenario implements RuntimeScenario {
                 steamAfterProduction = remainingSteam();
                 require(
                     steamAfterProduction > 0 && steamAfterProduction < STEAM,
-                    "native production must pay steam exactly from its hatch");
+                    "native production must consume steam from its hatch");
                 stage = 3;
                 stageStarted = ticks;
             } else require(

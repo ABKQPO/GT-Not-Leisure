@@ -17,6 +17,7 @@ final class MachinePersistenceScenario implements RuntimeScenario {
     private Class<?> machineClass;
     private UUID owner;
     private ForgeDirection facing;
+    private boolean reloaded;
 
     MachinePersistenceScenario(MachineCatalogEntry machine) {
         this.machine = machine;
@@ -39,14 +40,16 @@ final class MachinePersistenceScenario implements RuntimeScenario {
     }
 
     public boolean tick(RuntimeFixture fixture, int ticks) {
-        if (ticks == 2) {
+        if (tile.getTimer() <= 5) return false;
+        if (!reloaded) {
             machineClass = tile.getMetaTileEntity()
                 .getClass();
             owner = tile.getOwnerUuid();
             facing = tile.getFrontFacing();
             tile = fixture.reload(tile);
+            reloaded = true;
+            return false;
         }
-        if (ticks < 4) return false;
         require(tile.getMetaTileID() == machine.metaId(), "machine ID changed across NBT reload");
         require(
             tile.getMetaTileEntity() != null && tile.getMetaTileEntity()
