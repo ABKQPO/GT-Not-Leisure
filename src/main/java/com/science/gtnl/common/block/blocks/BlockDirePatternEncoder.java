@@ -5,7 +5,6 @@ import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 import com.science.gtnl.common.block.blocks.tile.TileEntityDirePatternEncoder;
@@ -13,15 +12,11 @@ import com.science.gtnl.common.gui.GTNLGuiHandler;
 import com.science.gtnl.utils.enums.GuiType;
 
 import appeng.block.AEBaseTileBlock;
+import appeng.client.texture.FlippableIcon;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockDirePatternEncoder extends AEBaseTileBlock {
-
-    @SideOnly(Side.CLIENT)
-    private IIcon sideIcon;
-    @SideOnly(Side.CLIENT)
-    private IIcon bottomIcon;
 
     public BlockDirePatternEncoder() {
         super(Material.iron);
@@ -39,19 +34,12 @@ public class BlockDirePatternEncoder extends AEBaseTileBlock {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister register) {
-        super.registerBlockIcons(register);
-        sideIcon = register.registerIcon(RESOURCE_ROOT_ID + ":dire_pattern_encoder_side");
-        bottomIcon = register.registerIcon(RESOURCE_ROOT_ID + ":dire_pattern_encoder_bottom");
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public IIcon getIcon(int side, int metadata) {
-        return switch (side) {
-            case 0 -> bottomIcon;
-            case 1 -> blockIcon;
-            default -> sideIcon;
-        };
+        FlippableIcon top = new FlippableIcon(register.registerIcon(RESOURCE_ROOT_ID + ":dire_pattern_encoder"));
+        FlippableIcon side = new FlippableIcon(register.registerIcon(RESOURCE_ROOT_ID + ":dire_pattern_encoder_side"));
+        FlippableIcon bottom = new FlippableIcon(
+            register.registerIcon(RESOURCE_ROOT_ID + ":dire_pattern_encoder_bottom"));
+        blockIcon = top;
+        getRendererInstance().updateIcons(bottom, top, side, side, side, side);
     }
 
     @Override
