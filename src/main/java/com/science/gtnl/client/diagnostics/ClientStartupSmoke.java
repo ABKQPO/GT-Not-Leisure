@@ -61,7 +61,8 @@ public final class ClientStartupSmoke {
             client.shutdown();
             return;
         }
-        if (!(client.currentScreen instanceof GuiMainMenu)) {
+        // GalaxySpace replaces the main menu with a GuiScreen that does not extend GuiMainMenu.
+        if (!(client.currentScreen instanceof GuiMainMenu) && !"galaxyspace.core.gui.GSGuiMainMenu".equals(screen)) {
             menuTicks = 0;
             return;
         }
