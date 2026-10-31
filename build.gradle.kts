@@ -41,8 +41,13 @@ abstract class ModuleArchiveArguments : CommandLineArgumentProvider {
         listOf(host.get().asFile.absolutePath) + library.files.map { it.absolutePath }.sorted()
 }
 
+val clientSmoke = providers.environmentVariable("GTNL_CLIENT_SMOKE").isPresent
 minecraft {
-    extraRunJvmArguments.addAll("-Xmx8G", "-Xms8G", "-Dgtnhlib.dumpkeys=true")
+    extraRunJvmArguments.addAll(
+        if (clientSmoke) "-Xmx4G" else "-Xmx8G",
+        if (clientSmoke) "-Xms1G" else "-Xms8G",
+        "-Dgtnhlib.dumpkeys=true"
+    )
 }
 
 tasks.withType<JavaCompile>().configureEach {
@@ -180,9 +185,8 @@ runConfigs.forEach { (taskName, path) ->
     }
 }
 
-if (providers.environmentVariable("GTNL_CLIENT_SMOKE").isPresent) {
+if (clientSmoke) {
     tasks.named<JavaExec>("runClient25") {
-        maxHeapSize = "4G"
         args("--width", "960", "--height", "540")
     }
 }

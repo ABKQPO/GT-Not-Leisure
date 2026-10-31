@@ -71,7 +71,7 @@ jobs:
           distribution: zulu
       - uses: gradle/actions/setup-gradle@v4
       - name: Install virtual display and software OpenGL
-        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends xvfb xauth libgl1-mesa-dri libglx-mesa0 libasound2t64
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends xvfb xauth libgl1-mesa-dri libglx-mesa0 libegl1 libegl-mesa0 libasound2t64
       - run: chmod +x gradlew .github/scripts/client-check.sh
       - name: Setup the workspace
         run: ./gradlew --no-daemon --build-cache setupCIWorkspace
