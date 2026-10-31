@@ -36,16 +36,21 @@ public abstract class MixinPendingMoveWireless {
         if (gtnl$task == null) {
             gtnl$task = new Object();
             PendingMove move = (PendingMove) (Object) this;
-            gtnl$source = new Site(
-                player.worldObj.provider.dimensionId,
-                move.getSrcMinX(),
-                move.getSrcMinY(),
-                move.getSrcMinZ(),
-                move.getSrcMaxX(),
-                move.getSrcMaxY(),
-                move.getSrcMaxZ());
+            gtnl$source = gtnl$sourceSite(move, player.worldObj.provider.dimensionId);
             gtnl$target = gtnl$source.offset(move.getMoveOffsetX(), move.getMoveOffsetY(), move.getMoveOffsetZ());
         }
         WirelessConstructionSites.update(gtnl$task, moves != null && !moves.isEmpty(), gtnl$source, gtnl$target);
+    }
+
+    @Unique
+    private static Site gtnl$sourceSite(PendingMove move, int dimension) {
+        return new Site(
+            dimension,
+            move.getSrcMinX(),
+            move.getSrcMinY(),
+            move.getSrcMinZ(),
+            move.getSrcMaxX(),
+            move.getSrcMaxY(),
+            move.getSrcMaxZ());
     }
 }

@@ -1,7 +1,5 @@
 package com.science.gtnl.common.item.items;
 
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -9,13 +7,10 @@ import net.minecraft.world.World;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.part.PartSuperInterface;
-import com.science.gtnl.utils.enums.GTNLItemList;
 
 import appeng.api.AEApi;
 import appeng.api.parts.IPartItem;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -23,14 +18,9 @@ public class ItemPartSuperInterface extends Item implements IPartItem {
 
     public ItemPartSuperInterface() {
         this.setMaxStackSize(64);
-        this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
-        this.setUnlocalizedName("gtnl.part_super_interface");
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "super_interface");
-        GameRegistry.registerItem(this, "part_super_interface");
         AEApi.instance()
             .partHelper()
             .setItemBusRenderer(this);
-        GTNLItemList.PartSuperInterface.set(new ItemStack(this, 1));
     }
 
     @Override

@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import com.science.gtnl.common.equipment.EquipmentEnergy;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.common.item.items.equipment.EnergyModuleItem;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ItemConfig;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
@@ -19,10 +19,8 @@ public class CelestweaveEnergy {
     private static final double FLUSH_SHARE = 0.01;
     private static final Map<UUID, double[]> PENDING = new Object2ObjectOpenHashMap<>();
 
-    private CelestweaveEnergy() {}
-
     public static double capacity(ItemStack stack) {
-        return EnergyModuleItem.capacity(CelestweaveData.energyTier(stack), MainConfig.item.celestweave.baseCapacity);
+        return EnergyModuleItem.capacity(CelestweaveData.energyTier(stack), ItemConfig.celestweave.baseCapacity);
     }
 
     public static void write(ItemStack stack, double stored) {
@@ -138,7 +136,7 @@ public class CelestweaveEnergy {
 
     public static boolean drainWithWireless(EntityPlayer player, double eu) {
         if (eu <= 0 || EquipmentEnergy.free(player)) return true;
-        boolean wireless = MainConfig.item.celestweave.enableWirelessFallback;
+        boolean wireless = ItemConfig.celestweave.enableWirelessFallback;
         double set = availableSet(player);
         if (set + (wireless && set < eu ? EquipmentEnergy.wirelessAvailable(player) : 0) < eu) return false;
         double paid = drainSetUpTo(player, eu);
@@ -147,7 +145,7 @@ public class CelestweaveEnergy {
     }
 
     public static void refillFromWireless(ItemStack stack, EntityPlayerMP player) {
-        if (MainConfig.item.celestweave.enableWirelessRefill)
+        if (ItemConfig.celestweave.enableWirelessRefill)
             EquipmentEnergy.refillFromWireless(stack, player, capacity(stack));
     }
 }

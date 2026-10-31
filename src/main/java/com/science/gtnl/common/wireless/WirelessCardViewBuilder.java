@@ -16,8 +16,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 
+import com.science.gtnl.common.me.InterfaceNameLocalization;
 import com.science.gtnl.common.wireless.WirelessMachineGroups.Row;
-import com.science.gtnl.utils.appliedEnergistics.InterfaceNameLocalization;
 
 import appeng.api.networking.IGridNode;
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;

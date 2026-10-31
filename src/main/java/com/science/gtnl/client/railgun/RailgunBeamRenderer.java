@@ -13,6 +13,8 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.gtnllib.client.fx.world.FxCamera;
 import com.gtnllib.client.fx.world.FxMuzzleAnchor;
 import com.gtnllib.client.fx.world.FxRenderHelper;
@@ -24,7 +26,7 @@ import com.science.gtnl.common.railgun.RailgunData;
 import com.science.gtnl.common.railgun.RailgunModule;
 import com.science.gtnl.common.railgun.RailgunRaycast;
 import com.science.gtnl.common.railgun.RailgunSetting;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ClientConfig;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -38,6 +40,7 @@ import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
+@EventBusSubscriber(side = Side.CLIENT, phase = Phase.PRE)
 public class RailgunBeamRenderer {
 
     private static final double BEAM_RANGE_RESPONSE = 26;
@@ -153,7 +156,7 @@ public class RailgunBeamRenderer {
     }
 
     @SubscribeEvent
-    public void render(RenderWorldLastEvent event) {
+    public static void render(RenderWorldLastEvent event) {
         World world = Minecraft.getMinecraft().theWorld;
         if (world == null) return;
         FxCamera.capture();
@@ -168,7 +171,7 @@ public class RailgunBeamRenderer {
         if (beams.isEmpty()) return;
         double time = now + event.partialTicks;
         FxRenderHelper.render(() -> { for (Beam beam : beams) body(beam, time); });
-        if (!MainConfig.client.enableRailgunBloom) return;
+        if (!ClientConfig.enableRailgunBloom) return;
         drawPlasma(beams, time);
         FxRenderHelper.renderGlow(Sprite.STREAK, () -> { for (Beam beam : beams) bloom(beam, time); });
         FxRenderHelper.renderGlow(Sprite.RADIAL, () -> { for (Beam beam : beams) caps(beam, time); });
@@ -292,7 +295,7 @@ public class RailgunBeamRenderer {
     }
 
     private static void drawPlasma(List<Beam> beams, double time) {
-        if (!MainConfig.client.enableRailgunShaders) return;
+        if (!ClientConfig.enableRailgunShaders) return;
         RailgunShaderEffect shader = RailgunShaderEffect.BEAM;
         if (!shader.begin()) return;
         try {

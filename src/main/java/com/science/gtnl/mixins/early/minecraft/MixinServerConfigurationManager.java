@@ -1,18 +1,13 @@
 package com.science.gtnl.mixins.early.minecraft;
 
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
-import net.minecraft.world.WorldServer;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import com.science.gtnl.api.mixinHelper.IAnchorRespawn;
 import com.science.gtnl.common.block.blocks.BlockDimensionRespawnAnchor;
 import com.science.gtnl.common.block.blocks.tile.TileEntityDimensionRespawnAnchor;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.EffectConfig;
 import com.science.gtnl.loader.EffectLoader;
 
 @Mixin(value = ServerConfigurationManager.class, remap = true)
@@ -39,7 +34,7 @@ public abstract class MixinServerConfigurationManager {
     @Inject(method = "respawnPlayer", at = @At("RETURN"), cancellable = true)
     private void onRespawnPlayer(EntityPlayerMP player, int dimension, boolean conqueredEnd,
         CallbackInfoReturnable<EntityPlayerMP> cir) {
-        if (!MainConfig.effect.enableGhostlyShape) return;
+        if (!EffectConfig.enableGhostlyShape) return;
         EntityPlayerMP entityplayermp1 = cir.getReturnValue();
 
         if (entityplayermp1 != null) {
@@ -51,43 +46,7 @@ public abstract class MixinServerConfigurationManager {
 
     @ModifyVariable(method = "respawnPlayer", at = @At("HEAD"), ordinal = 0, argsOnly = true)
     private int modifyRespawnDimension(int originalDimension, EntityPlayerMP player) {
-        IAnchorRespawn anchor = (IAnchorRespawn) player;
-        ChunkCoordinates anchorPos = anchor.getAnchorPos();
-
-        if (anchorPos == null) {
-            return originalDimension;
-        }
-
-        int anchorDim = anchor.getAnchorDim();
-        if (anchorDim == Integer.MIN_VALUE) {
-            return originalDimension;
-        }
-
-        WorldServer world = mcServer.worldServerForDimension(anchorDim);
-        if (world == null) {
-            return originalDimension;
-        }
-
-        TileEntity tile = world.getTileEntity(anchorPos.posX, anchorPos.posY - 1, anchorPos.posZ);
-        if (!(tile instanceof TileEntityDimensionRespawnAnchor respawnAnchorTile)
-            || respawnAnchorTile.getEnergyLevel() <= 0) {
-            anchor.clearAnchorRespawn();
-            player.addChatMessage(new ChatComponentTranslation("gtnl.chat.dimension_respawn_anchor.no_spawn_point"));
-            return originalDimension;
-        }
-
-        respawnAnchorTile.consumeEnergy();
-        world.markBlockForUpdate(respawnAnchorTile.xCoord, respawnAnchorTile.yCoord, respawnAnchorTile.zCoord);
-
-        world.playSoundEffect(
-            anchorPos.posX + 0.5,
-            anchorPos.posY - 0.5,
-            anchorPos.posZ + 0.5,
-            RESOURCE_ROOT_ID + ":respawn_anchor.deplete" + (1 + world.rand.nextInt(2)),
-            1.0F,
-            1.0F);
-
-        return anchorDim;
+        return TileEntityDimensionRespawnAnchor.respawnDimension(mcServer, originalDimension, player);
     }
 
     @Redirect(

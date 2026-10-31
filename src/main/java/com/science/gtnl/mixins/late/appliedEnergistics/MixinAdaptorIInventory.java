@@ -1,8 +1,6 @@
 package com.science.gtnl.mixins.late.appliedEnergistics;
 
-import java.lang.reflect.Field;
 import java.util.Optional;
-import java.util.function.Function;
 
 import net.minecraft.inventory.IInventory;
 
@@ -32,33 +30,11 @@ public class MixinAdaptorIInventory {
     @Shadow
     private boolean skipStackSizeCheck;
 
-    @Unique
-    private static Function<Object, Object> gtnl$get;
-
-    @Unique
-    private static Function<Object, Object> gtnl$init() {
-        if (gtnl$get == null) try {
-            Field f = WrapperMCISidedInventory.class.getDeclaredField("side");
-            f.setAccessible(true);
-            gtnl$get = s -> {
-                try {
-                    return f.get(s);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            };
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        }
-
-        return gtnl$get;
-    }
-
     @Inject(method = "<init>*", at = @At(value = "RETURN"), require = 1)
     public void constructor(IInventory s, CallbackInfo a) {
         if (wrapperEnabled) {
             if (i instanceof WrapperMCISidedInventory wrap) {
-                Object wrapped = gtnl$init().apply(wrap);
+                Object wrapped = ((AccessorWrapperMCISidedInventory) wrap).getSide();
                 skipStackSizeCheck = skipStackSizeCheck || gtnl$check(wrapped);
                 return;
             }

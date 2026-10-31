@@ -11,7 +11,7 @@ import com.reavaritia.common.blocks.BlockSoulFarmland;
 import com.reavaritia.common.blocks.item.ItemBlockNeutronCollector;
 import com.reavaritia.common.blocks.tile.TileEntityNeutronCollector;
 import com.reavaritia.utils.enums.ReAvaItemList;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ReAvaritiaConfig;
 
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -86,11 +86,11 @@ public class BlockLoader {
         ItemStack EndPortalFrame = new ItemStack(Blocks.end_portal_frame, 1, 0);
         ItemStack CommandBlock = new ItemStack(Blocks.command_block, 1, 0);
 
-        OreDictionary.registerOre(MainConfig.re_avaritia.unbreakOre, CommandBlock);
-        OreDictionary.registerOre(MainConfig.re_avaritia.unbreakOre, EndPortal);
-        OreDictionary.registerOre(MainConfig.re_avaritia.unbreakOre, EndPortalFrame);
-        OreDictionary.registerOre(MainConfig.re_avaritia.unbreakOre, Bedrock);
-        OreDictionary.registerOre(MainConfig.re_avaritia.unbreakOre, ExtremeAnvilBlock);
+        OreDictionary.registerOre(ReAvaritiaConfig.unbreakOre, CommandBlock);
+        OreDictionary.registerOre(ReAvaritiaConfig.unbreakOre, EndPortal);
+        OreDictionary.registerOre(ReAvaritiaConfig.unbreakOre, EndPortalFrame);
+        OreDictionary.registerOre(ReAvaritiaConfig.unbreakOre, Bedrock);
+        OreDictionary.registerOre(ReAvaritiaConfig.unbreakOre, ExtremeAnvilBlock);
     }
 
     @Optional.Method(modid = "Avaritia")

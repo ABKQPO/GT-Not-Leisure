@@ -37,8 +37,6 @@ public class CelestweaveStripEffects {
         EFFECTS.put(CelestweaveStripStyle.GRADIENT, new Gradient());
     }
 
-    private CelestweaveStripEffects() {}
-
     static ICelestweaveStripEffect of(CelestweaveStripStyle style) {
         return EFFECTS.getOrDefault(style, EFFECTS.get(CelestweaveStripStyle.STEADY));
     }

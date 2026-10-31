@@ -19,8 +19,6 @@ public class PortalGunData {
         PREVIOUS = "Previous", SLOT = "Slot", STAY_OPEN = "StayOpen", GUN_ID_MOST = "GunIdMost",
         GUN_ID_LEAST = "GunIdLeast";
 
-    private PortalGunData() {}
-
     public static NBTTagCompound root(ItemStack stack) {
         return EquipmentTag.child(stack, ROOT);
     }

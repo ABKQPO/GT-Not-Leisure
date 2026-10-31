@@ -2,8 +2,8 @@ package com.science.gtnl.common.packet;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 
+import com.gtnllib.network.ServerboundPacket;
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.common.packet.base.ServerboundPacket;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import cpw.mods.fml.common.network.ByteBufUtils;

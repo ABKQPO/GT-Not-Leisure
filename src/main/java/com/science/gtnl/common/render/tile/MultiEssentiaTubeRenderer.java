@@ -4,8 +4,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import com.science.gtnl.ClientProxy;
 import com.science.gtnl.common.machine.basicMachine.SmallEssentiaSmeltery;
+import com.science.gtnl.loader.RenderLoader;
 
 import thaumcraft.client.renderers.block.BlockTubeRenderer;
 
@@ -13,7 +13,7 @@ public class MultiEssentiaTubeRenderer extends BlockTubeRenderer {
 
     @Override
     public int getRenderId() {
-        return ClientProxy.MULTI_ESSENTIA_TUBE_RENDER_ID;
+        return RenderLoader.MULTI_ESSENTIA_TUBE_RENDER_ID;
     }
 
     @Override

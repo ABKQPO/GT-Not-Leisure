@@ -4,9 +4,9 @@ import java.util.List;
 
 import net.minecraft.entity.Entity;
 
+import com.gtnllib.network.ClientboundPacket;
 import com.gtnllib.utils.Vec3d;
 import com.science.gtnl.common.equipment.EquipmentNet;
-import com.science.gtnl.common.packet.base.ClientboundPacket;
 
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -16,8 +16,6 @@ public class RailgunNet {
     public static final int MAX_PATH = 256;
     private static final double FX_RANGE = 256;
     private static final int POINT_BYTES = Double.BYTES * 3;
-
-    private RailgunNet() {}
 
     public static void sendAround(Entity entity, ClientboundPacket packet) {
         EquipmentNet.sendAround(entity, packet, FX_RANGE);

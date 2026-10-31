@@ -11,10 +11,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 
+import com.gtnllib.utils.MetaTooltipUtils;
 import com.science.gtnl.loader.ItemLoader;
 import com.science.gtnl.utils.ColorUtils;
 import com.science.gtnl.utils.item.MetaItemStackUtils;
-import com.science.gtnl.utils.item.MetaTooltipUtils;
 
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;

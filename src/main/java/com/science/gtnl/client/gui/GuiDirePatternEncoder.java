@@ -8,8 +8,8 @@ import org.lwjgl.opengl.GL11;
 
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.block.blocks.tile.TileEntityDirePatternEncoder;
+import com.science.gtnl.common.gui.container.ContainerDirePatternEncoder;
 import com.science.gtnl.common.packet.DirePatternHandler;
-import com.science.gtnl.container.ContainerDirePatternEncoder;
 
 import appeng.api.config.ActionItems;
 import appeng.api.config.Settings;

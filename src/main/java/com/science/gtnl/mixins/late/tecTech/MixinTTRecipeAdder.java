@@ -4,7 +4,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.common.recipe.AssemblyLineDurations;
 
 import tectech.recipe.TTRecipeAdder;
 
@@ -17,20 +17,7 @@ public abstract class MixinTTRecipeAdder {
         argsOnly = true,
         name = "assDuration")
     private static int modifyAssemblyLineDuration(int assDuration) {
-        if (!MainConfig.recipe.enableAssemblingLineRecipesTimeChange) return assDuration;
-        int modified = assDuration;
-
-        if (assDuration >= 200000) {
-            modified /= 100;
-        } else if (assDuration >= 40000) {
-            modified /= 10;
-        } else if (assDuration >= 10000) {
-            modified /= 4;
-        } else if (assDuration >= 4000) {
-            modified /= 2;
-        }
-
-        return modified;
+        return AssemblyLineDurations.scale(assDuration);
     }
 
     @ModifyVariable(
@@ -39,19 +26,6 @@ public abstract class MixinTTRecipeAdder {
         argsOnly = true,
         name = "assDuration")
     private static int modifyAssemblyLineDurationObject(int assDuration) {
-        if (!MainConfig.recipe.enableAssemblingLineRecipesTimeChange) return assDuration;
-        int modified = assDuration;
-
-        if (assDuration >= 200000) {
-            modified /= 100;
-        } else if (assDuration >= 40000) {
-            modified /= 10;
-        } else if (assDuration >= 10000) {
-            modified /= 4;
-        } else if (assDuration >= 4000) {
-            modified /= 2;
-        }
-
-        return modified;
+        return AssemblyLineDurations.scale(assDuration);
     }
 }

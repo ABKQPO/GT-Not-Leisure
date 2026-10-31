@@ -30,9 +30,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import vazkii.botania.api.subtile.ManaHelper;
-import vazkii.botania.api.subtile.SubTileEntity;
 import vazkii.botania.api.subtile.SubTileGenerating;
-import vazkii.botania.common.block.tile.TileSpecialFlower;
 import vazkii.botania.common.block.tile.mana.TilePool;
 
 @IMetaTileEntity.SkipGenerateName
@@ -80,8 +78,8 @@ public class ManaDynamoHatch extends MTEHatchDynamo implements IAddUIWidgets {
         if (aBaseMetaTileEntity.isClientSide()) return;
 
         if (aBaseMetaTileEntity.isAllowedToWork() && aTick % 20 == 0) {
-            List<TilePool> pools = findManaPoolsInRange(aBaseMetaTileEntity);
-            List<SubTileGenerating> flowers = findGeneratingFlowersInRange(aBaseMetaTileEntity);
+            List<TilePool> pools = ManaScan.pools(aBaseMetaTileEntity, MANA_POOL_RADIUS);
+            List<SubTileGenerating> flowers = ManaScan.generatingFlowers(aBaseMetaTileEntity, MANA_FLOWER_RADIUS);
             if (!flowers.isEmpty()) {
                 processFlowerManaTransfer(flowers);
             }
@@ -89,7 +87,7 @@ public class ManaDynamoHatch extends MTEHatchDynamo implements IAddUIWidgets {
             if (!pools.isEmpty()) {
                 if (isLiquidizerMode) {
                     for (TilePool pool : pools) {
-                        if (isDropMetaValid(pool)) {
+                        if (ManaScan.isDropMetaValid(pool)) {
                             fillChamberToMax();
                         }
                     }
@@ -238,7 +236,7 @@ public class ManaDynamoHatch extends MTEHatchDynamo implements IAddUIWidgets {
         int capacity = getCapacity();
 
         for (TilePool pool : pools) {
-            if (isDropMetaValid(pool)) continue;
+            if (ManaScan.isDropMetaValid(pool)) continue;
 
             int poolMana = pool.getCurrentMana();
             if (poolMana <= 0) continue;
@@ -257,7 +255,7 @@ public class ManaDynamoHatch extends MTEHatchDynamo implements IAddUIWidgets {
         int currentAmount = currentMana != null ? currentMana.amount : 0;
 
         for (TilePool pool : pools) {
-            if (isDropMetaValid(pool)) continue;
+            if (ManaScan.isDropMetaValid(pool)) continue;
 
             int availableSpace = pool.getAvailableSpaceForMana();
             if (availableSpace <= 0) continue;
@@ -295,55 +293,5 @@ public class ManaDynamoHatch extends MTEHatchDynamo implements IAddUIWidgets {
 
             if (currentAmount >= capacity) break;
         }
-    }
-
-    private List<TilePool> findManaPoolsInRange(IGregTechTileEntity aBaseMetaTileEntity) {
-        World world = aBaseMetaTileEntity.getWorld();
-        int x = aBaseMetaTileEntity.getXCoord();
-        int y = aBaseMetaTileEntity.getYCoord();
-        int z = aBaseMetaTileEntity.getZCoord();
-
-        List<TilePool> pools = new ObjectArrayList<>();
-
-        for (int dx = -MANA_POOL_RADIUS; dx <= MANA_POOL_RADIUS; dx++) {
-            for (int dy = -MANA_POOL_RADIUS; dy <= MANA_POOL_RADIUS; dy++) {
-                for (int dz = -MANA_POOL_RADIUS; dz <= MANA_POOL_RADIUS; dz++) {
-                    TileEntity te = world.getTileEntity(x + dx, y + dy, z + dz);
-                    if (te instanceof TilePool pool) {
-                        pools.add(pool);
-                    }
-                }
-            }
-        }
-        return pools;
-    }
-
-    private List<SubTileGenerating> findGeneratingFlowersInRange(IGregTechTileEntity aBaseMetaTileEntity) {
-        World world = aBaseMetaTileEntity.getWorld();
-        int x = aBaseMetaTileEntity.getXCoord();
-        int y = aBaseMetaTileEntity.getYCoord();
-        int z = aBaseMetaTileEntity.getZCoord();
-
-        List<SubTileGenerating> flowers = new ObjectArrayList<>();
-
-        for (int dx = -MANA_FLOWER_RADIUS; dx <= MANA_FLOWER_RADIUS; dx++) {
-            for (int dy = -MANA_FLOWER_RADIUS; dy <= MANA_FLOWER_RADIUS; dy++) {
-                for (int dz = -MANA_FLOWER_RADIUS; dz <= MANA_FLOWER_RADIUS; dz++) {
-                    TileEntity te = world.getTileEntity(x + dx, y + dy, z + dz);
-                    if (te instanceof TileSpecialFlower flowerTile) {
-                        SubTileEntity subTile = flowerTile.getSubTile();
-                        if (subTile instanceof SubTileGenerating) {
-                            flowers.add((SubTileGenerating) subTile);
-                        }
-                    }
-                }
-            }
-        }
-        return flowers;
-    }
-
-    private boolean isDropMetaValid(TilePool pool) {
-        int meta = pool.getBlockMetadata();
-        return meta == 1;
     }
 }

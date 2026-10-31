@@ -33,7 +33,6 @@ import com.glodblock.github.inventory.InventoryHandler;
 import com.glodblock.github.inventory.gui.GuiType;
 import com.glodblock.github.util.BlockPos;
 import com.glodblock.github.util.NameConst;
-import com.science.gtnl.client.GTNLCreativeTabs;
 
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
@@ -56,7 +55,6 @@ import appeng.util.Platform;
 import appeng.util.item.AEFluidStack;
 import appeng.util.item.AEFluidStackType;
 import appeng.util.item.AEItemStack;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.util.GTUtility;
@@ -78,11 +76,7 @@ public class ItemInfinityCell extends ItemCreativeStorageCell {
     public static final List<ItemStack> REGISTERED_CELLS = new ObjectArrayList<>();
 
     public ItemInfinityCell() {
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + DEFAULT_TEXTURE_NAME);
         this.setHasSubtypes(true);
-        this.setUnlocalizedName("gtnl.infinity_cell");
-        this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        GameRegistry.registerItem(this, "infinity_cell");
         AEApi.instance()
             .registries()
             .cell()

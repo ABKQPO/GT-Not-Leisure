@@ -42,8 +42,6 @@ public class RailgunChainResolver {
         }
     }
 
-    private RailgunChainResolver() {}
-
     public static List<Hit> strongestPerTarget(List<Hit> hits) {
         Int2ObjectLinkedOpenHashMap<Hit> strongest = new Int2ObjectLinkedOpenHashMap<>();
         for (Hit hit : hits) strongest.merge(

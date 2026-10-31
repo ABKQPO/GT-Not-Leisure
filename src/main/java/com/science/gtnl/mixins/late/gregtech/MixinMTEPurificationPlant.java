@@ -1,15 +1,12 @@
 package com.science.gtnl.mixins.late.gregtech;
 
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import org.spongepowered.asm.mixin.Final;
@@ -21,19 +18,17 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
+import com.gtnllib.utils.MathUtils;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.science.gtnl.api.mixinHelper.ICostingEUHolder;
 import com.science.gtnl.api.mixinHelper.IWirelessMode;
-import com.science.gtnl.utils.Utils;
+import com.science.gtnl.common.machine.purification.PurificationUnitHooks;
 
-import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.metatileentity.implementations.MTEExtendedPowerMultiBlockBase;
 import gregtech.api.structure.error.StructureError;
 import gregtech.common.tileentities.machines.multi.purification.LinkedPurificationUnit;
 import gregtech.common.tileentities.machines.multi.purification.MTEPurificationPlant;
-import gregtech.common.tileentities.machines.multi.purification.MTEPurificationUnitBaryonicPerfection;
 import gregtech.common.tileentities.machines.multi.purification.MTEPurificationUnitBase;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -56,7 +51,7 @@ public abstract class MixinMTEPurificationPlant extends MTEExtendedPowerMultiBlo
     public BigInteger gtnl$costingEU = BigInteger.ZERO;
 
     @Unique
-    public String gtnl$costingEUText = Utils.ZERO_STRING;
+    public String gtnl$costingEUText = MathUtils.ZERO_STRING;
 
     public MixinMTEPurificationPlant(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -74,23 +69,8 @@ public abstract class MixinMTEPurificationPlant extends MTEExtendedPowerMultiBlo
 
     @Override
     public void checkExoticAndNormalEnergyHatches(List<StructureError> errors) {
-        boolean t8water = false;
-
-        for (LinkedPurificationUnit unit : linkedUnits) {
-            if (unit.metaTileEntity() instanceof MTEPurificationUnitBaryonicPerfection) {
-                if (mExoticEnergyHatches.isEmpty() && mEnergyHatches.isEmpty()) {
-                    gtnl$wirelessMode = true;
-                }
-                t8water = true;
-                break;
-            }
-        }
-
-        for (LinkedPurificationUnit unit : linkedUnits) {
-            ((IWirelessMode) unit.metaTileEntity()).setGtnl$wirelessMode(gtnl$wirelessMode);
-        }
-
-        if (!t8water) {
+        if (!PurificationUnitHooks
+            .linkWirelessMode(linkedUnits, this, mExoticEnergyHatches.isEmpty() && mEnergyHatches.isEmpty())) {
             super.checkExoticAndNormalEnergyHatches(errors);
         }
     }
@@ -114,7 +94,7 @@ public abstract class MixinMTEPurificationPlant extends MTEExtendedPowerMultiBlo
     @Inject(method = "startCycle", at = @At("HEAD"))
     private void gtnl$resetCostingEU(CallbackInfo ci) {
         gtnl$costingEU = BigInteger.ZERO;
-        gtnl$costingEUText = Utils.ZERO_STRING;
+        gtnl$costingEUText = MathUtils.ZERO_STRING;
     }
 
     @Inject(method = "startCycle", at = @At("TAIL"))
@@ -152,39 +132,14 @@ public abstract class MixinMTEPurificationPlant extends MTEExtendedPowerMultiBlo
 
     @Override
     public String[] getInfoData() {
-        List<String> ret = new ObjectArrayList<>(Arrays.asList(super.getInfoData()));
-        if (gtnl$wirelessMode) {
-            ret.add(
-                IGregTechDeviceInformation.encode("gtnl.waila.wireless.mode.format", EnumChatFormatting.LIGHT_PURPLE));
-            ret.add(
-                IGregTechDeviceInformation.encode(
-                    "gtnl.waila.wireless.current_eu_cost.format",
-                    EnumChatFormatting.AQUA,
-                    EnumChatFormatting.RESET,
-                    EnumChatFormatting.GOLD,
-                    gtnl$costingEUText,
-                    EnumChatFormatting.RESET));
-        }
-        return ret.toArray(new String[0]);
+        return PurificationUnitHooks.plantInfoData(super.getInfoData(), gtnl$wirelessMode, gtnl$costingEUText);
     }
 
     @Override
     public void getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor,
         IWailaConfigHandler config) {
         super.getWailaBody(itemStack, currentTip, accessor, config);
-        NBTTagCompound tag = accessor.getNBTData();
-        if (tag.getBoolean("wirelessMode")) {
-            currentTip
-                .add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("gtnl.waila.wireless.mode"));
-            currentTip.add(
-                EnumChatFormatting.AQUA + StatCollector.translateToLocal("gtnl.waila.wireless.current_eu_cost")
-                    + EnumChatFormatting.RESET
-                    + ": "
-                    + EnumChatFormatting.GOLD
-                    + tag.getString("costingEUText")
-                    + EnumChatFormatting.RESET
-                    + " EU");
-        }
+        PurificationUnitHooks.addWirelessWailaBody(currentTip, accessor.getNBTData());
     }
 
     @Override
@@ -192,8 +147,7 @@ public abstract class MixinMTEPurificationPlant extends MTEExtendedPowerMultiBlo
         int z) {
         super.getWailaNBTData(player, tile, tag, world, x, y, z);
         if (getBaseMetaTileEntity() != null) {
-            tag.setBoolean("wirelessMode", gtnl$wirelessMode);
-            if (gtnl$wirelessMode) tag.setString("costingEUText", gtnl$costingEUText);
+            PurificationUnitHooks.writeWirelessWailaData(tag, gtnl$wirelessMode, gtnl$costingEUText);
         }
     }
 }

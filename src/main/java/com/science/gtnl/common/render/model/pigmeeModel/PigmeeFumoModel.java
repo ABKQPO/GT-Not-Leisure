@@ -12,6 +12,8 @@ import com.gtnewhorizon.gtnhlib.client.model.baked.BakedModel;
 import com.gtnewhorizon.gtnhlib.client.model.loading.ModelRegistry;
 import com.gtnewhorizon.gtnhlib.client.model.loading.ResourceLoc.ModelLoc;
 import com.gtnewhorizon.gtnhlib.client.model.unbaked.JSONModel;
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.gtnewhorizon.gtnhlib.geometry.Orientation;
 import com.science.gtnl.ScienceNotLeisure;
 
@@ -20,6 +22,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
+@EventBusSubscriber(side = Side.CLIENT, phase = Phase.PRE)
 public class PigmeeFumoModel {
 
     public static final PigmeeFumoModel INSTANCE = new PigmeeFumoModel();
@@ -58,13 +61,21 @@ public class PigmeeFumoModel {
     }
 
     @SubscribeEvent
-    public void beforeStitch(TextureStitchEvent.Pre event) {
+    public static void beforeStitch(TextureStitchEvent.Pre event) {
+        INSTANCE.handleBeforeStitch(event);
+    }
+
+    public void handleBeforeStitch(TextureStitchEvent.Pre event) {
         if (event.map.getTextureType() != 0) return;
         orientations = null;
     }
 
     @SubscribeEvent
-    public void afterStitch(TextureStitchEvent.Post event) {
+    public static void afterStitch(TextureStitchEvent.Post event) {
+        INSTANCE.handleAfterStitch(event);
+    }
+
+    public void handleAfterStitch(TextureStitchEvent.Post event) {
         if (event.map.getTextureType() != 0) return;
         try {
             JSONModel source = ModelRegistry.getJSONModel(MODEL);

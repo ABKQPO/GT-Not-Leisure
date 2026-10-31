@@ -2,6 +2,7 @@ package com.science.gtnl.common.render.beamformer;
 
 import java.util.EnumSet;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -9,7 +10,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 import com.github.bsideup.jabel.Desugar;
 import com.science.gtnl.api.IBeamFormer;
 import com.science.gtnl.api.IBeamFormerRenderer;
-import com.science.gtnl.utils.RenderUtils;
 
 import appeng.api.util.AEColor;
 import cpw.mods.fml.relauncher.Side;
@@ -39,6 +39,10 @@ public class BeamFormerRenderHelper {
 
     public static void renderDynamic(IBeamFormer partBeamFormer, double x, double y, double z, float partialTicks) {
         RENDERER.renderDynamic(partBeamFormer, x, y, z, partialTicks);
+    }
+
+    public static void renderDynamic(IBeamFormer partBeamFormer, double x, double y, double z) {
+        renderDynamic(partBeamFormer, x, y, z, Minecraft.getMinecraft().timer.renderPartialTicks);
     }
 
     public static float[] getColor(IBeamFormer partBeamFormer) {

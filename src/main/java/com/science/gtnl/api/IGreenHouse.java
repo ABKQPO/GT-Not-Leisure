@@ -10,10 +10,8 @@ import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.fluids.FluidStack;
@@ -32,21 +30,11 @@ import com.gtnewhorizon.cropsnh.farming.requirements.SubSoilRequirement;
 import com.gtnewhorizon.cropsnh.tileentity.TileEntityCropSticks;
 import com.gtnewhorizon.cropsnh.utility.CropsNHUtils;
 import com.gtnewhorizon.cropsnh.utility.IFDropTable;
-import com.gtnewhorizons.modularui.api.ModularUITextures;
-import com.gtnewhorizons.modularui.api.drawable.Text;
-import com.gtnewhorizons.modularui.api.math.Color;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
-import com.gtnewhorizons.modularui.common.widget.Column;
-import com.gtnewhorizons.modularui.common.widget.CycleButtonWidget;
-import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
-import com.gtnewhorizons.modularui.common.widget.TextWidget;
+import com.science.gtnl.common.greenhouse.GreenHouseModes;
 import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseMode;
-import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseModes;
 import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseStoredCrop;
 import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseViewMode;
 
-import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IOutputBus;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.interfaces.tileentity.IVoidable;
@@ -703,140 +691,6 @@ public interface IGreenHouse extends IVoidable {
             drops.addDrop(stack, unscaled * progressPerCycle);
         }
         return drops;
-    }
-
-    @Deprecated
-    default ModularWindow createConfigurationWindow(final EntityPlayer player) {
-        // TODO: Remove this MUI1 configuration window after greenhouse machines use the MUI2 panel.
-        ModularWindow.Builder builder = ModularWindow.builder(200, 100);
-        builder.setBackground(ModularUITextures.VANILLA_BACKGROUND);
-        builder.widget(
-            new DrawableWidget().setDrawable(GTUITextures.OVERLAY_BUTTON_CYCLIC)
-                .setPos(5, 5)
-                .setSize(16, 16))
-            .widget(
-                new TextWidget(StatCollector.translateToLocal("gtnl.machine.eden_garden.view.configuration"))
-                    .setPos(25, 9))
-            .widget(
-                ButtonWidget.closeWindowButton(true)
-                    .setPos(185, 3))
-            .widget(
-                new Column().widget(
-                    new CycleButtonWidget().setLength(3)
-                        .setGetter(this::getSetupPhase)
-                        .setSetter(val -> {
-                            if (!(player instanceof EntityPlayerMP)) return;
-                            tryChangeSetupPhase(player);
-                        })
-                        .addTooltip(
-                            0,
-                            new Text(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.operating"))
-                                .color(Color.GREEN.dark(3)))
-                        .addTooltip(
-                            1,
-                            new Text(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.input"))
-                                .color(Color.YELLOW.dark(3)))
-                        .addTooltip(
-                            2,
-                            new Text(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.output"))
-                                .color(Color.YELLOW.dark(3)))
-                        .setTextureGetter(
-                            i -> i == 0
-                                ? new Text(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.operating"))
-                                    .color(Color.GREEN.dark(3))
-                                    .withFixedSize(70 - 18, 18, 15, 0)
-                                : i == 1
-                                    ? new Text(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.input"))
-                                        .color(Color.YELLOW.dark(3))
-                                        .withFixedSize(70 - 18, 18, 15, 0)
-                                    : new Text(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.output"))
-                                        .color(Color.YELLOW.dark(3))
-                                        .withFixedSize(70 - 18, 18, 15, 0))
-                        .setBackground(
-                            ModularUITextures.VANILLA_BACKGROUND,
-                            GTUITextures.OVERLAY_BUTTON_CYCLIC.withFixedSize(18, 18))
-                        .setSize(70, 18)
-                        .addTooltip(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.setup")))
-                    .widget(
-                        new CycleButtonWidget().setLength(2)
-                            .setGetter(
-                                () -> this.getMode()
-                                    .getUIIndex())
-                            .setSetter(val -> {
-                                if (!(player instanceof EntityPlayerMP)) return;
-                                tryChangeMode(player);
-                            })
-                            .addTooltip(
-                                0,
-                                new Text(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.disabled"))
-                                    .color(Color.RED.dark(3)))
-                            .addTooltip(
-                                1,
-                                new Text(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.enabled"))
-                                    .color(Color.GREEN.dark(3)))
-                            .setTextureGetter(
-                                i -> i == 0
-                                    ? new Text(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.disabled"))
-                                        .color(Color.RED.dark(3))
-                                        .withFixedSize(70 - 18, 18, 15, 0)
-                                    : new Text(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.enabled"))
-                                        .color(Color.GREEN.dark(3))
-                                        .withFixedSize(70 - 18, 18, 15, 0))
-                            .setBackground(
-                                ModularUITextures.VANILLA_BACKGROUND,
-                                GTUITextures.OVERLAY_BUTTON_CYCLIC.withFixedSize(18, 18))
-                            .setSize(70, 18)
-                            .addTooltip(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.ic2")))
-                    .widget(
-                        new CycleButtonWidget().setLength(2)
-                            .setGetter(() -> isUseNoHumidity() ? 1 : 0)
-                            .setSetter(val -> {
-                                if (!(player instanceof EntityPlayerMP)) return;
-                                this.tryChangeHumidityMode(player);
-                            })
-                            .addTooltip(
-                                0,
-                                new Text(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.disabled"))
-                                    .color(Color.RED.dark(3)))
-                            .addTooltip(
-                                1,
-                                new Text(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.enabled"))
-                                    .color(Color.GREEN.dark(3)))
-                            .setTextureGetter(
-                                i -> i == 0
-                                    ? new Text(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.disabled"))
-                                        .color(Color.RED.dark(3))
-                                        .withFixedSize(70 - 18, 18, 15, 0)
-                                    : new Text(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.enabled"))
-                                        .color(Color.GREEN.dark(3))
-                                        .withFixedSize(70 - 18, 18, 15, 0))
-                            .setBackground(
-                                ModularUITextures.VANILLA_BACKGROUND,
-                                GTUITextures.OVERLAY_BUTTON_CYCLIC.withFixedSize(18, 18))
-                            .setSize(70, 18)
-                            .addTooltip(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.no_humidity")))
-                    .setEnabled(widget -> !getBaseMetaTileEntity().isActive())
-                    .setPos(10, 30))
-            .widget(
-                new Column()
-                    .widget(
-                        new TextWidget(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.setup"))
-                            .setSize(100, 18))
-                    .widget(
-                        new TextWidget(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.ic2"))
-                            .setSize(100, 18))
-                    .widget(
-                        new TextWidget(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.no_humidity"))
-                            .setSize(100, 18))
-                    .setEnabled(widget -> !getBaseMetaTileEntity().isActive())
-                    .setPos(80, 30))
-            .widget(
-                new DrawableWidget().setDrawable(GTUITextures.OVERLAY_BUTTON_CROSS)
-                    .setSize(18, 18)
-                    .setPos(10, 30)
-                    .addTooltip(new Text("Can't change configuration when running !").color(Color.RED.dark(3)))
-                    .setEnabled(widget -> getBaseMetaTileEntity().isActive()));
-        return builder.build();
     }
 
     default void tryChangeMode(EntityPlayer aPlayer) {

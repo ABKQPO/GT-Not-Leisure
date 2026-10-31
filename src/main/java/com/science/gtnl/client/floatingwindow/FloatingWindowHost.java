@@ -22,7 +22,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 @SideOnly(Side.CLIENT)
-public final class FloatingWindowHost<P extends FloatingWindowPanel> {
+public class FloatingWindowHost<P extends FloatingWindowPanel> {
 
     private static final Map<ModularScreen, Map<String, WeakReference<FloatingWindowHost<?>>>> NATIVE_HOSTS = new WeakHashMap<>();
 
@@ -84,7 +84,7 @@ public final class FloatingWindowHost<P extends FloatingWindowPanel> {
         panel.resetInteraction();
     }
 
-    static final class Overlay extends ModularScreen {
+    public static class Overlay extends ModularScreen {
 
         private final FloatingWindowPanel panel;
 

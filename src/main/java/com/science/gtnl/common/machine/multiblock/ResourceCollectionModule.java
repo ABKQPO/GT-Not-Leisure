@@ -24,28 +24,19 @@ import org.jetbrains.annotations.NotNull;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
-import com.gtnewhorizons.modularui.api.drawable.Text;
-import com.gtnewhorizons.modularui.api.math.Color;
-import com.gtnewhorizons.modularui.api.math.Pos2d;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
-import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
-import com.gtnewhorizons.modularui.common.widget.DynamicTextWidget;
-import com.science.gtnl.common.gui.modularui.ResourceCollectionModuleGui;
+import com.science.gtnl.common.gui.modularui.multiblock.ResourceCollectionModuleGui;
 import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
+import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
-import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.recipes.metadata.ResourceCollectionModuleMetadata;
-import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
 
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Textures;
-import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IHatchElement;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -332,11 +323,8 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
     }
 
     @Override
-    @Deprecated
-    public void setMachineModeIcons() {
-        // TODO: Remove this mui1 fallback after the Resource Collection Module custom GUI is fully ported to mui2.
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_LPF_METAL);
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_LPF_FLUID);
+    protected boolean useMui2() {
+        return true;
     }
 
     @Override
@@ -344,38 +332,6 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
         return new ResourceCollectionModuleGui(this).withMachineModeIcons(
             GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_LPF_METAL,
             GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_LPF_FLUID);
-    }
-
-    @Override
-    @Deprecated
-    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
-        // TODO: Remove this mui1 fallback after the Resource Collection Module custom GUI is fully ported to mui2.
-        super.addUIWidgets(builder, buildContext);
-        machineModeIcons = new ObjectArrayList<>(4);
-        setMachineModeIcons();
-        builder.widget(
-            new DynamicTextWidget(
-                () -> new Text(
-                    StatCollector.translateToLocalFormatted(
-                        "gt.interact.desc.mb.mode",
-                        StatCollector.translateToLocal(getMachineModeKey()))).color(Color.WHITE.normal))
-                            .setPos(10, 77));
-        builder.widget(createModeSwitchButton(builder));
-    }
-
-    @Override
-    public Pos2d getMachineModeSwitchButtonPos() {
-        return new Pos2d(174, 97);
-    }
-
-    @Override
-    @Deprecated
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        // TODO: Remove this MUI1 logo hook after Resource Collection Module only uses the MUI2 GUI.
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
-                .setSize(18, 18)
-                .setPos(172, 67));
     }
 
     public boolean addAllHatchToMachineList(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {

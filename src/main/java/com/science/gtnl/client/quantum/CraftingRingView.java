@@ -33,7 +33,7 @@ import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
  * tree folds a branch, and unfolded by clicking it. The nodes are drawn the way the tree draws them; those of the tree
  * itself are put back when the view is closed.
  */
-public final class CraftingRingView {
+public class CraftingRingView {
 
     private static final int X_SPACING = GuiCraftingTree.X_SPACING;
     private static final int MAX_OUTSIDE = 4;

@@ -15,7 +15,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import com.science.gtnl.CommonProxy;
+import com.science.gtnl.common.gui.GTNLGuiHandler;
 import com.science.gtnl.common.part.universal.UniversalBusHelper;
 import com.science.gtnl.utils.enums.GuiType;
 
@@ -306,7 +306,7 @@ public class PartUniversalExportBus extends PartBaseExportBus<IAEItemStack> {
     public boolean onPartActivate(final EntityPlayer player, final Vec3 pos) {
         if (player.isSneaking()) return false;
         if (Platform.isClient()) return true;
-        CommonProxy.openGui(
+        GTNLGuiHandler.openGui(
             player,
             GuiType.UniversalBusGUI,
             this.getSide(),

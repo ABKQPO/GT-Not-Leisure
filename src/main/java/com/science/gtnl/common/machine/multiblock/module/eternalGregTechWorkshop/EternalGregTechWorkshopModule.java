@@ -2,18 +2,15 @@ package com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorksho
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_GOD_FORGE_CONTROLLER;
-import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 
 import java.math.BigInteger;
 import java.util.List;
 import java.util.UUID;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
@@ -23,23 +20,8 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
-import com.gtnewhorizons.modularui.api.drawable.IDrawable;
-import com.gtnewhorizons.modularui.api.drawable.Text;
-import com.gtnewhorizons.modularui.api.drawable.UITexture;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
-import com.gtnewhorizons.modularui.api.widget.IWidgetBuilder;
-import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
-import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
-import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
-import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
-import com.gtnewhorizons.modularui.common.widget.Scrollable;
-import com.gtnewhorizons.modularui.common.widget.SlotWidget;
-import com.gtnewhorizons.modularui.common.widget.TextWidget;
-import com.science.gtnl.common.gui.modularui.EternalGregTechWorkshopModuleGui;
+import com.science.gtnl.common.gui.modularui.multiblock.EternalGregTechWorkshopModuleGui;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
-import com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopTextures;
-import com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUI;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
@@ -50,7 +32,6 @@ import gregtech.api.GregTechAPI;
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.SoundResource;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
@@ -66,7 +47,6 @@ import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
-import tectech.thing.gui.TecTechUITextures;
 
 public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<EternalGregTechWorkshopModule> {
 
@@ -77,7 +57,6 @@ public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<Ete
     private static final int HORIZONTAL_OFF_SET = 4;
     private static final int VERTICAL_OFF_SET = 3;
     private static final int DEPTH_OFF_SET = 0;
-    private static final int GENERAL_INFO_WINDOW_ID = 10;
     private static final IStructureDefinition<EternalGregTechWorkshopModule> STRUCTURE_DEFINITION = StructureDefinition
         .<EternalGregTechWorkshopModule>builder()
         .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
@@ -294,104 +273,6 @@ public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<Ete
     }
 
     @Override
-    @Deprecated
-    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
-        // TODO: Remove this mui1 fallback after every Eternal GregTech Workshop module widget is covered by mui2.
-        final DynamicPositionedColumn screenElements = new DynamicPositionedColumn();
-        final SlotWidget inventorySlot = new SlotWidget(inventoryHandler, 1);
-        drawTexts(screenElements, inventorySlot);
-        buildContext.addSyncedWindow(GENERAL_INFO_WINDOW_ID, this::createGeneralInfoWindow);
-
-        builder.widget(
-            new DrawableWidget().setSize(18, 18)
-                .setPos(172, 67)
-                .addTooltip(StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.clickhere"))
-                .setTooltipShowUpDelay(TOOLTIP_DELAY));
-
-        builder.widget(
-            new DrawableWidget().setDrawable(TecTechUITextures.BACKGROUND_SCREEN_BLUE)
-                .setPos(4, 4)
-                .setSize(190, 85))
-            .widget(
-                inventorySlot.setPos(173, 167)
-                    .setBackground(getGUITextureSet().getItemSlot(), TecTechUITextures.OVERLAY_SLOT_MESH))
-            .widget(
-                new DrawableWidget().setDrawable(TecTechUITextures.PICTURE_HEAT_SINK_SMALL)
-                    .setPos(173, 185)
-                    .setSize(18, 6))
-            .widget(
-                new Scrollable().setVerticalScroll()
-                    .widget(screenElements.setPos(10, 0))
-                    .setPos(0, 7)
-                    .setSize(190, 79))
-            .widget(
-                TextWidget.dynamicText(this::connectionStatus)
-                    .setDefaultColor(EnumChatFormatting.BLACK)
-                    .setPos(75, 94)
-                    .setSize(100, 10))
-            .widget(
-                new ButtonWidget().setOnClick(
-                    (data, widget) -> {
-                        if (!widget.isClient()) widget.getContext()
-                            .openSyncedWindow(GENERAL_INFO_WINDOW_ID);
-                    })
-                    .setSize(18, 18)
-                    .setPos(172, 67)
-                    .setTooltipShowUpDelay(TOOLTIP_DELAY))
-            .widget(new ButtonWidget().setOnClick((clickData, widget) -> {
-                if (isAllowedToWork()) {
-                    disableWorking();
-                } else {
-                    enableWorking();
-                }
-            })
-                .setPlayClickSoundResource(
-                    () -> isAllowedToWork() ? SoundResource.GUI_BUTTON_UP.resourceLocation
-                        : SoundResource.GUI_BUTTON_DOWN.resourceLocation)
-                .setBackground(() -> {
-                    if (isAllowedToWork()) {
-                        return new IDrawable[] { EternalGregTechWorkshopTextures.BUTTON_CELESTIAL_32x32,
-                            TecTechUITextures.OVERLAY_BUTTON_POWER_SWITCH_ON };
-                    }
-                    return new IDrawable[] { EternalGregTechWorkshopTextures.BUTTON_CELESTIAL_32x32,
-                        TecTechUITextures.OVERLAY_BUTTON_POWER_SWITCH_OFF };
-                })
-                .attachSyncer(new FakeSyncWidget.BooleanSyncer(this::isAllowedToWork, val -> {
-                    if (val) enableWorking();
-                    else disableWorking();
-                }), builder)
-                .addTooltip(StatCollector.translateToLocal("GT5U.gui.button.power_switch"))
-                .setTooltipShowUpDelay(TOOLTIP_DELAY)
-                .setPos(174, 148)
-                .setSize(16, 16))
-            .widget(new ButtonWidget().setOnClick((clickData, widget) -> {
-                if (!widget.isClient()) {
-                    checkStructure(true, getBaseMetaTileEntity());
-                }
-            })
-                .setSize(16, 16)
-                .setBackground(() -> {
-                    List<UITexture> ret = new ObjectArrayList<>();
-                    ret.add(EternalGregTechWorkshopTextures.BUTTON_CELESTIAL_32x32);
-                    if (getStructureUpdateTime() > -20) {
-                        ret.add(EternalGregTechWorkshopTextures.OVERLAY_BUTTON_STRUCTURE_CHECK);
-                    } else {
-                        ret.add(EternalGregTechWorkshopTextures.OVERLAY_BUTTON_STRUCTURE_CHECK_OFF);
-                    }
-                    return ret.toArray(new IDrawable[0]);
-                })
-                .addTooltip(StatCollector.translateToLocal("GT5U.gui.button.structure_update"))
-                .setTooltipShowUpDelay(TOOLTIP_DELAY)
-                .setPos(174, 130)
-                .setTooltipShowUpDelay(TOOLTIP_DELAY));
-
-        if (supportsVoidProtection()) builder.widget(createVoidExcessButton(builder));
-        if (supportsInputSeparation()) builder.widget(createInputSeparationButton(builder));
-        if (supportsBatchMode()) builder.widget(createBatchModeButton(builder));
-        if (supportsSingleRecipeLocking()) builder.widget(createLockToSingleRecipeButton(builder));
-    }
-
-    @Override
     public void saveNBTData(NBTTagCompound NBT) {
         NBT.setBoolean("isConnected", isConnected);
         NBT.setLong("maxUseEUt", maxUseEUt);
@@ -450,51 +331,6 @@ public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<Ete
 
     public void disconnect() {
         isConnected = false;
-    }
-
-    private Text connectionStatus() {
-        String status = EnumChatFormatting.RED
-            + StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.modulestatus.false");
-        if (isConnected) {
-            status = EnumChatFormatting.GREEN
-                + StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.modulestatus.true");
-        }
-        return new Text(
-            StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.modulestatus") + " " + status);
-    }
-
-    @Deprecated
-    public ModularWindow createGeneralInfoWindow(final EntityPlayer player) {
-        // TODO: Remove this mui1 fallback after the Eternal GregTech Workshop module info panel is verified in mui2.
-        return EternalGregTechWorkshopUI.createGeneralInfoWindow();
-    }
-
-    @Override
-    @Deprecated
-    public ButtonWidget createInputSeparationButton(IWidgetBuilder<?> builder) {
-        // TODO: Remove this mui1 fallback after the Eternal GregTech Workshop module buttons are verified in mui2.
-        return EternalGregTechWorkshopUI.createInputSeparationButton(getBaseMetaTileEntity(), this, builder);
-    }
-
-    @Override
-    @Deprecated
-    public ButtonWidget createBatchModeButton(IWidgetBuilder<?> builder) {
-        // TODO: Remove this mui1 fallback after the Eternal GregTech Workshop module buttons are verified in mui2.
-        return EternalGregTechWorkshopUI.createBatchModeButton(getBaseMetaTileEntity(), this, builder);
-    }
-
-    @Override
-    @Deprecated
-    public ButtonWidget createLockToSingleRecipeButton(IWidgetBuilder<?> builder) {
-        // TODO: Remove this mui1 fallback after the Eternal GregTech Workshop module buttons are verified in mui2.
-        return EternalGregTechWorkshopUI.createLockToSingleRecipeButton(getBaseMetaTileEntity(), this, builder);
-    }
-
-    @Override
-    @Deprecated
-    public ButtonWidget createVoidExcessButton(IWidgetBuilder<?> builder) {
-        // TODO: Remove this mui1 fallback after the Eternal GregTech Workshop module buttons are verified in mui2.
-        return EternalGregTechWorkshopUI.createVoidExcessButton(getBaseMetaTileEntity(), this, builder);
     }
 
     @Override

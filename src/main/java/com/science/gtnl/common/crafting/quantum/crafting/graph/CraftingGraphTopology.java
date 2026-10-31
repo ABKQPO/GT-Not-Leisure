@@ -3,13 +3,13 @@ package com.science.gtnl.common.crafting.quantum.crafting.graph;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.PriorityQueue;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.ints.IntHeapPriorityQueue;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectHeapPriorityQueue;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
@@ -18,7 +18,7 @@ import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
  * Cached dependency order for a crafting graph. For an acyclic graph, only the node order is retained. Strongly
  * connected components and their condensation DAG are allocated only after Kahn's algorithm detects a cycle.
  */
-public final class CraftingGraphTopology {
+public class CraftingGraphTopology {
 
     private static final Comparator<CraftingGraphNode> NODE_ORDER = Comparator
         .comparingInt(CraftingGraphNode::getOrdinal);
@@ -133,7 +133,7 @@ public final class CraftingGraphTopology {
     private static List<CraftingGraphNode> kahnSortNodes(CraftingGraph graph) {
         var inDegree = new Reference2IntOpenHashMap<CraftingGraphNode>();
         inDegree.defaultReturnValue(0);
-        var queue = new PriorityQueue<>(NODE_ORDER);
+        var queue = new ObjectHeapPriorityQueue<>(NODE_ORDER);
         var result = new ObjectArrayList<CraftingGraphNode>(graph.getNodeCount());
 
         for (var node : graph.getAllNodes()) {
@@ -141,12 +141,12 @@ public final class CraftingGraphTopology {
                 .size();
             inDegree.put(node, degree);
             if (degree == 0) {
-                queue.add(node);
+                queue.enqueue(node);
             }
         }
 
         while (!queue.isEmpty()) {
-            var node = queue.remove();
+            var node = queue.dequeue();
             result.add(node);
 
             for (var edge : node.getInputs()) {
@@ -156,7 +156,7 @@ public final class CraftingGraphTopology {
                 }
                 int previousDegree = inDegree.addTo(producer, -1);
                 if (previousDegree == 1) {
-                    queue.add(producer);
+                    queue.enqueue(producer);
                 }
             }
         }
@@ -226,7 +226,7 @@ public final class CraftingGraphTopology {
         }
     }
 
-    private static final class Tarjan {
+    private static class Tarjan {
 
         private final Reference2IntMap<CraftingGraphNode> indexes = new Reference2IntOpenHashMap<>();
         private final Reference2IntMap<CraftingGraphNode> lowLinks = new Reference2IntOpenHashMap<>();
@@ -304,7 +304,7 @@ public final class CraftingGraphTopology {
             components.add(component);
         }
 
-        private static final class Frame {
+        private static class Frame {
 
             private final CraftingGraphNode node;
             private final CraftingGraphNode parent;

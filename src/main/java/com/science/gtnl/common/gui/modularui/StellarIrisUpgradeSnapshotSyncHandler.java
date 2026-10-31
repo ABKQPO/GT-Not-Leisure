@@ -9,7 +9,7 @@ import net.minecraft.network.PacketBuffer;
 import com.cleanroommc.modularui.value.sync.SyncHandler;
 import com.science.gtnl.api.stellar.StellarIrisUpgradeDefinition;
 import com.science.gtnl.api.stellar.StellarIrisUpgradeRegistry;
-import com.science.gtnl.utils.world.stellar.StellarIrisTeamSnapshot;
+import com.science.gtnl.common.stellar.StellarIrisTeamSnapshot;
 
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;

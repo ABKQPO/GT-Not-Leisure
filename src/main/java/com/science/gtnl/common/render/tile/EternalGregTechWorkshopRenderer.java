@@ -12,7 +12,7 @@ import com.gtnewhorizon.gtnhlib.client.renderer.vao.IVertexArrayObject;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.block.blocks.tile.TileEntityEternalGregTechWorkshop;
 import com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.EternalGregTechWorkshop;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.MachineConfig;
 
 import goodgenerator.loader.Loaders;
 import gregtech.GTMod;
@@ -100,7 +100,7 @@ public class EternalGregTechWorkshopRenderer extends TileEntitySpecialRenderer {
         applyBaseOrientation(tile);
 
         int renderCount = tile.getRenderCount();
-        boolean spiralEnabled = MainConfig.machine.eternal_gregtech_workshop.spiralRender;
+        boolean spiralEnabled = MachineConfig.eternal_gregtech_workshop.spiralRender;
         for (int i = 0; i < renderCount; i++) {
             renderRingPair(tile, timer, i, spiralEnabled);
         }

@@ -12,13 +12,12 @@ import com.dreammaster.item.NHItemList;
 import com.dreammaster.scripts.IScriptLoader;
 import com.glodblock.github.common.item.ItemFluidPacket;
 import com.reavaritia.utils.enums.ReAvaItemList;
+import com.science.gtnl.compat.etfuturum.EtFuturumRecipes;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModsItemlist;
 
 import appeng.api.AEApi;
-import cpw.mods.fml.common.Optional;
 import fox.spiteful.avaritia.crafting.ExtremeCraftingManager;
-import ganymedes01.etfuturum.configuration.configs.ConfigMixins;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
@@ -2250,36 +2249,7 @@ public class ScriptAvaritia implements IScriptLoader {
                     .maybeStack(1)
                     .orNull());
 
-        if (Mods.EtFuturumRequiem.isModLoaded()) {
-            loadEtFuturumRecipe();
-        }
+        EtFuturumRecipes.avaritiaScript();
     }
 
-    @Optional.Method(modid = "etfuturum")
-    public static void loadEtFuturumRecipe() {
-        if (ConfigMixins.enableElytra) {
-            ExtremeCraftingManager.getInstance()
-                .addExtremeShapedOreRecipe(
-                    ReAvaItemList.InfinityElytra.get(1),
-                    "--AA-AA--",
-                    "-BAACAAB-",
-                    "BDBAEABDB",
-                    "DDDB-BDDD",
-                    "DDDD-DDDD",
-                    "DDDD-DDDD",
-                    "DDDD-DDDD",
-                    "DDD---DDD",
-                    "-D-----D-",
-                    'A',
-                    GTOreDictUnificator.get(OrePrefixes.ingot, Materials.CosmicNeutronium, 1),
-                    'B',
-                    ModsItemlist.AvaritiaCrystalMatrix.get(1),
-                    'C',
-                    ModsItemlist.AvaritiaEndestPearl.get(1),
-                    'D',
-                    ModsItemlist.AvaritiaCrystalMatrixIngot.get(1),
-                    'E',
-                    ModsItemlist.EtFuturumRequiemElytra.get(1));
-        }
-    }
 }

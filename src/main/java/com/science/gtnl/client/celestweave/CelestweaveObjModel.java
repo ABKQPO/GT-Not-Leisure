@@ -57,8 +57,6 @@ public class CelestweaveObjModel implements IResourceManagerReloadListener {
     private int glowWidth, glowHeight;
     private boolean failed;
 
-    private CelestweaveObjModel() {}
-
     public static void register() {
         if (Minecraft.getMinecraft()
             .getResourceManager() instanceof IReloadableResourceManager manager)

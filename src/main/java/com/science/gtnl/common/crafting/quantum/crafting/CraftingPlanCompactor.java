@@ -9,13 +9,13 @@ import net.minecraft.world.World;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.gtnllib.utils.LongMath;
 import com.science.gtnl.common.crafting.quantum.api.crafting.IPatternDetails;
 import com.science.gtnl.common.crafting.quantum.api.stacks.AEKey;
 import com.science.gtnl.common.crafting.quantum.api.stacks.GenericStack;
 import com.science.gtnl.common.crafting.quantum.api.stacks.KeyCounter;
 import com.science.gtnl.common.crafting.quantum.core.AELog;
 import com.science.gtnl.common.crafting.quantum.core.localization.PlayerMessages;
-import com.science.gtnl.common.crafting.quantum.util.LongMath;
 
 import it.unimi.dsi.fastutil.ints.Int2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
@@ -1109,7 +1109,7 @@ public class CraftingPlanCompactor {
         return dividend % divisor == 0 ? quotient : quotient + 1;
     }
 
-    private static final class Slot {
+    private static class Slot {
 
         private final IPatternDetails.IInput input;
         private final long amount;
@@ -1138,7 +1138,7 @@ public class CraftingPlanCompactor {
         }
     }
 
-    private static final class Batch {
+    private static class Batch {
 
         private int[] keys = new int[8];
         private long[] in = new long[8];
@@ -1191,7 +1191,7 @@ public class CraftingPlanCompactor {
         }
     }
 
-    private static final class Recipe {
+    private static class Recipe {
 
         private final IPatternDetails pattern;
         private final int index;

@@ -19,29 +19,20 @@ import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.cleanroommc.modularui.utils.item.ItemStackHandler;
 import com.google.common.collect.ImmutableMap;
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
-import com.gtnewhorizons.modularui.api.drawable.IDrawable;
-import com.gtnewhorizons.modularui.api.drawable.Text;
-import com.gtnewhorizons.modularui.api.forge.ItemStackHandler;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
-import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
-import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
-import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
-import com.gtnewhorizons.modularui.common.widget.SlotWidget;
-import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.science.gtnl.api.IControllerUpgrade;
-import com.science.gtnl.common.gui.modularui.PCBFactoryGui;
+import com.science.gtnl.common.gui.modularui.multiblock.PCBFactoryGui;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
+import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
-import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.GregTechAPI;
 import gregtech.api.casing.Casings;
@@ -51,7 +42,6 @@ import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.Textures;
 import gregtech.api.enums.TickTime;
-import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IHatchElement;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -620,54 +610,8 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
     }
 
     @Override
-    @Deprecated
-    public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
-        // TODO: Remove this mui1 fallback after the PCB Factory terminal text is fully ported to mui2.
-        super.drawTexts(screenElements, inventorySlot);
-        screenElements
-            .widget(
-                TextWidget.dynamicText(
-                    () -> new Text(StatCollector.translateToLocal("gtnl.gui.pcb_factory.machine_tier") + machineTier))
-                    .setDefaultColor(COLOR_TEXT_WHITE.get()))
-            .widget(
-                new FakeSyncWidget.IntegerSyncer(() -> machineTier, tier -> machineTier = tier).setSynced(true, false));
-    }
-
-    @Override
     public boolean isUpgradeButtonEnabled() {
         return machineTier >= 3;
-    }
-
-    @Override
-    @Deprecated
-    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
-        // TODO: Remove this mui1 fallback after the PCB Factory upgrade GUI is fully ported to mui2.
-        super.addUIWidgets(builder, buildContext);
-        createUpgradeButton(builder, buildContext);
-    }
-
-    @Override
-    @Deprecated
-    public void createUpgradeButton(ModularWindow.Builder builder, UIBuildContext buildContext) {
-        // TODO: Remove this mui1 fallback after the PCB Factory upgrade button is fully ported to mui2.
-        buildContext.addSyncedWindow(getUpgradeWindowId(), this::createConsumeWindow);
-        builder.widget(new FakeSyncWidget.BooleanSyncer(this::isUpgradeConsumed, this::setUpgradeConsumed));
-
-        builder.widget(new ButtonWidget().setOnClick((click, widget) -> {
-            if (!widget.isClient()) {
-                widget.getContext()
-                    .openSyncedWindow(getUpgradeWindowId());
-            }
-        })
-            .setBackground(
-                () -> new IDrawable[] {
-                    upgradeConsumed ? GTUITextures.BUTTON_STANDARD_PRESSED : GTUITextures.BUTTON_STANDARD,
-                    GTUITextures.OVERLAY_BUTTON_ARROW_GREEN_UP })
-            .addTooltip(getUpgradeButtonTooltip())
-            .setTooltipShowUpDelay(5)
-            .setEnabled(widget -> machineTier >= 3)
-            .setPos(getUpgradeButtonPos())
-            .setSize(16, 16));
     }
 
     @Override

@@ -22,11 +22,11 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.gtnllib.utils.MathUtils;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
+import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.StructureUtils;
-import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.ModsItemlist;
-import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import goodgenerator.loader.Loaders;
 import gregtech.api.GregTechAPI;
@@ -191,7 +191,7 @@ public class WhiteNightGenerator extends MultiMachineBase<WhiteNightGenerator> {
         mMaxProgresstime = 6000;
         if (wirelessMode) {
             BigInteger eu = BigInteger.valueOf(this.currentOutputEU)
-                .multiply(Utils.INTEGER_MAX_VALUE);
+                .multiply(MathUtils.INTEGER_MAX_VALUE);
             if (!addEUToGlobalEnergyMap(ownerUUID, eu)) {
                 return CheckRecipeResultRegistry.INTERNAL_ERROR;
             }

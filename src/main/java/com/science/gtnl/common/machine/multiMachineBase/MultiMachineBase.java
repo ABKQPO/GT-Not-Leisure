@@ -20,21 +20,6 @@ import org.jetbrains.annotations.NotNull;
 
 import com.gtnewhorizon.structurelib.alignment.constructable.IConstructable;
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
-import com.gtnewhorizons.modularui.api.drawable.IDrawable;
-import com.gtnewhorizons.modularui.api.drawable.UITexture;
-import com.gtnewhorizons.modularui.api.math.MainAxisAlignment;
-import com.gtnewhorizons.modularui.api.math.Pos2d;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
-import com.gtnewhorizons.modularui.api.widget.IWidgetBuilder;
-import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
-import com.gtnewhorizons.modularui.common.widget.Column;
-import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
-import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
-import com.gtnewhorizons.modularui.common.widget.DynamicPositionedRow;
-import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
-import com.gtnewhorizons.modularui.common.widget.Scrollable;
-import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.IControllerInfo;
 import com.science.gtnl.api.IMultiblockTooltipRules;
@@ -43,23 +28,21 @@ import com.science.gtnl.common.gui.modularui.GTNLMultiBlockBaseGui;
 import com.science.gtnl.common.machine.hatch.CustomFluidHatch;
 import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
 import com.science.gtnl.common.machine.hatch.SuperCraftingInputHatchME;
-import com.science.gtnl.config.MainConfig;
-import com.science.gtnl.utils.item.ItemUtils;
+import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
+import com.science.gtnl.common.machine.tooltip.InfoSummary.BonusStat;
+import com.science.gtnl.common.machine.tooltip.InfoSummary.TierBonus;
+import com.science.gtnl.common.machine.tooltip.MultiblockTooltipReader;
+import com.science.gtnl.common.machine.tooltip.StructureTooltipHooks;
+import com.science.gtnl.config.MachineConfig;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
-import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
-import com.science.gtnl.utils.structure.InfoSummary.BonusStat;
-import com.science.gtnl.utils.structure.InfoSummary.TierBonus;
-import com.science.gtnl.utils.structure.MultiblockTooltipReader;
-import com.science.gtnl.utils.structure.StructureTooltipHooks;
 
 import bartworks.util.BWUtil;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.HeatingCoilLevel;
 import gregtech.api.enums.VoltageIndex;
-import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IHatchElement;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
@@ -134,7 +117,6 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     public GTCoilTracker.MultiCoilLease coilLease = null;
     public final ObjectArrayList<ItemStack> recipeSearchItemInputs = new ObjectArrayList<>();
     public final ObjectArrayList<FluidStack> recipeSearchFluidInputs = new ObjectArrayList<>();
-    public List<SlotWidget> slotWidgets = new ObjectArrayList<>(1);
     public int mCountCasing = -1;
     public int mGlassTier = -1;
     public int mCasingTier = -1;
@@ -389,7 +371,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     }
 
     protected void checkEnergyHatch(List<StructureError> errors) {
-        if (MainConfig.machine.enableLaserHatch) {
+        if (MachineConfig.enableLaserHatch) {
             return;
         }
         boolean hasEnergyTunnel = false;
@@ -663,7 +645,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
 
     @Override
     public List<String> getTooltipFeatureLines() {
-        List<String> lines = new ArrayList<>();
+        List<String> lines = new ObjectArrayList<>();
         int glassTier = getGlassEnergyTierLimit();
         if (glassTier >= 0) {
             lines.add(
@@ -719,21 +701,17 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     }
 
     private List<String> casingEnergyLimitLines() {
-        int hatch = mEnergyHatchTier;
-        mEnergyHatchTier = VoltageIndex.MAX;
-        try {
-            CasingVoltageLimit limit = casingVoltageLimit();
-            if (limit == null) return Collections.emptyList();
-            String line = StatCollector
-                .translateToLocalFormatted(CASING_LIMIT_TOOLTIP_KEY, casingTierText(), limit.tiersAbove());
-            if (limit.unlockVoltageTier() == CASING_LIMIT_NEVER_UNLOCKS) return Collections.singletonList(line);
-            String unlock = TooltipHelper.voltageTierText(limit.unlockVoltageTier(), false);
-            return Arrays.asList(
-                line,
-                StatCollector.translateToLocalFormatted(CASING_LIMIT_UNLOCK_TOOLTIP_KEY, unlock, casingNameText()));
-        } finally {
-            mEnergyHatchTier = hatch;
-        }
+        MultiMachineBase<?> probe = tooltipProbe();
+        probe.mEnergyHatchTier = VoltageIndex.MAX;
+        CasingVoltageLimit limit = probe.casingVoltageLimit();
+        if (limit == null) return Collections.emptyList();
+        String line = StatCollector
+            .translateToLocalFormatted(CASING_LIMIT_TOOLTIP_KEY, casingTierText(), limit.tiersAbove());
+        if (limit.unlockVoltageTier() == CASING_LIMIT_NEVER_UNLOCKS) return Collections.singletonList(line);
+        String unlock = TooltipHelper.voltageTierText(limit.unlockVoltageTier(), false);
+        return Arrays.asList(
+            line,
+            StatCollector.translateToLocalFormatted(CASING_LIMIT_UNLOCK_TOOLTIP_KEY, unlock, casingNameText()));
     }
 
     protected record CasingVoltageLimit(int tiersAbove, int unlockVoltageTier) {}
@@ -786,28 +764,19 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     }
 
     private TooltipStats tooltipStatsWith(TieredPart probed, int tier, int parallelTier) {
-        HeatingCoilLevel coil = mCoilLevel;
-        int glass = mGlassTier;
-        int casing = mCasingTier;
-        int parallel = mParallelTier;
-        int voltageProbe = tooltipVoltageTier;
-        int parallelProbe = tooltipParallelTier;
-        mCoilLevel = HeatingCoilLevel.getFromTier((byte) tierOf(probed, TieredPart.COIL, tier));
-        mGlassTier = tierOf(probed, TieredPart.GLASS, tier);
-        mCasingTier = tierOf(probed, TieredPart.CASING, tier);
-        tooltipVoltageTier = probed == TieredPart.VOLTAGE ? tier : NO_TOOLTIP_TIER;
-        tooltipParallelTier = parallelTier;
-        if (parallelTier != NO_TOOLTIP_TIER) mParallelTier = parallelTier;
-        try {
-            return readTooltipStats();
-        } finally {
-            mCoilLevel = coil;
-            mGlassTier = glass;
-            mCasingTier = casing;
-            mParallelTier = parallel;
-            tooltipVoltageTier = voltageProbe;
-            tooltipParallelTier = parallelProbe;
-        }
+        MultiMachineBase<?> probe = tooltipProbe();
+        probe.mCoilLevel = HeatingCoilLevel.getFromTier((byte) tierOf(probed, TieredPart.COIL, tier));
+        probe.mGlassTier = tierOf(probed, TieredPart.GLASS, tier);
+        probe.mCasingTier = tierOf(probed, TieredPart.CASING, tier);
+        probe.tooltipVoltageTier = probed == TieredPart.VOLTAGE ? tier : NO_TOOLTIP_TIER;
+        probe.tooltipParallelTier = parallelTier;
+        if (parallelTier != NO_TOOLTIP_TIER) probe.mParallelTier = parallelTier;
+        return probe.readTooltipStats();
+    }
+
+    // Tooltip numbers come from a scratch copy, so probing tiers never changes a prototype or a running machine.
+    protected MultiMachineBase<?> tooltipProbe() {
+        return (MultiMachineBase<?>) newMetaEntity(null);
     }
 
     private static int tierOf(TieredPart probed, TieredPart part, int tier) {
@@ -825,7 +794,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
             MultiblockTooltipReader.FIRST_PARALLEL_CONTROLLER_PROBE_TIER);
         TooltipStats high = tooltipStatsWith(null, BASE_TOOLTIP_TIER, LAST_PARALLEL_CONTROLLER_PROBE_TIER);
         List<String> effects = parallelControllerEffects(low, high);
-        List<String> lines = new ArrayList<>();
+        List<String> lines = new ObjectArrayList<>();
         lines.add(
             effects.isEmpty()
                 ? StatCollector.translateToLocalFormatted(PARALLEL_CONTROLLER_TOOLTIP_KEY + ".accepts", hatch)
@@ -852,7 +821,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
 
     private List<String> parallelControllerEffects(TooltipStats low, TooltipStats high) {
         List<TierBonus> bonuses = MultiblockTooltipReader.tierBonusesOf(this, TieredPart.PARALLEL_CONTROLLER);
-        List<String> effects = new ArrayList<>();
+        List<String> effects = new ObjectArrayList<>();
         if (high.parallels() > low.parallels()) {
             effects.add(StatCollector.translateToLocal(PARALLEL_CONTROLLER_TOOLTIP_KEY + ".parallel"));
         }
@@ -906,7 +875,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     @Override
     public List<String> getTooltipUpgradeLines() {
         if (!(this instanceof IWirelessEnergy wireless)) return Collections.emptyList();
-        List<String> lines = new ArrayList<>();
+        List<String> lines = new ObjectArrayList<>();
         String upgrade = wirelessUpgradeLine(wireless);
         if (upgrade != null) lines.add(upgrade);
         lines.addAll(getTooltipWirelessModeLines());
@@ -926,7 +895,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
             wireless.setWirelessUpgrade(installed);
         }
         if (without == null || with == null) return null;
-        List<String> bonuses = new ArrayList<>();
+        List<String> bonuses = new ObjectArrayList<>();
         if (rises(without.speed(), with.speed())) {
             bonuses.add(GTNLMultiblockTooltipBuilder.effectText(BonusStat.SPEED, with.speed() - without.speed()));
         }
@@ -978,108 +947,9 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         return tier;
     }
 
-    public void createInventorySlots() {
-        final SlotWidget inventorySlot = new SlotWidget(inventoryHandler, 1);
-        inventorySlot.setBackground(GTUITextures.SLOT_DARK_GRAY);
-        slotWidgets.add(inventorySlot);
-    }
-
-    @Deprecated
-    public void addSharedScreen(ModularWindow.Builder builder) {
-        // TODO: Remove this mui1 fallback after every GTNL multiblock is covered by mui2.
-        builder.widget(
-            new DrawableWidget().setDrawable(GTUITextures.PICTURE_SCREEN_BLACK)
-                .setPos(4, 4)
-                .setSize(190, 85));
-    }
-
-    public Column createSlotColumn() {
-        Column slotColumn = new Column();
-        for (int i = slotWidgets.size() - 1; i >= 0; i--) {
-            slotColumn.widget(slotWidgets.get(i));
-        }
-        return slotColumn;
-    }
-
-    @Deprecated
-    public void addBaseTextScroll(ModularWindow.Builder builder) {
-        // TODO: Remove this mui1 fallback after every GTNL multiblock is covered by mui2.
-        final DynamicPositionedColumn screenElements = new DynamicPositionedColumn();
-        drawTexts(screenElements, !slotWidgets.isEmpty() ? slotWidgets.get(0) : null);
-        builder.widget(
-            new Scrollable().setVerticalScroll()
-                .widget(screenElements.setPos(10, 0))
-                .setPos(0, 7)
-                .setSize(190, 79));
-    }
-
-    @Override
-    public Pos2d getPowerSwitchButtonPos() {
-        return new Pos2d(174, 166 - (slotWidgets.size() * 18));
-    }
-
-    @Override
-    public Pos2d getStructureUpdateButtonPos() {
-        return new Pos2d(174, 148 - (slotWidgets.size() * 18));
-    }
-
     @Override
     protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
         return new GTNLMultiBlockBaseGui<>(this);
-    }
-
-    @Override
-    @Deprecated
-    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
-        // TODO: Remove this mui1 fallback after every GTNL multiblock is covered by mui2.
-        addSharedScreen(builder);
-        slotWidgets.clear();
-        createInventorySlots();
-        builder.widget(
-            createSlotColumn().setAlignment(MainAxisAlignment.END)
-                .setPos(173, 167 - 1));
-        addBaseTextScroll(builder);
-
-        if (supportsMachineModeSwitch() && machineModeIcons == null) {
-            machineModeIcons = new ObjectArrayList<>(4);
-            setMachineModeIcons();
-        }
-        builder.widget(createPowerSwitchButton(builder))
-            .widget(createVoidExcessButton(builder))
-            .widget(createInputSeparationButton(builder))
-            .widget(createModeSwitchButton(builder))
-            .widget(createBatchModeButton(builder))
-            .widget(createLockToSingleRecipeButton(builder))
-            .widget(createStructureUpdateButton(builder))
-            .widget(createMuffleButton(builder, true));
-
-        DynamicPositionedRow configurationElements = new DynamicPositionedRow();
-        addConfigurationWidgets(configurationElements, buildContext);
-
-        if (supportsPowerPanel()) {
-            builder.widget(createPowerPanelButton(builder));
-            buildContext.addSyncedWindow(POWER_PANEL_WINDOW_ID, this::createPowerPanel);
-        }
-
-        if (supportsMachineInfo()) {
-            builder.widget(createMachineInfoButton(builder));
-            buildContext.addSyncedWindow(MACHINE_INFO_WINDOW_ID, this::createMachineInfo);
-        }
-
-        builder.widget(
-            configurationElements.setSpace(2)
-                .setAlignment(MainAxisAlignment.SPACE_BETWEEN)
-                .setPos(getRecipeLockingButtonPos().add(18, 0)));
-    }
-
-    @Override
-    @Deprecated
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        // TODO: Remove this mui1 fallback after every GTNL multiblock is covered by mui2.
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
-                .setSize(18, 18)
-                .setPos(172, 67));
     }
 
     @Override
@@ -1092,32 +962,6 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     }
 
     public void onModeChangeByButton() {
-
-    }
-
-    @Override
-    public ButtonWidget createMuffleButton(IWidgetBuilder<?> builder, boolean canBeMuffled) {
-        return (ButtonWidget) new ButtonWidget().setOnClick((clickData, widget) -> setMuffled(!isMuffled()))
-            .setPlayClickSound(true)
-            .setEnabled(canBeMuffled)
-            .setBackground(() -> {
-                List<UITexture> ret = new ObjectArrayList<>();
-                if (isMuffled()) {
-                    ret.add(GTUITextures.BUTTON_STANDARD_PRESSED);
-                    ret.add(GTUITextures.OVERLAY_BUTTON_MUFFLE_ON);
-                } else {
-                    ret.add(GTUITextures.BUTTON_STANDARD);
-                    ret.add(GTUITextures.OVERLAY_BUTTON_MUFFLE_OFF);
-                }
-                return ret.toArray(new IDrawable[0]);
-            })
-            .attachSyncer(new FakeSyncWidget.BooleanSyncer(this::isMuffled, this::setMuffled), builder)
-            .addTooltip(StatCollector.translateToLocal("GT5U.machines.muffled"))
-            .setPos(200, 0)
-            .setSize(12, 12);
-    }
-
-    public void addConfigurationWidgets(DynamicPositionedRow configurationElements, UIBuildContext buildContext) {
 
     }
 
@@ -1587,6 +1431,11 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     }
 
     public <E> boolean addToMachineListInternal(ArrayList<E> aList, final IMetaTileEntity aTileEntity,
+        final int aBaseCasingIndex) {
+        return addToMachineListInternal((List<E>) aList, aTileEntity, aBaseCasingIndex);
+    }
+
+    public <E> boolean addToMachineListInternal(List<E> aList, final IMetaTileEntity aTileEntity,
         final int aBaseCasingIndex) {
         if (aTileEntity == null) {
             return false;

@@ -26,7 +26,7 @@ import com.science.gtnl.client.portalgun.PortalGunPortalFx;
 import com.science.gtnl.client.portalgun.PortalGunPortalFx.Pose;
 import com.science.gtnl.common.entity.EntityPortalGunPortal;
 import com.science.gtnl.common.portalgun.PortalGunGeometry;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ClientConfig;
 import com.science.gtnl.utils.enums.PortalGunPortalEffect;
 
 import cpw.mods.fml.relauncher.Side;
@@ -57,16 +57,15 @@ public class PortalGunPortalRender extends Render {
     @Override
     public void doRender(Entity entity, double x, double y, double z, float yaw, float partialTicks) {
         if (!(entity instanceof EntityPortalGunPortal portal)) return;
-        MainConfig.Client settings = MainConfig.client;
-        PortalGunPortalEffect effect = settings.portalGunPortalEffect;
+        PortalGunPortalEffect effect = ClientConfig.portalGunPortalEffect;
         double lift = portal.up() == ForgeDirection.UP ? lift(effect, roomAbove(portal)) : 0;
         PortalGunPortalFx.throwDots(portal, effect, x, y + lift, z, partialTicks);
         FxCamera.capture();
         if (!FxCamera.inView(
             new Vec3d(x + RenderManager.renderPosX, y + lift + RenderManager.renderPosY, z + RenderManager.renderPosZ),
             DRAWN_REACH)) return;
-        float close = portal.closeProgress(partialTicks, PortalGunPortalFx.closeTicks(effect, settings));
-        Pose pose = PortalGunPortalFx.pose(effect, portal.sincePass(partialTicks), close, settings);
+        float close = portal.closeProgress(partialTicks, PortalGunPortalFx.closeTicks(effect));
+        Pose pose = PortalGunPortalFx.pose(effect, portal.sincePass(partialTicks), close);
         switch (effect.kind) {
             case FRAMED -> PortalGunDoorRender.render(portal, effect, x, y + lift, z, partialTicks, close, pose);
             case VORTEX -> PortalGunVortexRender.render(portal, effect, x, y + lift, z, partialTicks, close, pose);
@@ -142,6 +141,6 @@ public class PortalGunPortalRender extends Render {
 
     @Override
     protected ResourceLocation getEntityTexture(Entity entity) {
-        return texture(MainConfig.client.portalGunPortalEffect);
+        return texture(ClientConfig.portalGunPortalEffect);
     }
 }

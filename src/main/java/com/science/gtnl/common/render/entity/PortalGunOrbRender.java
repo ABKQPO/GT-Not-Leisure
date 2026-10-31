@@ -11,7 +11,7 @@ import com.gtnllib.utils.ColorMath;
 import com.gtnllib.utils.Vec3d;
 import com.science.gtnl.client.portalgun.PortalGunOrbTrail;
 import com.science.gtnl.common.entity.EntityPortalGunOrb;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ClientConfig;
 import com.science.gtnl.utils.enums.PortalGunPortalEffect;
 import com.science.gtnl.utils.enums.PortalGunPortalEffect.OrbStyle;
 
@@ -28,7 +28,7 @@ public class PortalGunOrbRender extends Render {
     public void doRender(Entity entity, double x, double y, double z, float yaw, float partialTicks) {
         if (!(entity instanceof EntityPortalGunOrb orb)) return;
         float time = entity.ticksExisted + partialTicks;
-        PortalGunPortalEffect effect = MainConfig.client.portalGunPortalEffect;
+        PortalGunPortalEffect effect = ClientConfig.portalGunPortalEffect;
         Vec3d center = PortalGunOrbTrail.follow(
             orb,
             Vec3d.interpolated(entity, partialTicks)

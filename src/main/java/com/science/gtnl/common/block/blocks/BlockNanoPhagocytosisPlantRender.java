@@ -11,12 +11,8 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-import com.science.gtnl.client.GTNLCreativeTabs;
-import com.science.gtnl.common.block.blocks.item.ItemBlockNanoPhagocytosisPlantRender;
 import com.science.gtnl.common.block.blocks.tile.TileEntityNanoPhagocytosisPlant;
-import com.science.gtnl.utils.enums.GTNLItemList;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -26,13 +22,7 @@ public class BlockNanoPhagocytosisPlantRender extends Block {
         super(Material.iron);
         this.setResistance(20f);
         this.setHardness(-1.0f);
-        this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
-        this.setBlockName("gtnl.nano_phagocytosis_plant_renderer");
         this.setLightLevel(1.0f);
-        GameRegistry.registerBlock(this, ItemBlockNanoPhagocytosisPlantRender.class, "nano_phagocytosis_plant_render");
-        GameRegistry
-            .registerTileEntity(TileEntityNanoPhagocytosisPlant.class, "nano_phagocytosis_plant_render_tile_entity");
-        GTNLItemList.NanoPhagocytosisPlantRender.set(new ItemStack(this, 1));
     }
 
     @Override

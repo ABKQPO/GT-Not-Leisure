@@ -46,6 +46,7 @@ import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.LargeBeeBreederGui;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
+import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.machine.bee.BeeBreedingHelper;
@@ -54,7 +55,6 @@ import com.science.gtnl.utils.machine.bee.BeeBreedingPlanner;
 import com.science.gtnl.utils.machine.bee.BeeBreedingTiers;
 import com.science.gtnl.utils.machine.bee.BeeSpeciesArchive;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
-import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import forestry.api.apiculture.IAlleleBeeSpecies;
 import gregtech.api.enums.Textures;

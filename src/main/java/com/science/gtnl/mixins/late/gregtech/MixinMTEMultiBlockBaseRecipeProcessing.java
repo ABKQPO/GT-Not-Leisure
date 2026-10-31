@@ -91,11 +91,6 @@ public abstract class MixinMTEMultiBlockBaseRecipeProcessing {
 
     @Inject(method = "endRecipeProcessing", at = { @At(value = "RETURN") }, require = 1)
     public void endRecipeProcessing(CallbackInfo c) {
-        /*
-         * Consumer<CheckRecipeResult> setResultIfFailure = result -> { if
-         * (!result.wasSuccessful()) { this.checkRecipeResult = result; } };
-         */
-
         for (IDualInputHatch hatch : (gtnl$cast().mDualInputHatches)) {
             if (hatch == null || !((MetaTileEntity) hatch).isValid()) continue;
             if (hatch instanceof IRecipeProcessingAwareDualHatch dualHatch) {

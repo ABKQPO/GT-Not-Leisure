@@ -10,7 +10,7 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 
-public final class StackKey extends AEKey {
+public class StackKey extends AEKey {
 
     private final IAEStack<?> stack;
     private final AEKeyType type;

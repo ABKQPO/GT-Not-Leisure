@@ -1,13 +1,8 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
-
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
@@ -22,7 +17,6 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
@@ -33,7 +27,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.gtnewhorizon.gtnhlib.util.ItemUtil;
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
@@ -41,40 +34,18 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
-import com.gtnewhorizons.modularui.api.drawable.IDrawable;
-import com.gtnewhorizons.modularui.api.drawable.ItemDrawable;
-import com.gtnewhorizons.modularui.api.drawable.UITexture;
-import com.gtnewhorizons.modularui.api.math.Alignment;
-import com.gtnewhorizons.modularui.api.math.Color;
-import com.gtnewhorizons.modularui.api.math.MainAxisAlignment;
-import com.gtnewhorizons.modularui.api.math.Pos2d;
-import com.gtnewhorizons.modularui.api.math.Size;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
-import com.gtnewhorizons.modularui.api.widget.IWidgetBuilder;
-import com.gtnewhorizons.modularui.api.widget.Widget;
-import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
-import com.gtnewhorizons.modularui.common.widget.ChangeableWidget;
-import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
-import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
-import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
-import com.gtnewhorizons.modularui.common.widget.MultiChildWidget;
-import com.gtnewhorizons.modularui.common.widget.SlotWidget;
-import com.gtnewhorizons.modularui.common.widget.TextWidget;
-import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
-import com.gtnewhorizons.modularui.common.widget.textfield.TextFieldWidget;
+import com.gtnllib.utils.GameUtils;
+import com.gtnllib.utils.MathUtils;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.casing.GTNLCasings;
-import com.science.gtnl.common.gui.modularui.AssemblerMatrixGui;
+import com.science.gtnl.common.gui.modularui.multiblock.AssemblerMatrixGui;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
+import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
+import com.science.gtnl.compat.ae2things.AE2ThingsCompat;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
-import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.GTNLItemList;
-import com.science.gtnl.utils.enums.ModList;
-import com.science.gtnl.utils.item.ItemUtils;
-import com.science.gtnl.utils.machine.AssemblerMatrixPatternState;
-import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
+import com.science.gtnl.utils.machine.MachineUtils;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.Upgrades;
@@ -111,9 +82,7 @@ import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 import gregtech.api.enums.Dyes;
 import gregtech.api.enums.HatchElement;
-import gregtech.api.enums.SoundResource;
 import gregtech.api.enums.Textures;
-import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IMEConnectable;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -135,9 +104,6 @@ import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.misc.WirelessNetworkManager;
 import gregtech.common.tileentities.machines.RecipeCheckReason;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectLists;
-import it.unimi.dsi.fastutil.objects.Reference2LongMap;
-import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -178,7 +144,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     @Setter
     @Getter
     public boolean showPattern = true;
-    public String costingEUText = Utils.ZERO_STRING;
+    public String costingEUText = MathUtils.ZERO_STRING;
     public long recipesDone;
     public long usedParallel = 0;
 
@@ -189,6 +155,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     @Getter
     private final CombinationPatternsIInventory inventory = new CombinationPatternsIInventory();
     private final AssemblerMatrixPatternState patternState = new AssemblerMatrixPatternState();
+    private final AssemblerMatrixTasks tasks = new AssemblerMatrixTasks();
 
     // Resolve container items returned after an input is consumed.
     public static ItemStack resolveContainerItem(ItemStack stack) {
@@ -229,11 +196,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     }
 
     private static boolean isBlockedAe2ThingsInfusionPattern(ItemStack stack) {
-        if (ItemUtil.isStackInvalid(stack)) return false;
-        if (!ModList.AE2Thing.isModLoaded()) return false;
-        if (stack.stackTagCompound == null) return false;
-        // AE2Things infusion pattern terminals mimic standard patterns with the tc_crafting flag, so block them here.
-        return stack.stackTagCompound.hasKey("tc_crafting");
+        return !ItemUtil.isStackInvalid(stack) && AE2ThingsCompat.isInfusionPattern(stack);
     }
 
     public AssemblerMatrix(int aID, String aName, String aNameRegional) {
@@ -301,15 +264,11 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     }
 
     public List<IAEItemStack> getCachedPatternOutputsForGui() {
-        IAEItemStack[] cachedOutputItems = patternState.getCachedOutputItems();
-        if (cachedOutputItems == null || cachedOutputItems.length == 0) {
-            return Collections.emptyList();
-        }
-        return ObjectArrayList.wrap(cachedOutputItems);
+        return tasks.batchView();
     }
 
     public void setCachedPatternOutputsFromGui(List<IAEItemStack> cachedOutputItems) {
-        patternState.setCachedOutputItems(cachedOutputItems.toArray(new IAEItemStack[0]));
+        tasks.mirrorBatch(cachedOutputItems);
     }
 
     public String getGuiCustomName() {
@@ -319,226 +278,6 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     @Override
     protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
         return new AssemblerMatrixGui(this);
-    }
-
-    @Override
-    @Deprecated
-    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
-        // TODO: Remove this mui1 fallback after the Assembler Matrix custom GUI is fully ported to mui2.
-        addSharedScreen(builder);
-        slotWidgets.clear();
-        createInventorySlots();
-        builder.widget(
-            createSlotColumn().setAlignment(MainAxisAlignment.END)
-                .setPos(173, 167 - 1));
-        addBaseTextScroll(builder);
-
-        if (supportsMachineModeSwitch() && machineModeIcons == null) {
-            machineModeIcons = new ObjectArrayList<>(4);
-            setMachineModeIcons();
-        }
-        builder.widget(createPowerSwitchButton(builder))
-            .widget(createStructureUpdateButton(builder))
-            .widget(createModeSwitchButton(builder))
-            .widget(createMuffleButton(builder, true));
-
-        if (supportsPowerPanel()) {
-            builder.widget(createPowerPanelButton(builder));
-            buildContext.addSyncedWindow(POWER_PANEL_WINDOW_ID, this::createPowerPanel);
-        }
-
-        if (supportsMachineInfo()) {
-            builder.widget(createMachineInfoButton(builder));
-            buildContext.addSyncedWindow(MACHINE_INFO_WINDOW_ID, this::createMachineInfo);
-        }
-
-        builder.widget(
-            new ButtonWidget().setOnClick((clickData, widget) -> showPattern = !showPattern)
-                .setPlayClickSoundResource(
-                    () -> showPattern ? SoundResource.GUI_BUTTON_UP.resourceLocation
-                        : SoundResource.GUI_BUTTON_DOWN.resourceLocation)
-                .setBackground(() -> {
-                    if (showPattern) {
-                        return new IDrawable[] { GTUITextures.BUTTON_STANDARD_PRESSED,
-                            GTUITextures.OVERLAY_BUTTON_WHITELIST };
-                    } else {
-                        return new IDrawable[] { GTUITextures.BUTTON_STANDARD, GTUITextures.OVERLAY_BUTTON_BLACKLIST };
-                    }
-                })
-                .attachSyncer(new FakeSyncWidget.BooleanSyncer(() -> showPattern, val -> showPattern = val), builder)
-                .dynamicTooltip(
-                    () -> Collections.singletonList(
-                        StatCollector
-                            .translateToLocal("gtnl.interface.show_pattern." + (showPattern ? "enabled" : "disabled"))))
-                .setTooltipShowUpDelay(TOOLTIP_DELAY)
-                .setUpdateTooltipEveryTick(true)
-                .setPos(26, 91)
-                .setSize(16, 16));
-
-        builder.widget(
-            new TextFieldWidget().setSetter((value) -> customName = value)
-                .setGetter(this::getGuiCustomName)
-                .setTextAlignment(Alignment.Center)
-                .setScrollBar()
-                .setTextColor(Color.WHITE.normal)
-                .addTooltip(StatCollector.translateToLocal("gtnl.machine.assembler_matrix.info.3"))
-                .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD)
-                .setPos(43, 90)
-                .setSize(126, 18)
-                .attachSyncer(new FakeSyncWidget.StringSyncer(this::getCustomName, this::setCustomName), builder));
-    }
-
-    @Override
-    public ButtonWidget createPowerPanelButton(IWidgetBuilder<?> builder) {
-        Widget button = new ButtonWidget().setOnClick((clickData, widget) -> {
-            if (supportsPowerPanel()) {
-                if (!widget.isClient()) widget.getContext()
-                    .openSyncedWindow(POWER_PANEL_WINDOW_ID);
-            }
-        })
-            .setPlayClickSound(true)
-            .setBackground(() -> {
-                List<UITexture> ret = new ObjectArrayList<>();
-                ret.add(GTUITextures.BUTTON_STANDARD);
-                ret.add(GTUITextures.OVERLAY_BUTTON_POWER_PANEL);
-                return ret.toArray(new IDrawable[0]);
-            })
-            .addTooltip(StatCollector.translateToLocal("gtnl.machine.assembler_matrix.info.1"))
-            .setTooltipShowUpDelay(TOOLTIP_DELAY)
-            .setPos(getPowerPanelButtonPos())
-            .setSize(16, 16);
-        return (ButtonWidget) button;
-    }
-
-    @Override
-    public ModularWindow createPowerPanel(EntityPlayer player) {
-        final int w = 100;
-        final int h = 80;
-        final int parentW = getGUIWidth();
-        final int parentH = getGUIHeight();
-
-        ModularWindow.Builder builder = ModularWindow.builder(w, h);
-
-        builder.setBackground(GTUITextures.BACKGROUND_SINGLEBLOCK_DEFAULT);
-        builder.setGuiTint(getGUIColorization());
-        builder.setDraggable(true);
-        builder.setPos(
-            (size, window) -> Alignment.Center.getAlignedPos(size, new Size(parentW, parentH))
-                .add(
-                    Alignment.TopRight.getAlignedPos(new Size(parentW, parentH), new Size(w, h))
-                        .add(w - 3, 0)));
-
-        builder.widget(
-            new TextWidget(
-                EnumChatFormatting.UNDERLINE + StatCollector.translateToLocal("gtnl.machine.assembler_matrix.info.1"))
-                    .setPos(0, 2)
-                    .setSize(100, 18));
-
-        builder.widget(new FakeSyncWidget.IntegerSyncer(this::getPatternMultiply, this::setPatternMultiply));
-
-        builder.widget(
-            TextWidget.localised("gtnl.machine.assembler_matrix.info.2")
-                .setPos(0, 24)
-                .setSize(100, 18));
-
-        builder.widget(
-            new NumericWidget().setSetter(val -> setPatternMultiply((int) val))
-                .setGetter(this::getPatternMultiply)
-                .setDefaultValue(powerPanelMaxParallel)
-                .setMinValue(1)
-                .setMaxValue(Integer.MAX_VALUE)
-                .setScrollValues(1, 4, 64)
-                .setTextAlignment(Alignment.Center)
-                .setTextColor(Color.WHITE.normal)
-                .addTooltip(StatCollector.translateToLocalFormatted("GT5U.gui.text.rangedvalue", 1, Integer.MAX_VALUE))
-                .setTooltipShowUpDelay(TOOLTIP_DELAY)
-                .setSize(70, 18)
-                .setPos(15, 40)
-                .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD));
-
-        return builder.build();
-    }
-
-    @Override
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_CIRCULATION)
-                .setSize(18, 18)
-                .setPos(172, 49));
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
-                .setSize(18, 18)
-                .setPos(172, 67));
-    }
-
-    @SuppressWarnings("UnstableApiUsage")
-    @Override
-    public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
-        super.drawTexts(screenElements, inventorySlot);
-        final ChangeableWidget recipeOutputItemsWidget = new ChangeableWidget(this::generateCurrentRecipeInfoWidget);
-
-        screenElements.widget(
-            new FakeSyncWidget.ListSyncer<>(
-                () -> patternState.getCachedOutputItems() != null
-                    ? ObjectArrayList.wrap(patternState.getCachedOutputItems())
-                    : ObjectLists.emptyList(),
-                val -> {
-                    patternState.setCachedOutputItems(val.toArray(new IAEItemStack[0]));
-                    recipeOutputItemsWidget.notifyChangeNoSync();
-                },
-                AssemblerMatrix::writeAEItemStack,
-                AssemblerMatrix::loadAEItemStack));
-        screenElements.widget(recipeOutputItemsWidget);
-    }
-
-    @Override
-    public Widget generateCurrentRecipeInfoWidget() {
-        final DynamicPositionedColumn processingDetails = new DynamicPositionedColumn();
-
-        if (patternState.getCachedOutputItems() != null) {
-            final Reference2LongMap<IAEItemStack> nameToAmount = new Reference2LongOpenHashMap<>();
-
-            for (IAEItemStack item : patternState.getCachedOutputItems()) {
-                if (item == null || item.getStackSize() <= 0) continue;
-                nameToAmount.merge(item, item.getStackSize(), Long::sum);
-            }
-
-            final List<Reference2LongMap.Entry<IAEItemStack>> sortedMap = new ObjectArrayList<>(
-                nameToAmount.reference2LongEntrySet());
-            sortedMap.sort(
-                ((Comparator<Reference2LongMap.Entry<IAEItemStack>> & Serializable) (c1, c2) -> Long
-                    .compare(c2.getLongValue(), c1.getLongValue())));
-
-            for (Reference2LongMap.Entry<IAEItemStack> entry : sortedMap) {
-                long itemCount = entry.getLongValue();
-                String itemName = entry.getKey()
-                    .getItemStack()
-                    .getDisplayName();
-                String itemAmountString = EnumChatFormatting.WHITE + " x "
-                    + EnumChatFormatting.GOLD
-                    + GTUtility.formatShortenedLong(itemCount)
-                    + EnumChatFormatting.WHITE
-                    + appendRate(false, itemCount, true);
-                String lineText = EnumChatFormatting.AQUA
-                    + GTUtility.truncateText(itemName, 40 - itemAmountString.length())
-                    + itemAmountString;
-                String lineTooltip = EnumChatFormatting.AQUA + itemName + "\n" + appendRate(false, itemCount, false);
-
-                processingDetails.widget(
-                    new MultiChildWidget().addChild(
-                        new ItemDrawable(
-                            entry.getKey()
-                                .getItemStack()
-                                .copy()).asWidget()
-                                    .setSize(8, 8)
-                                    .setPos(0, 0))
-                        .addChild(
-                            new TextWidget(lineText).setTextAlignment(Alignment.CenterLeft)
-                                .addTooltip(lineTooltip)
-                                .setPos(10, 1)));
-            }
-        }
-        return processingDetails;
     }
 
     /**
@@ -558,42 +297,6 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         mMaxSlots = eachPatternCasingCapacity * mCountPatternCasing;
 
         return (int) mMaxParallelLong;
-    }
-
-    @Override
-    public ButtonWidget createModeSwitchButton(IWidgetBuilder<?> builder) {
-        Widget button = new ButtonWidget().setOnClick((clickData, widget) -> {
-            if (mMaxProgresstime > 0) return;
-            onMachineModeSwitchClick();
-            setMachineMode(nextMachineMode());
-        })
-            .setPlayClickSound(mMaxProgresstime <= 0)
-            .setBackground(() -> {
-                if (mMaxProgresstime > 0) {
-                    return new IDrawable[] { GTUITextures.BUTTON_STANDARD, GTUITextures.OVERLAY_BUTTON_RECIPE_LOCKED };
-                } else {
-                    return new IDrawable[] { GTUITextures.BUTTON_STANDARD, getMachineModeIcon(getMachineMode()) };
-                }
-            })
-            .attachSyncer(new FakeSyncWidget.IntegerSyncer(this::getMachineMode, this::setMachineMode), builder)
-            .dynamicTooltip(
-                () -> ImmutableList.of(
-                    StatCollector.translateToLocal(
-                        mMaxProgresstime > 0 ? "GT5U.gui.button.forbidden" : "GT5U.gui.button.mode_switch")))
-            .setTooltipShowUpDelay(TOOLTIP_DELAY)
-            .setPos(getMachineModeSwitchButtonPos())
-            .setSize(16, 16);
-
-        button.attachSyncer(
-            new FakeSyncWidget.IntegerSyncer(() -> mMaxProgresstime, newInt -> mMaxProgresstime = newInt),
-            builder,
-            (widget, val) -> widget.notifyTooltipChange());
-        return (ButtonWidget) button;
-    }
-
-    @Override
-    public Pos2d getMachineModeSwitchButtonPos() {
-        return new Pos2d(8, 91);
     }
 
     @Override
@@ -626,15 +329,6 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         if (machineMode == MODE_INPUT) return MODE_OUTPUT;
         else if (machineMode == MODE_OUTPUT) return MODE_OPERATING;
         else return MODE_INPUT;
-    }
-
-    @Override
-    @Deprecated
-    public void setMachineModeIcons() {
-        // TODO: Remove this mui1 fallback after the Assembler Matrix custom GUI is fully ported to mui2.
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_PACKAGER);
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_UNPACKAGER);
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_DEFAULT);
     }
 
     @Override
@@ -674,45 +368,9 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     public void saveInvData(NBTTagCompound aNBT, boolean external) {
         NBTTagCompound storeRoot = new NBTTagCompound();
 
-        String uuid = Utils.ensureUUID(aNBT);
+        String uuid = GameUtils.ensureUUID(aNBT);
 
-        NBTTagList cachedList = new NBTTagList();
-        if (patternState.getCachedOutputItems() != null) {
-            for (IAEItemStack item : patternState.getCachedOutputItems()) {
-                if (item != null) {
-                    NBTTagCompound tag = new NBTTagCompound();
-                    item.writeToNBT(tag);
-                    cachedList.appendTag(tag);
-                }
-            }
-        }
-        storeRoot.setTag("CACHED_OUTPUT_ITEMS", cachedList);
-
-        NBTTagList outputList = new NBTTagList();
-        if (!patternState.getOutputs()
-            .isEmpty()) {
-            for (IAEItemStack stack : patternState.getOutputs()) {
-                if (stack != null) {
-                    NBTTagCompound tag = new NBTTagCompound();
-                    stack.writeToNBT(tag);
-                    outputList.appendTag(tag);
-                }
-            }
-        }
-        storeRoot.setTag("OUTPUT_ITEMS", outputList);
-
-        NBTTagList inputList = new NBTTagList();
-        if (!patternState.getInputs()
-            .isEmpty()) {
-            for (IAEItemStack stack : patternState.getInputs()) {
-                if (stack != null) {
-                    NBTTagCompound tag = new NBTTagCompound();
-                    stack.writeToNBT(tag);
-                    inputList.appendTag(tag);
-                }
-            }
-        }
-        storeRoot.setTag("INPUT_ITEMS", inputList);
+        tasks.writeToNBT(storeRoot);
 
         NBTTagCompound invTag = new NBTTagCompound();
         inventory.saveNBTData(invTag);
@@ -774,32 +432,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         }
 
         if (storeRoot != null) {
-            NBTTagList cachedList = storeRoot.getTagList("CACHED_OUTPUT_ITEMS", 10);
-            if (cachedList != null && cachedList.tagCount() > 0) {
-                IAEItemStack[] cachedOutputItems = new IAEItemStack[cachedList.tagCount()];
-                for (int i = 0; i < cachedList.tagCount(); i++) {
-                    cachedOutputItems[i] = AEItemStack.loadItemStackFromNBT(cachedList.getCompoundTagAt(i));
-                }
-                patternState.setCachedOutputItems(cachedOutputItems);
-            }
-
-            NBTTagList outputList = storeRoot.getTagList("OUTPUT_ITEMS", 10);
-            if (outputList != null && outputList.tagCount() > 0) {
-                for (int i = 0; i < outputList.tagCount(); i++) {
-                    IAEItemStack aeStack = AEItemStack.loadItemStackFromNBT(outputList.getCompoundTagAt(i));
-                    if (aeStack != null) patternState.getOutputs()
-                        .add(aeStack);
-                }
-            }
-
-            NBTTagList inputList = storeRoot.getTagList("INPUT_ITEMS", 10);
-            if (inputList != null && inputList.tagCount() > 0) {
-                for (int i = 0; i < inputList.tagCount(); i++) {
-                    IAEItemStack aeStack = AEItemStack.loadItemStackFromNBT(inputList.getCompoundTagAt(i));
-                    if (aeStack != null) patternState.getInputs()
-                        .add(aeStack);
-                }
-            }
+            tasks.readFromNBT(storeRoot, AEItemStack::loadItemStackFromNBT);
 
             if (storeRoot.hasKey("INVENTORY")) {
                 inventory.loadNBTData(storeRoot.getCompoundTag("INVENTORY"));
@@ -1042,72 +675,26 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
             lEUt = 0;
             return CheckRecipeResultRegistry.SUCCESSFUL;
         } else if (isActive() && machineMode == MODE_OPERATING) {
-            if (mMaxSlots > 0 && !inventory.isEmpty()
-                && !patternState.getOutputs()
-                    .isEmpty()) {
-                costingEUText = Utils.ZERO_STRING;
+            if (mMaxSlots > 0 && !inventory.isEmpty() && tasks.hasPending()) {
+                costingEUText = MathUtils.ZERO_STRING;
                 long parallel = mMaxParallelLong;
-                long maxInputEU = wirelessMode ? Utils.toLongSafe(WirelessNetworkManager.getUserEU(ownerUUID))
+                long maxInputEU = wirelessMode ? MathUtils.toLongSafe(WirelessNetworkManager.getUserEU(ownerUUID))
                     : getMaxInputEu();
 
                 parallel = Math.min(parallel, maxInputEU / 2);
-                int maximum = patternState.getOutputs()
-                    .size();
-                usedParallel = 0L;
 
-                if (!patternState.getInputs()
-                    .isEmpty()) {
+                if (tasks.hasReturns()) {
                     var grid = getProxy().getNode()
                         .getGrid();
                     IEnergyGrid energyGrid = grid.getCache(IEnergyGrid.class);
                     IStorageGrid storageGrid = grid.getCache(IStorageGrid.class);
                     var storage = storageGrid.getItemInventory();
-                    final var s = patternState.getInputs()
-                        .size();
-                    for (int i = 0; i < s; i++) {
-                        var in = patternState.getInputs()
-                            .poll();
-                        if (in == null) continue;
-                        var leftover = Platform.poweredInsert(energyGrid, storage, in, source);
-                        if (leftover != null) patternState.getInputs()
-                            .add(leftover);
-                    }
+                    tasks.sendReturns(stack -> Platform.poweredInsert(energyGrid, storage, stack, source));
                 }
 
-                List<IAEItemStack> preparedOutputs = new ObjectArrayList<>(maximum);
+                usedParallel = tasks.takeBatch(parallel);
 
-                IAEItemStack stack;
-                while (parallel > 0 && (stack = patternState.getOutputs()
-                    .poll()) != null) {
-                    long stackSize = stack.getStackSize();
-                    if (stackSize <= parallel) {
-                        parallel -= stackSize;
-                        usedParallel += stackSize;
-
-                        preparedOutputs.add(stack);
-                    } else {
-                        long remain = stackSize - parallel;
-                        usedParallel += parallel;
-                        stack.decStackSize(parallel);
-                        preparedOutputs.add(
-                            stack.copy()
-                                .setStackSize(parallel));
-
-                        if (remain > 0) {
-                            var remainStack = stack.copy();
-                            remainStack.setStackSize(remain);
-                            patternState.getOutputs()
-                                .add(remainStack);
-                        }
-
-                        parallel = 0;
-                    }
-
-                    if (patternState.getOutputs()
-                        .isEmpty() || --maximum == 0) break;
-                }
-
-                if (!preparedOutputs.isEmpty()) {
+                if (usedParallel > 0) {
                     this.lEUt = -2 * Math.max(1, usedParallel);
                     if (wirelessMode) {
                         WirelessNetworkManager.addEUToGlobalEnergyMap(ownerUUID, -2 * usedParallel);
@@ -1117,7 +704,6 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
 
                     recipesDone += usedParallel;
 
-                    patternState.setCachedOutputItems(preparedOutputs.toArray(new IAEItemStack[0]));
                     this.mEfficiency = 10000;
                     this.mEfficiencyIncrease = 10000;
                     this.mMaxProgresstime = Math.max(1, 40 >> mCountSpeedCasing);
@@ -1132,43 +718,21 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     @Override
     public void outputAfterRecipe() {
         super.outputAfterRecipe();
-        IAEItemStack[] cachedOutputs = patternState.getCachedOutputItems();
-        if (cachedOutputs == null || cachedOutputs.length == 0) return;
+        usedParallel = 0;
+        if (!tasks.hasBatch()) return;
 
-        try {
-            var grid = getProxy().getNode()
-                .getGrid();
-            IEnergyGrid energyGrid = grid.getCache(IEnergyGrid.class);
-            IStorageGrid storageGrid = grid.getCache(IStorageGrid.class);
-            var storage = storageGrid.getItemInventory();
-
-            for (IAEItemStack stack : cachedOutputs) {
-                if (stack == null || stack.getStackSize() <= 0) continue;
-
-                var leftover = Platform.poweredInsert(energyGrid, storage, stack, source);
-
-                if (leftover != null && leftover.getStackSize() != 0) {
-                    patternState.getOutputs()
-                        .add(leftover);
-                }
-            }
-        } finally {
-            patternState.setCachedOutputItems(new IAEItemStack[0]);
-            usedParallel = 0;
-        }
+        var grid = getProxy().getNode()
+            .getGrid();
+        IEnergyGrid energyGrid = grid.getCache(IEnergyGrid.class);
+        IStorageGrid storageGrid = grid.getCache(IStorageGrid.class);
+        var storage = storageGrid.getItemInventory();
+        tasks.deliverBatch(stack -> Platform.poweredInsert(energyGrid, storage, stack, source));
     }
 
     @Override
     public void stopMachine(@NotNull ShutDownReason reason) {
         super.stopMachine(reason);
-        IAEItemStack[] cachedOutputs = patternState.getCachedOutputItems();
-        if (cachedOutputs != null) {
-            for (IAEItemStack stack : cachedOutputs) {
-                if (stack != null && stack.getStackSize() > 0) patternState.getOutputs()
-                    .add(stack);
-            }
-        }
-        patternState.setCachedOutputItems(new IAEItemStack[0]);
+        tasks.requeueBatch();
         usedParallel = 0;
     }
 
@@ -1346,11 +910,11 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
 
     @Override
     public boolean pushPattern(ICraftingPatternDetails patternDetails, InventoryCrafting table) {
-        boolean accepted = patternState.pushPattern(patternDetails, table);
-        if (accepted) {
-            scheduleRecipeCheck(RecipeCheckReason.IMMEDIATE);
-        }
-        return accepted;
+        AssemblerMatrixPatternState.AcceptedBatch batch = patternState.prepareBatch(patternDetails, table);
+        if (batch == null) return false;
+        tasks.accept(batch.containerReturns(), batch.outputs());
+        scheduleRecipeCheck(RecipeCheckReason.IMMEDIATE);
+        return true;
     }
 
     @Override
@@ -1558,7 +1122,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         boolean ignoreEmptiness = false;
 
         for (MTEHatchOutputBus outputBus : mOutputBusses) {
-            if (Utils.isMEOutputBus(outputBus)) {
+            if (MachineUtils.isMEOutputBus(outputBus)) {
                 ignoreEmptiness = true;
                 break;
             }

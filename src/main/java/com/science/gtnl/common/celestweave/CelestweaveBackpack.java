@@ -13,16 +13,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import com.google.common.collect.MapMaker;
-import com.science.gtnl.CommonProxy;
 import com.science.gtnl.common.equipment.EquipmentNet;
+import com.science.gtnl.common.gui.GTNLGuiHandler;
+import com.science.gtnl.common.gui.container.portableWorkbench.ContainerPortableChest;
+import com.science.gtnl.common.gui.container.portableWorkbench.ContainerPortableCompressedChest;
+import com.science.gtnl.common.gui.container.portableWorkbench.ContainerPortableEnderChest;
+import com.science.gtnl.common.gui.container.portableWorkbench.ContainerPortableInfinityChest;
+import com.science.gtnl.common.gui.container.portableWorkbench.IPortableStorageHost;
 import com.science.gtnl.common.item.items.PortableChestType;
 import com.science.gtnl.common.item.items.PortableItem;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
-import com.science.gtnl.container.portableWorkbench.ContainerPortableChest;
-import com.science.gtnl.container.portableWorkbench.ContainerPortableCompressedChest;
-import com.science.gtnl.container.portableWorkbench.ContainerPortableEnderChest;
-import com.science.gtnl.container.portableWorkbench.ContainerPortableInfinityChest;
-import com.science.gtnl.container.portableWorkbench.IPortableStorageHost;
 import com.science.gtnl.utils.enums.GuiType;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -49,8 +49,6 @@ public class CelestweaveBackpack {
     private static final Set<EntityItem> DROPS = Collections.newSetFromMap(
         new MapMaker().weakKeys()
             .<EntityItem, Boolean>makeMap());
-
-    private CelestweaveBackpack() {}
 
     public static boolean accepts(ItemStack stack) {
         return stack != null && stack.getItem() instanceof PortableItem
@@ -210,7 +208,7 @@ public class CelestweaveBackpack {
             return;
         }
         if (player.openContainer != player.inventoryContainer) player.closeScreen();
-        CommonProxy.openGui(player, GuiType.CelestweaveBackpackGUI, null, player.worldObj, 0, 0, 0);
+        GTNLGuiHandler.openGui(player, GuiType.CelestweaveBackpackGUI, null, player.worldObj, 0, 0, 0);
     }
 
     public static Object serverContainer(EntityPlayer player) {

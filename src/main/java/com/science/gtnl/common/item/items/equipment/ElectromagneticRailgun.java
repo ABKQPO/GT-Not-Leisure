@@ -1,7 +1,5 @@
 package com.science.gtnl.common.item.items.equipment;
 
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -23,7 +21,6 @@ import com.cleanroommc.modularui.screen.ModularScreen;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.equipment.EquipmentEnergy;
 import com.science.gtnl.common.equipment.IEquipmentElectricItem;
 import com.science.gtnl.common.equipment.IEquipmentItem;
@@ -35,9 +32,7 @@ import com.science.gtnl.common.railgun.RailgunData;
 import com.science.gtnl.common.railgun.RailgunEnergy;
 import com.science.gtnl.common.railgun.RailgunFireService;
 import com.science.gtnl.common.railgun.RailgunModule;
-import com.science.gtnl.utils.enums.GTNLItemList;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -49,11 +44,6 @@ public class ElectromagneticRailgun extends Item
 
     public ElectromagneticRailgun() {
         this.setMaxStackSize(1);
-        this.setUnlocalizedName("gtnl.electromagnetic_railgun");
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "electromagnetic_railgun");
-        this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        GameRegistry.registerItem(this, "electromagnetic_railgun");
-        GTNLItemList.ElectromagneticRailgun.set(new ItemStack(this, 1));
     }
 
     @Override

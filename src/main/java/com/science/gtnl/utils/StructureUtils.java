@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import net.minecraft.block.Block;
 
+import com.gtnllib.utils.StructureFileCodec;
 import com.science.gtnl.ScienceNotLeisure;
 
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;

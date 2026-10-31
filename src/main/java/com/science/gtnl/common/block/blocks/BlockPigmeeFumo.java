@@ -26,13 +26,9 @@ import com.gtnewhorizon.gtnhlib.blockstate.registry.BlockPropertyRegistry;
 import com.gtnewhorizon.gtnhlib.client.model.BakedModelQuadContext;
 import com.gtnewhorizon.gtnhlib.client.model.baked.BakedModel;
 import com.gtnewhorizon.gtnhlib.geometry.Orientation;
-import com.science.gtnl.client.GTNLCreativeTabs;
-import com.science.gtnl.common.block.blocks.item.ItemBlockPigmeeFumo;
 import com.science.gtnl.common.block.blocks.tile.TileEntityPigmeeFumo;
 import com.science.gtnl.common.render.model.pigmeeModel.PigmeeFumoModel;
-import com.science.gtnl.utils.enums.GTNLItemList;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -70,13 +66,10 @@ public class BlockPigmeeFumo extends BlockContainer implements IBlockModelProvid
         setHardness(0.5F);
         setStepSound(Block.soundTypeCloth);
         setLightOpacity(0);
-        setBlockName("gtnl.pigmee_fumo");
-        setBlockTextureName(RESOURCE_ROOT_ID + ":blocks/pigmee_fumo");
-        setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
-        GameRegistry.registerBlock(this, ItemBlockPigmeeFumo.class, "pigmee_fumo");
+    }
+
+    public void registerItemProperties() {
         BlockPropertyRegistry.registerBlockItemProperty(this, FACING_PROPERTY);
-        GameRegistry.registerTileEntity(TileEntityPigmeeFumo.class, "pigmee_fumo_tile_entity");
-        GTNLItemList.PigmeeFumo.set(new ItemStack(this, 1));
     }
 
     @Override

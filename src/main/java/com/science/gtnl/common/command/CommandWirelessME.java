@@ -12,7 +12,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import com.gtnewhorizon.gtnhlib.config.ConfigurationManager;
 import com.science.gtnl.common.item.items.WirelessFrequencyCard;
 import com.science.gtnl.common.wireless.WirelessCardBinding;
 import com.science.gtnl.common.wireless.WirelessChannelManager;
@@ -23,7 +22,8 @@ import com.science.gtnl.common.wireless.WirelessFrequencies;
 import com.science.gtnl.common.wireless.WirelessFrequency;
 import com.science.gtnl.common.wireless.WirelessLinkPersistence;
 import com.science.gtnl.common.wireless.WirelessOperations;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ConfigRegistry;
+import com.science.gtnl.config.WirelessConfig;
 
 import appeng.api.exceptions.FailedConnection;
 import appeng.api.networking.IGridNode;
@@ -58,8 +58,8 @@ public class CommandWirelessME extends CommandBase {
         if ("limit".equals(args[0])) {
             if (args.length > 2) throw new CommandException("Usage: /gtnl_wireless_me limit [count]");
             if (args.length == 2) {
-                MainConfig.wireless.maxEntrancesPerFrequency = parseIntWithMin(sender, args[1], 1);
-                ConfigurationManager.save(MainConfig.class);
+                WirelessConfig.maxEntrancesPerFrequency = parseIntWithMin(sender, args[1], 1);
+                ConfigRegistry.save(WirelessConfig.class);
             }
             message(sender, "Per-frequency entrance limit: " + WirelessChannelManager.entranceLimit());
             if (args.length == 2)

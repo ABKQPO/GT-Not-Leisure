@@ -5,8 +5,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
+import com.gtnllib.network.ClientboundPacket;
 import com.science.gtnl.common.item.items.bauble.DraconicArmorProjectionHitEffectState;
-import com.science.gtnl.common.packet.base.ClientboundPacket;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

@@ -31,23 +31,21 @@ import com.science.gtnl.common.gui.modularui.GTNLMultiBlockBaseGui;
 import com.science.gtnl.common.machine.hatch.CustomFluidHatch;
 import com.science.gtnl.common.machine.hatch.SuperCraftingInputHatchME;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
+import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.MachineConfig;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.item.ItemUtils;
-import com.science.gtnl.utils.machine.PortalToAlfheimExplosion;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
-import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
-import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -529,16 +527,6 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
     }
 
     @Override
-    @Deprecated
-    public void setMachineModeIcons() {
-        // TODO: Remove this mui1 fallback after this GUI no longer supports mui1 startup paths.
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_DEFAULT);
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_LPF_FLUID);
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_LPF_METAL);
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_BENDING);
-    }
-
-    @Override
     public int nextMachineMode() {
         if (machineMode == PORTAL_MODE) return NATURE_MODE;
         else if (machineMode == NATURE_MODE) return MANA_MODE;
@@ -566,7 +554,7 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
     }
 
     public void triggerExplosion(IGregTechTileEntity aBaseMetaTileEntity, float strength) {
-        if (MainConfig.machine.portal_to_alfheim.bigBoom) {
+        if (MachineConfig.portal_to_alfheim.bigBoom) {
             ProcessHandler.addProcess(
                 new PortalToAlfheimExplosion(
                     aBaseMetaTileEntity.getWorld(),

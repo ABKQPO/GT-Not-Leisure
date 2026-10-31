@@ -9,6 +9,8 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.gtnllib.client.fx.FxEasing;
 import com.gtnllib.client.fx.world.FxArcRenderer.Color;
 import com.gtnllib.client.fx.world.FxArcRenderer.Style;
@@ -20,7 +22,7 @@ import com.gtnllib.utils.MathUtils;
 import com.gtnllib.utils.Vec3d;
 import com.science.gtnl.client.railgun.RailgunBolts.Bolt;
 import com.science.gtnl.common.railgun.RailgunChargeTier;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ClientConfig;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -28,6 +30,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
+@EventBusSubscriber(side = Side.CLIENT, phase = Phase.PRE)
 public class RailgunOrbRenderer {
 
     private static final int MIN_TRAVEL_TICKS = 3;
@@ -103,7 +106,7 @@ public class RailgunOrbRenderer {
         var world = Minecraft.getMinecraft().theWorld;
         if (world == null) return;
         if (from == null || !from.finite() || target == null || !target.finite()) return;
-        if (!MainConfig.client.enableRailgunBloom) {
+        if (!ClientConfig.enableRailgunBloom) {
             if (onArrive != null) onArrive.run();
             return;
         }
@@ -172,11 +175,11 @@ public class RailgunOrbRenderer {
     }
 
     @SubscribeEvent
-    public void render(RenderWorldLastEvent event) {
+    public static void render(RenderWorldLastEvent event) {
         var world = Minecraft.getMinecraft().theWorld;
         if (world == null) return;
         long now = world.getTotalWorldTime();
-        if (MainConfig.client.enableRailgunBloom) {
+        if (ClientConfig.enableRailgunBloom) {
             FxCamera.capture();
             List<OrbViz> orbs = collect(now, event.partialTicks);
             if (!orbs.isEmpty()) {
@@ -195,7 +198,7 @@ public class RailgunOrbRenderer {
     }
 
     private static void drawBody(List<OrbViz> orbs, double time) {
-        if (MainConfig.client.enableRailgunShaders) {
+        if (ClientConfig.enableRailgunShaders) {
             RailgunShaderEffect shader = RailgunShaderEffect.ORB;
             if (shader.begin()) {
                 try {

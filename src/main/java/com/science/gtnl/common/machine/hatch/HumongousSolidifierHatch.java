@@ -9,26 +9,14 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
+import com.cleanroommc.modularui.utils.fluid.FluidStackTank;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
-import com.gtnewhorizons.modularui.api.ModularUITextures;
-import com.gtnewhorizons.modularui.api.forge.IItemHandlerModifiable;
-import com.gtnewhorizons.modularui.api.math.Pos2d;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
-import com.gtnewhorizons.modularui.common.fluid.FluidStackTank;
-import com.gtnewhorizons.modularui.common.internal.wrapper.BaseSlot;
-import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
-import com.gtnewhorizons.modularui.common.widget.FluidSlotWidget;
-import com.gtnewhorizons.modularui.common.widget.SlotWidget;
-import com.science.gtnl.common.gui.modularui.HumongousSolidifierHatchGui;
-import com.science.gtnl.utils.item.ItemUtils;
+import com.science.gtnl.common.gui.modularui.hatch.HumongousSolidifierHatchGui;
 
 import ggfab.GGItemList;
 import gregtech.api.enums.ItemList;
-import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
-import gregtech.api.interfaces.modularui.IAddGregtechLogo;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.util.GTUtility;
@@ -36,7 +24,7 @@ import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.MTEHatchSolid
 
 @IMetaTileEntity.SkipGenerateName
 @IMetaTileEntity.SkipGenerateDescription
-public class HumongousSolidifierHatch extends MTEHatchSolidifier implements IAddGregtechLogo {
+public class HumongousSolidifierHatch extends MTEHatchSolidifier {
 
     public static final int moldSlot = 2;
     public static final ItemStack[] solidifierMolds = { ItemList.Shape_Mold_Bottle.get(1),
@@ -232,38 +220,6 @@ public class HumongousSolidifierHatch extends MTEHatchSolidifier implements IAdd
     }
 
     @Override
-    @Deprecated
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        // TODO: Remove this mui1 fallback after HumongousSolidifierHatch mui2 rollout is complete.
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
-                .setSize(18, 18)
-                .setPos(151, 62));
-    }
-
-    @Override
-    @Deprecated
-    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
-        // TODO: Remove this mui1 fallback after HumongousSolidifierHatch mui2 rollout is complete.
-        final int slotCount = 9;
-        final Pos2d[] positions = new Pos2d[] { new Pos2d(61, 16), new Pos2d(79, 16), new Pos2d(97, 16),
-            new Pos2d(61, 34), new Pos2d(79, 34), new Pos2d(97, 34), new Pos2d(61, 52), new Pos2d(79, 52),
-            new Pos2d(97, 52) };
-
-        for (int i = 0; i < slotCount; i++) {
-            builder.widget(
-                new FluidSlotWidget(fluidTanks[i]).setBackground(ModularUITextures.FLUID_SLOT)
-                    .setPos(positions[i]));
-        }
-
-        builder.widget(
-            new SlotWidget(new MoldSlot(inventoryHandler, moldSlot)).setShiftClickPriority(-1)
-                .setPos(125, 35)
-                .setBackground(getGUITextureSet().getItemSlot(), GTUITextures.OVERLAY_SLOT_MOLD)
-                .setSize(18, 18));
-    }
-
-    @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
         return new HumongousSolidifierHatchGui(this).build(data, syncManager, uiSettings);
     }
@@ -325,18 +281,6 @@ public class HumongousSolidifierHatch extends MTEHatchSolidifier implements IAdd
                 () -> mStoredFluid[index],
                 fluid -> mStoredFluid[index] = fluid,
                 mCapacityPer);
-        }
-    }
-
-    private class MoldSlot extends BaseSlot {
-
-        public MoldSlot(IItemHandlerModifiable inventory, int index) {
-            super(inventory, index);
-        }
-
-        @Override
-        public boolean isItemValidPhantom(ItemStack stack) {
-            return super.isItemValidPhantom(stack) && getBaseMetaTileEntity().isItemValidForSlot(getSlotIndex(), stack);
         }
     }
 }

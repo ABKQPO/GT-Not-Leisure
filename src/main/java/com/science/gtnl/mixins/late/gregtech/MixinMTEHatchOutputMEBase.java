@@ -20,22 +20,16 @@ public abstract class MixinMTEHatchOutputMEBase<T extends IAEStack<T>> implement
     @Override
     public boolean gtnl$transferCacheTo(MTEHatchOutputMEBase<T> targetProvider) {
         boolean[] transferred = { false };
-
         cache.updateAll((stack, amount) -> {
             long available = targetProvider.getPhysicalSpace();
-            if (available <= 0) {
-                return amount;
-            }
-
+            if (available <= 0) return amount;
             long amountToMove = Math.min(amount, available);
-            T movingStack = stack.copy()
-                .setStackSize(amountToMove);
-
-            targetProvider.addToCache(movingStack);
+            targetProvider.addToCache(
+                stack.copy()
+                    .setStackSize(amountToMove));
             transferred[0] = true;
             return amount - amountToMove;
         });
-
         return transferred[0];
     }
 }

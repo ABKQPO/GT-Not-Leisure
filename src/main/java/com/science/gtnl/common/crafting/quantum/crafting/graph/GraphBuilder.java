@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.gtnllib.utils.LongMath;
 import com.science.gtnl.common.crafting.quantum.api.crafting.IPatternDetails;
 import com.science.gtnl.common.crafting.quantum.api.stacks.AEKey;
 import com.science.gtnl.common.crafting.quantum.api.stacks.GenericStack;
 import com.science.gtnl.common.crafting.quantum.crafting.CraftingCalculation;
-import com.science.gtnl.common.crafting.quantum.util.LongMath;
 
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;

@@ -3,7 +3,7 @@ package com.science.gtnl.common.packet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.IChatComponent;
 
-import com.science.gtnl.common.packet.base.ClientboundPacket;
+import com.gtnllib.network.ClientboundPacket;
 
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
@@ -33,6 +33,7 @@ public class StatusMessage extends ClientboundPacket {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void handleClient(Minecraft minecraft) {
         sendStatusMessage(chat);
     }

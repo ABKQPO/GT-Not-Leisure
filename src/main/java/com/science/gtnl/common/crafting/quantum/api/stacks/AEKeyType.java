@@ -1,6 +1,6 @@
 package com.science.gtnl.common.crafting.quantum.api.stacks;
 
-public final class AEKeyType {
+public class AEKeyType {
 
     private final String id;
     private final int amountPerUnit;

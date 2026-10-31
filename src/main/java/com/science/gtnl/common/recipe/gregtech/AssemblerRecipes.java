@@ -10,14 +10,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
-import com.dreammaster.block.BlockList;
-import com.dreammaster.item.NHItemList;
-import com.gtnewhorizon.cropsnh.api.CropsNHItemList;
 import com.reavaritia.utils.enums.ReAvaItemList;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.compat.cropsnh.CropsNHRecipes;
+import com.science.gtnl.compat.newhorizons.NHCoreRecipes;
+import com.science.gtnl.config.RecipeConfig;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModsItemlist;
@@ -28,7 +27,6 @@ import appeng.api.AEApi;
 import appeng.api.util.AEColor;
 import bartworks.common.loaders.ItemRegistry;
 import bartworks.system.material.WerkstoffLoader;
-import cpw.mods.fml.common.Optional;
 import goodgenerator.items.GGMaterial;
 import goodgenerator.util.ItemRefer;
 import gregtech.api.GregTechAPI;
@@ -3362,14 +3360,27 @@ public class AssemblerRecipes implements IRecipePool {
             .eut(TierEU.RECIPE_LV)
             .addTo(As);
 
+        RecipeBuilder.builder()
+            .itemInputs(
+                ModsItemlist.ForestryRoyalJelly.get(64),
+                ModsItemlist.ForestryAlveary.get(32),
+                ItemList.Machine_IndustrialApiary.get(32),
+                new Object[] { OrePrefixes.circuit.get(Materials.UHV), 16 })
+            .circuit(17)
+            .itemOutputs(GTNLItemList.LargeBeeBreeder.get(1))
+            .fluidInputs(Materials.SolderingAlloy.getMolten(576000))
+            .duration(36000 * SECONDS)
+            .eut(TierEU.RECIPE_UHV)
+            .addTo(As);
+
         loadLampRecipes();
         loadWirelessHatch();
         loadLaserHatch();
 
-        if (Mods.NewHorizonsCoreMod.isModLoaded()) loadNHRecipe();
-        if (Mods.CropsNH.isModLoaded()) loadCropNHRecipe();
+        NHCoreRecipes.assembler();
+        CropsNHRecipes.assembler();
 
-        if (MainConfig.recipe.enableDeleteRecipe) loadDeleteRecipe();
+        if (RecipeConfig.enableDeleteRecipe) loadDeleteRecipe();
     }
 
     public void loadLampRecipes() {
@@ -3532,362 +3543,6 @@ public class AssemblerRecipes implements IRecipePool {
                     .addTo(HOR);
             }
         }
-    }
-
-    @Optional.Method(modid = "dreamcraft")
-    public void loadNHRecipe() {
-        var aeItems = AEApi.instance()
-            .definitions()
-            .items();
-        var aeMaterials = AEApi.instance()
-            .definitions()
-            .materials();
-        var aeBlocks = AEApi.instance()
-            .definitions()
-            .blocks();
-
-        RecipeBuilder.builder()
-            .itemInputs(
-                GTNLItemList.AssemblerMatrixWall.get(1),
-                ItemList.AcceleratorLuV.get(4),
-                aeMaterials.cardSuperSpeed()
-                    .maybeStack(4)
-                    .orNull(),
-                NHItemList.EngineeringProcessorItemAdvEmeraldCore.get(16),
-                ItemList.Field_Generator_LuV.get(2),
-                GTOreDictUnificator.get(OrePrefixes.circuit, Materials.LuV, 4),
-                aeItems.coloredPaintBall()
-                    .stack(AEColor.Red, 64))
-            .circuit(11)
-            .itemOutputs(GTNLItemList.AssemblerMatrixSpeedCore.get(1))
-            .duration(400)
-            .eut(TierEU.RECIPE_LuV)
-            .addTo(As);
-
-        RecipeBuilder.builder()
-            .itemInputs(
-                GTNLItemList.QuantumComputerUnit.get(1),
-                aeMaterials.cell16384kPart()
-                    .maybeStack(6)
-                    .orNull(),
-                GTOreDictUnificator.get(OrePrefixes.plate, Materials.Quantium, 8),
-                GTNLItemList.ShatteredSingularity.get(4),
-                aeMaterials.cardCapacity()
-                    .maybeStack(4)
-                    .orNull(),
-                aeMaterials.logicProcessor()
-                    .maybeStack(16)
-                    .orNull(),
-                NHItemList.EngineeringProcessorSpatialPulsatingCore.get(8),
-                GTOreDictUnificator.get(OrePrefixes.circuit, Materials.ZPM, 2))
-            .circuit(11)
-            .itemOutputs(GTNLItemList.QuantumComputerCraftingStorage128M.get(1))
-            .fluidInputs(GTNLMaterials.QuantumInfusion.getFluidOrGas(4000))
-            .duration(400)
-            .eut(TierEU.RECIPE_LuV)
-            .addTo(As);
-
-        RecipeBuilder.builder()
-            .itemInputs(
-                GTNLItemList.QuantumComputerUnit.get(1),
-                GTNLItemList.QuantumComputerCraftingStorage128M.get(2),
-                GTOreDictUnificator.get(OrePrefixes.plate, Materials.Quantium, 8),
-                GTNLItemList.ShatteredSingularity.get(4),
-                NHItemList.EngravedQuantumChip.get(8),
-                NHItemList.EngineeringProcessorSpatialPulsatingCore.get(16))
-            .circuit(11)
-            .itemOutputs(GTNLItemList.QuantumComputerCraftingStorage256M.get(1))
-            .fluidInputs(GTNLMaterials.QuantumInfusion.getFluidOrGas(4000))
-            .duration(400)
-            .eut(TierEU.RECIPE_LuV)
-            .addTo(As);
-
-        RecipeBuilder.builder()
-            .itemInputs(
-                GTNLItemList.QuantumComputerUnit.get(1),
-                aeBlocks.craftingStorage16384k()
-                    .maybeStack(3)
-                    .orNull(),
-                GTOreDictUnificator.get(OrePrefixes.plate, Materials.Quantium, 8),
-                GTNLItemList.ShatteredSingularity.get(4),
-                aeMaterials.cardSuperSpeed()
-                    .maybeStack(4)
-                    .orNull(),
-                aeMaterials.calcProcessor()
-                    .maybeStack(16)
-                    .orNull(),
-                NHItemList.EngineeringProcessorSpatialPulsatingCore.get(8),
-                GTOreDictUnificator.get(OrePrefixes.circuit, Materials.ZPM, 2))
-            .circuit(11)
-            .itemOutputs(GTNLItemList.QuantumComputerAccelerator.get(1))
-            .fluidInputs(GTNLMaterials.QuantumInfusion.getFluidOrGas(4000))
-            .duration(400)
-            .eut(TierEU.RECIPE_LuV)
-            .addTo(As);
-
-        RecipeBuilder.builder()
-            .itemInputs(
-                GTNLItemList.QuantumComputerUnit.get(1),
-                GTNLItemList.QuantumComputerAccelerator.get(1),
-                GTNLItemList.QuantumComputerCraftingStorage256M.get(1),
-                aeMaterials.singularity()
-                    .maybeStack(4)
-                    .orNull(),
-                GTNLItemList.ShatteredSingularity.get(2),
-                NHItemList.EngravedQuantumChip.get(16),
-                aeMaterials.engProcessor()
-                    .maybeStack(16)
-                    .orNull(),
-                NHItemList.EngineeringProcessorSpatialPulsatingCore.get(4))
-            .circuit(11)
-            .itemOutputs(GTNLItemList.QuantumComputerCore.get(1))
-            .fluidInputs(GTNLMaterials.QuantumInfusion.getFluidOrGas(16000))
-            .duration(400)
-            .eut(TierEU.RECIPE_LuV)
-            .addTo(As);
-
-        RecipeBuilder.builder()
-            .itemInputs(
-                GTNLItemList.QuantumComputerUnit.get(1),
-                GTNLItemList.QuantumComputerCore.get(1),
-                GTNLItemList.ShatteredSingularity.get(16),
-                GTNLItemList.QuantumComputerAccelerator.get(4),
-                ItemList.QuantumStar.get(4),
-                NHItemList.EngravedQuantumChip.get(16),
-                NHItemList.EngineeringProcessorSpatialPulsatingCore.get(8),
-                GTOreDictUnificator.get(OrePrefixes.circuit, Materials.UV, 8))
-            .circuit(11)
-            .itemOutputs(GTNLItemList.QuantumComputerMultiThreader.get(1))
-            .fluidInputs(GTNLMaterials.QuantumInfusion.getFluidOrGas(16000))
-            .duration(400)
-            .eut(TierEU.RECIPE_LuV)
-            .addTo(As);
-
-        RecipeBuilder.builder()
-            .itemInputs(
-                GTNLItemList.QuantumComputerUnit.get(1),
-                GTNLItemList.QuantumComputerCore.get(1),
-                GTNLItemList.ShatteredSingularity.get(16),
-                GTNLItemList.QuantumComputerCraftingStorage256M.get(3),
-                ItemList.QuantumStar.get(4),
-                NHItemList.EngravedQuantumChip.get(16),
-                NHItemList.EngineeringProcessorSpatialPulsatingCore.get(8),
-                GTOreDictUnificator.get(OrePrefixes.circuit, Materials.UV, 8))
-            .circuit(11)
-            .itemOutputs(GTNLItemList.QuantumComputerDataEntangler.get(1))
-            .fluidInputs(GTNLMaterials.QuantumInfusion.getFluidOrGas(16000))
-            .duration(400)
-            .eut(TierEU.RECIPE_LuV)
-            .addTo(As);
-
-        RecipeBuilder.builder()
-            .itemInputs(
-                new ItemStack(Items.book, 64),
-                NHItemList.TwilightCrystal.get(64),
-                ModsItemlist.TwilightForestItemMagicBeans.get(64),
-                ModsItemlist.TwilightForestItemGiantSword.get(1),
-                ModsItemlist.TwilightForestItemGiantPick.get(1),
-                ModsItemlist.TwilightForestTileGiantObsidian.get(16))
-            .itemOutputs(GTNLItemList.GiantBook.get(1))
-            .fluidInputs(Materials.FierySteel.getFluid(4000))
-            .duration(300)
-            .eut(TierEU.RECIPE_ZPM)
-            .addTo(As);
-
-        RecipeBuilder.builder()
-            .itemInputs(
-                new ItemStack(Items.book, 64),
-                NHItemList.TwilightCrystal.get(64),
-                ModsItemlist.NagaTrophy.get(1),
-                ModsItemlist.TwilightForestItemNagaScale.get(64),
-                ModsItemlist.TwilightForestSpiralBricks.get(64),
-                GTOreDictUnificator.get(OrePrefixes.block, Materials.Steeleaf, 16))
-            .itemOutputs(GTNLItemList.NagaBook.get(1))
-            .fluidInputs(Materials.FierySteel.getFluid(4000))
-            .duration(300)
-            .eut(TierEU.RECIPE_ZPM)
-            .addTo(As);
-
-        RecipeBuilder.builder()
-            .itemInputs(
-                new ItemStack(Items.book, 64),
-                NHItemList.TwilightCrystal.get(64),
-                ModsItemlist.HydraTrophy.get(1),
-                ModsItemlist.TwilightForestItemHydraChop.get(64),
-                ModsItemlist.TwilightForestItemFieryBlood.get(64),
-                GTOreDictUnificator.get(OrePrefixes.block, Materials.FierySteel, 16))
-            .itemOutputs(GTNLItemList.HydraBook.get(1))
-            .fluidInputs(Materials.FierySteel.getFluid(4000))
-            .duration(300)
-            .eut(TierEU.RECIPE_ZPM)
-            .addTo(As);
-
-        RecipeBuilder.builder()
-            .itemInputs(
-                new ItemStack(Items.book, 64),
-                NHItemList.TwilightCrystal.get(64),
-                ModsItemlist.SnowQueenTrophy.get(1),
-                ModsItemlist.TwilightForestItemTripleBow.get(1),
-                ModsItemlist.TwilightForestAuroraBrick.get(64),
-                ModsItemlist.TwilightForestTileAuroraPillar.get(64))
-            .itemOutputs(GTNLItemList.SnowQueenBook.get(1))
-            .fluidInputs(Materials.FierySteel.getFluid(4000))
-            .duration(300)
-            .eut(TierEU.RECIPE_ZPM)
-            .addTo(As);
-
-        RecipeBuilder.builder()
-            .itemInputs(
-                new ItemStack(Items.book, 64),
-                NHItemList.TwilightCrystal.get(64),
-                ModsItemlist.KnightPhantomTrophy.get(1),
-                ModsItemlist.TwilightForestItemPhantomHelm.get(1),
-                ModsItemlist.TwilightForestItemPhantomPlate.get(1),
-                GTOreDictUnificator.get(OrePrefixes.block, Materials.Knightmetal, 16))
-            .itemOutputs(GTNLItemList.KnightPhantomBook.get(1))
-            .fluidInputs(Materials.FierySteel.getFluid(4000))
-            .duration(300)
-            .eut(TierEU.RECIPE_ZPM)
-            .addTo(As);
-
-        RecipeBuilder.builder()
-            .itemInputs(
-                new ItemStack(Items.book, 64),
-                NHItemList.TwilightCrystal.get(64),
-                ModsItemlist.UrGhastTrophy.get(1),
-                ModsItemlist.TwilightForestTowerDevice.get(64),
-                ModsItemlist.TwilightForestVanishingBlock.get(64),
-                ModsItemlist.TwilightForestItemCarminite.get(32))
-            .itemOutputs(GTNLItemList.UrGhastBook.get(1))
-            .fluidInputs(Materials.FierySteel.getFluid(4000))
-            .duration(300)
-            .eut(TierEU.RECIPE_ZPM)
-            .addTo(As);
-
-        RecipeBuilder.builder()
-            .itemInputs(
-                new ItemStack(Items.book, 64),
-                NHItemList.TwilightCrystal.get(64),
-                ModsItemlist.MinoshroomTrophy.get(1),
-                ModsItemlist.TwilightForestItemMeefStroganoff.get(1),
-                ModsItemlist.TwilightForestItemMeefSteak.get(64),
-                GTOreDictUnificator.get(OrePrefixes.block, Materials.IronWood, 16))
-            .itemOutputs(GTNLItemList.MinotaurBook.get(1))
-            .fluidInputs(Materials.FierySteel.getFluid(4000))
-            .duration(300)
-            .eut(TierEU.RECIPE_ZPM)
-            .addTo(As);
-
-        RecipeBuilder.builder()
-            .itemInputs(
-                new ItemStack(Items.book, 64),
-                NHItemList.TwilightCrystal.get(64),
-                ModsItemlist.AlphaYetiTrophy.get(1),
-                ModsItemlist.TwilightForestItemAlphaFur.get(16),
-                ModsItemlist.TwilightForestItemIceBomb.get(16),
-                ModsItemlist.TwilightForestItemArcticFur.get(64))
-            .itemOutputs(GTNLItemList.AlphaYetiBook.get(1))
-            .fluidInputs(Materials.FierySteel.getFluid(4000))
-            .duration(300)
-            .eut(TierEU.RECIPE_ZPM)
-            .addTo(As);
-
-        RecipeBuilder.builder()
-            .itemInputs(
-                new ItemStack(Items.book, 64),
-                NHItemList.TwilightCrystal.get(64),
-                ModsItemlist.LichTrophy.get(1),
-                ModsItemlist.TwilightForestItemScepterLifeDrain.get(1),
-                ModsItemlist.TwilightForestItemScepterTwilight.get(1),
-                ModsItemlist.TwilightForestItemScepterZombie.get(1))
-            .itemOutputs(GTNLItemList.LichBook.get(1))
-            .fluidInputs(Materials.FierySteel.getFluid(4000))
-            .duration(300)
-            .eut(TierEU.RECIPE_ZPM)
-            .addTo(As);
-
-        RecipeBuilder.builder()
-            .itemInputs(
-                ItemList.Hatch_Dynamo_IV.get(1),
-                ItemList.ReinforcedGlass.get(32),
-                ModsItemlist.IC2ThickNeutronReflector.get(1),
-                BlockList.TungstensteelPlatedReinforcedStone.get(2),
-                NHItemList.ReinforcedTungstenSteelIronPlate.get(2),
-                GTOreDictUnificator.get(OrePrefixes.wireGt08, Materials.Tungsten, 2),
-                GTOreDictUnificator.get(OrePrefixes.plate, Materials.TungstenSteel, 4))
-            .itemOutputs(GTNLItemList.ExplosionDynamoHatch.get(1))
-            .fluidInputs(SubstituteFluidStack.soldering(1296))
-            .duration(15 * SECONDS)
-            .eut(TierEU.RECIPE_IV)
-            .addTo(As);
-
-        RecipeBuilder.builder()
-            .itemInputs(
-                GTNLMaterials.MolybdenumDisilicide.get(OrePrefixes.ring, 32),
-                NHItemList.MicaInsulatorFoil.get(16))
-            .fluidInputs(GTNLMaterials.HSLASteel.getMolten(144))
-            .itemOutputs(GTNLItemList.MolybdenumDisilicideCoil.get(1))
-            .duration(500)
-            .eut(TierEU.RECIPE_EV)
-            .addTo(As);
-
-        RecipeBuilder.builder()
-            .itemInputs(
-                ItemList.Casing_Coil_Superconductor.get(1L),
-                NHItemList.LaserEmitter.get(4),
-                GTOreDictUnificator.get(OrePrefixes.lens, Materials.Diamond, 4),
-                GregtechItemList.DehydratorCoilWireLuV.get(8),
-                ItemList.LuV_Coil.get(4L),
-                ItemList.Emitter_IV.get(2L),
-                GTOreDictUnificator.get(OrePrefixes.plate, Materials.TungstenSteel, 16))
-            .fluidInputs(SubstituteFluidStack.soldering(9216))
-            .itemOutputs(GTNLItemList.LaserBeacon.get(1))
-            .duration(400)
-            .eut(TierEU.RECIPE_LuV)
-            .addTo(As);
-
-        RecipeBuilder.builder()
-            .itemInputs(
-                ItemList.Hull_HV.get(1),
-                NHItemList.AdsorptionFilter.get(1),
-                ItemList.Electric_Pump_HV.get(2),
-                ItemList.Electric_Motor_HV.get(1),
-                GTOreDictUnificator.get(OrePrefixes.circuit, Materials.HV, 2L),
-                GTOreDictUnificator.get(OrePrefixes.wireGt08, Materials.Electrum, 2L))
-            .itemOutputs(GTNLItemList.Desulfurizer.get(1))
-            .duration(200)
-            .eut(TierEU.RECIPE_HV)
-            .addTo(As);
-    }
-
-    @Optional.Method(modid = "cropsnh")
-    public void loadCropNHRecipe() {
-        RecipeBuilder.builder()
-            .itemInputs(
-                CropsNHItemList.CropManager_LV.get(2),
-                new ItemStack(Blocks.dirt, 64),
-                CropsNHItemList.cropSticks.get(64),
-                ModsItemlist.ForestryFarmValve.get(16),
-                ModsItemlist.ForestryFarmGearbox.get(16),
-                ModsItemlist.ForestryFarmControl.get(4))
-            .itemOutputs(GTNLItemList.SteamGreenhouseModule.get(1))
-            .fluidInputs(FluidRegistry.getFluidStack("liquid_sunshine", 16000))
-            .duration(200)
-            .eut(TierEU.RECIPE_LV)
-            .addTo(As);
-
-        RecipeBuilder.builder()
-            .itemInputs(
-                ModsItemlist.ForestryRoyalJelly.get(64),
-                ModsItemlist.ForestryAlveary.get(32),
-                ItemList.Machine_IndustrialApiary.get(32),
-                new Object[] { OrePrefixes.circuit.get(Materials.UHV), 16 })
-            .circuit(17)
-            .itemOutputs(GTNLItemList.LargeBeeBreeder.get(1))
-            .fluidInputs(Materials.SolderingAlloy.getMolten(576000))
-            .duration(36000 * SECONDS)
-            .eut(TierEU.RECIPE_UHV)
-            .addTo(As);
     }
 
     public void loadDeleteRecipe() {

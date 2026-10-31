@@ -4,8 +4,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.EntityFireball;
 
+import com.gtnllib.network.ClientboundPacket;
 import com.gtnllib.utils.Vec3d;
-import com.science.gtnl.common.packet.base.ClientboundPacket;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

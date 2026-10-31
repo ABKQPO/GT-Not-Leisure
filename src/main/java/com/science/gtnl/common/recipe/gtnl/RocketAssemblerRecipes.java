@@ -9,26 +9,26 @@ import java.util.List;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
-import com.dreammaster.item.NHItemList;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
+import com.science.gtnl.compat.newhorizons.NHCoreItem;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 import com.science.gtnl.utils.recipes.metadata.RocketAssemblerInputSlotsMetadata;
 
-import cpw.mods.fml.common.Optional;
 import galaxyspace.core.inventory.InventorySchematic;
 import galaxyspace.core.recipe.RocketRecipes;
 import galaxyspace.core.register.GSBlocks;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import micdoodle8.mods.galacticraft.api.recipe.INasaWorkbenchRecipe;
 import micdoodle8.mods.galacticraft.core.recipe.NasaWorkbenchRecipe;
@@ -44,10 +44,10 @@ public class RocketAssemblerRecipes implements IRecipePool {
         ModsItemlist.GalaxySpaceTier7RocketSchematic.get(1), ModsItemlist.GalaxySpaceTier8RocketSchematic.get(1) };
 
     public static void loadSteamRocketRecipe() {
-        HashMap<Integer, ItemStack> input = new HashMap<>();
+        Int2ObjectMap<ItemStack> input = new Int2ObjectOpenHashMap<>();
         HashMap<Integer, ItemStack> inputChest;
         input.put(1, ModsItemlist.StevesCartsStandardHull.get(1));
-        input.put(2, Mods.NewHorizonsCoreMod.isModLoaded() ? getEngineCore() : new ItemStack(Items.arrow));
+        input.put(2, NHCoreItem.EngineCore.get(1, new ItemStack(Items.arrow)));
         input.put(3, ModsItemlist.IronTanksDiamondTank.get(1));
         input.put(4, ModsItemlist.IronTanksDiamondTank.get(1));
 
@@ -139,10 +139,4 @@ public class RocketAssemblerRecipes implements IRecipePool {
             recipeBuilder.addTo(RAR);
         }
     }
-
-    @Optional.Method(modid = "dreamcraft")
-    public static ItemStack getEngineCore() {
-        return NHItemList.EngineCore.get(1);
-    }
-
 }

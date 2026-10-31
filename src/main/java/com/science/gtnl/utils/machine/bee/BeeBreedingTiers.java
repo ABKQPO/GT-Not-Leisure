@@ -5,7 +5,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.MachineConfig;
 
 import gregtech.api.enums.VoltageIndex;
 
@@ -16,7 +16,7 @@ public final class BeeBreedingTiers {
     private BeeBreedingTiers() {}
 
     public static int getVoltageTier(String species) {
-        String[] entries = MainConfig.machine.bee_breeder.speciesVoltageTiers;
+        String[] entries = MachineConfig.bee_breeder.speciesVoltageTiers;
         TierTable table = cachedTable;
         if (table == null || table.entries != entries) {
             table = new TierTable(entries);

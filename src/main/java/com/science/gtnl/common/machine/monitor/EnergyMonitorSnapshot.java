@@ -26,7 +26,7 @@ public class EnergyMonitorSnapshot implements INBTSerializable<NBTTagCompound> {
         this.rows = rows == null ? Collections.emptyList()
             : rows.stream()
                 .map(EnergyMonitorRowSnapshot::copy)
-                .collect(Collectors.toList());
+                .collect(Collectors.toCollection(ObjectArrayList::new));
         this.wiredStored = wiredStored == null ? BigInteger.ZERO : wiredStored;
         this.wiredCapacity = wiredCapacity == null ? BigInteger.ZERO : wiredCapacity;
         this.wirelessStored = wirelessStored == null ? BigInteger.ZERO : wirelessStored;
@@ -64,7 +64,7 @@ public class EnergyMonitorSnapshot implements INBTSerializable<NBTTagCompound> {
         this.rows = rows == null ? Collections.emptyList()
             : rows.stream()
                 .map(EnergyMonitorRowSnapshot::copy)
-                .collect(Collectors.toList());
+                .collect(Collectors.toCollection(ObjectArrayList::new));
     }
 
     public void setWiredStored(BigInteger wiredStored) {

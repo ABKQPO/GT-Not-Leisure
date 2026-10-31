@@ -19,8 +19,6 @@ public class PortalGunCoreArcs {
 
     public record Arc(double[][] points, float brightness) {}
 
-    private PortalGunCoreArcs() {}
-
     public static double[] angles(long millis) {
         double seconds = millis % LOOP_MILLIS / 1000.0, phase = 2 * Math.PI * (millis % LOOP_MILLIS) / LOOP_MILLIS;
         return new double[] { angle(seconds, phase, SPIN_X, SURGE_X, SURGE_CYCLES_X),

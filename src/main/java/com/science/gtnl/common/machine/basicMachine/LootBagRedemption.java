@@ -1,6 +1,5 @@
 package com.science.gtnl.common.machine.basicMachine;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
@@ -13,21 +12,15 @@ import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
-import com.dreammaster.item.NHItemList;
-import com.google.common.collect.Sets;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
-import com.science.gtnl.common.gui.modularui.GTNLBasicMachineGui;
+import com.science.gtnl.common.gui.modularui.singleblock.GTNLBasicMachineGui;
+import com.science.gtnl.compat.newhorizons.NHCoreItem;
 import com.science.gtnl.mixins.late.enhancedLootBags.AccessorItemLootBag;
 import com.science.gtnl.utils.enums.BlockIcons;
-import com.science.gtnl.utils.item.ItemUtils;
 
-import cpw.mods.fml.common.Optional;
 import eu.usrv.enhancedlootbags.core.LootGroupsHandler;
 import eu.usrv.enhancedlootbags.core.items.ItemLootBag;
 import eu.usrv.enhancedlootbags.core.serializer.LootGroups;
 import gregtech.api.enums.GTValues;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.SoundResource;
 import gregtech.api.enums.TierEU;
 import gregtech.api.interfaces.ITexture;
@@ -37,6 +30,7 @@ import gregtech.api.metatileentity.implementations.MTEBasicMachine;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTUtility;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -44,8 +38,7 @@ public class LootBagRedemption extends MTEBasicMachine {
 
     private static final int BONUS_MUL_PER_LEVEL = 3;
     public static final Random random = new Random();
-    public static final ItemStack coin = Mods.NewHorizonsCoreMod.isModLoaded() ? getCoinTechnician()
-        : new ItemStack(Items.paper);
+    public static final ItemStack coin = NHCoreItem.CoinTechnician.get(1, new ItemStack(Items.paper));
 
     /**
      * Find the target loot drop in the bag.
@@ -68,7 +61,7 @@ public class LootBagRedemption extends MTEBasicMachine {
         int depth = 0;
         LootGroups.LootGroup group = lgHandler.getGroupByID(bagId);
         // visited groups will be added to this set, so we can ensure that we won't drop into a dead loop.
-        HashSet<LootGroups.LootGroup> visited = Sets.newHashSet();
+        ObjectOpenHashSet<LootGroups.LootGroup> visited = new ObjectOpenHashSet<>();
         do {
             if (!visited.add(group)) {
                 // oops, the group has already been searched, there's a circle in the reference chain!
@@ -101,11 +94,6 @@ public class LootBagRedemption extends MTEBasicMachine {
                 return null;
             }
         } while (true);
-    }
-
-    @Optional.Method(modid = "dreamcraft")
-    private static ItemStack getCoinTechnician() {
-        return NHItemList.CoinTechnician.get(1);
     }
 
     public LootBagRedemption(int aID, String aName, String aNameRegional, int aTier) {
@@ -319,16 +307,6 @@ public class LootBagRedemption extends MTEBasicMachine {
     @Override
     public void startProcess() {
         sendLoopStart((byte) 1);
-    }
-
-    @Override
-    @Deprecated
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        // TODO: Remove this mui1 fallback after LootBagRedemption mui2 rollout is complete.
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
-                .setSize(18, 18)
-                .setPos(151, 62));
     }
 
     @Override

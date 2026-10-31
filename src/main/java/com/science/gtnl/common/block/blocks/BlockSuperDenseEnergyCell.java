@@ -3,17 +3,13 @@ package com.science.gtnl.common.block.blocks;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 
-import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.block.blocks.tile.TileEntitySuperDenseEnergyCell;
-import com.science.gtnl.utils.enums.GTNLItemList;
 
 import appeng.api.config.PowerMultiplier;
 import appeng.block.networking.BlockEnergyCell;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -25,12 +21,7 @@ public class BlockSuperDenseEnergyCell extends BlockEnergyCell {
     protected IIcon[] chargeLevelIcons;
 
     public BlockSuperDenseEnergyCell() {
-        setBlockName("gtnl.super_dense_energy_cell");
-        setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
         setTileEntity(TileEntitySuperDenseEnergyCell.class);
-        GameRegistry.registerBlock(this, getItemBlockClass(), "super_dense_energy_cell");
-        GameRegistry.registerTileEntity(TileEntitySuperDenseEnergyCell.class, "super_dense_energy_cell_tile_entity");
-        GTNLItemList.SuperDenseEnergyCell.set(new ItemStack(this));
     }
 
     @Override

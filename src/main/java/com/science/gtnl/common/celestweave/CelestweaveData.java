@@ -62,8 +62,6 @@ public class CelestweaveData {
 
     private record Active(Set<CelestweaveModule> installed, Set<CelestweaveModule> set) {}
 
-    private CelestweaveData() {}
-
     public static NBTTagCompound root(ItemStack stack) {
         return EquipmentTag.child(stack, ROOT);
     }

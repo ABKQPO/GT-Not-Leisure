@@ -1,21 +1,15 @@
 package com.science.gtnl.common.block.blocks;
 
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-
 import java.util.Random;
 
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-import com.science.gtnl.ClientProxy;
-import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.block.blocks.tile.TileEntityWaterCandle;
-import com.science.gtnl.utils.enums.GTNLItemList;
+import com.science.gtnl.loader.RenderLoader;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -25,15 +19,9 @@ public class BlockWaterCandle extends BlockContainer {
         super(Material.iron);
         this.setResistance(99999999f);
         this.setHardness(5f);
-        this.setBlockName("gtnl.water_candle");
         this.setBlockBounds(0.5F - 0.1875F, 0.0F, 0.5F - 0.1875F, 0.5F + 0.1875F, 0.375F, 0.5F + 0.1875F);
-        this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
         this.setLightLevel(0.8f);
-        this.setBlockTextureName(RESOURCE_ROOT_ID + ":" + "water_candle");
         this.setStepSound(soundTypeSnow);
-        GameRegistry.registerBlock(this, "water_candle");
-        GameRegistry.registerTileEntity(TileEntityWaterCandle.class, "water_candle_tile_entity");
-        GTNLItemList.WaterCandle.set(new ItemStack(this, 1));
     }
 
     @Override
@@ -59,7 +47,7 @@ public class BlockWaterCandle extends BlockContainer {
     @SideOnly(Side.CLIENT)
     @Override
     public int getRenderType() {
-        return ClientProxy.WATER_CANDLE_RENDER_ID;
+        return RenderLoader.WATER_CANDLE_RENDER_ID;
     }
 
     @SideOnly(Side.CLIENT)

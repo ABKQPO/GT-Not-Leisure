@@ -30,11 +30,9 @@ public class MixinModelBiped {
         if (!(entity instanceof EntityLivingBase living)) return;
         ItemStack held = living.getHeldItem();
         if (!ElectromagneticRailgun.is(held)) return;
-
         bipedRightArm.rotateAngleX = -1.48F + bipedHead.rotateAngleX;
         bipedRightArm.rotateAngleY = bipedHead.rotateAngleY;
         bipedRightArm.rotateAngleZ = 0.0F;
-
         bipedLeftArm.rotateAngleX = -1.42F + bipedHead.rotateAngleX;
         bipedLeftArm.rotateAngleY = bipedHead.rotateAngleY + 0.42F;
         bipedLeftArm.rotateAngleZ = -0.14F;

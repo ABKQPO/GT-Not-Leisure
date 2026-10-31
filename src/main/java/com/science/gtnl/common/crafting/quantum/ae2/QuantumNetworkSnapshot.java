@@ -34,7 +34,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 
-public final class QuantumNetworkSnapshot implements ICraftingService, IStorageService {
+public class QuantumNetworkSnapshot implements ICraftingService, IStorageService {
 
     private final IStorageGrid storageGrid;
     private final CraftingGridCache craftingGrid;

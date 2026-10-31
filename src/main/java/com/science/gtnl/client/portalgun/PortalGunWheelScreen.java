@@ -16,7 +16,6 @@ import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.drawable.DynamicDrawable;
 import com.cleanroommc.modularui.drawable.ItemDrawable;
 import com.cleanroommc.modularui.utils.Alignment;
-import com.gtnewhorizon.gtnhlib.config.ConfigurationManager;
 import com.gtnewhorizon.gtnhlib.util.data.ItemId;
 import com.gtnllib.gui.layout.Layout;
 import com.gtnllib.gui.wheel.WheelEntry;
@@ -36,7 +35,8 @@ import com.science.gtnl.common.packet.PortalGunFavoritePacket.Change;
 import com.science.gtnl.common.packet.PortalGunSelectPacket;
 import com.science.gtnl.common.portalgun.PortalGunData;
 import com.science.gtnl.common.portalgun.PortalGunDestination;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ClientConfig;
+import com.science.gtnl.config.ConfigRegistry;
 import com.science.gtnl.utils.enums.PortalGunPortalEffect;
 
 import cpw.mods.fml.relauncher.Side;
@@ -100,7 +100,7 @@ public class PortalGunWheelScreen extends WheelScreen {
         int wide = Layout.buttonWidth(style, 2 * width + style.spacingMedium, effects);
         below(
             Layout.button(
-                IKey.dynamic(() -> effectCaption(MainConfig.client.portalGunPortalEffect)),
+                IKey.dynamic(() -> effectCaption(ClientConfig.portalGunPortalEffect)),
                 wide,
                 style,
                 PortalGunWheelScreen::cycleEffect),
@@ -211,8 +211,8 @@ public class PortalGunWheelScreen extends WheelScreen {
     }
 
     private static void cycleEffect() {
-        MainConfig.client.portalGunPortalEffect = MainConfig.client.portalGunPortalEffect.next();
-        ConfigurationManager.save(MainConfig.class);
+        ClientConfig.portalGunPortalEffect = ClientConfig.portalGunPortalEffect.next();
+        ConfigRegistry.save(ClientConfig.class);
     }
 
     private void toggleStayOpen() {

@@ -1,9 +1,9 @@
 package com.science.gtnl.common.crafting.quantum.crafting.graph;
 
+import com.gtnllib.utils.LongMath;
 import com.science.gtnl.common.crafting.quantum.api.stacks.GenericStack;
 import com.science.gtnl.common.crafting.quantum.crafting.CraftingCalculation;
 import com.science.gtnl.common.crafting.quantum.crafting.inv.CraftingSimulationState;
-import com.science.gtnl.common.crafting.quantum.util.LongMath;
 
 import appeng.api.config.Actionable;
 

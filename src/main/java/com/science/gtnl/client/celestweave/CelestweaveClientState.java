@@ -30,8 +30,6 @@ public class CelestweaveClientState {
     long wingT0 = NEVER;
     float[] wingSnap;
 
-    private CelestweaveClientState() {}
-
     public static CelestweaveClientState of(Entity entity) {
         return of(entity.getEntityId());
     }

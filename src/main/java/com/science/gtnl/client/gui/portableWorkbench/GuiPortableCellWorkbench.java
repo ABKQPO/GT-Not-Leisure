@@ -4,8 +4,8 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.common.gui.portableWorkbench.PortableCellWorkbenchSubGui;
 import com.science.gtnl.common.item.cellworkbench.PortableCellWorkbenchHost;
-import com.science.gtnl.common.item.cellworkbench.PortableCellWorkbenchSubGui;
 import com.science.gtnl.common.packet.OpenPortableCellWorkbenchSubGuiPacket;
 
 import appeng.api.config.ActionItems;

@@ -7,8 +7,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.item.BaubleItem;
+import com.science.gtnl.common.item.GTNLCreativeTabs;
 import com.science.gtnl.common.packet.DraconicArmorProjectionSyncPacket;
 import com.science.gtnl.utils.enums.GTNLItemList;
 

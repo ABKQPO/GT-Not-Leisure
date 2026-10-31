@@ -1,11 +1,13 @@
 package com.science.gtnl.mixins.late.tecTech;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.utils.Alignment.MainAxis;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.cleanroommc.modularui.widgets.layout.Flow;
+import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.science.gtnl.api.mixinHelper.IResearchStationMarker;
 import com.science.gtnl.common.gui.modularui.PersistentFilterSlot;
@@ -23,7 +25,6 @@ public abstract class MixinMTEResearchStationGui extends MTEMultiBlockBaseGui<MT
 
     @Override
     protected Flow createRightPanelGapRow(ModularPanel parent, PanelSyncManager syncManager) {
-        IResearchStationMarker marker = (IResearchStationMarker) multiblock;
         return Flow.row()
             .mainAxisAlignment(MainAxis.END)
             .reverseLayout(true)
@@ -31,9 +32,14 @@ public abstract class MixinMTEResearchStationGui extends MTEMultiBlockBaseGui<MT
             .rightRel(0)
             .coverChildrenWidth()
             .fullHeight()
-            .child(
-                new PersistentFilterSlot().slot(new ModularSlot(marker.gtnl$getResearchMarkerInventoryHandler(), 0))
-                    .size(18, 18)
-                    .marginLeft(5));
+            .child(gtnl$markerSlot());
+    }
+
+    @Unique
+    private ItemSlot gtnl$markerSlot() {
+        IResearchStationMarker marker = (IResearchStationMarker) multiblock;
+        return new PersistentFilterSlot().slot(new ModularSlot(marker.gtnl$getResearchMarkerInventoryHandler(), 0))
+            .size(18, 18)
+            .marginLeft(5);
     }
 }

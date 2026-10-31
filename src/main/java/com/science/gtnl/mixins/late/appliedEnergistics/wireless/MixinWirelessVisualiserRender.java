@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.science.gtnl.client.WirelessCardInput;
+import com.science.gtnl.client.wireless.WirelessCardInput;
 
 import appeng.client.render.NetworkVisualiserRender;
 import appeng.items.tools.ToolNetworkVisualiser.VLink;

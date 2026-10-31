@@ -16,7 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 
-import com.science.gtnl.client.GTNLCreativeTabs;
+import com.science.gtnl.common.item.GTNLCreativeTabs;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

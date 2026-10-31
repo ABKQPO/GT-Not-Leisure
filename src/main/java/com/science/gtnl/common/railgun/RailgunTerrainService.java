@@ -16,7 +16,7 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.ForgeHooks;
 
 import com.gtnllib.utils.Vec3d;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ItemConfig;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import it.unimi.dsi.fastutil.objects.ObjectArrayFIFOQueue;
@@ -42,11 +42,9 @@ public class RailgunTerrainService {
     private static final ObjectArrayList<Job> PENDING = new ObjectArrayList<>();
     private static final Map<Block, String> MOD_IDS = new Reference2ObjectOpenHashMap<>();
 
-    private RailgunTerrainService() {}
-
     public static void queueSphere(WorldServer world, Vec3d center, double radius, double hardness,
         EntityPlayerMP player) {
-        if (!MainConfig.item.railgun.enableTerrain || !center.finite()
+        if (!ItemConfig.railgun.enableTerrain || !center.finite()
             || radius <= 0
             || radius > MAX_RADIUS
             || PENDING.size() >= MAX_PENDING_JOBS) return;
@@ -71,7 +69,7 @@ public class RailgunTerrainService {
     }
 
     public static void tick() {
-        var config = MainConfig.item.railgun;
+        var config = ItemConfig.railgun;
         if (!config.enableTerrain) {
             PENDING.clear();
             return;
@@ -119,7 +117,7 @@ public class RailgunTerrainService {
     }
 
     private static Set<String> protectedMods() {
-        String[] source = MainConfig.item.railgun.terrainProtectedMods;
+        String[] source = ItemConfig.railgun.terrainProtectedMods;
         if (source != protectedSource) {
             Set<String> mods = new ObjectOpenHashSet<>();
             if (source != null) for (String mod : source) if (mod != null && !mod.isBlank()) mods.add(

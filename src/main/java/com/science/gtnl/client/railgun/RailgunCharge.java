@@ -17,8 +17,6 @@ public class RailgunCharge {
 
     private static final Int2ObjectOpenHashMap<RailgunChargeState> STATES = new Int2ObjectOpenHashMap<>();
 
-    private RailgunCharge() {}
-
     public static boolean charging(EntityPlayer player) {
         RailgunChargeState state = refresh(player);
         return state != null && state.live();

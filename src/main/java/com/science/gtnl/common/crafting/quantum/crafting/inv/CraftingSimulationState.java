@@ -16,7 +16,6 @@
 package com.science.gtnl.common.crafting.quantum.crafting.inv;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -25,18 +24,19 @@ import java.util.function.ObjLongConsumer;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.common.collect.Iterables;
+import com.gtnllib.utils.LongMath;
 import com.science.gtnl.common.crafting.quantum.api.crafting.IPatternDetails;
 import com.science.gtnl.common.crafting.quantum.api.stacks.AEKey;
 import com.science.gtnl.common.crafting.quantum.api.stacks.GenericStack;
 import com.science.gtnl.common.crafting.quantum.api.stacks.KeyCounter;
 import com.science.gtnl.common.crafting.quantum.crafting.CraftingCalculation;
 import com.science.gtnl.common.crafting.quantum.crafting.CraftingPlan;
-import com.science.gtnl.common.crafting.quantum.util.LongMath;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 
 public abstract class CraftingSimulationState implements ICraftingSimulationState {
@@ -249,7 +249,7 @@ public abstract class CraftingSimulationState implements ICraftingSimulationStat
      * Start before using an isolated state whose result may be memoized.
      */
     public void recordInventoryReads() {
-        this.recordedReads = new HashSet<>();
+        this.recordedReads = new ObjectOpenHashSet<>();
     }
 
     public InventorySnapshot snapshotInventoryReads() {
@@ -406,7 +406,7 @@ public abstract class CraftingSimulationState implements ICraftingSimulationStat
     /**
      * Inventory assumptions, including absent keys and newly appearing fuzzy variants.
      */
-    public static final class InventorySnapshot {
+    public static class InventorySnapshot {
 
         private final KeyCounter amounts;
         private final List<AEKey> probes;

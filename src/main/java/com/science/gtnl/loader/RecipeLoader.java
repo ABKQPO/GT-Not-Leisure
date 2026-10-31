@@ -9,11 +9,13 @@ import net.minecraft.village.MerchantRecipe;
 import net.minecraftforge.fluids.FluidStack;
 
 import com.Nxer.TwistSpaceTechnology.recipe.machineRecipe.expanded.AssemblyLineWithoutResearchRecipePool;
+import com.gtnllib.mod.ModList;
 import com.reavaritia.utils.enums.ReAvaItemList;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.item.items.Stick;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
+import com.science.gtnl.common.recipe.RemoveRecipes;
 import com.science.gtnl.common.recipe.bloodMagic.MeteorsRecipes;
 import com.science.gtnl.common.recipe.botania.BotaniaManaInfusionRecipes;
 import com.science.gtnl.common.recipe.gregtech.AlloyBlastSmelterRecipes;
@@ -68,7 +70,6 @@ import com.science.gtnl.common.recipe.gtnl.AlchemicChemistrySetRecipes;
 import com.science.gtnl.common.recipe.gtnl.BloodDemonInjectionRecipes;
 import com.science.gtnl.common.recipe.gtnl.CactusWonderFakeRecipes;
 import com.science.gtnl.common.recipe.gtnl.CellRegulatorRecipes;
-import com.science.gtnl.common.recipe.gtnl.CircuitNanitesDataRecipes;
 import com.science.gtnl.common.recipe.gtnl.CraftingTableRecipes;
 import com.science.gtnl.common.recipe.gtnl.CrucibleCraftingRecipes;
 import com.science.gtnl.common.recipe.gtnl.DecayHastenerRecipes;
@@ -99,6 +100,7 @@ import com.science.gtnl.common.recipe.gtnl.PlatinumBasedTreatmentRecipes;
 import com.science.gtnl.common.recipe.gtnl.PortalToAlfheimRecipes;
 import com.science.gtnl.common.recipe.gtnl.PrecisionLaserEngraver;
 import com.science.gtnl.common.recipe.gtnl.PrimitiveBrickKilnRecipes;
+import com.science.gtnl.common.recipe.gtnl.ProcessingArrayRecipeLoader;
 import com.science.gtnl.common.recipe.gtnl.RareEarthCentrifugalRecipes;
 import com.science.gtnl.common.recipe.gtnl.ReFusionReactorRecipes;
 import com.science.gtnl.common.recipe.gtnl.RealArtificialStarRecipes;
@@ -123,14 +125,11 @@ import com.science.gtnl.common.recipe.gtnl.SteamWoodcutterRecipes;
 import com.science.gtnl.common.recipe.gtnl.TheTwilightForestRecipes;
 import com.science.gtnl.common.recipe.gtnl.TreeDiagramRecipes;
 import com.science.gtnl.common.recipe.gtnl.WoodDistillationRecipes;
-import com.science.gtnl.config.MainConfig;
-import com.science.gtnl.utils.enums.ModList;
+import com.science.gtnl.common.recipe.gtnl.oreProcessing.CheatOreProcessingRecipes;
+import com.science.gtnl.config.ItemConfig;
+import com.science.gtnl.config.RecipeConfig;
 import com.science.gtnl.utils.enums.ModsItemlist;
-import com.science.gtnl.utils.machine.ProcessingArrayRecipeLoader;
-import com.science.gtnl.utils.machine.oreProcessing.CheatOreProcessingRecipes;
 import com.science.gtnl.utils.recipes.RecipeUtil;
-import com.science.gtnl.utils.recipes.RemoveRecipes;
-import com.science.gtnl.utils.recipes.data.CircuitNanitesRecipeData;
 
 import bartworks.API.recipe.BartWorksRecipeMaps;
 import cpw.mods.fml.common.Optional;
@@ -148,12 +147,22 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import tectech.thing.CustomItemList;
 
-public class RecipeLoader {
+public class RecipeLoader implements IContentLoader {
 
-    private static Long circuitNanitesSeed;
+    @Override
+    public String name() {
+        return "recipes";
+    }
+
+    @Override
+    public void loadComplete() {
+        if (Mods.NewHorizonsCoreMod.isModLoaded()) ScriptLoader.registry();
+        if (ItemConfig.stick.enableStickItem) loadVillageTrade();
+        LoadCompleteRecipeScheduler.schedule();
+    }
 
     public static void loadCompleteInit() {
-        if (MainConfig.recipe.enableDeleteRecipe) {
+        if (RecipeConfig.enableDeleteRecipe) {
             RemoveRecipes.removeRecipes();
         }
 
@@ -163,7 +172,7 @@ public class RecipeLoader {
         CrackRecipeAdder.reAddBlastRecipe(GTNLMaterials.HSLASteel, 1000, 480, 1711, true);
         CrackRecipeAdder.reAddBlastRecipe(GTNLMaterials.Germaniumtungstennitride, 800, 30720, 8200, true);
 
-        if (MainConfig.recipe.enableChamberRecipesBuff) {
+        if (RecipeConfig.enableChamberRecipesBuff) {
             loadBuffTargetChamberRecipe();
         }
 
@@ -260,21 +269,6 @@ public class RecipeLoader {
                 GTNLRecipeMaps.PlasmaCentrifugeRecipes.add(copiedRecipe);
             }
         }
-    }
-
-    public static void loadCircuitNanitesData(long worldSeed) {
-        if (Long.valueOf(worldSeed)
-            .equals(circuitNanitesSeed)) return;
-        clearCircuitNanitesData();
-        new CircuitNanitesDataRecipes(worldSeed).loadRecipes();
-        circuitNanitesSeed = worldSeed;
-    }
-
-    public static void clearCircuitNanitesData() {
-        CircuitNanitesRecipeData.recipeDataMap.clear();
-        GTNLRecipeMaps.CircuitNanitesDataRecipes.getBackend()
-            .clearRecipes();
-        circuitNanitesSeed = null;
     }
 
     public static void loadBuffTargetChamberRecipe() {

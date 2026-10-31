@@ -31,8 +31,8 @@ import com.cleanroommc.modularui.screen.ModularScreen;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.gtnewhorizon.gtnhlib.util.ItemUtil;
-import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.gui.CircuitIntegratedPlusGui;
+import com.science.gtnl.common.item.GTNLCreativeTabs;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import bartworks.common.items.ItemCircuitProgrammer;

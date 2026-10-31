@@ -18,7 +18,7 @@ import com.science.gtnl.common.portalgun.PortalGunDestination;
 import com.science.gtnl.common.portalgun.PortalGunGeometry;
 import com.science.gtnl.common.portalgun.PortalGunPairs;
 import com.science.gtnl.common.portalgun.PortalGunPlacement;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ItemConfig;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -43,7 +43,7 @@ public class EntityPortalGunOrb extends EntityThrowable {
 
     @Override
     protected float getGravityVelocity() {
-        return (float) MainConfig.item.portal_gun.orbGravity;
+        return (float) ItemConfig.portal_gun.orbGravity;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class EntityPortalGunOrb extends EntityThrowable {
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (!worldObj.isRemote && !isDead && ticksExisted > MainConfig.item.portal_gun.airOpenTicks) openInAir();
+        if (!worldObj.isRemote && !isDead && ticksExisted > ItemConfig.portal_gun.airOpenTicks) openInAir();
     }
 
     @Override
@@ -142,7 +142,7 @@ public class EntityPortalGunOrb extends EntityThrowable {
             worldObj,
             here,
             PortalGunPlacement.standing(destination),
-            MainConfig.item.portal_gun.portalLifetime,
+            ItemConfig.portal_gun.portalLifetime,
             gunId,
             () -> tellFailed(shooter));
     }

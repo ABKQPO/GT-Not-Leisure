@@ -6,16 +6,14 @@ import com.gtnewhorizon.gtnhlib.config.Config.DefaultBoolean;
 import com.gtnewhorizon.gtnhlib.config.Config.DefaultFloat;
 import com.gtnewhorizon.gtnhlib.config.Config.LangKey;
 import com.gtnewhorizon.gtnhlib.config.Config.RangeFloat;
-import com.gtnewhorizon.gtnhlib.config.ConfigException;
-import com.gtnewhorizon.gtnhlib.config.ConfigurationManager;
 import com.science.gtnl.ScienceNotLeisure;
 
 @Config(
     modid = ScienceNotLeisure.MODID,
     category = "sound",
-    configSubDirectory = "GTNotLeisure",
-    filename = "GTNotLeisureSounds")
-@Config.LangKeyPattern(pattern = "gtnl.gui.config.%cat.%field", fullyQualified = true)
+    configSubDirectory = ConfigRegistry.DIRECTORY,
+    filename = ConfigRegistry.CLIENT_FILE)
+@Config.LangKeyPattern(pattern = ConfigRegistry.LANG_PATTERN, fullyQualified = true)
 @Comment("Client sounds of Celestweave equipment; only changes what this client hears")
 public class EquipmentSoundConfig {
 
@@ -25,20 +23,8 @@ public class EquipmentSoundConfig {
     @LangKey("gtnl.gui.config.sound.railgun")
     public static final Railgun railgun = new Railgun();
 
-    @Config.Ignore
-    private static boolean registered;
-
-    public static void register() {
-        try {
-            ConfigurationManager.registerConfig(EquipmentSoundConfig.class);
-            registered = true;
-        } catch (ConfigException e) {
-            ScienceNotLeisure.LOG.error("Failed to load the equipment sound settings", e);
-        }
-    }
-
     public static void save() {
-        if (registered) ConfigurationManager.save(EquipmentSoundConfig.class);
+        ConfigRegistry.save(EquipmentSoundConfig.class);
     }
 
     @Comment("Celestweave armor")

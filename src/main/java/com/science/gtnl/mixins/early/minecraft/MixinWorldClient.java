@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.science.gtnl.common.item.items.TimeStopPocketWatch;
+import com.science.gtnl.client.tickrate.TimeStopClientHooks;
 
 @Mixin(value = WorldClient.class, remap = true)
 public class MixinWorldClient {
@@ -23,18 +23,7 @@ public class MixinWorldClient {
     @SuppressWarnings("DataFlowIssue")
     @Inject(method = "tick", at = @At("HEAD"), cancellable = true)
     public void mixin$tick(CallbackInfo ci) {
-        boolean isStop = TimeStopPocketWatch.isTimeStopped();
-        if (isStop) {
+        if (TimeStopClientHooks.tickStoppedWorld((WorldClient) (Object) this, sendQueue, clientChunkProvider))
             ci.cancel();
-        } else return;
-
-        ((WorldClient) ((Object) this)).theProfiler.startSection("reEntryProcessing");
-        ((WorldClient) ((Object) this)).theProfiler.endStartSection("connection");
-        sendQueue.onNetworkTick();
-        ((WorldClient) ((Object) this)).theProfiler.endStartSection("chunkCache");
-        clientChunkProvider.unloadQueuedChunks();
-        ((WorldClient) ((Object) this)).theProfiler.endStartSection("blocks");
-        ((WorldClient) ((Object) this)).func_147456_g();
-        ((WorldClient) ((Object) this)).theProfiler.endSection();
     }
 }

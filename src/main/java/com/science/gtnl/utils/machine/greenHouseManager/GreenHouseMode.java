@@ -1,32 +1,18 @@
 package com.science.gtnl.utils.machine.greenHouseManager;
 
-import java.lang.ref.WeakReference;
 import java.util.List;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntity;
 
-import com.gtnewhorizons.modularui.api.screen.ITileWithModularUI;
-import com.gtnewhorizons.modularui.api.screen.ModularUIContext;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
-import com.gtnewhorizons.modularui.common.builder.UIBuilder;
-import com.gtnewhorizons.modularui.common.builder.UIInfo;
-import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
-import com.gtnewhorizons.modularui.common.internal.wrapper.ModularUIContainer;
 import com.science.gtnl.api.IGreenHouse;
+import com.science.gtnl.common.greenhouse.GreenHouseBucket;
+import com.science.gtnl.common.greenhouse.IGreenHouseBucketFactory;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.GTLoggers;
 import gregtech.api.enums.VoltageIndex;
-import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
-import gregtech.api.metatileentity.BaseMetaTileEntity;
-import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -201,76 +187,4 @@ public abstract class GreenHouseMode {
         }
     }
 
-    @Deprecated
-    public static class MUIContainer_Greenhouse extends ModularUIContainer {
-        // TODO: Remove this MUI1 greenhouse container after all startup paths open MUI2 panels directly.
-
-        public final WeakReference<? extends IGreenHouse> parent;
-
-        public MUIContainer_Greenhouse(ModularUIContext context, ModularWindow mainWindow, IGreenHouse mte) {
-            super(context, mainWindow);
-            parent = new WeakReference<>(mte);
-        }
-
-        @Override
-        public ItemStack transferStackInSlot(EntityPlayer aPlayer, int aSlotIndex) {
-            if (!(aPlayer instanceof EntityPlayerMP)) return super.transferStackInSlot(aPlayer, aSlotIndex);
-            final Slot s = getSlot(aSlotIndex);
-            if (s == null) return super.transferStackInSlot(aPlayer, aSlotIndex);
-            if (aSlotIndex >= 36) return super.transferStackInSlot(aPlayer, aSlotIndex);
-            final ItemStack aStack = s.getStack();
-            if (aStack == null) return super.transferStackInSlot(aPlayer, aSlotIndex);
-            IGreenHouse mte = parent.get();
-            if (mte == null) return super.transferStackInSlot(aPlayer, aSlotIndex);
-            if (mte.getMaxProgressTime() > 0) {
-                GTUtility.sendChatTrans(aPlayer, "gtnl.machine.eden_garden.message.running_input_forbidden");
-                return super.transferStackInSlot(aPlayer, aSlotIndex);
-            }
-
-            mte.tryAddCropStack(aStack, false);
-            if (aStack.stackSize <= 0) s.putStack(null);
-            else s.putStack(aStack);
-            detectAndSendChanges();
-            return null;
-        }
-    }
-
-    @FunctionalInterface
-    public interface ContainerConstructor<T extends IGreenHouse> {
-
-        ModularUIContainer of(ModularUIContext context, ModularWindow mainWindow, T multiBlock);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Deprecated
-    public static <T extends IGreenHouse> UIInfo<?, ?> createGreenhouseUI(
-        ContainerConstructor<T> containerConstructor) {
-        // TODO: Remove this MUI1 greenhouse UI factory after all greenhouse machines expose only MUI2 GUI factories.
-        return UIBuilder.of()
-            .container((player, world, x, y, z) -> {
-                TileEntity te = world.getTileEntity(x, y, z);
-                if (te instanceof BaseMetaTileEntity baseMetaTileEntity) {
-                    IMetaTileEntity mte = baseMetaTileEntity.getMetaTileEntity();
-                    if (!(mte instanceof IGreenHouse)) return null;
-                    final UIBuildContext buildContext = new UIBuildContext(player);
-                    final ModularWindow window = ((ITileWithModularUI) te).createWindow(buildContext);
-                    return containerConstructor.of(new ModularUIContext(buildContext, te::markDirty), window, (T) mte);
-                }
-                return null;
-            })
-            .gui((player, world, x, y, z) -> {
-                if (!world.isRemote) return null;
-                TileEntity te = world.getTileEntity(x, y, z);
-                if (te instanceof BaseMetaTileEntity baseMetaTileEntity) {
-                    IMetaTileEntity mte = baseMetaTileEntity.getMetaTileEntity();
-                    if (!(mte instanceof IGreenHouse)) return null;
-                    final UIBuildContext buildContext = new UIBuildContext(player);
-                    final ModularWindow window = ((ITileWithModularUI) te).createWindow(buildContext);
-                    return new ModularGui(
-                        containerConstructor.of(new ModularUIContext(buildContext, null), window, (T) mte));
-                }
-                return null;
-            })
-            .build();
-    }
 }

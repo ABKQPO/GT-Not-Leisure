@@ -31,7 +31,7 @@ import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
  * calculation makes no tree, and the standard one keeps what a pattern takes of its own output out of it. The ring is
  * made of the nodes a crafting tree would have for one round of the cycle, each craft done once.
  */
-public final class CraftingCycleRings {
+public class CraftingCycleRings {
 
     private static final int MAX_STEPS = 50_000;
 
@@ -90,7 +90,7 @@ public final class CraftingCycleRings {
     }
 
     // The longest way around the cycle from an item back to it, through each pattern at most once
-    private static final class Search {
+    private static class Search {
 
         private final IAEStack<?> start;
         private final List<ICraftingPatternDetails> patterns;

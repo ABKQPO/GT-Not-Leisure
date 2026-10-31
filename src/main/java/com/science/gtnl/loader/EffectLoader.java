@@ -12,7 +12,7 @@ import com.science.gtnl.common.effect.effects.ShimmeringEffect;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class EffectLoader {
+public class EffectLoader implements IContentLoader {
 
     public static Potion awe;
     public static Potion perfect_physique;
@@ -40,4 +40,13 @@ public class EffectLoader {
         throw new RuntimeException("No free potion ID found.");
     }
 
+    @Override
+    public String name() {
+        return "effects";
+    }
+
+    @Override
+    public void preInit() {
+        registry();
+    }
 }

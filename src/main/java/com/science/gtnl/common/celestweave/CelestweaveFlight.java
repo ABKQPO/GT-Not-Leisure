@@ -13,7 +13,7 @@ import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.equipment.EquipmentNet;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.common.packet.CelestweaveFlightPacket;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ItemConfig;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
@@ -26,7 +26,7 @@ public class CelestweaveFlight implements ICelestweaveBehavior {
     CelestweaveFlight() {}
 
     private static double cost() {
-        return MainConfig.item.celestweave.flightEuPerTick;
+        return ItemConfig.celestweave.flightEuPerTick;
     }
 
     public static boolean canFly(EntityPlayer player, ItemStack legs) {

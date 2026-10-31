@@ -4,7 +4,7 @@ import static gregtech.api.util.GTRecipeConstants.PRECISE_ASSEMBLER_CASING_TIER;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.RecipeConfig;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
@@ -31,7 +31,7 @@ public class PreciseAssemblerRecipes implements IRecipePool {
     @Override
     public void loadRecipes() {
 
-        if (MainConfig.recipe.enableDeleteRecipe) {
+        if (RecipeConfig.enableDeleteRecipe) {
             RecipeBuilder.builder()
                 .setNEIDesc("Remove Change by GTNotLeisure")
                 .itemInputs(

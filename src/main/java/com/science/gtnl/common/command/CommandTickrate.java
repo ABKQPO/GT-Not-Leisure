@@ -19,7 +19,7 @@ import net.minecraft.world.GameRules;
 
 import com.science.gtnl.api.TickrateAPI;
 import com.science.gtnl.common.item.items.TimeStopPocketWatch;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.TickrateConfig;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -64,7 +64,7 @@ public class CommandTickrate extends CommandBase {
         List<String> tab = new ObjectArrayList<>();
         if (args.length == 1) {
             tab.addAll(suggestedTickrateValues);
-            float defaultTickrate = MainConfig.tickrate.defaultTickrate;
+            float defaultTickrate = TickrateConfig.defaultTickrate;
             String defTickrate = defaultTickrate + "";
             if (defaultTickrate == (int) defaultTickrate) defTickrate = (int) defaultTickrate + "";
             if (!tab.contains(defTickrate)) {
@@ -75,7 +75,7 @@ public class CommandTickrate extends CommandBase {
         } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("setmap")) {
                 tab.addAll(suggestedTickrateValues);
-                float defaultTickrate = MainConfig.tickrate.defaultTickrate;
+                float defaultTickrate = TickrateConfig.defaultTickrate;
                 String defTickrate = defaultTickrate + "";
                 if (defaultTickrate == (int) defaultTickrate) defTickrate = (int) defaultTickrate + "";
                 if (!tab.contains(defTickrate)) {

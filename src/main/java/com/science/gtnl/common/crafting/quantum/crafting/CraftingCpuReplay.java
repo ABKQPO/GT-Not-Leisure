@@ -7,12 +7,12 @@ import net.minecraft.world.World;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.gtnllib.utils.LongMath;
 import com.science.gtnl.common.crafting.quantum.api.crafting.IPatternDetails;
 import com.science.gtnl.common.crafting.quantum.api.stacks.AEKey;
 import com.science.gtnl.common.crafting.quantum.api.stacks.AEKey2LongMap;
 import com.science.gtnl.common.crafting.quantum.api.stacks.GenericStack;
 import com.science.gtnl.common.crafting.quantum.api.stacks.KeyCounter;
-import com.science.gtnl.common.crafting.quantum.util.LongMath;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -25,7 +25,7 @@ import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
  * and the keys of their fuzzy groups the input accepts, in order until it has enough. What a crafting pattern leaves
  * behind is the container its input gives, see {@link IPatternDetails.IInput#getRemainingKey}.
  */
-final class CraftingCpuReplay {
+public class CraftingCpuReplay {
 
     private static final int MAX_PASSES = 1_000_000;
 
@@ -441,7 +441,7 @@ final class CraftingCpuReplay {
      * same as long as that stack lasts; otherwise an input that moved on to a later stack may come back to an earlier
      * one as soon as a craft makes it.
      */
-    private static final class Taken {
+    private static class Taken {
 
         final AEKey2LongMap keys;
         final AEKey2LongMap containers;
@@ -453,7 +453,7 @@ final class CraftingCpuReplay {
         }
     }
 
-    private static final class Task {
+    private static class Task {
 
         final IPatternDetails pattern;
         final IPatternDetails.IInput[] inputs;

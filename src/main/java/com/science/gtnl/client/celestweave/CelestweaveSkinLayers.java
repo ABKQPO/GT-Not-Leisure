@@ -18,8 +18,6 @@ public class CelestweaveSkinLayers {
 
     private static final List<ModelRenderer> HIDDEN = new ObjectArrayList<>();
 
-    private CelestweaveSkinLayers() {}
-
     public static void hide(ModelBiped model, EntityLivingBase entity) {
         restore();
         if (CelestweaveClientEvents.concealed(entity)) return;

@@ -3,6 +3,7 @@ package com.science.gtnl.utils.enums;
 import java.util.Collections;
 import java.util.List;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockBeacon;
 import net.minecraft.block.BlockSponge;
 import net.minecraft.init.Blocks;
@@ -15,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import com.gtnewhorizon.structurelib.StructureLibAPI;
 import com.gtnewhorizon.structurelib.structure.AutoPlaceEnvironment;
 import com.gtnewhorizon.structurelib.structure.IStructureElement;
-import com.science.gtnl.utils.item.ItemUtils;
+import com.gtnllib.utils.GameUtils;
 
 import gregtech.api.enums.Mods;
 
@@ -72,9 +73,9 @@ public enum CommonElements {
         public boolean check(Object o, World world, int x, int y, int z) {
             boolean isSponge = world.getBlock(x, y, z) instanceof BlockSponge;
 
-            if (!isSponge && Mods.EtFuturumRequiem.isModLoaded()) {
-                isSponge = world.getBlock(x, y, z)
-                    == ItemUtils.getBlockFromItemStack(ModsItemlist.EtFuturumRequiemSponge.get(1));
+            if (!isSponge) {
+                Block etFuturumSponge = GameUtils.blockOr(Mods.EtFuturumRequiem.ID, "sponge", null);
+                isSponge = etFuturumSponge != null && world.getBlock(x, y, z) == etFuturumSponge;
             }
 
             return isSponge;

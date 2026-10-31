@@ -5,7 +5,6 @@ import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -16,7 +15,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -38,25 +36,14 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
-import com.gtnewhorizons.modularui.api.drawable.IDrawable;
-import com.gtnewhorizons.modularui.api.drawable.UITexture;
-import com.gtnewhorizons.modularui.api.math.Alignment;
-import com.gtnewhorizons.modularui.api.math.Color;
-import com.gtnewhorizons.modularui.api.math.Size;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
-import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
-import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
-import com.gtnewhorizons.modularui.common.widget.TextWidget;
-import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
-import com.science.gtnl.common.gui.modularui.GrandAssemblyLineGui;
+import com.gtnllib.utils.MathUtils;
+import com.science.gtnl.common.gui.modularui.multiblock.GrandAssemblyLineGui;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
+import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
-import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.BlockIcons;
-import com.science.gtnl.utils.recipes.GrandAssemblyLineOverclockTool;
-import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
+import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
 
 import gregtech.api.casing.Casings;
@@ -64,13 +51,11 @@ import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
 import gregtech.api.enums.VoidingMode;
 import gregtech.api.enums.VoltageIndex;
-import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IHatchElement;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
-import gregtech.api.metatileentity.BaseTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.metatileentity.implementations.MTEHatchDataAccess;
 import gregtech.api.recipe.RecipeMap;
@@ -85,7 +70,6 @@ import gregtech.api.util.GTRecipeBuilder;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.MultiblockTooltipBuilder;
-import gregtech.api.util.ParallelHelper;
 import gregtech.api.util.VoidProtectionHelper;
 import gregtech.api.util.tooltip.TooltipHelper;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
@@ -107,7 +91,6 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
 
     public static Object2IntMap<ItemId> specialRecipe = new Object2IntOpenHashMap<>();
 
-    public static int PARALLEL_WINDOW_ID = 10;
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String GAL_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/grand_assembly_line";
     private static final String[][] shape = StructureUtils.readStructureFromFile(GAL_STRUCTURE_FILE_PATH);
@@ -117,7 +100,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
     private static final int UNLIMITED_ENERGY_HATCH_TIER = VoltageIndex.UHV, WIRELESS_TIER = VoltageIndex.UMV;
     private static final String PARALLEL_CONTROLLER_KEY = "gtnl.machine.grand_assembly_line.parallel_controller.";
     public List<MTEHatchDataAccess> mDataAccessHatches = new ObjectArrayList<>();
-    public String costingEUText = Utils.ZERO_STRING;
+    public String costingEUText = MathUtils.ZERO_STRING;
     public UUID ownerUUID;
     public boolean wirelessMode = false;
     public int minRecipeTime = 50;
@@ -289,7 +272,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         long energyEU;
 
         if (wirelessMode) {
-            energyEU = Utils.toLongSafe(WirelessNetworkManager.getUserEU(ownerUUID));
+            energyEU = MathUtils.toLongSafe(WirelessNetworkManager.getUserEU(ownerUUID));
         } else {
             energyEU = getMaxInputEu();
         }
@@ -443,9 +426,9 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
 
                 // 溢出保护检查
                 if (protectsExcessItem()) {
-                    ArrayList<ItemStack> pred = new ArrayList<>();
+                    List<ItemStack> pred = new ObjectArrayList<>();
                     ItemStack out = recipe.mOutput.copy();
-                    ParallelHelper.addItemsLong(pred, out, (long) out.stackSize * finalParallel);
+                    GTNLParallelHelper.addItemsLong(pred, out, (long) out.stackSize * finalParallel);
                     VoidProtectionHelper vph = new VoidProtectionHelper();
                     vph.setMachine(this)
                         .setItemOutputs(pred.toArray(new ItemStack[0]))
@@ -555,13 +538,13 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         }
 
         // 最终结算
-        ArrayList<ItemStack> totalOutputs = new ArrayList<>();
+        List<ItemStack> totalOutputs = new ObjectArrayList<>();
 
         GrandAssemblyLineOverclockTool.EnergyTotals totals = new GrandAssemblyLineOverclockTool.EnergyTotals();
 
         for (RecipeTask task : tasks) {
             ItemStack out = task.recipe.mOutput.copy();
-            ParallelHelper.addItemsLong(totalOutputs, out, (long) out.stackSize * task.parallel);
+            GTNLParallelHelper.addItemsLong(totalOutputs, out, (long) out.stackSize * task.parallel);
 
             totals.add(task.adjustedPower, task.adjustedTime, task.parallel);
         }
@@ -571,7 +554,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
                 ownerUUID,
                 totals.energy()
                     .negate())) {
-                return CheckRecipeResultRegistry.insufficientPower(Utils.toLongSafe(totals.energy()));
+                return CheckRecipeResultRegistry.insufficientPower(MathUtils.toLongSafe(totals.energy()));
             }
 
             costingEUText = NumberFormatUtil.formatNumber(totals.energy());
@@ -992,69 +975,6 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
     @Override
     protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
         return new GrandAssemblyLineGui(this);
-    }
-
-    @Override
-    @Deprecated
-    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
-        // TODO: Remove this mui1 fallback after GrandAssemblyLine mui2 parity is verified.
-        buildContext.addSyncedWindow(PARALLEL_WINDOW_ID, this::createParallelWindow);
-        builder.widget(new ButtonWidget().setOnClick((clickData, widget) -> {
-            if (!widget.isClient()) {
-                widget.getContext()
-                    .openSyncedWindow(PARALLEL_WINDOW_ID);
-            }
-        })
-            .setPlayClickSound(true)
-            .setBackground(() -> {
-                List<UITexture> ret = new ObjectArrayList<>();
-                ret.add(GTUITextures.BUTTON_STANDARD);
-                ret.add(GTUITextures.OVERLAY_BUTTON_BATCH_MODE_ON);
-                return ret.toArray(new IDrawable[0]);
-            })
-            .addTooltip(StatCollector.translateToLocal("gtnl.machine.grand_assembly_line.info.minimum_recipe_time"))
-            .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
-            .setPos(174, 112)
-            .setSize(16, 16));
-        super.addUIWidgets(builder, buildContext);
-    }
-
-    @Deprecated
-    public ModularWindow createParallelWindow(final EntityPlayer player) {
-        // TODO: Remove this mui1 fallback after GrandAssemblyLine mui2 parity is verified.
-        final int WIDTH = 158;
-        final int HEIGHT = 52;
-        final int PARENT_WIDTH = getGUIWidth();
-        final int PARENT_HEIGHT = getGUIHeight();
-        ModularWindow.Builder builder = ModularWindow.builder(WIDTH, HEIGHT);
-        builder.setBackground(GTUITextures.BACKGROUND_SINGLEBLOCK_DEFAULT);
-        builder.setGuiTint(getGUIColorization());
-        builder.setDraggable(true);
-        builder.setPos(
-            (size, window) -> Alignment.Center.getAlignedPos(size, new Size(PARENT_WIDTH, PARENT_HEIGHT))
-                .add(
-                    Alignment.BottomRight.getAlignedPos(new Size(PARENT_WIDTH, PARENT_HEIGHT), new Size(WIDTH, HEIGHT))
-                        .add(WIDTH - 3, 0)
-                        .subtract(0, 10)));
-        builder.widget(
-            TextWidget.localised("gtnl.machine.grand_assembly_line.info.minimum_recipe_time")
-                .setPos(3, 4)
-                .setSize(150, 20))
-            .widget(
-                new NumericWidget().setSetter(val -> minRecipeTime = (int) val)
-                    .setGetter(() -> minRecipeTime)
-                    .setBounds(50, Integer.MAX_VALUE)
-                    .setDefaultValue(1)
-                    .setScrollValues(1, 4, 64)
-                    .setTextAlignment(Alignment.Center)
-                    .setTextColor(Color.WHITE.normal)
-                    .setSize(150, 18)
-                    .setPos(4, 25)
-                    .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD)
-                    .attachSyncer(
-                        new FakeSyncWidget.IntegerSyncer(() -> minRecipeTime, (val) -> minRecipeTime = val),
-                        builder));
-        return builder.build();
     }
 
     @Override

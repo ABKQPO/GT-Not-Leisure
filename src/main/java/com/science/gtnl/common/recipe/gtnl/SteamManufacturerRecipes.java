@@ -8,15 +8,14 @@ import net.minecraft.item.ItemStack;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
+import com.science.gtnl.compat.storagedrawers.StorageDrawersRecipes;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
-import gregtech.api.enums.TierEU;
 import gregtech.api.objects.OreDictItemStack;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
@@ -273,26 +272,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .addTo(SMFR)
             .addTo(AR);
 
-        if (Mods.StorageDrawers.isModLoaded()) {
-            // Drawer template
-            RecipeBuilder.builder()
-                .itemInputs(new ItemStack(Blocks.piston, 1), GTOreDictUnificator.get("drawerBasic", 1))
-                .itemOutputs(ModsItemlist.StorageDrawersUpgradeTemplate.get(3))
-                .duration(10 * SECONDS)
-                .eut(TierEU.RECIPE_LV)
-                .addTo(SMFR);
-
-            // Drawer controller
-            RecipeBuilder.builder()
-                .itemInputs(
-                    ModsItemlist.StorageDrawersUpgradeTemplate.get(1),
-                    GTOreDictUnificator.get("drawerBasic", 1),
-                    GTNLMaterials.Breel.get(OrePrefixes.gearGt, 2))
-                .itemOutputs(ModsItemlist.StorageDrawersController.get(1))
-                .duration(5 * SECONDS)
-                .eut(TierEU.RECIPE_LV)
-                .addTo(SMFR);
-        }
+        StorageDrawersRecipes.steamManufacturer();
 
         // Spotless:off
 

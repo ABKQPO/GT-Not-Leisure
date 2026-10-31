@@ -7,8 +7,6 @@ import com.science.gtnl.api.IBeamFormerRenderer;
 
 public class NativeBeamFormerRenderer implements IBeamFormerRenderer {
 
-    private NativeBeamFormerRenderer() {}
-
     public static IBeamFormerRenderer create() {
         return new NativeBeamFormerRenderer();
     }

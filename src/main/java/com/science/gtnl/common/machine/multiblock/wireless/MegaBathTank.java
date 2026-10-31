@@ -20,8 +20,8 @@ import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.GTNLMultiBlockBaseGui;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
+import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.StructureUtils;
-import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -30,7 +30,6 @@ import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.SoundResource;
 import gregtech.api.enums.Textures;
-import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -199,15 +198,6 @@ public class MegaBathTank extends WirelessEnergyMultiMachineBase<MegaBathTank> {
             GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_WASHPLANT,
             GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_SIMPLEWASHER,
             GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_CHEMBATH);
-    }
-
-    @Override
-    @Deprecated
-    public void setMachineModeIcons() {
-        // TODO: Remove this mui1 fallback after this GUI no longer supports mui1 startup paths.
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_WASHPLANT);
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_SIMPLEWASHER);
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_CHEMBATH);
     }
 
     @Override

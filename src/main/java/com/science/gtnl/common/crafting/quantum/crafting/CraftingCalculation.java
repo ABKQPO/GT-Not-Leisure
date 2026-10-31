@@ -32,6 +32,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.common.base.Stopwatch;
+import com.gtnllib.utils.LongMath;
 import com.science.gtnl.common.crafting.quantum.api.crafting.IPatternDetails;
 import com.science.gtnl.common.crafting.quantum.api.networking.crafting.ICraftingService;
 import com.science.gtnl.common.crafting.quantum.api.networking.storage.IStorageService;
@@ -52,7 +53,6 @@ import com.science.gtnl.common.crafting.quantum.crafting.inv.ChildCraftingSimula
 import com.science.gtnl.common.crafting.quantum.crafting.inv.CraftingSimulationState;
 import com.science.gtnl.common.crafting.quantum.crafting.inv.NetworkCraftingSimulationState;
 import com.science.gtnl.common.crafting.quantum.hooks.ticking.TickHandler;
-import com.science.gtnl.common.crafting.quantum.util.LongMath;
 
 import appeng.api.config.Actionable;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -407,6 +407,10 @@ public class CraftingCalculation {
             if (plan != null && !this.plansKnownToRun.contains(plan)) {
                 plan = CraftingPlanCompactor.repair(plan, this);
             }
+            if (!TickHandler.instance()
+                .isCurrentSession(this.craftingSessionEpoch)) {
+                throw new InterruptedException("Crafting calculation session is closed");
+            }
             this.logCraftingJob(plan);
             return plan;
         } catch (InterruptedException ex) {
@@ -758,7 +762,7 @@ public class CraftingCalculation {
         return threads.isCurrentThreadCpuTimeSupported() ? threads.getCurrentThreadCpuTime() : System.nanoTime();
     }
 
-    private static final class FallbackTimeout extends RuntimeException {
+    private static class FallbackTimeout extends RuntimeException {
 
         private FallbackTimeout() {
             super("Crafting calculation fallback ran out of time", null, false, false);
@@ -1572,7 +1576,7 @@ public class CraftingCalculation {
         return result;
     }
 
-    public static final class LocalUnitContext implements AutoCloseable {
+    public static class LocalUnitContext implements AutoCloseable {
 
         private final CraftingCalculation calculation;
         private final CalculationMarker marker;
@@ -2073,13 +2077,13 @@ public class CraftingCalculation {
     }
 
     @FunctionalInterface
-    interface InterruptibleSupplier<T> {
+    public interface InterruptibleSupplier<T> {
 
         T get() throws InterruptedException;
     }
 
     @FunctionalInterface
-    interface CraftingRunnable {
+    public interface CraftingRunnable {
 
         void run() throws InterruptedException, CraftBranchFailure;
     }
@@ -2088,7 +2092,7 @@ public class CraftingCalculation {
 
     private record RecursiveSeed(AEKey what, long amount) {}
 
-    private static final class RecursiveNetKey {
+    private static class RecursiveNetKey {
 
         private AEKey what;
         private int requestIndex;
@@ -2097,8 +2101,6 @@ public class CraftingCalculation {
         private int processOffset;
         private int processCount;
         private int hashCode;
-
-        private RecursiveNetKey() {}
 
         private static RecursiveNetKey mutableProbe() {
             return new RecursiveNetKey();
@@ -2214,7 +2216,7 @@ public class CraftingCalculation {
 
     public record RecursivePatternBatch(long rootTimes, long netOutput) {}
 
-    private static final class RecursiveUse {
+    private static class RecursiveUse {
 
         private boolean aBoolean;
 
@@ -2231,7 +2233,7 @@ public class CraftingCalculation {
         }
     }
 
-    private static final class ObjectPool<T> {
+    private static class ObjectPool<T> {
 
         private final ObjectArrayList<T> pool = new ObjectArrayList<>();
         private final Supplier<T> factory;

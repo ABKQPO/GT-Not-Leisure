@@ -14,11 +14,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.science.gtnl.api.mixinHelper.IProcessingPatternInventoryAccess;
-import com.science.gtnl.utils.appliedEnergistics.processingPattern.ProcessingPatternCapacity;
-import com.science.gtnl.utils.appliedEnergistics.processingPattern.ProcessingPatternInventoryData;
+import com.science.gtnl.common.me.processingPattern.ProcessingPatternCapacity;
+import com.science.gtnl.common.me.processingPattern.ProcessingPatternInventoryData;
 
 import appeng.api.parts.IPatternTerminalEx;
-import appeng.api.storage.StorageName;
 import appeng.parts.reporting.AbstractPartTerminal;
 import appeng.parts.reporting.PartPatternTerminal;
 import appeng.parts.reporting.PartPatternTerminalEx;
@@ -66,49 +65,21 @@ public abstract class MixinPartPatternTerminal extends AbstractPartTerminal
             return;
         }
         if ((Object) this instanceof PartPatternTerminalEx) {
-            ProcessingPatternInventoryData.restoreSavedOverflow(data, data, "craftingGrid");
-            ProcessingPatternInventoryData.restoreSavedOverflow(data, data, "outputList");
-            boolean inverted = data.getBoolean("inverted");
-            this.gtnl$storedInventory = ProcessingPatternInventoryData.snapshotInventories(
-                data,
-                inverted ? this.crafting.getSizeInventory() / 4 : this.crafting.getSizeInventory(),
-                inverted ? this.output.getSizeInventory() : this.output.getSizeInventory() / 4);
+            this.gtnl$storedInventory = ProcessingPatternInventoryData
+                .rememberInventory(data, data, this.crafting.getSizeInventory(), this.output.getSizeInventory());
         }
     }
 
     @Inject(method = "writeToNBT", at = @At("TAIL"))
     private void gtnl$preserveInventory(NBTTagCompound data, CallbackInfo callbackInfo) {
-        if (!ProcessingPatternCapacity.isEnabled()) {
-            return;
-        }
-        if (!((Object) this instanceof PartPatternTerminalEx)) {
-            return;
-        }
-        boolean inverted = ((IPatternTerminalEx) this).isInverted();
-        ProcessingPatternInventoryData.preserveOverflow(
+        if (!ProcessingPatternCapacity.isEnabled() || !((Object) this instanceof PartPatternTerminalEx)) return;
+        this.gtnl$storedInventory = ProcessingPatternInventoryData.preserveInventory(
+            data,
             data,
             this.gtnl$storedInventory,
-            "craftingGrid",
-            inverted ? this.crafting.getSizeInventory() / 4 : this.crafting.getSizeInventory());
-        ProcessingPatternInventoryData.preserveOverflow(
-            data,
-            this.gtnl$storedInventory,
-            "outputList",
-            inverted ? this.output.getSizeInventory() : this.output.getSizeInventory() / 4);
-        this.gtnl$storedInventory = ProcessingPatternInventoryData.snapshotInventories(
-            data,
-            inverted ? this.crafting.getSizeInventory() / 4 : this.crafting.getSizeInventory(),
-            inverted ? this.output.getSizeInventory() : this.output.getSizeInventory() / 4);
-        int nativeInputs = ProcessingPatternCapacity.DEFAULT_MULTIPLIER
-            * (inverted ? ProcessingPatternCapacity.SMALL_SIDE_SLOTS_PER_PAGE
-                : ProcessingPatternCapacity.SLOTS_PER_PAGE);
-        int nativeOutputs = ProcessingPatternCapacity.DEFAULT_MULTIPLIER
-            * (inverted ? ProcessingPatternCapacity.SLOTS_PER_PAGE
-                : ProcessingPatternCapacity.SMALL_SIDE_SLOTS_PER_PAGE);
-        ProcessingPatternInventoryData.saveOverflow(data, data, "craftingGrid", nativeInputs);
-        ProcessingPatternInventoryData.saveOverflow(data, data, "outputList", nativeOutputs);
-        ProcessingPatternInventoryData.limitSlots(data, "craftingGrid", nativeInputs);
-        ProcessingPatternInventoryData.limitSlots(data, "outputList", nativeOutputs);
+            ((IPatternTerminalEx) this).isInverted(),
+            this.crafting.getSizeInventory(),
+            this.output.getSizeInventory());
     }
 
     @Override
@@ -121,50 +92,21 @@ public abstract class MixinPartPatternTerminal extends AbstractPartTerminal
 
     @Override
     public void gtnl$resizeProcessingPatternInventory() {
-        if (!ProcessingPatternCapacity.isEnabled()) {
-            return;
-        }
-        int size = ProcessingPatternCapacity.largeSideCapacity();
-        if (this.crafting.getSizeInventory() == size && this.output.getSizeInventory() == size) {
-            return;
-        }
-
-        NBTTagCompound data = new NBTTagCompound();
-        this.crafting.writeToNBT(data, "craftingGrid");
-        this.output.writeToNBT(data, "outputList");
-        boolean inverted = ((IPatternTerminalEx) this).isInverted();
-        ProcessingPatternInventoryData.preserveOverflow(
-            data,
+        var resized = ProcessingPatternInventoryData.resizeIfNeeded(
+            this.crafting,
+            this.output,
             this.gtnl$storedInventory,
-            "craftingGrid",
-            inverted ? this.crafting.getSizeInventory() / 4 : this.crafting.getSizeInventory());
-        ProcessingPatternInventoryData.preserveOverflow(
-            data,
-            this.gtnl$storedInventory,
-            "outputList",
-            inverted ? this.output.getSizeInventory() : this.output.getSizeInventory() / 4);
+            ((IPatternTerminalEx) this).isInverted(),
+            (IIAEStackInventory) this);
+        if (resized != null) gtnl$apply(resized);
+    }
 
-        NBTTagCompound visible = (NBTTagCompound) data.copy();
-        ProcessingPatternInventoryData.limitSlots(visible, "craftingGrid", inverted ? size / 4 : size);
-        ProcessingPatternInventoryData.limitSlots(visible, "outputList", inverted ? size : size / 4);
-
-        IAEStackInventory newCrafting = new IAEStackInventory(
-            (IIAEStackInventory) this,
-            size,
-            StorageName.CRAFTING_INPUT);
-        IAEStackInventory newOutput = new IAEStackInventory(
-            (IIAEStackInventory) this,
-            size,
-            StorageName.CRAFTING_OUTPUT);
-        newCrafting.readFromNBT(visible, "craftingGrid");
-        newOutput.readFromNBT(visible, "outputList");
-        this.crafting = newCrafting;
-        this.output = newOutput;
-        this.gtnl$storedInventory = ProcessingPatternInventoryData
-            .snapshotInventories(data, inverted ? size / 4 : size, inverted ? size : size / 4);
-        if (Platform.isServer()) {
-            this.getHost()
-                .markForSave();
-        }
+    @Unique
+    private void gtnl$apply(ProcessingPatternInventoryData.Resized resized) {
+        this.crafting = resized.crafting();
+        this.output = resized.output();
+        this.gtnl$storedInventory = resized.stored();
+        if (Platform.isServer()) this.getHost()
+            .markForSave();
     }
 }

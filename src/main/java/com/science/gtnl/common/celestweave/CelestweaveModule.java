@@ -10,6 +10,7 @@ import com.science.gtnl.common.equipment.IEquipmentVariant;
 import com.science.gtnl.common.equipment.MetaLookup;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.common.item.items.equipment.CelestweaveModuleItem;
+import com.science.gtnl.compat.holoinventory.HoloGlasses;
 
 import thaumcraft.api.IGoggles;
 import thaumcraft.api.nodes.IRevealer;
@@ -21,7 +22,7 @@ public enum CelestweaveModule implements IEquipmentVariant {
     SATURATION(2, Mask.HEAD, () -> new CelestweaveBehaviors.Saturation()),
     REVEALING(3, Mask.HEAD, Trait.HIDEABLE | Trait.BUILT_IN,
         stack -> stack.getItem() instanceof IGoggles || stack.getItem() instanceof IRevealer, null),
-    HOLO(4, Mask.HEAD, Trait.HIDEABLE | Trait.BUILT_IN, stack -> CelestweaveCompat.isHoloGlasses(stack), null),
+    HOLO(4, Mask.HEAD, Trait.HIDEABLE | Trait.BUILT_IN, stack -> HoloGlasses.isGlasses(stack), null),
     SHIELD(5, Mask.CHEST, () -> new CelestweaveBehaviors.Shield()),
     REFLECT(6, Mask.CHEST, () -> new CelestweaveBehaviors.Reflect()),
     PURIFICATION(7, Mask.CHEST, () -> new CelestweaveBehaviors.Purification()),
@@ -38,15 +39,11 @@ public enum CelestweaveModule implements IEquipmentVariant {
     public static class Mask {
 
         public static final int HEAD = 1, CHEST = 2, LEGS = 4, BOOTS = 8, ANY = 15;
-
-        private Mask() {}
     }
 
     public static class Trait {
 
         public static final int HIDEABLE = 1, BUILT_IN = 2;
-
-        private Trait() {}
     }
 
     public static final MetaLookup<CelestweaveModule> LOOKUP = new MetaLookup<>(values());

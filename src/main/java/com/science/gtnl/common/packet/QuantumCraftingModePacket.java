@@ -2,9 +2,9 @@ package com.science.gtnl.common.packet;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 
+import com.gtnllib.network.ServerboundPacket;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.crafting.quantum.ae2.QuantumCraftingMode;
-import com.science.gtnl.common.packet.base.ServerboundPacket;
 
 import appeng.api.networking.IGrid;
 import appeng.container.implementations.ContainerCraftAmount;

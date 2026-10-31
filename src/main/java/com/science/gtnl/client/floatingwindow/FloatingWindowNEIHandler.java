@@ -17,7 +17,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-final class FloatingWindowNEIHandler extends INEIGuiAdapter
+public class FloatingWindowNEIHandler extends INEIGuiAdapter
     implements IContainerObjectHandler, IContainerTooltipHandler, IContainerDrawHandler {
 
     @Override

@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 
 import com.gtnewhorizon.structurelib.StructureLibAPI;
+import com.science.gtnl.ScienceNotLeisure;
 
 import gregtech.api.structure.IStructureChannels;
 
@@ -47,15 +48,15 @@ public enum GTNLStructureChannels implements IStructureChannels {
 
     @Override
     public void registerAsIndicator(ItemStack indicator, int channelValue) {
-        StructureLibAPI.registerChannelItem(get(), ModList.ScienceNotLeisure.ID, channelValue, indicator);
+        StructureLibAPI.registerChannelItem(get(), ScienceNotLeisure.MODID, channelValue, indicator);
     }
 
     public static void register() {
         for (GTNLStructureChannels value : values()) {
             StructureLibAPI.registerChannelDescription(
                 value.get(),
-                ModList.ScienceNotLeisure.ID,
-                "channels." + ModList.ScienceNotLeisure.ID + "." + value.get());
+                ScienceNotLeisure.MODID,
+                "channels." + ScienceNotLeisure.MODID + "." + value.get());
         }
     }
 }

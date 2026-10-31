@@ -28,6 +28,8 @@ import com.gtnewhorizon.gtnhlib.client.model.loading.ResourceLoc.ModelLoc;
 import com.gtnewhorizon.gtnhlib.client.model.unbaked.JSONModel;
 import com.gtnewhorizon.gtnhlib.client.renderer.cel.model.quad.ModelQuad;
 import com.gtnewhorizon.gtnhlib.client.renderer.cel.model.quad.ModelQuadView;
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.render.model.JsonBlockModel;
 import com.science.gtnl.common.render.model.JsonBlockModel.Geometry;
@@ -39,6 +41,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 @SideOnly(Side.CLIENT)
+@EventBusSubscriber(side = Side.CLIENT, phase = Phase.PRE)
 public class BeamFormerModel {
 
     public static final BeamFormerModel INSTANCE = new BeamFormerModel();
@@ -61,7 +64,11 @@ public class BeamFormerModel {
     }
 
     @SubscribeEvent
-    public void beforeStitch(TextureStitchEvent.Pre event) {
+    public static void beforeStitch(TextureStitchEvent.Pre event) {
+        INSTANCE.handleBeforeStitch(event);
+    }
+
+    public void handleBeforeStitch(TextureStitchEvent.Pre event) {
         if (event.map.getTextureType() != 0) return;
         orientations = null;
         itemModels = null;
@@ -80,7 +87,11 @@ public class BeamFormerModel {
     }
 
     @SubscribeEvent
-    public void afterStitch(TextureStitchEvent.Post event) {
+    public static void afterStitch(TextureStitchEvent.Post event) {
+        INSTANCE.handleAfterStitch(event);
+    }
+
+    public void handleAfterStitch(TextureStitchEvent.Post event) {
         if (event.map.getTextureType() != 0 || pending == null) return;
         try {
             Geometry[] models = new Geometry[36];

@@ -25,7 +25,7 @@ import com.reavaritia.common.blocks.item.ItemBlockExtrumeAnvil;
 import com.reavaritia.common.blocks.tile.TileEntityExtremeAnvil;
 import com.reavaritia.common.entity.EntityExtremeAnvil;
 import com.reavaritia.utils.enums.ReAvaItemList;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ReAvaritiaConfig;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -139,7 +139,7 @@ public class BlockExtremeAnvil extends BlockContainer {
         int[] oreIDs = OreDictionary.getOreIDs(stack);
         for (int id : oreIDs) {
             if (OreDictionary.getOreName(id)
-                .equalsIgnoreCase(MainConfig.re_avaritia.unbreakOre)) {
+                .equalsIgnoreCase(ReAvaritiaConfig.unbreakOre)) {
                 return true;
             }
         }

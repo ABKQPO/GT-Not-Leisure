@@ -3,7 +3,9 @@ package com.science.gtnl.client.railgun;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.science.gtnl.config.MainConfig;
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
+import com.science.gtnl.config.ClientConfig;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -11,6 +13,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
+@EventBusSubscriber(side = Side.CLIENT, phase = Phase.PRE)
 public class RailgunCameraShake {
 
     public enum Axis {
@@ -84,7 +87,7 @@ public class RailgunCameraShake {
     }
 
     @SubscribeEvent
-    public void tick(TickEvent.ClientTickEvent event) {
+    public static void tick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.START) return;
         EntityPlayer player = Minecraft.getMinecraft().thePlayer;
         if (player == null) {
@@ -97,7 +100,7 @@ public class RailgunCameraShake {
     }
 
     @SubscribeEvent
-    public void render(TickEvent.RenderTickEvent event) {
+    public static void render(TickEvent.RenderTickEvent event) {
         if (event.phase == TickEvent.Phase.START) {
             restore();
             apply(Minecraft.getMinecraft().timer.renderPartialTicks);
@@ -155,7 +158,7 @@ public class RailgunCameraShake {
 
     private static void apply(float partialTicks) {
         var minecraft = Minecraft.getMinecraft();
-        if (minecraft.thePlayer == null || minecraft.theWorld == null || !MainConfig.client.enableRailgunShake) return;
+        if (minecraft.thePlayer == null || minecraft.theWorld == null || !ClientConfig.enableRailgunShake) return;
         if (idle()) return;
         float yaw = tremor(Axis.YAW, partialTicks), pitch = tremor(Axis.PITCH, partialTicks);
         if (Math.abs(yaw) < 1.0E-4F && Math.abs(pitch) < 1.0E-4F) return;

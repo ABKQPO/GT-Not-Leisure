@@ -13,12 +13,15 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.google.common.collect.Multimap;
-import com.google.common.collect.MultimapBuilder;
+import com.google.common.collect.Multimaps;
+import com.science.gtnl.common.recipe.AssemblyLineRecipeCount;
 
 import gregtech.api.util.AssemblyLineUtils;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.GTUtility.ItemId;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import tectech.recipe.TecTechRecipeMaps;
 
@@ -26,13 +29,10 @@ import tectech.recipe.TecTechRecipeMaps;
 public abstract class MixinAssemblyLineUtils {
 
     @Unique
-    private static int science$cachedTecTechRecipeCount = -1;
+    private static long science$cachedRecipeCount = AssemblyLineRecipeCount.NONE;
     @Unique
-    private static int science$cachedAssemblyLineRecipeCount = -1;
-    @Unique
-    private static final Multimap<ItemId, GTRecipe.RecipeAssemblyLine> science$recipeLookup = MultimapBuilder.hashKeys()
-        .arrayListValues()
-        .build();
+    private static final Multimap<ItemId, GTRecipe.RecipeAssemblyLine> science$recipeLookup = Multimaps
+        .newListMultimap(new Object2ObjectOpenHashMap<>(), ObjectArrayList::new);
 
     @Inject(method = "findALRecipeByOutput", at = @At("HEAD"), cancellable = true)
     private static void science$findRecipeByOutput(ItemStack output,
@@ -48,20 +48,13 @@ public abstract class MixinAssemblyLineUtils {
 
     @Unique
     private static synchronized void science$refreshRecipeLookup() {
-        int currentAssemblyLineRecipeCount = GTRecipe.RecipeAssemblyLine.sAssemblylineRecipes.size();
-        int currentTecTechRecipeCount = TecTechRecipeMaps.researchableALRecipeList.size();
-        if (science$cachedAssemblyLineRecipeCount == currentAssemblyLineRecipeCount
-            && science$cachedTecTechRecipeCount == currentTecTechRecipeCount) {
-            return;
-        }
-
+        long recipeCount = AssemblyLineRecipeCount.stamp();
+        if (science$cachedRecipeCount == recipeCount) return;
         science$recipeLookup.clear();
         Set<GTRecipe.RecipeAssemblyLine> addedRecipes = new ReferenceOpenHashSet<>();
         science$addRecipesToLookup(GTRecipe.RecipeAssemblyLine.sAssemblylineRecipes, addedRecipes);
         science$addRecipesToLookup(TecTechRecipeMaps.researchableALRecipeList, addedRecipes);
-
-        science$cachedAssemblyLineRecipeCount = currentAssemblyLineRecipeCount;
-        science$cachedTecTechRecipeCount = currentTecTechRecipeCount;
+        science$cachedRecipeCount = recipeCount;
     }
 
     @Unique

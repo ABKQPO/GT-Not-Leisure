@@ -6,17 +6,12 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
-import com.science.gtnl.client.GTNLCreativeTabs;
-import com.science.gtnl.common.block.blocks.item.ItemBlockLaserBeacon;
 import com.science.gtnl.common.block.blocks.tile.TileEntityLaserBeacon;
-import com.science.gtnl.utils.enums.GTNLItemList;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.GregTechAPI;
@@ -29,12 +24,6 @@ public class BlockLaserBeacon extends BlockContainer {
 
     public BlockLaserBeacon() {
         super(Material.iron);
-        this.setBlockName("gtnl.laser_beacon");
-        this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
-        GameRegistry.registerBlock(this, ItemBlockLaserBeacon.class, "laser_beacon");
-        GameRegistry.registerTileEntity(TileEntityLaserBeacon.class, "laser_beacon_tile_entity");
-        GregTechAPI.registerMachineBlock(this, -1);
-        GTNLItemList.LaserBeacon.set(new ItemStack(this, 1));
     }
 
     @Override
