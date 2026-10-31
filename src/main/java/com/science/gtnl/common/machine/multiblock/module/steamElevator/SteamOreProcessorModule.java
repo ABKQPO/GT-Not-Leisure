@@ -25,7 +25,6 @@ import com.cleanroommc.modularui.drawable.UITexture;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 
-import gnu.trove.map.hash.TIntIntHashMap;
 import gregtech.api.enums.Materials;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -38,6 +37,7 @@ import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -633,25 +633,25 @@ public class SteamOreProcessorModule extends SteamElevatorModuleBase {
     }
 
     public void doCompress(List<ItemStack> aList) {
-        TIntIntHashMap rProduct = new TIntIntHashMap();
+        Int2IntOpenHashMap rProduct = new Int2IntOpenHashMap();
         for (ItemStack stack : aList) {
             int tID = GTUtility.stackToInt(stack);
             if (mVoidStone && GTUtility.areStacksEqual(getStone(), stack)) {
                 continue;
             }
             if (tID != 0) {
-                rProduct.adjustOrPutValue(tID, stack.stackSize, stack.stackSize);
+                rProduct.addTo(tID, stack.stackSize);
             }
         }
         midProduct = new ItemStack[rProduct.size()];
 
         int cnt = 0;
-        var i = rProduct.iterator();
-
-        while (i.hasNext()) {
-            i.advance();
-            ItemStack stack = GTUtility.intToStack(i.key());
-            midProduct[cnt] = GTUtility.copyAmountUnsafe(i.value(), stack);
+        var entries = rProduct.int2IntEntrySet()
+            .fastIterator();
+        while (entries.hasNext()) {
+            var entry = entries.next();
+            ItemStack stack = GTUtility.intToStack(entry.getIntKey());
+            midProduct[cnt] = GTUtility.copyAmountUnsafe(entry.getIntValue(), stack);
             cnt++;
         }
     }

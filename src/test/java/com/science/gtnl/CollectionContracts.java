@@ -11,11 +11,11 @@ import java.util.regex.Pattern;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
-/** New mutable JDK/Guava allocations require a reviewed API or behavioral compatibility reason. */
+/** Mutable collection allocations require a reviewed API or behavioral compatibility reason. */
 public final class CollectionContracts {
 
     private static final String TYPES = "ArrayList|HashMap|HashSet|LinkedHashMap|LinkedHashSet|TreeMap|TreeSet|LinkedList"
-        + "|ArrayDeque|IdentityHashMap|PriorityQueue|Vector|Hashtable";
+        + "|ArrayDeque|IdentityHashMap|PriorityQueue|Vector|Hashtable|TIntIntHashMap";
     private static final Pattern ALLOCATION = Pattern.compile(
         "\\bnew\\s+(?:java\\.util\\.)?(" + TYPES
             + ")\\b"
@@ -25,7 +25,8 @@ public final class CollectionContracts {
             + "|\\b(?:Lists|Sets|Maps)\\s*\\.\\s*new("
             + TYPES
             + ")(?:WithCapacity|WithExpectedSize)?\\s*\\("
-            + "|\\bCollectors\\s*\\.\\s*to(List|Set|Map)\\s*\\(");
+            + "|\\bCollectors\\s*\\.\\s*to(List|Set|Map)\\s*\\("
+            + "|\\b(MultimapBuilder)\\s*\\.\\s*hashKeys\\s*\\(");
 
     public static void run() throws IOException {
         for (String source : List.of(
@@ -34,7 +35,9 @@ public final class CollectionContracts {
             "ArrayList::new",
             "Lists.newArrayListWithCapacity(10)",
             "Sets.newHashSet()",
-            "Collectors.toList()")) {
+            "Collectors.toList()",
+            "new TIntIntHashMap()",
+            "MultimapBuilder.hashKeys().arrayListValues().build()")) {
             check(
                 ALLOCATION.matcher(source)
                     .find(),
@@ -67,7 +70,8 @@ public final class CollectionContracts {
                     while (matches.find()) {
                         String kind = matches.group(1) != null ? matches.group(1)
                             : matches.group(2) != null ? matches.group(2)
-                                : matches.group(3) != null ? matches.group(3) : "Collector" + matches.group(4);
+                                : matches.group(3) != null ? matches.group(3)
+                                    : matches.group(4) != null ? "Collector" + matches.group(4) : matches.group(5);
                         String key = path.toString()
                             .replace('\\', '/') + "\t"
                             + kind;
