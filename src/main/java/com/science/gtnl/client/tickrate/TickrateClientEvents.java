@@ -7,7 +7,7 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
 import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
 import com.science.gtnl.api.TickrateAPI;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.TickrateConfig;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent;
@@ -41,7 +41,7 @@ public class TickrateClientEvents {
 
     @SubscribeEvent
     public static void onClientDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
-        TickrateAPI.changeServerTickrate(MainConfig.tickrate.defaultTickrate);
-        TickrateAPI.changeClientTickrate(null, MainConfig.tickrate.defaultTickrate);
+        TickrateAPI.changeServerTickrate(TickrateConfig.defaultTickrate);
+        TickrateAPI.changeClientTickrate(null, TickrateConfig.defaultTickrate);
     }
 }

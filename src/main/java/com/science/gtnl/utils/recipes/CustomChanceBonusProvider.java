@@ -3,7 +3,7 @@ package com.science.gtnl.utils.recipes;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.MachineConfig;
 
 import gregtech.api.metatileentity.implementations.MTEMultiBlockBase;
 import gregtech.api.util.GTRecipe;
@@ -19,7 +19,7 @@ public class CustomChanceBonusProvider implements ChanceBonusManager.ChanceBonus
             recipeMap.put(mte, recipe);
             int machineTier = GTUtility.getTier(mte.getMaxInputVoltage());
             int baseTier = GTUtility.getTier(recipe.mEUt);
-            double bonusPerTier = MainConfig.machine.recipeOutputChance / 100.0;
+            double bonusPerTier = MachineConfig.recipeOutputChance / 100.0;
             return getTierChanceBonus(machineTier, baseTier, bonusPerTier);
         }
         return null;

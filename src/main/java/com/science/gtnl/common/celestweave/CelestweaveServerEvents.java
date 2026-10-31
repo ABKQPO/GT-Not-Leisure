@@ -32,7 +32,7 @@ import com.science.gtnl.common.equipment.EquipmentNet;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.common.packet.CelestweaveConcealPacket;
 import com.science.gtnl.common.packet.CelestweaveFxPacket;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ItemConfig;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -88,8 +88,7 @@ public class CelestweaveServerEvents {
     private static int jumpLevel(EntityPlayer player) {
         ItemStack boots = CelestweaveData.piece(player, CelestweaveArmor.BOOTS);
         if (boots == null || !CelestweaveData.active(boots, CelestweaveModule.WALK_ASSIST)
-            || !CelestweaveEnergy
-                .affords(player, CelestweaveArmor.BOOTS, boots, MainConfig.item.celestweave.walkEuPerTick))
+            || !CelestweaveEnergy.affords(player, CelestweaveArmor.BOOTS, boots, ItemConfig.celestweave.walkEuPerTick))
             return 1;
         return CelestweaveModuleSetting.WALK_JUMP.get(boots);
     }

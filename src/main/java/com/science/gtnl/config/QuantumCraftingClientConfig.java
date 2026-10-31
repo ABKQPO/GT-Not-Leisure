@@ -1,13 +1,16 @@
 package com.science.gtnl.config;
 
 import com.gtnewhorizon.gtnhlib.config.Config;
-import com.gtnewhorizon.gtnhlib.config.ConfigException;
-import com.gtnewhorizon.gtnhlib.config.ConfigurationManager;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.packet.QuantumCraftingModePacket;
 
-@Config(modid = ScienceNotLeisure.MODID, configSubDirectory = "GTNotLeisure", filename = "QuantumCraftingClient")
+@Config(
+    modid = ScienceNotLeisure.MODID,
+    category = "quantum_crafting",
+    configSubDirectory = ConfigRegistry.DIRECTORY,
+    filename = ConfigRegistry.CLIENT_FILE)
 @Config.ExcludeFromAutoGui
+@Config.Comment("Quantum crafting preference of this client")
 public class QuantumCraftingClientConfig {
 
     @Config.Comment("Plan player crafting requests with the quantum calculation when the network has a quantum computer.")
@@ -15,24 +18,16 @@ public class QuantumCraftingClientConfig {
     public static boolean useQuantumCraftingMode;
 
     @Config.Ignore
-    private static boolean registered;
-
-    @Config.Ignore
-    private static boolean loadFailed;
-
-    @Config.Ignore
     private static volatile boolean syncScheduled;
 
     public static boolean isQuantumCraftingMode() {
-        ensureLoaded();
         return useQuantumCraftingMode;
     }
 
     public static void setQuantumCraftingMode(boolean enabled) {
-        ensureLoaded();
         if (useQuantumCraftingMode == enabled) return;
         useQuantumCraftingMode = enabled;
-        if (registered) ConfigurationManager.save(QuantumCraftingClientConfig.class);
+        ConfigRegistry.save(QuantumCraftingClientConfig.class);
     }
 
     public static void scheduleSync() {
@@ -43,19 +38,8 @@ public class QuantumCraftingClientConfig {
         if (!syncScheduled) return;
         syncScheduled = false;
         // The server starts every session with the mode off
-        if (isQuantumCraftingMode()) {
+        if (useQuantumCraftingMode) {
             ScienceNotLeisure.network.sendToServer(new QuantumCraftingModePacket(true));
-        }
-    }
-
-    private static void ensureLoaded() {
-        if (registered || loadFailed) return;
-        try {
-            ConfigurationManager.registerConfig(QuantumCraftingClientConfig.class);
-            registered = true;
-        } catch (ConfigException e) {
-            loadFailed = true;
-            ScienceNotLeisure.LOG.error("Failed to load quantum crafting client preferences", e);
         }
     }
 }

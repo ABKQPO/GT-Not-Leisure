@@ -15,7 +15,7 @@ import com.science.gtnl.common.equipment.EquipmentSound;
 import com.science.gtnl.common.packet.RailgunBeamChainFxPacket;
 import com.science.gtnl.common.packet.RailgunFireFxPacket;
 import com.science.gtnl.common.railgun.RailgunChargeTier;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ClientConfig;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -120,8 +120,8 @@ public class RailgunClientFx {
         return FxVisibility.allowed(
             FxVisibility.isViewer(shooterId),
             FxVisibility.distanceToViewer(at),
-            MainConfig.client.enableRailgunShowOthersFx,
-            MainConfig.client.railgunFxDistance);
+            ClientConfig.enableRailgunShowOthersFx,
+            ClientConfig.railgunFxDistance);
     }
 
     private static void shockwave(Vec3d at, double radius, int lifetime) {

@@ -2,7 +2,7 @@ package com.science.gtnl.compat.galaxyspace;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ItemConfig;
 
 import cpw.mods.fml.common.Optional;
 import gregtech.api.enums.Mods;
@@ -18,6 +18,6 @@ public class SteamRocketSchematic {
     private static void unlock(EntityPlayerMP player) {
         SchematicRegistry.addUnlockedPage(
             player,
-            SchematicRegistry.getMatchingRecipeForID(MainConfig.item.steam_rocket.idSchematicRocketSteam));
+            SchematicRegistry.getMatchingRecipeForID(ItemConfig.steam_rocket.idSchematicRocketSteam));
     }
 }

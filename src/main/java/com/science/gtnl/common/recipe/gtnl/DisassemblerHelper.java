@@ -18,7 +18,7 @@ import com.glodblock.github.common.item.ItemFluidPacket;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.compat.newhorizons.NHCoreCircuits;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.RecipeConfig;
 import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
@@ -631,7 +631,7 @@ public class DisassemblerHelper {
     }
 
     private static void addShimmerFakeRecipe(RecipeBuilder builder) {
-        if (!MainConfig.recipe.enableShimmerFakeRecipeInNEI) {
+        if (!RecipeConfig.enableShimmerFakeRecipeInNEI) {
             return;
         }
 
@@ -647,7 +647,7 @@ public class DisassemblerHelper {
     }
 
     private static boolean shouldBuildShimmerFakeRecipe() {
-        return MainConfig.recipe.enableShimmerFakeRecipeInNEI || debugRecipeToRecipe != null;
+        return RecipeConfig.enableShimmerFakeRecipeInNEI || debugRecipeToRecipe != null;
     }
 
     private static ItemStack getFirstValidStack(ItemStack[] stacks) {

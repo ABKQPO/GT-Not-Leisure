@@ -5,7 +5,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
 
 import com.gtnllib.mod.ModList;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.MachineConfig;
 import com.science.gtnl.utils.recipes.ChanceBonusManager;
 
 import gregtech.api.metatileentity.BaseMetaTileEntity;
@@ -20,7 +20,7 @@ public class RecipeOutputChance {
     public record Bonus(int tier, int baseTier, double bonus) {}
 
     public static boolean enabled() {
-        return !ModList.Overpowered.isModLoaded() && MainConfig.machine.enableRecipeOutputChance;
+        return !ModList.Overpowered.isModLoaded() && MachineConfig.enableRecipeOutputChance;
     }
 
     public static Bonus bonusOf(TileEntity tile) {
@@ -30,7 +30,7 @@ public class RecipeOutputChance {
         if (recipe == null) return null;
         int tier = GTUtility.getTier(mte.getMaxInputVoltage());
         int baseTier = GTUtility.getTier(recipe.mEUt);
-        double bonus = tier <= baseTier ? 0.0 : (tier - baseTier) * MainConfig.machine.recipeOutputChance;
+        double bonus = tier <= baseTier ? 0.0 : (tier - baseTier) * MachineConfig.recipeOutputChance;
         return new Bonus(tier, baseTier, bonus);
     }
 

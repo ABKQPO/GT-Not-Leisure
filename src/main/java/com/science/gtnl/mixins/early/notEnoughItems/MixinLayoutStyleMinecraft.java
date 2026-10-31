@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.science.gtnl.api.mixinHelper.IDrawableResourceAccessor;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.OtherConfig;
 
 import codechicken.nei.Button;
 import codechicken.nei.Image;
@@ -25,11 +25,10 @@ public class MixinLayoutStyleMinecraft {
         cancellable = true)
     private void beforeDrawIcon(Button b, int mousex, int mousey, CallbackInfo ci) {
         Image icon = b.getRenderIcon();
-        if (!MainConfig.other.not_enough_items.enableSpecialCheatIcon
-            || !(icon instanceof AccessorDrawableResource accessor)
+        if (!OtherConfig.not_enough_items.enableSpecialCheatIcon || !(icon instanceof AccessorDrawableResource accessor)
             || !(icon instanceof IDrawableResourceAccessor dr)
             || !GTNL$SPECIAL_CHEAT_ICON.equals(String.valueOf(accessor.getResourceLocation()))) return;
-        int specialType = MainConfig.other.not_enough_items.specialIconType;
+        int specialType = OtherConfig.not_enough_items.specialIconType;
         dr.gtnl$draw(b.x + (b.w - icon.width) / 2, b.y + (b.h - icon.height) / 2, specialType);
         ci.cancel();
     }

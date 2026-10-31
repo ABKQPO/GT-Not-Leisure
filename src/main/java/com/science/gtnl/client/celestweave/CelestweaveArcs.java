@@ -13,7 +13,7 @@ import com.science.gtnl.common.celestweave.CelestweaveCosmetic;
 import com.science.gtnl.common.celestweave.CelestweaveCosmeticOption;
 import com.science.gtnl.common.celestweave.CelestweaveModule;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ClientConfig;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -39,8 +39,8 @@ public class CelestweaveArcs {
 
     static boolean spawn(CelestweaveClientState state, String anchor, float[] a, float[] b, int segs, float spread,
         float width, long born, int lifetime, int rgb, CelestweaveArc.Kind kind) {
-        if (total >= MainConfig.client.celestweaveMaxArcsTotal
-            || state.arcs.size() >= MainConfig.client.celestweaveMaxArcsPerPlayer) return false;
+        if (total >= ClientConfig.celestweaveMaxArcsTotal
+            || state.arcs.size() >= ClientConfig.celestweaveMaxArcsPerPlayer) return false;
         state.arcs.add(new CelestweaveArc(anchor, a, b, segs, spread, width, born, lifetime, rgb, kind));
         total++;
         return true;
@@ -56,7 +56,7 @@ public class CelestweaveArcs {
         int glowColor = look.glowColor;
         boolean storm = entity.worldObj.isThundering();
         if (level >= 2 && look.tier > 0) {
-            int want = Math.min(look.idleWant(storm), MainConfig.client.celestweaveMaxArcsPerPlayer);
+            int want = Math.min(look.idleWant(storm), ClientConfig.celestweaveMaxArcsPerPlayer);
             for (int n = state.countIdle(); n < want && seams.length > 0; n++) {
                 CelestweaveSeam seam = seams[RNG.nextInt(seams.length)];
                 if (!seam.shown(look)) continue;

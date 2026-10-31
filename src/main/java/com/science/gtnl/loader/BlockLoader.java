@@ -88,7 +88,7 @@ import com.science.gtnl.common.block.casings.glass.MetaBlockGlass;
 import com.science.gtnl.common.block.casings.glow.ItemBlockGlow;
 import com.science.gtnl.common.block.casings.glow.MetaBlockGlow;
 import com.science.gtnl.common.item.GTNLCreativeTabs;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.MachineConfig;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.text.AnimatedText;
 
@@ -769,9 +769,9 @@ public class BlockLoader {
                 metaCasing02,
                 new String[] { StatCollector.translateToLocalFormatted(
                     "gtnl.block.quantum_computer_casing.tooltip.0",
-                    MainConfig.machine.quantum_computer.maxMultiblockSize,
-                    MainConfig.machine.quantum_computer.maxMultiblockSize,
-                    MainConfig.machine.quantum_computer.maxMultiblockSize) }));
+                    MachineConfig.quantum_computer.maxMultiblockSize,
+                    MachineConfig.quantum_computer.maxMultiblockSize,
+                    MachineConfig.quantum_computer.maxMultiblockSize) }));
         GTNLItemList.QuantumComputerUnit
             .set(MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.QuantumComputerUnit.getBlockMeta(), metaCasing02));
         GTNLItemList.QuantumComputerCraftingStorage128M.set(
@@ -786,7 +786,7 @@ public class BlockLoader {
                 metaCasing02,
                 new String[] { StatCollector.translateToLocalFormatted(
                     "gtnl.block.quantum_computer_data_entangler.tooltip.0",
-                    MainConfig.machine.quantum_computer.maxDataEntangler) }));
+                    MachineConfig.quantum_computer.maxDataEntangler) }));
         GTNLItemList.QuantumComputerAccelerator.set(
             MetaItemBlockCasing.initMetaBlockCasing(
                 GTNLCasings.QuantumComputerAccelerator.getBlockMeta(),
@@ -798,7 +798,7 @@ public class BlockLoader {
                 metaCasing02,
                 new String[] { StatCollector.translateToLocalFormatted(
                     "gtnl.block.quantum_computer_multi_threader.tooltip.0",
-                    MainConfig.machine.quantum_computer.maxMultiThreader) }));
+                    MachineConfig.quantum_computer.maxMultiThreader) }));
         GTNLItemList.QuantumComputerCore.set(
             MetaItemBlockCasing.initMetaBlockCasing(
                 GTNLCasings.QuantumComputerCore.getBlockMeta(),

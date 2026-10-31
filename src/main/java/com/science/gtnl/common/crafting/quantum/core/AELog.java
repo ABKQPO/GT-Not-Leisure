@@ -1,12 +1,12 @@
 package com.science.gtnl.common.crafting.quantum.core;
 
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.MachineConfig;
 
 public class AELog {
 
     public static boolean isCraftingLogEnabled() {
-        return MainConfig.machine.quantum_computer.enableCalculationLog;
+        return MachineConfig.quantum_computer.enableCalculationLog;
     }
 
     public static void crafting(String message) {

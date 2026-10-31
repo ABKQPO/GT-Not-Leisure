@@ -58,7 +58,7 @@ import com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop
 import com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade;
 import com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.MilestoneFormatter;
 import com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.MilestoneIcon;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.DebugConfig;
 import com.science.gtnl.utils.ColorUtils;
 
 import codechicken.nei.recipe.GuiCraftingRecipe;
@@ -1384,7 +1384,7 @@ public class EternalGregTechWorkshopGui extends GTNLMultiBlockBaseGui<EternalGre
             .coverChildren()
             .topRel(0)
             .leftRel(0)
-            .setEnabledIf(widget -> MainConfig.debug.enableDebugMode)
+            .setEnabledIf(widget -> DebugConfig.enableDebugMode)
             .child(new ButtonWidget<>().syncHandler(new InteractionSyncHandler().setOnMousePressed(mouseData -> {
                 multiblock.resetUpgradesFromGui();
                 notifyUpgradeState(syncManager);

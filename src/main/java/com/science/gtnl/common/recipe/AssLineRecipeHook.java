@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.RecipeConfig;
 
 import cpw.mods.fml.common.registry.GameData;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -27,7 +27,7 @@ public class AssLineRecipeHook {
     // 必须在此处移除装配线配方, 不能调用对象获取name, 因为本方法执行在gt pre load 阶段开始
     public static void loadAndInit() {
 
-        if (MainConfig.recipe.enableDeleteRecipe) {
+        if (RecipeConfig.enableDeleteRecipe) {
             // 移除 生物处理器单元
             Builder.newBuilder()
                 .addOutputItem("gregtech:gt.metaitem.03", 1, 32077)

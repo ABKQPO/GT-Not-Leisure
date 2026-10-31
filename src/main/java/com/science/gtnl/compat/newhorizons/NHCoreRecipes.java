@@ -15,7 +15,7 @@ import com.dreammaster.item.NHItemList;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.common.recipe.gtnl.CraftingTableRecipes;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.RecipeConfig;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
@@ -1330,7 +1330,7 @@ public class NHCoreRecipes {
     }
 
     public static void craftingTableExtra() {
-        if (!(Mods.NewHorizonsCoreMod.isModLoaded() && MainConfig.recipe.enableSomethingRecipe)) return;
+        if (!(Mods.NewHorizonsCoreMod.isModLoaded() && RecipeConfig.enableSomethingRecipe)) return;
         RecipeBuilder.builder()
             .itemInputs(
                 GTOreDictUnificator.get(OrePrefixes.circuit, Materials.HV, 4L),

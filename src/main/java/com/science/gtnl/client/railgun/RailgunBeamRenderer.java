@@ -26,7 +26,7 @@ import com.science.gtnl.common.railgun.RailgunData;
 import com.science.gtnl.common.railgun.RailgunModule;
 import com.science.gtnl.common.railgun.RailgunRaycast;
 import com.science.gtnl.common.railgun.RailgunSetting;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ClientConfig;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -171,7 +171,7 @@ public class RailgunBeamRenderer {
         if (beams.isEmpty()) return;
         double time = now + event.partialTicks;
         FxRenderHelper.render(() -> { for (Beam beam : beams) body(beam, time); });
-        if (!MainConfig.client.enableRailgunBloom) return;
+        if (!ClientConfig.enableRailgunBloom) return;
         drawPlasma(beams, time);
         FxRenderHelper.renderGlow(Sprite.STREAK, () -> { for (Beam beam : beams) bloom(beam, time); });
         FxRenderHelper.renderGlow(Sprite.RADIAL, () -> { for (Beam beam : beams) caps(beam, time); });
@@ -295,7 +295,7 @@ public class RailgunBeamRenderer {
     }
 
     private static void drawPlasma(List<Beam> beams, double time) {
-        if (!MainConfig.client.enableRailgunShaders) return;
+        if (!ClientConfig.enableRailgunShaders) return;
         RailgunShaderEffect shader = RailgunShaderEffect.BEAM;
         if (!shader.begin()) return;
         try {

@@ -32,7 +32,7 @@ import com.science.gtnl.common.equipment.EquipmentNet;
 import com.science.gtnl.common.item.GTNLCreativeTabs;
 import com.science.gtnl.common.portalgun.PortalGunData;
 import com.science.gtnl.common.portalgun.PortalGunDestination;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ItemConfig;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
@@ -150,7 +150,7 @@ public class PortalGun extends ItemFluidContainer implements IEnergyContainerIte
     }
 
     public static boolean blocked(int dimension) {
-        for (int id : MainConfig.item.portal_gun.dimensionBlacklist) if (id == dimension) return true;
+        for (int id : ItemConfig.portal_gun.dimensionBlacklist) if (id == dimension) return true;
         return false;
     }
 
@@ -160,14 +160,14 @@ public class PortalGun extends ItemFluidContainer implements IEnergyContainerIte
     }
 
     public static int shimmerCost(boolean sameDimension, double distance) {
-        var config = MainConfig.item.portal_gun;
+        var config = ItemConfig.portal_gun;
         if (!sameDimension) return config.maxShimmerPerShot;
         return (int) Math.min(config.maxShimmerPerShot, Math.ceil(Math.max(0, distance) / config.blocksPerShimmer));
     }
 
     @Override
     public int getCapacity(ItemStack container) {
-        return MainConfig.item.portal_gun.shimmerCapacity;
+        return ItemConfig.portal_gun.shimmerCapacity;
     }
 
     @Override

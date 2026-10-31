@@ -35,7 +35,8 @@ import com.reavaritia.common.entity.EntityChronarchClock;
 import com.reavaritia.utils.enums.ReAvaItemList;
 import com.reavaritia.utils.item.SubtitleDisplay;
 import com.science.gtnl.api.TickrateAPI;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ReAvaritiaConfig;
+import com.science.gtnl.config.TickrateConfig;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -95,7 +96,7 @@ public class ChronarchsClock extends Item implements SubtitleDisplay, IBehaviorD
         }
         long lastUsed = nbt.getLong("LastUsed");
 
-        if (world.getTotalWorldTime() - lastUsed < MainConfig.re_avaritia.chronarch_clock.chronarchsClockCooldown) {
+        if (world.getTotalWorldTime() - lastUsed < ReAvaritiaConfig.chronarch_clock.chronarchsClockCooldown) {
             if (world.isRemote) {
                 showSubtitle("reavaritia.item.chronarchs_clock.tooltip.01");
             }
@@ -108,9 +109,9 @@ public class ChronarchsClock extends Item implements SubtitleDisplay, IBehaviorD
                 player.posX,
                 player.posY,
                 player.posZ,
-                MainConfig.re_avaritia.chronarch_clock.chronarchsClockRadius,
-                MainConfig.re_avaritia.chronarch_clock.chronarchsClockSpeedMultiplier,
-                MainConfig.re_avaritia.chronarch_clock.chronarchsClockDurationTicks);
+                ReAvaritiaConfig.chronarch_clock.chronarchsClockRadius,
+                ReAvaritiaConfig.chronarch_clock.chronarchsClockSpeedMultiplier,
+                ReAvaritiaConfig.chronarch_clock.chronarchsClockDurationTicks);
             world.spawnEntityInWorld(point);
         }
 
@@ -133,15 +134,15 @@ public class ChronarchsClock extends Item implements SubtitleDisplay, IBehaviorD
             nbt = new NBTTagCompound();
             stack.setTagCompound(nbt);
         }
-        if (currentTickrate < MainConfig.tickrate.maxTickrate && !player.worldObj.isRemote) {
+        if (currentTickrate < TickrateConfig.maxTickrate && !player.worldObj.isRemote) {
             player.addPotionEffect(new PotionEffect(Potion.moveSpeed.id, 200, 4));
             if (originalTickrate < 0f) {
                 originalTickrate = TickrateAPI.getServerTickrate();
                 currentTickrate = originalTickrate;
             }
 
-            float delta = (MainConfig.tickrate.maxTickrate - originalTickrate) / BOOST_DURATION_TICKS;
-            currentTickrate = Math.min(currentTickrate + delta, MainConfig.tickrate.maxTickrate);
+            float delta = (TickrateConfig.maxTickrate - originalTickrate) / BOOST_DURATION_TICKS;
+            currentTickrate = Math.min(currentTickrate + delta, TickrateConfig.maxTickrate);
 
             TickrateAPI.changeServerTickrate(currentTickrate);
             nbt.setBoolean("ClockActive", true);
@@ -163,7 +164,7 @@ public class ChronarchsClock extends Item implements SubtitleDisplay, IBehaviorD
     public void onServerTick(TickEvent.ServerTickEvent event) {
         if (event.phase != TickEvent.Phase.END || !restoring || originalTickrate < 0f) return;
 
-        float delta = (MainConfig.tickrate.maxTickrate - originalTickrate) / RESTORE_DURATION_TICKS;
+        float delta = (TickrateConfig.maxTickrate - originalTickrate) / RESTORE_DURATION_TICKS;
         currentTickrate = Math.max(currentTickrate - delta, originalTickrate);
 
         TickrateAPI.changeServerTickrate(currentTickrate);
@@ -192,7 +193,7 @@ public class ChronarchsClock extends Item implements SubtitleDisplay, IBehaviorD
 
         long lastUsed = nbt.getLong("LastUsed");
 
-        if (world.getTotalWorldTime() - lastUsed < MainConfig.re_avaritia.chronarch_clock.chronarchsClockCooldown) {
+        if (world.getTotalWorldTime() - lastUsed < ReAvaritiaConfig.chronarch_clock.chronarchsClockCooldown) {
             return stack;
         }
 
@@ -208,9 +209,9 @@ public class ChronarchsClock extends Item implements SubtitleDisplay, IBehaviorD
             x + facing.getFrontOffsetX() * 0.5,
             y + facing.getFrontOffsetY() * 0.5,
             z + facing.getFrontOffsetZ() * 0.5,
-            MainConfig.re_avaritia.chronarch_clock.chronarchsClockRadius,
-            MainConfig.re_avaritia.chronarch_clock.chronarchsClockSpeedMultiplier,
-            MainConfig.re_avaritia.chronarch_clock.chronarchsClockDurationTicks);
+            ReAvaritiaConfig.chronarch_clock.chronarchsClockRadius,
+            ReAvaritiaConfig.chronarch_clock.chronarchsClockSpeedMultiplier,
+            ReAvaritiaConfig.chronarch_clock.chronarchsClockDurationTicks);
 
         world.spawnEntityInWorld(point);
 

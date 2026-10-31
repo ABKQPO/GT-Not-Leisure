@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 import net.minecraft.server.MinecraftServer;
 
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.MachineConfig;
 
 public class AEConfig {
 
@@ -16,7 +16,7 @@ public class AEConfig {
     }
 
     public long getCraftingFallbackNanos() {
-        return TimeUnit.SECONDS.toNanos(Math.max(0, MainConfig.machine.quantum_computer.calculationFallbackSeconds));
+        return TimeUnit.SECONDS.toNanos(Math.max(0, MachineConfig.quantum_computer.calculationFallbackSeconds));
     }
 
     public long getCalculationLimitNanos() {
@@ -24,11 +24,11 @@ public class AEConfig {
         if (server == null || !server.isDedicatedServer()) {
             return 0;
         }
-        return TimeUnit.SECONDS.toNanos(Math.max(0, MainConfig.machine.quantum_computer.calculationLimitSeconds));
+        return TimeUnit.SECONDS.toNanos(Math.max(0, MachineConfig.quantum_computer.calculationLimitSeconds));
     }
 
     public boolean isCraftingPerformanceLogEnabled() {
-        return MainConfig.machine.quantum_computer.enableCalculationPerformanceLog;
+        return MachineConfig.quantum_computer.enableCalculationPerformanceLog;
     }
 
     public static class Crafting {

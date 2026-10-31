@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import com.science.gtnl.api.mixinHelper.IAnchorRespawn;
 import com.science.gtnl.common.block.blocks.BlockDimensionRespawnAnchor;
 import com.science.gtnl.common.block.blocks.tile.TileEntityDimensionRespawnAnchor;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.EffectConfig;
 import com.science.gtnl.loader.EffectLoader;
 
 @Mixin(value = ServerConfigurationManager.class, remap = true)
@@ -34,7 +34,7 @@ public abstract class MixinServerConfigurationManager {
     @Inject(method = "respawnPlayer", at = @At("RETURN"), cancellable = true)
     private void onRespawnPlayer(EntityPlayerMP player, int dimension, boolean conqueredEnd,
         CallbackInfoReturnable<EntityPlayerMP> cir) {
-        if (!MainConfig.effect.enableGhostlyShape) return;
+        if (!EffectConfig.enableGhostlyShape) return;
         EntityPlayerMP entityplayermp1 = cir.getReturnValue();
 
         if (entityplayermp1 != null) {

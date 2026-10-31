@@ -9,6 +9,7 @@ import com.science.gtnl.client.galacticraft.SteamRocketClientHooks;
 import com.science.gtnl.client.gui.GTNLClientGuiHandler;
 import com.science.gtnl.client.tickrate.TimeStopClientHooks;
 import com.science.gtnl.common.render.entity.EntityParticleBeam;
+import com.science.gtnl.config.ConfigRegistry;
 import com.science.gtnl.loader.ContentLoaders;
 
 import cpw.mods.fml.client.FMLClientHandler;
@@ -20,6 +21,7 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void preInit(FMLPreInitializationEvent event) {
+        ConfigRegistry.registerClient();
         super.preInit(event);
         ContentLoaders.clientPreInit();
     }

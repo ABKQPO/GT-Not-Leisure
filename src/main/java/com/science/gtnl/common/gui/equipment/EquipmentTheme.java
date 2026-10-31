@@ -15,7 +15,7 @@ import com.gtnllib.gui.theme.PaletteThemes;
 import com.gtnllib.gui.theme.ThemePalette;
 import com.gtnllib.gui.theme.ThemeStyle;
 import com.gtnllib.gui.widget.LayoutTheme;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ClientConfig;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -61,7 +61,7 @@ public class EquipmentTheme {
         DANGER);
     public static final WidgetThemeKey<Colors> COLORS = registerColors(new Colors(PALETTE));
     public static final LivePalette LIVE = PaletteThemes
-        .live(EquipmentTheme::selected, () -> MainConfig.client.enableEquipmentThemeGlowColor);
+        .live(EquipmentTheme::selected, () -> ClientConfig.enableEquipmentThemeGlowColor);
 
     public static void register() {
         PaletteThemes.extend(EquipmentTheme::addColors);

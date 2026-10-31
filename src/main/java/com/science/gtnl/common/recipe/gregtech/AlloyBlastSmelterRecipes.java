@@ -5,7 +5,7 @@ import net.minecraft.item.ItemStack;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.RecipeConfig;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import gregtech.api.enums.Materials;
@@ -62,7 +62,7 @@ public class AlloyBlastSmelterRecipes implements IRecipePool {
             .eut(TierEU.RECIPE_LV)
             .addTo(aBS);
 
-        if (MainConfig.recipe.enableDeleteRecipe) loadDeleteRecipe();
+        if (RecipeConfig.enableDeleteRecipe) loadDeleteRecipe();
     }
 
     public void loadDeleteRecipe() {

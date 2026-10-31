@@ -21,7 +21,7 @@ import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.item.items.equipment.ElectromagneticRailgun;
 import com.science.gtnl.common.railgun.RailgunChargeTier;
 import com.science.gtnl.common.railgun.RailgunData;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ClientConfig;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -94,7 +94,7 @@ public class RailgunHudRenderer {
     }
 
     private static void drawOverlay(int width, int height, float progress, int rgb) {
-        if (!MainConfig.client.enableRailgunBloom || !MainConfig.client.enableRailgunShaders) return;
+        if (!ClientConfig.enableRailgunBloom || !ClientConfig.enableRailgunShaders) return;
         RailgunShaderEffect shader = RailgunShaderEffect.CHARGE;
         if (!shader.begin()) return;
         GL11.glPushAttrib(

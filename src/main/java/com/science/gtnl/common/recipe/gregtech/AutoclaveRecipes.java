@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.compat.forestry.ForestryRecipes;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.RecipeConfig;
 import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
@@ -82,7 +82,7 @@ public class AutoclaveRecipes implements IRecipePool {
             .eut(TierEU.RECIPE_LuV)
             .addTo(AR);
 
-        if (MainConfig.recipe.enableDeleteRecipe) loadDeleteRecipe();
+        if (RecipeConfig.enableDeleteRecipe) loadDeleteRecipe();
     }
 
     public void loadDeleteRecipe() {

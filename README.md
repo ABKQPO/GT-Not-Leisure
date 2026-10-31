@@ -197,7 +197,7 @@ The `-dev`, `-sources` and `-predowngrade` jars are for development, not install
 1.  **Backup** your save/instance.
 2.  Delete the old `.jar` from your mods folder.
 3.  **Delete/Reset** the GT language file: `GregTech.lang` (The mod injects new entries here).
-4.  **Delete/Reset** the config file: `config/GTNotLeisure/GTNotLeisure.cfg` (older packs may still use `main.cfg`).
+4.  **Delete/Reset** the config files in `config/GTNotLeisure/`: `general.cfg`, `item.cfg`, `machine.cfg`, `recipe.cfg` and `re_avaritia.cfg`. `client.cfg` only holds client display, sound and window settings and can be kept (older packs may still use `GTNotLeisure.cfg` or `main.cfg`).
 
 <hr>
 

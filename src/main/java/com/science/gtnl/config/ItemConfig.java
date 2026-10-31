@@ -1,5 +1,6 @@
 package com.science.gtnl.config;
 
+import com.gtnewhorizon.gtnhlib.config.Config;
 import com.gtnewhorizon.gtnhlib.config.Config.Comment;
 import com.gtnewhorizon.gtnhlib.config.Config.DefaultBoolean;
 import com.gtnewhorizon.gtnhlib.config.Config.DefaultDouble;
@@ -7,7 +8,6 @@ import com.gtnewhorizon.gtnhlib.config.Config.DefaultFloat;
 import com.gtnewhorizon.gtnhlib.config.Config.DefaultInt;
 import com.gtnewhorizon.gtnhlib.config.Config.DefaultIntList;
 import com.gtnewhorizon.gtnhlib.config.Config.DefaultStringList;
-import com.gtnewhorizon.gtnhlib.config.Config.Name;
 import com.gtnewhorizon.gtnhlib.config.Config.RangeDouble;
 import com.gtnewhorizon.gtnhlib.config.Config.RangeFloat;
 import com.gtnewhorizon.gtnhlib.config.Config.RangeInt;
@@ -17,12 +17,17 @@ import com.science.gtnl.ScienceNotLeisure;
 
 import gregtech.api.enums.Mods;
 
+@Config(
+    modid = ScienceNotLeisure.MODID,
+    category = "item",
+    configSubDirectory = ConfigRegistry.DIRECTORY,
+    filename = ConfigRegistry.ITEM_FILE)
+@Config.LangKeyPattern(pattern = ConfigRegistry.LANG_PATTERN, fullyQualified = true)
 @Sync
 @Comment("Item section")
 public class ItemConfig {
 
-    @Name("energyModule")
-    public final EnergyModule energyModule = new EnergyModule();
+    public static final EnergyModule energyModule = new EnergyModule();
 
     @Comment("Energy module shared by the railgun and Celestweave armor")
     public static class EnergyModule {
@@ -40,8 +45,7 @@ public class ItemConfig {
         public double capacityT3 = 500000000;
     }
 
-    @Name("railgun")
-    public final Railgun railgun = new Railgun();
+    public static final Railgun railgun = new Railgun();
 
     @Comment("Electromagnetic Railgun")
     public static class Railgun {
@@ -157,8 +161,7 @@ public class ItemConfig {
         public boolean enableWirelessRefill = true;
     }
 
-    @Name("portal_gun")
-    public final PortalGun portal_gun = new PortalGun();
+    public static final PortalGun portal_gun = new PortalGun();
 
     @Comment("Portal Gun")
     public static class PortalGun {
@@ -203,8 +206,7 @@ public class ItemConfig {
         public int[] dimensionBlacklist = {};
     }
 
-    @Name("player_doll")
-    public final PlayerDoll player_doll = new PlayerDoll();
+    public static final PlayerDoll player_doll = new PlayerDoll();
 
     @Comment("Player Doll")
     public static class PlayerDoll {
@@ -220,8 +222,7 @@ public class ItemConfig {
         public boolean enableRegisterMAXTierGlass = true;
     }
 
-    @Name("vein_miner_pickaxe")
-    public final VeinMinerPickaxe vein_miner_pickaxe = new VeinMinerPickaxe();
+    public static final VeinMinerPickaxe vein_miner_pickaxe = new VeinMinerPickaxe();
 
     @Comment("Vein Miner Pickaxe")
     public static class VeinMinerPickaxe {
@@ -235,8 +236,7 @@ public class ItemConfig {
         public int maxRange = 32;
     }
 
-    @Name("stick")
-    public final Stick stick = new Stick();
+    public static final Stick stick = new Stick();
 
     @Comment("Stick")
     public static class Stick {
@@ -247,8 +247,7 @@ public class ItemConfig {
         public boolean enableStickItem = true;
     }
 
-    @Name("steam_rocket")
-    public final SteamRocket steam_rocket = new SteamRocket();
+    public static final SteamRocket steam_rocket = new SteamRocket();
 
     @Comment("Steam Rocket")
     public static class SteamRocket {
@@ -262,8 +261,7 @@ public class ItemConfig {
         public int nasaWorkbenchSteamRocket = 114514;
     }
 
-    @Name("celestweave")
-    public final Celestweave celestweave = new Celestweave();
+    public static final Celestweave celestweave = new Celestweave();
 
     @Comment("Celestweave Armor")
     public static class Celestweave {

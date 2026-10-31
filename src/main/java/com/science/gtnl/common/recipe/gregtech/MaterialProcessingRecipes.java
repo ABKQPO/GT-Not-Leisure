@@ -3,7 +3,7 @@ package com.science.gtnl.common.recipe.gregtech;
 import static gregtech.api.util.GTRecipeBuilder.INGOTS;
 
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.DebugConfig;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import bartworks.system.material.Werkstoff;
@@ -127,7 +127,7 @@ public class MaterialProcessingRecipes {
                     .getMass() > 128 ? 64 : 30)
             .addTo(RecipeMaps.fluidSolidifierRecipes);
 
-        if (MainConfig.debug.enableDebugMode) ScienceNotLeisure.LOG
+        if (DebugConfig.enableDebugMode) ScienceNotLeisure.LOG
             .warn("GTNL: 144l fluid molder for 1 dust Recipe: {} - Success", werkstoff.getDefaultName());
     }
 
@@ -146,7 +146,7 @@ public class MaterialProcessingRecipes {
             .eut(GTUtility.calculateRecipeEU(aMaterial, 8))
             .addTo(RecipeMaps.fluidSolidifierRecipes);
 
-        if (MainConfig.debug.enableDebugMode) ScienceNotLeisure.LOG
+        if (DebugConfig.enableDebugMode) ScienceNotLeisure.LOG
             .warn("GTNL: 144l fluid molder for 1 dust Recipe: {} - Success", aMaterial.getDefaultLocalName());
     }
 }

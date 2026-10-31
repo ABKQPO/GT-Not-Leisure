@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 
 import com.science.gtnl.client.gui.GuiSchematicSteamRocket;
 import com.science.gtnl.common.gui.container.ContainerSchematicSteamRocket;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ItemConfig;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -17,12 +17,12 @@ public class SchematicSteamRocket extends SchematicPage {
 
     @Override
     public int getPageID() {
-        return MainConfig.item.steam_rocket.idSchematicRocketSteam;
+        return ItemConfig.steam_rocket.idSchematicRocketSteam;
     }
 
     @Override
     public int getGuiID() {
-        return MainConfig.item.steam_rocket.nasaWorkbenchSteamRocket;
+        return ItemConfig.steam_rocket.nasaWorkbenchSteamRocket;
     }
 
     @Override

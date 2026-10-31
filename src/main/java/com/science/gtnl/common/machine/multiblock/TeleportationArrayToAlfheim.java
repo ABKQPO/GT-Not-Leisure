@@ -34,7 +34,7 @@ import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.MachineConfig;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.item.ItemUtils;
@@ -554,7 +554,7 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
     }
 
     public void triggerExplosion(IGregTechTileEntity aBaseMetaTileEntity, float strength) {
-        if (MainConfig.machine.portal_to_alfheim.bigBoom) {
+        if (MachineConfig.portal_to_alfheim.bigBoom) {
             ProcessHandler.addProcess(
                 new PortalToAlfheimExplosion(
                     aBaseMetaTileEntity.getWorld(),

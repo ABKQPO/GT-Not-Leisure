@@ -4,7 +4,10 @@ import com.gtnewhorizon.gtnhmixins.builders.IMixins;
 import com.gtnewhorizon.gtnhmixins.builders.MixinBuilder;
 import com.gtnllib.mod.ModList;
 import com.science.gtnl.asm.GTNLEarlyCoreMod;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ItemConfig;
+import com.science.gtnl.config.MachineConfig;
+import com.science.gtnl.config.MinecraftConfig;
+import com.science.gtnl.config.OtherConfig;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -50,7 +53,7 @@ public enum Mixins implements IMixins {
     MINECRAFT_KILL_ENHANCE(
         new MixinBuilder("Mixins for Kill Command Enhance").addCommonMixins("minecraft.MixinCommandKill")
             .setPhase(Phase.EARLY)
-            .setApplyIf(() -> MainConfig.minecraft.enableKillEnhance)),
+            .setApplyIf(() -> MinecraftConfig.enableKillEnhance)),
 
     MINECRAFT_CLIENT(Side.CLIENT, "minecraft.AccessorEntityRenderer", "minecraft.AccessorGuiChat",
         "minecraft.MixinMinecraft", "minecraft.MixinModelBiped", "minecraft.MixinMinecraftRailgunClick",
@@ -66,7 +69,7 @@ public enum Mixins implements IMixins {
             "notEnoughItems.MixinLayoutManager",
             "notEnoughItems.MixinLayoutStyleMinecraft")
         .setPhase(Phase.EARLY)
-        .setApplyIf(() -> MainConfig.other.not_enough_items.enableSpecialCheatIcon)),
+        .setApplyIf(() -> OtherConfig.not_enough_items.enableSpecialCheatIcon)),
 
     STICK_RENDER(new MixinBuilder("Mixins for Stick item rendering")
         .addClientMixins(
@@ -75,7 +78,7 @@ public enum Mixins implements IMixins {
             "stick.MixinLayoutManager",
             "stick.MixinRenderItem")
         .setPhase(Phase.EARLY)
-        .setApplyIf(() -> MainConfig.item.stick.enableStickItem)),
+        .setApplyIf(() -> ItemConfig.stick.enableStickItem)),
 
     WIRELESS_TILE_DATA(new MixinBuilder("ME wireless link persistence")
         .addCommonMixins("appliedEnergistics.wireless.MixinWirelessTileData")
@@ -275,12 +278,12 @@ public enum Mixins implements IMixins {
             "gregtech.MixinMTEVoidMinerBaseGui",
             "gregtech.MixinMTEVoidMiners")
         .setPhase(Phase.LATE)
-        .setApplyIf(() -> MainConfig.machine.enableVoidMinerTweak)
+        .setApplyIf(() -> MachineConfig.enableVoidMinerTweak)
         .addExcludedMod(ModList.VMTweak)),
 
     GREGTECH_MAIN_FACING(new MixinBuilder().addCommonMixins("gregtech.MixinMTEBasicMachineFacing")
         .setPhase(Phase.LATE)
-        .setApplyIf(() -> MainConfig.machine.allowMainFacingInteraction)),
+        .setApplyIf(() -> MachineConfig.allowMainFacingInteraction)),
 
     GALAXY_SPACE(new MixinBuilder("Galaxy Space Mixin").addCommonMixins("galaxySpace.MixinRocketRecipeHandler")
         .setPhase(Phase.LATE)
@@ -328,13 +331,13 @@ public enum Mixins implements IMixins {
             "overpowered.MixinGregtechWailaDataProvider",
             "overpowered.MixinParallelHelper")
         .setPhase(Phase.LATE)
-        .setApplyIf(() -> MainConfig.machine.enableRecipeOutputChance)
+        .setApplyIf(() -> MachineConfig.enableRecipeOutputChance)
         .addExcludedMod(ModList.Overpowered)),
 
     OVERPOWERED_TST_CHANGE(
         new MixinBuilder("Overpowered TST Mixin Changes").addCommonMixins("overpowered.MixinGTCM_ParallelHelper")
             .setPhase(Phase.LATE)
-            .setApplyIf(() -> MainConfig.machine.enableRecipeOutputChance)
+            .setApplyIf(() -> MachineConfig.enableRecipeOutputChance)
             .addRequiredMod(ModList.TwistSpaceTechnology)
             .addExcludedMod(ModList.Overpowered)),
 
@@ -367,12 +370,12 @@ public enum Mixins implements IMixins {
             "gregtech.MixinMTEPurificationUnitUVTreatment",
             "gregtech.MixinMTEPurificationUnitDegasser")
         .setPhase(Phase.LATE)
-        .setApplyIf(() -> MainConfig.machine.enablePurificationPlantBuff)),
+        .setApplyIf(() -> MachineConfig.enablePurificationPlantBuff)),
 
     STICK_LATE(new MixinBuilder("Stick Late Mixins")
         .addCommonMixins("stick.MixinTooltipHandlerWaila", "stick.MixinOreDictTooltipHandler")
         .setPhase(Phase.LATE)
-        .setApplyIf(() -> MainConfig.item.stick.enableStickItem)),
+        .setApplyIf(() -> ItemConfig.stick.enableStickItem)),
 
     AUTO_STRUCTURE_TOOLTIP(new MixinBuilder("Automatic multiblock structure tooltips")
         .addCommonMixins(

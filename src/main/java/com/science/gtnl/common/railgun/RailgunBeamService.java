@@ -16,7 +16,7 @@ import com.science.gtnl.common.item.items.equipment.ElectromagneticRailgun;
 import com.science.gtnl.common.packet.RailgunBeamChainFxPacket;
 import com.science.gtnl.common.packet.RailgunBeamUpdatePacket;
 import com.science.gtnl.common.railgun.RailgunChainResolver.Hit;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ItemConfig;
 
 import it.unimi.dsi.fastutil.ints.IntSets;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
@@ -133,7 +133,7 @@ public class RailgunBeamService {
     }
 
     private static boolean settle(EntityPlayerMP player, ItemStack stack, BeamState state) {
-        var config = MainConfig.item.railgun;
+        var config = ItemConfig.railgun;
         var modules = RailgunData.modules(stack);
         boolean pvp = RailgunSetting.PVP.active(stack), ehv = RailgunSetting.EHV_BEAM.active(stack);
         double cost = ehv

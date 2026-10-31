@@ -1,15 +1,19 @@
-package com.science.gtnl.client.yogsothoth;
+package com.science.gtnl.config;
 
 import java.util.Objects;
 
 import com.gtnewhorizon.gtnhlib.config.Config;
-import com.gtnewhorizon.gtnhlib.config.ConfigException;
-import com.gtnewhorizon.gtnhlib.config.ConfigurationManager;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.floatingwindow.FloatingWindowGeometry;
+import com.science.gtnl.client.yogsothoth.YogTerminalLayout;
 
-@Config(modid = ScienceNotLeisure.MODID, configSubDirectory = "GTNotLeisure", filename = "YogSothothTerminalClient")
+@Config(
+    modid = ScienceNotLeisure.MODID,
+    category = "yog_sothoth_terminal",
+    configSubDirectory = ConfigRegistry.DIRECTORY,
+    filename = ConfigRegistry.CLIENT_FILE)
 @Config.ExcludeFromAutoGui
+@Config.Comment("Window state of the Yog-Sothoth terminal")
 public class YogTerminalClientConfig {
 
     @Config.Comment("Use the saved Yog-Sothoth terminal rectangle instead of anchoring it beside the inventory.")
@@ -39,17 +43,8 @@ public class YogTerminalClientConfig {
     @Config.DefaultBoolean(false)
     public static boolean collapsed;
 
-    @Config.Ignore
-    private static boolean registered;
-
-    static void load(YogTerminalLayout layout) {
-        try {
-            ConfigurationManager.registerConfig(YogTerminalClientConfig.class);
-            registered = true;
-            layout.restorePreference(windowPreference());
-        } catch (ConfigException e) {
-            ScienceNotLeisure.LOG.error("Failed to load Yog-Sothoth terminal client preferences", e);
-        }
+    public static void restore(YogTerminalLayout layout) {
+        layout.restorePreference(windowPreference());
     }
 
     private static FloatingWindowGeometry.Preference windowPreference() {
@@ -57,7 +52,7 @@ public class YogTerminalClientConfig {
             : null;
     }
 
-    static void saveWindow(YogTerminalLayout layout) {
+    public static void saveWindow(YogTerminalLayout layout) {
         FloatingWindowGeometry.Preference preference = layout.preference();
         if (Objects.equals(preference, windowPreference())) return;
         customWindow = preference != null;
@@ -70,12 +65,12 @@ public class YogTerminalClientConfig {
         save();
     }
 
-    static void setCollapsed(boolean value) {
+    public static void setCollapsed(boolean value) {
         collapsed = value;
         save();
     }
 
     private static void save() {
-        if (registered) ConfigurationManager.save(YogTerminalClientConfig.class);
+        ConfigRegistry.save(YogTerminalClientConfig.class);
     }
 }

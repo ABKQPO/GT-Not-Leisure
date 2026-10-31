@@ -126,7 +126,8 @@ import com.science.gtnl.common.recipe.gtnl.TheTwilightForestRecipes;
 import com.science.gtnl.common.recipe.gtnl.TreeDiagramRecipes;
 import com.science.gtnl.common.recipe.gtnl.WoodDistillationRecipes;
 import com.science.gtnl.common.recipe.gtnl.oreProcessing.CheatOreProcessingRecipes;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ItemConfig;
+import com.science.gtnl.config.RecipeConfig;
 import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeUtil;
 
@@ -156,12 +157,12 @@ public class RecipeLoader implements IContentLoader {
     @Override
     public void loadComplete() {
         if (Mods.NewHorizonsCoreMod.isModLoaded()) ScriptLoader.registry();
-        if (MainConfig.item.stick.enableStickItem) loadVillageTrade();
+        if (ItemConfig.stick.enableStickItem) loadVillageTrade();
         LoadCompleteRecipeScheduler.schedule();
     }
 
     public static void loadCompleteInit() {
-        if (MainConfig.recipe.enableDeleteRecipe) {
+        if (RecipeConfig.enableDeleteRecipe) {
             RemoveRecipes.removeRecipes();
         }
 
@@ -171,7 +172,7 @@ public class RecipeLoader implements IContentLoader {
         CrackRecipeAdder.reAddBlastRecipe(GTNLMaterials.HSLASteel, 1000, 480, 1711, true);
         CrackRecipeAdder.reAddBlastRecipe(GTNLMaterials.Germaniumtungstennitride, 800, 30720, 8200, true);
 
-        if (MainConfig.recipe.enableChamberRecipesBuff) {
+        if (RecipeConfig.enableChamberRecipesBuff) {
             loadBuffTargetChamberRecipe();
         }
 

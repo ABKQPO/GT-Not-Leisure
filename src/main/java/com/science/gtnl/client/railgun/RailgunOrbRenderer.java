@@ -22,7 +22,7 @@ import com.gtnllib.utils.MathUtils;
 import com.gtnllib.utils.Vec3d;
 import com.science.gtnl.client.railgun.RailgunBolts.Bolt;
 import com.science.gtnl.common.railgun.RailgunChargeTier;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ClientConfig;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -106,7 +106,7 @@ public class RailgunOrbRenderer {
         var world = Minecraft.getMinecraft().theWorld;
         if (world == null) return;
         if (from == null || !from.finite() || target == null || !target.finite()) return;
-        if (!MainConfig.client.enableRailgunBloom) {
+        if (!ClientConfig.enableRailgunBloom) {
             if (onArrive != null) onArrive.run();
             return;
         }
@@ -179,7 +179,7 @@ public class RailgunOrbRenderer {
         var world = Minecraft.getMinecraft().theWorld;
         if (world == null) return;
         long now = world.getTotalWorldTime();
-        if (MainConfig.client.enableRailgunBloom) {
+        if (ClientConfig.enableRailgunBloom) {
             FxCamera.capture();
             List<OrbViz> orbs = collect(now, event.partialTicks);
             if (!orbs.isEmpty()) {
@@ -198,7 +198,7 @@ public class RailgunOrbRenderer {
     }
 
     private static void drawBody(List<OrbViz> orbs, double time) {
-        if (MainConfig.client.enableRailgunShaders) {
+        if (ClientConfig.enableRailgunShaders) {
             RailgunShaderEffect shader = RailgunShaderEffect.ORB;
             if (shader.begin()) {
                 try {

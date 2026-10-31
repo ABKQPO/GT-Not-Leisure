@@ -5,7 +5,7 @@ import net.minecraft.client.Minecraft;
 import com.gtnllib.network.ClientboundPacket;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.TickrateAPI;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.TickrateConfig;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -37,18 +37,18 @@ public class TickratePacket extends ClientboundPacket {
     @SideOnly(Side.CLIENT)
     public void handleClient(Minecraft minecraft) {
         float tickrate = this.tickrate;
-        if (tickrate < MainConfig.tickrate.minTickrate) {
+        if (tickrate < TickrateConfig.minTickrate) {
             ScienceNotLeisure.LOG.info(
                 "Tickrate forced to change from {} to {}, because the value is too low (You can change the minimum tickrate in the config file)",
                 tickrate,
-                MainConfig.tickrate.minTickrate);
-            tickrate = MainConfig.tickrate.minTickrate;
-        } else if (tickrate > MainConfig.tickrate.maxTickrate) {
+                TickrateConfig.minTickrate);
+            tickrate = TickrateConfig.minTickrate;
+        } else if (tickrate > TickrateConfig.maxTickrate) {
             ScienceNotLeisure.LOG.info(
                 "Tickrate forced to change from {} to {}, because the value is too high (You can change the maximum tickrate in the config file)",
                 tickrate,
-                MainConfig.tickrate.maxTickrate);
-            tickrate = MainConfig.tickrate.maxTickrate;
+                TickrateConfig.maxTickrate);
+            tickrate = TickrateConfig.maxTickrate;
         }
 
         TickrateAPI.updateClientTickrate(tickrate);

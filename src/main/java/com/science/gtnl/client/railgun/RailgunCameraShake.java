@@ -5,7 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
 import com.gtnewhorizon.gtnhlib.eventbus.Phase;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ClientConfig;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -158,7 +158,7 @@ public class RailgunCameraShake {
 
     private static void apply(float partialTicks) {
         var minecraft = Minecraft.getMinecraft();
-        if (minecraft.thePlayer == null || minecraft.theWorld == null || !MainConfig.client.enableRailgunShake) return;
+        if (minecraft.thePlayer == null || minecraft.theWorld == null || !ClientConfig.enableRailgunShake) return;
         if (idle()) return;
         float yaw = tremor(Axis.YAW, partialTicks), pitch = tremor(Axis.PITCH, partialTicks);
         if (Math.abs(yaw) < 1.0E-4F && Math.abs(pitch) < 1.0E-4F) return;

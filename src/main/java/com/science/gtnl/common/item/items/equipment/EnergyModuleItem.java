@@ -10,7 +10,7 @@ import net.minecraft.util.StatCollector;
 import com.science.gtnl.common.equipment.EquipmentEnergy;
 import com.science.gtnl.common.equipment.IEquipmentVariant;
 import com.science.gtnl.common.equipment.MetaLookup;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ItemConfig;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import cpw.mods.fml.relauncher.Side;
@@ -35,7 +35,7 @@ public class EnergyModuleItem extends EquipmentVariantItem<EnergyModuleItem.Tier
     }
 
     public static double capacity(int tier, double base) {
-        var config = MainConfig.item.energyModule;
+        var config = ItemConfig.energyModule;
         double capacity = switch (tier) {
             case 3 -> config.capacityT3;
             case 2 -> config.capacityT2;

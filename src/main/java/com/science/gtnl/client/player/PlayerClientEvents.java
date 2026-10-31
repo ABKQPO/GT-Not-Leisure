@@ -18,7 +18,7 @@ import org.lwjgl.opengl.GL11;
 import com.gtnewhorizon.gtnhlib.client.title.TitleAPI;
 import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
 import com.science.gtnl.common.item.BaubleItem;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.OtherConfig;
 import com.science.gtnl.loader.EffectLoader;
 import com.science.gtnl.mixins.early.minecraft.AccessorGuiChat;
 
@@ -44,7 +44,7 @@ public class PlayerClientEvents {
 
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
-        if (event.phase != TickEvent.Phase.END && !MainConfig.other.enableDeathIncompleteMessage) return;
+        if (event.phase != TickEvent.Phase.END && !OtherConfig.enableDeathIncompleteMessage) return;
 
         Minecraft mc = Minecraft.getMinecraft();
         if (mc.thePlayer == null || mc.theWorld == null) return;

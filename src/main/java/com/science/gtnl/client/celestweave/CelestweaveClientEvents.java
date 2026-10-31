@@ -25,7 +25,7 @@ import com.science.gtnl.common.celestweave.CelestweaveReach;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.common.packet.CelestweaveFxPacket;
 import com.science.gtnl.compat.tinkersconstruct.CelestweaveBackpackTabs;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ClientConfig;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -98,11 +98,11 @@ public class CelestweaveClientEvents {
     }
 
     static boolean fxAllowed(Entity entity, double distance) {
-        return MainConfig.client.celestweaveFxLevel > 0 && FxVisibility.allowed(
+        return ClientConfig.celestweaveFxLevel > 0 && FxVisibility.allowed(
             FxVisibility.isViewer(entity),
             distance,
-            MainConfig.client.enableCelestweaveShowOthersFx,
-            MainConfig.client.celestweaveFxDistance);
+            ClientConfig.enableCelestweaveShowOthersFx,
+            ClientConfig.celestweaveFxDistance);
     }
 
     @SubscribeEvent
@@ -149,7 +149,7 @@ public class CelestweaveClientEvents {
         ticks++;
         runScheduled();
         long now = Minecraft.getSystemTime();
-        int level = MainConfig.client.celestweaveFxLevel;
+        int level = ClientConfig.celestweaveFxLevel;
         int total = 0;
         for (Object object : world.playerEntities) {
             if (!(object instanceof EntityPlayer player)) continue;
@@ -168,10 +168,10 @@ public class CelestweaveClientEvents {
                 && FxVisibility.allowed(
                     self,
                     FxVisibility.distanceToViewer(player),
-                    MainConfig.client.enableCelestweaveShowOthersFx,
-                    MainConfig.client.celestweaveFxDistance)
+                    ClientConfig.enableCelestweaveShowOthersFx,
+                    ClientConfig.celestweaveFxDistance)
                 && (!self || minecraft.gameSettings.thirdPersonView != 0
-                    || MainConfig.client.enableCelestweaveFirstPersonFx);
+                    || ClientConfig.enableCelestweaveFirstPersonFx);
             CelestweaveArcs.tick(player, state, look, now, process ? level : 0);
             total += state.arcs.size();
         }

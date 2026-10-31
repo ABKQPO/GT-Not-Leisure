@@ -1,6 +1,6 @@
 package com.science.gtnl.common.me.processingPattern;
 
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.OtherConfig;
 
 public class ProcessingPatternCapacity {
 
@@ -10,11 +10,11 @@ public class ProcessingPatternCapacity {
     public static final int SMALL_SIDE_SLOTS_PER_PAGE = 4;
 
     public static boolean isEnabled() {
-        return MainConfig.other.applied_energistics.enableProcessingPatternCapacityMixin;
+        return OtherConfig.applied_energistics.enableProcessingPatternCapacityMixin;
     }
 
     public static int multiplier() {
-        return Math.clamp(MainConfig.other.applied_energistics.processingPatternCapacityMultiplier, 1, MAX_MULTIPLIER);
+        return Math.clamp(OtherConfig.applied_energistics.processingPatternCapacityMultiplier, 1, MAX_MULTIPLIER);
     }
 
     public static int pageCount() {

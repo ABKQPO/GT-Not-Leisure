@@ -14,7 +14,7 @@ import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.textfield.TextFieldWidget;
 import com.science.gtnl.api.mixinHelper.IWirelessMode;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.MachineConfig;
 
 import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.common.tileentities.machines.multi.purification.MTEPurificationUnitBase;
@@ -32,7 +32,7 @@ public class PurificationUnitGuiHooks {
 
     public static IWidget parallelButton(MTEPurificationUnitBase<?> multiblock, PanelSyncManager syncManager,
         ModularPanel parent) {
-        if (!MainConfig.machine.enablePurificationPlantBuff) return null;
+        if (!MachineConfig.enablePurificationPlantBuff) return null;
 
         if (!(multiblock instanceof IWirelessMode wirelessMode && wirelessMode.isGtnl$wirelessMode())) {
             IPanelHandler parallelSelectPanel = syncManager.syncedPanel(

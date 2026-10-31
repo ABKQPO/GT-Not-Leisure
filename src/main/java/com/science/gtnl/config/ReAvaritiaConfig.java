@@ -1,14 +1,21 @@
 package com.science.gtnl.config;
 
+import com.gtnewhorizon.gtnhlib.config.Config;
 import com.gtnewhorizon.gtnhlib.config.Config.Comment;
 import com.gtnewhorizon.gtnhlib.config.Config.DefaultBoolean;
 import com.gtnewhorizon.gtnhlib.config.Config.DefaultInt;
 import com.gtnewhorizon.gtnhlib.config.Config.DefaultString;
 import com.gtnewhorizon.gtnhlib.config.Config.DefaultStringList;
-import com.gtnewhorizon.gtnhlib.config.Config.Name;
 import com.gtnewhorizon.gtnhlib.config.Config.RequiresMcRestart;
 import com.gtnewhorizon.gtnhlib.config.Config.Sync;
+import com.science.gtnl.ScienceNotLeisure;
 
+@Config(
+    modid = ScienceNotLeisure.MODID,
+    category = "re_avaritia",
+    configSubDirectory = ConfigRegistry.DIRECTORY,
+    filename = ConfigRegistry.RE_AVARITIA_FILE)
+@Config.LangKeyPattern(pattern = ConfigRegistry.LANG_PATTERN, fullyQualified = true)
 @Sync
 @Comment("Re Avaritia section")
 public class ReAvaritiaConfig {
@@ -16,10 +23,9 @@ public class ReAvaritiaConfig {
     @Comment("The OreDict used for unbreakable blocks in the Extreme Anvil")
     @DefaultString("neutronUnbreak")
     @RequiresMcRestart
-    public String unbreakOre = "neutronUnbreak";
+    public static String unbreakOre = "neutronUnbreak";
 
-    @Name("infinity_sword")
-    public final InfinitySword infinity_sword = new InfinitySword();
+    public static final InfinitySword infinity_sword = new InfinitySword();
 
     @Comment("Infinity Sword")
     public static class InfinitySword {
@@ -37,8 +43,7 @@ public class ReAvaritiaConfig {
         public boolean enableSpecialRender = true;
     }
 
-    @Name("chronarch_clock")
-    public final ChronarchClock chronarch_clock = new ChronarchClock();
+    public static final ChronarchClock chronarch_clock = new ChronarchClock();
 
     @Comment("Chronarch Clock")
     public static class ChronarchClock {

@@ -39,6 +39,7 @@ import com.science.gtnl.common.yogsothoth.YogRecord;
 import com.science.gtnl.common.yogsothoth.YogTerminalLocks;
 import com.science.gtnl.common.yogsothoth.YogTerminals;
 import com.science.gtnl.common.yogsothoth.YogToken;
+import com.science.gtnl.config.YogTerminalClientConfig;
 
 import baubles.common.container.InventoryBaubles;
 import baubles.common.lib.PlayerHandler;
@@ -87,7 +88,7 @@ public class YogTerminalClient {
     private static boolean creativeScreen;
 
     public static void init() {
-        YogTerminalClientConfig.load(LAYOUT);
+        YogTerminalClientConfig.restore(LAYOUT);
         FloatingWindows.register(YogTerminalClient::window);
         YogBaublesView.setClientEntries(YogTerminalClient::carriedEntries);
         YogTerminals.setClient(YogTerminalClient::stored, YogTerminalClient::opened);

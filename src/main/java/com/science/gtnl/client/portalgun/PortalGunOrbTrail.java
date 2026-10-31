@@ -25,7 +25,6 @@ import com.gtnllib.utils.MathUtils;
 import com.gtnllib.utils.Vec3d;
 import com.science.gtnl.common.entity.EntityPortalGunOrb;
 import com.science.gtnl.config.ClientConfig;
-import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.PortalGunPortalEffect;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -79,14 +78,14 @@ public class PortalGunOrbTrail {
             lateral = toMuzzle.subtract(heading.scale(ahead));
             glow = effect.glowColor & 0xFFFFFF;
             core = effect.coreColor & 0xFFFFFF;
-            shown = MainConfig.client.enablePortalGunShowOthersFx
+            shown = ClientConfig.enablePortalGunShowOthersFx
                 || shooter != null && shooter == Minecraft.getMinecraft().thePlayer;
             last = center;
             travelled = center.subtract(origin)
                 .length();
             spawned = Math.max(TRAIL_START, travelled);
             while (rings < RING_DISTANCES.length && RING_DISTANCES[rings] < travelled) rings++;
-            if (shown && MainConfig.client.enablePortalGunPuffs && travelled < PUFF_NEAR) puffs(origin, partialTicks);
+            if (shown && ClientConfig.enablePortalGunPuffs && travelled < PUFF_NEAR) puffs(origin, partialTicks);
         }
 
         private Vec3d offset(double distance) {
@@ -120,7 +119,7 @@ public class PortalGunOrbTrail {
             if (step > 0) {
                 if (shown) dots(center, step, partialTicks);
                 for (; rings < RING_DISTANCES.length && RING_DISTANCES[rings] <= travelled + step; rings++)
-                    if (shown && MainConfig.client.enablePortalGunRings) FxMoteRenderer.spawn(
+                    if (shown && ClientConfig.enablePortalGunRings) FxMoteRenderer.spawn(
                         new Mote(Kind.RING, along(center, step, RING_DISTANCES[rings]), 0.4, 5, glow, core)
                             .facing(heading),
                         partialTicks);
@@ -138,28 +137,28 @@ public class PortalGunOrbTrail {
         }
 
         private void dots(Vec3d center, double step, float partialTicks) {
-            ClientConfig settings = MainConfig.client;
             spawned = Math.max(spawned, travelled + step - MAX_CATCH_UP);
             while (spawned < travelled + step) {
                 Vec3d base = along(center, step, spawned);
-                double sigma = settings.portalGunTrailWidth * (0.6 + 0.4 * FxEasing.smoothStep((float) (spawned / 3)));
-                for (int k = 0; k < settings.portalGunTrailCount; k++) {
-                    Vec3d offset = offset(sigma, settings.portalGunTrailWidth * SPREAD_LIMIT);
+                double sigma = ClientConfig.portalGunTrailWidth
+                    * (0.6 + 0.4 * FxEasing.smoothStep((float) (spawned / 3)));
+                for (int k = 0; k < ClientConfig.portalGunTrailCount; k++) {
+                    Vec3d offset = offset(sigma, ClientConfig.portalGunTrailWidth * SPREAD_LIMIT);
                     Vec3d outward = offset.length() < MIN_SPEED ? right : offset.normalize();
                     Mote dot = dot(
                         base.add(offset),
-                        settings.portalGunTrailDotSize * (0.6 + 0.8 * RNG.nextDouble()),
+                        ClientConfig.portalGunTrailDotSize * (0.6 + 0.8 * RNG.nextDouble()),
                         DOT_LIFETIME,
                         glow,
                         core,
-                        outward.scale(settings.portalGunTrailSpray * (0.5 + RNG.nextDouble())),
+                        outward.scale(ClientConfig.portalGunTrailSpray * (0.5 + RNG.nextDouble())),
                         DOT_DRAG,
-                        settings.portalGunTrailGravity).hover(settings.portalGunTrailFallDelay * spawned);
+                        ClientConfig.portalGunTrailGravity).hover(ClientConfig.portalGunTrailFallDelay * spawned);
                     twinkleSometimes(dot);
                     FxMoteRenderer.spawn(dot, partialTicks);
                     trailDots.add(dot);
                 }
-                spawned += (0.6 + 0.8 * RNG.nextDouble()) / settings.portalGunTrailDensity;
+                spawned += (0.6 + 0.8 * RNG.nextDouble()) / ClientConfig.portalGunTrailDensity;
             }
         }
 
@@ -180,17 +179,16 @@ public class PortalGunOrbTrail {
             ForgeDirection side = block ? ForgeDirection.getOrientation(hit.sideHit) : ForgeDirection.UNKNOWN;
             Vec3d at = block ? Vec3d.of(hit.hitVec) : end;
             Vec3d normal = block ? Vec3d.of(side) : back.scale(-1);
-            ClientConfig settings = MainConfig.client;
-            if (settings.portalGunTrailCutRange > 0) FxMoteRenderer.fadeOutNear(
+            if (ClientConfig.portalGunTrailCutRange > 0) FxMoteRenderer.fadeOutNear(
                 trailDots,
                 at,
-                settings.portalGunTrailCutRange,
-                settings.portalGunTrailCutTicks,
+                ClientConfig.portalGunTrailCutRange,
+                ClientConfig.portalGunTrailCutTicks,
                 orb.worldObj.getTotalWorldTime() + partialTicks);
-            if (!settings.enablePortalGunSparks) return;
+            if (!ClientConfig.enablePortalGunSparks) return;
             FxMoteRenderer.spawn(new Mote(Kind.FLASH, at.add(normal.scale(0.15)), 0.9, 4, glow, core), partialTicks);
             Vec3d across = Vec3d.rightOf(normal), sideways = across.cross(normal);
-            for (int k = 0; k < settings.portalGunSparkCount; k++) {
+            for (int k = 0; k < ClientConfig.portalGunSparkCount; k++) {
                 double angle = RNG.nextDouble() * Math.PI * 2;
                 Vec3d direction = across.scale(Math.cos(angle))
                     .add(sideways.scale(Math.sin(angle)))
@@ -198,13 +196,13 @@ public class PortalGunOrbTrail {
                     .normalize();
                 Mote dot = dot(
                     at.add(normal.scale(0.05)),
-                    settings.portalGunTrailDotSize * (0.6 + 0.8 * RNG.nextDouble()),
+                    ClientConfig.portalGunTrailDotSize * (0.6 + 0.8 * RNG.nextDouble()),
                     DOT_LIFETIME,
                     glow,
                     core,
                     direction.scale(SPLASH_SPEED + SPLASH_SPREAD * RNG.nextDouble()),
                     DOT_DRAG,
-                    settings.portalGunTrailGravity).delay(0.6 * RNG.nextDouble());
+                    ClientConfig.portalGunTrailGravity).delay(0.6 * RNG.nextDouble());
                 twinkleSometimes(dot);
                 FxMoteRenderer.spawn(dot, partialTicks);
             }

@@ -18,7 +18,7 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import com.gtnewhorizon.gtnhlib.util.data.ItemId;
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.DebugConfig;
 
 import bartworks.API.recipe.BartWorksRecipeMaps;
 import bartworks.system.material.WerkstoffLoader;
@@ -284,7 +284,7 @@ public class RemoveRecipes {
         removeRecipeByOutputDelayed(ItemList.Machine_EV_LightningRod.get(1));
         removeRecipeByOutputDelayed(ItemList.Machine_IV_LightningRod.get(1));
 
-        if (MainConfig.debug.enableDebugMode) {
+        if (DebugConfig.enableDebugMode) {
             removedRecipeCounts.put("Autoclave", recipesToRemoveFromAutoClave.size());
             removedRecipeCounts.put("Circuit Assembler", recipesToRemoveFromCircuitAssembler.size());
             removedRecipeCounts.put("Circuit Assembly Line", recipesToRemoveFromCircuitAssemblyLine.size());

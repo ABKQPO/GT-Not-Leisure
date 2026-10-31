@@ -11,12 +11,10 @@ import net.minecraft.launchwrapper.Launch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.gtnewhorizon.gtnhlib.config.ConfigException;
-import com.gtnewhorizon.gtnhlib.config.ConfigurationManager;
 import com.gtnewhorizon.gtnhmixins.IEarlyMixinLoader;
 import com.gtnewhorizon.gtnhmixins.builders.IMixins;
 import com.science.gtnl.config.ConfigMigration;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ConfigRegistry;
 import com.science.gtnl.mixins.Mixins;
 
 import cpw.mods.fml.relauncher.FMLLaunchHandler;
@@ -44,21 +42,16 @@ public class GTNLEarlyCoreMod implements IFMLLoadingPlugin, IEarlyMixinLoader {
             LOGGER.error("Failed to patch ObfuscationRun", t);
         }
 
-        if (FMLLaunchHandler.side()
-            .isClient()) {
-            try {
-                ConfigMigration.moveTextEffectsSetting(
-                    new File(Launch.minecraftHome != null ? Launch.minecraftHome : new File("."), "config"));
-            } catch (RuntimeException e) {
-                LOGGER.error("Failed to move the text effects setting into the GTNLLib config", e);
-            }
+        try {
+            ConfigMigration.migrate(
+                new File(Launch.minecraftHome != null ? Launch.minecraftHome : new File("."), "config"),
+                FMLLaunchHandler.side()
+                    .isClient());
+        } catch (RuntimeException e) {
+            LOGGER.error("Failed to migrate the old config files", e);
         }
 
-        try {
-            ConfigurationManager.registerConfig(MainConfig.class);
-        } catch (ConfigException e) {
-            LOGGER.error("Failed to register config", e);
-        }
+        ConfigRegistry.registerCommon();
 
         LocalDate today = LocalDate.now();
         enableAprilFool = today.getMonthValue() == 4 && today.getDayOfMonth() == 1;

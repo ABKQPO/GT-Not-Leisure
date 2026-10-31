@@ -10,7 +10,7 @@ import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.science.gtnl.common.entity.EntitySteamRocket;
 import com.science.gtnl.common.item.items.MilledOre;
 import com.science.gtnl.common.material.GTNLMaterials;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ItemConfig;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.text.LanguageLoader;
@@ -65,7 +65,7 @@ public class MaterialLoader implements IContentLoader {
         GTOreDictUnificator
             .registerOre("blockGlass" + GTValues.VN[13], GTNLItemList.ShirabonReinforcedBoronSilicateGlass.get(1));
 
-        if (MainConfig.item.player_doll.enableRegisterMAXTierGlass) {
+        if (ItemConfig.player_doll.enableRegisterMAXTierGlass) {
             GlassTier.addCustomGlass(BlockLoader.playerDoll, 1, 14, 1);
             GlassTier.addCustomGlass(BlockLoader.playerDoll, 2, 14, 1);
             GlassTier.addCustomGlass(BlockLoader.playerDoll, 3, 14, 1);

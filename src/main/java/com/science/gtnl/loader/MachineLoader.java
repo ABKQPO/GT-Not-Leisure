@@ -11,7 +11,7 @@ import com.science.gtnl.common.machine.cover.VoidCover;
 import com.science.gtnl.common.machine.cover.WirelessMultiEnergyCover;
 import com.science.gtnl.common.machine.cover.WirelessSteamCover;
 import com.science.gtnl.compat.vmtweak.VoidMinerTweak;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.MachineConfig;
 import com.science.gtnl.loader.machine.BasicMachineLoader;
 import com.science.gtnl.loader.machine.HatchLoader;
 import com.science.gtnl.loader.machine.MultiblockLoader;
@@ -144,7 +144,7 @@ public class MachineLoader implements IContentLoader {
             AnimatedTooltipHandler.addItemTooltip(ItemRegistry.voidminer[2], AnimatedText.GT_NOT_LEISURE_CHANGE);
         }
 
-        if (MainConfig.machine.enablePurificationPlantBuff) {
+        if (MachineConfig.enablePurificationPlantBuff) {
             AnimatedTooltipHandler.addItemTooltip(
                 ItemList.Machine_Multi_PurificationPlant.get(1),
                 () -> StatCollector.translateToLocal("gtnl.machine.purification_plant.tooltip.0"));

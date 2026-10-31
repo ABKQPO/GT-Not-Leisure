@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.reavaritia.common.items.InfinitySword;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ReAvaritiaConfig;
 
 import thaumic.tinkerer.common.item.ItemBloodSword;
 
@@ -19,7 +19,7 @@ public abstract class MixinItemBloodSword {
 
     @Inject(method = "onDamageTaken", at = @At("HEAD"), cancellable = true)
     public void onDamageTaken(LivingAttackEvent event, CallbackInfo ci) {
-        if (!MainConfig.re_avaritia.infinity_sword.enableBypass) return;
+        if (!ReAvaritiaConfig.infinity_sword.enableBypass) return;
         Entity entity = event.source.getSourceOfDamage();
         if (!(entity instanceof EntityPlayer player)) return;
         if (!player.isSneaking()) return;

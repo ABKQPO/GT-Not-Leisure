@@ -31,7 +31,11 @@ import com.science.gtnl.common.packet.SoundPacket;
 import com.science.gtnl.common.packet.SyncCircuitNanitesPacket;
 import com.science.gtnl.compat.galaxyspace.SteamRocketSchematic;
 import com.science.gtnl.compat.overpowered.RecipeOutputChance;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.DebugConfig;
+import com.science.gtnl.config.MachineConfig;
+import com.science.gtnl.config.MessageConfig;
+import com.science.gtnl.config.OtherConfig;
+import com.science.gtnl.config.RecipeConfig;
 import com.science.gtnl.loader.AchievementsLoader;
 import com.science.gtnl.mixins.early.minecraft.AccessorFoodStats;
 import com.science.gtnl.utils.enums.GTNLItemList;
@@ -69,9 +73,9 @@ public class PlayerEvents {
             player.triggerAchievement(AchievementsLoader.installAllCommunityMod);
         }
 
-        if (MainConfig.message.enableShowJoinMessage || MainConfig.debug.enableDebugMode) {
+        if (MessageConfig.enableShowJoinMessage || DebugConfig.enableDebugMode) {
 
-            if (MainConfig.message.enableShowAddMods) {
+            if (MessageConfig.enableShowAddMods) {
                 for (ModList mod : ModList.loadedListedMods()) {
                     String translatedPrefix = StatCollector.translateToLocal("gtnl.message.mod_installed");
                     player.addChatMessage(
@@ -93,7 +97,7 @@ public class PlayerEvents {
                 new ChatComponentTranslation("gtnl.message.welcome.3")
                     .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)));
 
-            if (MainConfig.recipe.enableDeleteRecipe) {
+            if (RecipeConfig.enableDeleteRecipe) {
                 player.addChatMessage(
                     new ChatComponentTranslation("gtnl.message.recipe_removal_enabled")
                         .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)));
@@ -106,18 +110,18 @@ public class PlayerEvents {
                 player.addChatMessage(
                     new ChatComponentTranslation(
                         "gtnl.message.recipe_output_chance_increase",
-                        MainConfig.machine.recipeOutputChance + "%")
+                        MachineConfig.recipeOutputChance + "%")
                             .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GOLD)));
             }
 
-            if (MainConfig.recipe.enableShowDelRecipeTitle) {
+            if (RecipeConfig.enableShowDelRecipeTitle) {
                 TitlePacketHandler.sendTimes(player, 10, 200, 20);
                 TitlePacketHandler
                     .sendTitle(player, new ChatComponentTranslation("gtnl.message.recipe_removal_enabled"));
             }
         }
 
-        if (MainConfig.debug.enableDebugMode) {
+        if (DebugConfig.enableDebugMode) {
             player.addChatMessage(
                 new ChatComponentTranslation("gtnl.message.debug_enabled")
                     .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)));
@@ -207,8 +211,8 @@ public class PlayerEvents {
 
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        if (event.phase != TickEvent.Phase.END || event.player.worldObj.isRemote
-            || !MainConfig.other.enableSaturationHeal) return;
+        if (event.phase != TickEvent.Phase.END || event.player.worldObj.isRemote || !OtherConfig.enableSaturationHeal)
+            return;
 
         EntityPlayer player = event.player;
         FoodStats stats = player.getFoodStats();

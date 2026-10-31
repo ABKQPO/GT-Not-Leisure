@@ -22,7 +22,6 @@ import com.science.gtnl.common.render.entity.PortalGunDoorRender;
 import com.science.gtnl.common.render.entity.PortalGunSpriteRender;
 import com.science.gtnl.common.render.entity.PortalGunVortexRender;
 import com.science.gtnl.config.ClientConfig;
-import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.PortalGunPortalEffect;
 
 import cpw.mods.fml.relauncher.Side;
@@ -113,13 +112,13 @@ public class PortalGunPortalFx {
             SWIRL_HALF_HEIGHT * PortalGunSpriteRender.heightScale(open, close));
     }
 
-    public static int closeTicks(PortalGunPortalEffect effect, ClientConfig settings) {
+    public static int closeTicks(PortalGunPortalEffect effect) {
         return effect.kind == PortalGunPortalEffect.Kind.FRAMED ? PortalGunDoorRender.DOOR_OPEN_TICKS
-            : settings.portalGunCloseTicks;
+            : ClientConfig.portalGunCloseTicks;
     }
 
-    public static Pose pose(PortalGunPortalEffect effect, double sincePass, float close, ClientConfig settings) {
-        double sx = 1, sy = 1, push = 0, jelly = settings.portalGunPassJelly;
+    public static Pose pose(PortalGunPortalEffect effect, double sincePass, float close) {
+        double sx = 1, sy = 1, push = 0, jelly = ClientConfig.portalGunPassJelly;
         if (close <= 0 && jelly > 0 && sincePass >= 0 && sincePass < JELLY_TICKS) {
             double decay = Math.exp(-sincePass / JELLY_PERIOD), phase = 2 * Math.PI * sincePass / JELLY_PERIOD;
             sx += jelly * Math.sin(phase) * decay;
@@ -127,7 +126,7 @@ public class PortalGunPortalFx {
             push = -JELLY_ROCK * jelly * Math.sin(phase + JELLY_LAG) * decay;
         }
         if (close > 0 && effect.kind != PortalGunPortalEffect.Kind.FRAMED) {
-            double bump = settings.portalGunClosePop * Math.sin(Math.PI * Math.min(1, close / POP_SPAN));
+            double bump = ClientConfig.portalGunClosePop * Math.sin(Math.PI * Math.min(1, close / POP_SPAN));
             sx *= 1 + bump / 2;
             sy *= 1 + bump;
         }
@@ -151,11 +150,11 @@ public class PortalGunPortalFx {
         return new Shape(false, shape.halfWidth() * k, shape.halfHeight() * k);
     }
 
-    public static List<Dot> dots(PortalGunPortalEffect effect, long seed, ClientConfig settings) {
+    public static List<Dot> dots(PortalGunPortalEffect effect, long seed) {
         Random r = new Random(MathUtils.hash(seed, 0x5EED, 0, 0));
         Shape full = shape(effect, Float.MAX_VALUE / 2, 0);
-        int spots = Math.max(1, (int) Math.round(full.perimeter() * settings.portalGunOpenDensity));
-        double limit = Math.max(1.0E-4, settings.portalGunOpenSpread * 2.5);
+        int spots = Math.max(1, (int) Math.round(full.perimeter() * ClientConfig.portalGunOpenDensity));
+        double limit = Math.max(1.0E-4, ClientConfig.portalGunOpenSpread * 2.5);
         List<Dot> dots = new ObjectArrayList<>();
         for (int i = 0; i < spots; i++) {
             double born = BURST * Math.pow(r.nextDouble(), 1.6);
@@ -164,59 +163,59 @@ public class PortalGunPortalFx {
             if (now.size() < BALL) {
                 double angle = r.nextDouble() * 2 * Math.PI, k = Math.sqrt(r.nextDouble()) * BALL;
                 edge = new Edge(Math.cos(angle) * k, Math.sin(angle) * k, Math.cos(angle), Math.sin(angle));
-            } else if (settings.enablePortalGunOpenWholeFace) {
+            } else if (ClientConfig.enablePortalGunOpenWholeFace) {
                 double k = Math.sqrt(r.nextDouble()) * FACE_REACH;
                 edge = new Edge(edge.x() * k, edge.y() * k, edge.outX(), edge.outY());
             }
-            for (int k = 0; k < settings.portalGunOpenCount; k++) {
-                double lateral = Math.abs(PortalGunOrbTrail.gauss(r, settings.portalGunOpenSpread, limit)),
-                    depth = Math.abs(PortalGunOrbTrail.gauss(r, settings.portalGunOpenSpread, limit));
+            for (int k = 0; k < ClientConfig.portalGunOpenCount; k++) {
+                double lateral = Math.abs(PortalGunOrbTrail.gauss(r, ClientConfig.portalGunOpenSpread, limit)),
+                    depth = Math.abs(PortalGunOrbTrail.gauss(r, ClientConfig.portalGunOpenSpread, limit));
                 Vec3d origin = new Vec3d(
                     edge.x() + edge.outX() * lateral,
                     edge.y() + edge.outY() * lateral,
                     0.04 + depth);
-                dots.add(thrown(r, settings, born, origin, edge.outX(), edge.outY()));
+                dots.add(thrown(r, born, origin, edge.outX(), edge.outY()));
             }
         }
         return dots;
     }
 
-    public static List<Dot> passDots(PortalGunPortalEffect effect, long seed, ClientConfig settings) {
+    public static List<Dot> passDots(PortalGunPortalEffect effect, long seed) {
         Random r = new Random(MathUtils.hash(seed, 0x5A55, 0, 0));
         Shape full = shape(effect, Float.MAX_VALUE / 2, 0);
-        List<Dot> dots = new ObjectArrayList<>(settings.portalGunPassDotCount);
-        for (int i = 0; i < settings.portalGunPassDotCount; i++) {
+        List<Dot> dots = new ObjectArrayList<>(ClientConfig.portalGunPassDotCount);
+        for (int i = 0; i < ClientConfig.portalGunPassDotCount; i++) {
             double angle = r.nextDouble() * 2 * Math.PI, k = Math.sqrt(r.nextDouble()) * PASS_REACH;
             Vec3d origin = new Vec3d(
                 Math.cos(angle) * full.halfWidth() * k,
                 Math.sin(angle) * full.halfHeight() * k,
                 0.05);
-            dots.add(thrown(r, settings, PASS_SPREAD * r.nextDouble(), origin, Math.cos(angle), Math.sin(angle)));
+            dots.add(thrown(r, PASS_SPREAD * r.nextDouble(), origin, Math.cos(angle), Math.sin(angle)));
         }
         return dots;
     }
 
-    private static Dot thrown(Random r, ClientConfig settings, double born, Vec3d origin, double outX, double outY) {
+    private static Dot thrown(Random r, double born, Vec3d origin, double outX, double outY) {
         double tilt = r.nextDouble() * 2 * Math.PI, cone = CONE * Math.sqrt(r.nextDouble());
         Vec3d aim = new Vec3d(Math.cos(tilt) * cone, Math.sin(tilt) * cone, 1).normalize();
-        Vec3d velocity = new Vec3d(outX, outY, 0).scale(settings.portalGunOpenSpray * range(r, 0.5, 1.5))
-            .add(aim.scale(settings.portalGunOpenJet * range(r, 0.3, 1.3)));
+        Vec3d velocity = new Vec3d(outX, outY, 0).scale(ClientConfig.portalGunOpenSpray * range(r, 0.5, 1.5))
+            .add(aim.scale(ClientConfig.portalGunOpenJet * range(r, 0.3, 1.3)));
         return new Dot(
             born,
-            settings.portalGunOpenHover * range(r, 0.5, 1.5),
+            ClientConfig.portalGunOpenHover * range(r, 0.5, 1.5),
             origin,
             velocity,
-            settings.portalGunOpenDotSize * range(r, 0.6, 1.4),
+            ClientConfig.portalGunOpenDotSize * range(r, 0.6, 1.4),
             r.nextDouble() < PortalGunOrbTrail.TWINKLE_CHANCE,
             r.nextFloat() * (float) Math.PI * 2);
     }
 
-    public static List<Arc> openingArcs(PortalGunPortalEffect effect, double age, long seed, ClientConfig settings) {
+    public static List<Arc> openingArcs(PortalGunPortalEffect effect, double age, long seed) {
         List<Arc> arcs = new ObjectArrayList<>();
-        if (age < 0 || age >= settings.portalGunOpenArcTicks) return arcs;
-        double hop = settings.portalGunArcHop;
+        if (age < 0 || age >= ClientConfig.portalGunOpenArcTicks) return arcs;
+        double hop = ClientConfig.portalGunArcHop;
         Random r = new Random(MathUtils.hash(seed, (long) Math.floor(age / hop), 0, 0));
-        double expected = settings.portalGunOpenArcRate * hop * FxEasing.smoothStep((float) ((age + hop) / RAMP));
+        double expected = ClientConfig.portalGunOpenArcRate * hop * FxEasing.smoothStep((float) ((age + hop) / RAMP));
         int count = (int) Math.floor(expected * range(r, 0.4, 1.6) + r.nextDouble());
         Shape shape = shape(effect, (float) age, 0);
         float flash = 0.7F + 0.3F * r.nextFloat();
@@ -224,7 +223,7 @@ public class PortalGunPortalFx {
             if (shape.size() < 0.3) {
                 Vec3d a = new Vec3d(range(r, -1, 1) * BALL, range(r, -1, 1) * BALL, 0.15 + range(r, -0.3, 1) * BALL);
                 Vec3d b = new Vec3d(range(r, -1, 1) * BALL, range(r, -1, 1) * BALL, 0.15 + range(r, -0.3, 1) * BALL);
-                bolt(arcs, r, a, b, 0, 0.35, settings.portalGunArcForkChance, false, flash);
+                bolt(arcs, r, a, b, 0, 0.35, ClientConfig.portalGunArcForkChance, false, flash);
             } else if (r.nextDouble() < 0.2) {
                 double[] at = facePoint(r, shape, 0.35);
                 sharpBolt(
@@ -233,9 +232,9 @@ public class PortalGunPortalFx {
                     new Vec3d(at[0], at[1], 0.03),
                     new Vec3d(at[0] + range(r, -0.05, 0.05), at[1] + range(r, -0.05, 0.05), range(r, 0.35, 0.55)),
                     0,
-                    settings.portalGunOpenArcBend,
-                    settings.portalGunOpenArcRise,
-                    settings.portalGunArcForkChance,
+                    ClientConfig.portalGunOpenArcBend,
+                    ClientConfig.portalGunOpenArcRise,
+                    ClientConfig.portalGunArcForkChance,
                     true,
                     flash);
             } else {
@@ -249,10 +248,10 @@ public class PortalGunPortalFx {
                     r,
                     new Vec3d(from[0], from[1], 0.03),
                     new Vec3d(toX, toY, 0.03),
-                    settings.portalGunOpenArcRise * Math.hypot(toX - from[0], toY - from[1]) * range(r, 0.6, 1.4),
-                    settings.portalGunOpenArcBend,
-                    settings.portalGunOpenArcRise,
-                    settings.portalGunArcForkChance,
+                    ClientConfig.portalGunOpenArcRise * Math.hypot(toX - from[0], toY - from[1]) * range(r, 0.6, 1.4),
+                    ClientConfig.portalGunOpenArcBend,
+                    ClientConfig.portalGunOpenArcRise,
+                    ClientConfig.portalGunArcForkChance,
                     false,
                     flash);
             }
@@ -260,14 +259,14 @@ public class PortalGunPortalFx {
         return arcs;
     }
 
-    public static List<Arc> idleArcs(PortalGunPortalEffect effect, double age, long seed, ClientConfig settings) {
+    public static List<Arc> idleArcs(PortalGunPortalEffect effect, double age, long seed) {
         List<Arc> arcs = new ObjectArrayList<>();
         int opened = openedAt(effect);
         if (age < opened) return arcs;
-        double hop = settings.portalGunArcHop;
+        double hop = ClientConfig.portalGunArcHop;
         long now = (long) Math.floor(age / hop);
         Shape shape = shape(effect, (float) age, 0), ring = innerRing(effect, shape);
-        double[] rates = { settings.portalGunRingArcRate, settings.portalGunCenterArcRate };
+        double[] rates = { ClientConfig.portalGunRingArcRate, ClientConfig.portalGunCenterArcRate };
         for (int kind = 0; kind < 2; kind++) {
             if (rates[kind] <= 0) continue;
             for (long slot = now - 4; slot <= now; slot++) {
@@ -290,7 +289,7 @@ public class PortalGunPortalFx {
                         new Vec3d(b.x(), b.y(), 0.02),
                         range(strike, 0.01, 0.05),
                         0.32,
-                        settings.portalGunArcForkChance,
+                        ClientConfig.portalGunArcForkChance,
                         false,
                         flash);
                 } else {
@@ -305,7 +304,7 @@ public class PortalGunPortalFx {
                             range(strike, 0.18, 0.32)),
                         0,
                         0.32,
-                        settings.portalGunArcForkChance,
+                        ClientConfig.portalGunArcForkChance,
                         true,
                         flash);
                     else {
@@ -317,7 +316,7 @@ public class PortalGunPortalFx {
                             new Vec3d(b[0], b[1], 0.02),
                             range(strike, 0.02, 0.08),
                             0.32,
-                            settings.portalGunArcForkChance,
+                            ClientConfig.portalGunArcForkChance,
                             false,
                             flash);
                     }
@@ -398,7 +397,6 @@ public class PortalGunPortalFx {
 
     public static void throwDots(EntityPortalGunPortal portal, PortalGunPortalEffect effect, double x, double y,
         double z, float partialTicks) {
-        ClientConfig settings = MainConfig.client;
         double age = portal.ticksExisted + partialTicks;
         long seed = portal.getEntityId();
         Vec3d up = Vec3d.of(portal.up()), normal = Vec3d.of(portal.facing()), right = up.cross(normal);
@@ -408,14 +406,13 @@ public class PortalGunPortalFx {
             z + RenderManager.renderPosZ);
         int glow = effect.glowColor & 0xFFFFFF, core = effect.coreColor & 0xFFFFFF;
         if (BURST_SPAWNED.putIfAbsent(portal, Boolean.TRUE) == null && age < BURST)
-            spawnDots(dots(effect, seed, settings), age, settings, center, right, up, normal, glow, core, partialTicks);
+            spawnDots(dots(effect, seed), age, center, right, up, normal, glow, core, partialTicks);
         int passed = portal.lastPass();
         if (passed != EntityPortalGunPortal.NEVER_PASSED && !Objects.equals(PASS_SEEN.put(portal, passed), passed)
             && portal.sincePass(partialTicks) < PASS_FRESH)
             spawnDots(
-                passDots(effect, MathUtils.hash(seed, passed, 0, 0), settings),
+                passDots(effect, MathUtils.hash(seed, passed, 0, 0)),
                 0,
-                settings,
                 center,
                 right,
                 up,
@@ -427,7 +424,6 @@ public class PortalGunPortalFx {
 
     public static void render(EntityPortalGunPortal portal, PortalGunPortalEffect effect, double x, double y, double z,
         float partialTicks, float close, Pose pose) {
-        ClientConfig settings = MainConfig.client;
         double age = portal.ticksExisted + partialTicks;
         long seed = portal.getEntityId();
         Vec3d up = Vec3d.of(portal.up()), normal = Vec3d.of(portal.facing()), right = up.cross(normal);
@@ -447,12 +443,12 @@ public class PortalGunPortalFx {
         });
         List<Arc> arcs = new ObjectArrayList<>();
         float fade = 1 - FxEasing.smoothStep(
-            (float) (settings.portalGunOpenArcTicks - ARC_FADE),
-            (float) settings.portalGunOpenArcTicks,
+            (float) (ClientConfig.portalGunOpenArcTicks - ARC_FADE),
+            (float) ClientConfig.portalGunOpenArcTicks,
             (float) age);
-        for (Arc arc : openingArcs(effect, age, seed, settings))
+        for (Arc arc : openingArcs(effect, age, seed))
             arcs.add(new Arc(arc.points(), arc.straightOut(), arc.fork(), arc.alpha() * fade));
-        if (!portal.closing()) arcs.addAll(idleArcs(effect, age, seed, settings));
+        if (!portal.closing()) arcs.addAll(idleArcs(effect, age, seed));
         if (arcs.isEmpty()) return;
         List<List<Vec3d>> paths = new ObjectArrayList<>(arcs.size());
         for (Arc arc : arcs) {
@@ -462,7 +458,7 @@ public class PortalGunPortalFx {
             for (Vec3d local : arc.points()) points.add(world(local, posedCenter, posedRight, posedUp, normal));
             paths.add(points);
         }
-        double width = settings.portalGunArcWidth;
+        double width = ClientConfig.portalGunArcWidth;
         int hug = ColorMath.lerp(glow, core, 0.5F), node = ColorMath.lerp(core, WHITE, 0.5F),
             foot = ColorMath.lerp(glow, WHITE, 0.5F);
         FxRenderHelper.renderGlow(Sprite.RADIAL, () -> {
@@ -519,9 +515,9 @@ public class PortalGunPortalFx {
         return arc.fork() ? arc.alpha() * 0.75F : arc.alpha();
     }
 
-    private static void spawnDots(List<Dot> dots, double age, ClientConfig settings, Vec3d center, Vec3d right,
-        Vec3d up, Vec3d normal, int glow, int core, float partialTicks) {
-        boolean falls = settings.portalGunOpenGravity > 0;
+    private static void spawnDots(List<Dot> dots, double age, Vec3d center, Vec3d right, Vec3d up, Vec3d normal,
+        int glow, int core, float partialTicks) {
+        boolean falls = ClientConfig.portalGunOpenGravity > 0;
         for (Dot dot : dots) {
             if (dot.born() < age) continue;
             Mote mote = PortalGunOrbTrail
@@ -532,8 +528,8 @@ public class PortalGunPortalFx {
                     glow,
                     core,
                     world(dot.velocity(), Vec3d.ZERO, right, up, normal),
-                    settings.portalGunOpenDrag,
-                    settings.portalGunOpenGravity)
+                    ClientConfig.portalGunOpenDrag,
+                    ClientConfig.portalGunOpenGravity)
                 .hover(dot.hover())
                 .delay(dot.born() - age);
             if (dot.twinkle()) mote.twinkle(dot.phase());

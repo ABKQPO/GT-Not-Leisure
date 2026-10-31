@@ -8,7 +8,7 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
 import org.lwjgl.opengl.GL11;
 
 import com.reavaritia.common.items.InfinitySword;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ReAvaritiaConfig;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -20,7 +20,7 @@ public class SubscribeEventClientUtils {
     @SideOnly(Side.CLIENT)
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void onRenderPlayer(RenderPlayerEvent.Pre event) {
-        if (MainConfig.re_avaritia.infinity_sword.enableSpecialRender) {
+        if (ReAvaritiaConfig.infinity_sword.enableSpecialRender) {
             EntityPlayer player = event.entityPlayer;
             ItemStack heldItem = player.getHeldItem();
 
@@ -40,7 +40,7 @@ public class SubscribeEventClientUtils {
     @SideOnly(Side.CLIENT)
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onRenderPlayerPost(RenderPlayerEvent.Post event) {
-        if (MainConfig.re_avaritia.infinity_sword.enableSpecialRender) {
+        if (ReAvaritiaConfig.infinity_sword.enableSpecialRender) {
             EntityPlayer player = event.entityPlayer;
             ItemStack heldItem = player.getHeldItem();
 

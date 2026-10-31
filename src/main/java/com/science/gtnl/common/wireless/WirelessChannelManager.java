@@ -15,7 +15,7 @@ import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
 import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.WirelessConfig;
 import com.science.gtnl.mixins.late.appliedEnergistics.wireless.AccessorTileController;
 
 import appeng.api.AEApi;
@@ -261,7 +261,7 @@ public class WirelessChannelManager {
     }
 
     public static int entranceLimit() {
-        return Math.max(1, MainConfig.wireless.maxEntrancesPerFrequency);
+        return Math.max(1, WirelessConfig.maxEntrancesPerFrequency);
     }
 
     public static int entranceCount(WirelessFrequency frequency) {

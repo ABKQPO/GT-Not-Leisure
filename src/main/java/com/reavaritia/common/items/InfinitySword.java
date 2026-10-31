@@ -45,7 +45,7 @@ import com.reavaritia.utils.enums.ReAvaItemList;
 import com.reavaritia.utils.item.SubtitleDisplay;
 import com.reavaritia.utils.item.ToolHelper;
 import com.science.gtnl.common.entity.EntitySaddleSlime;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ReAvaritiaConfig;
 import com.science.gtnl.mixins.late.botania.AccessorEntityDoppleganger;
 import com.science.gtnl.mixins.late.draconicEvolution.AccessorCustomArmorHandler;
 
@@ -316,7 +316,7 @@ public class InfinitySword extends ItemSword implements ICosmicRenderItem, Subti
                 target.setHealth(newHealth);
             }
 
-            if (MainConfig.re_avaritia.infinity_sword.enableExplosion) {
+            if (ReAvaritiaConfig.infinity_sword.enableExplosion) {
                 world.newExplosion(target, target.posX, target.posY, target.posZ, 250.0F, true, true);
             }
         } else {

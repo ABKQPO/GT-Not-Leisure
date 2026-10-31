@@ -93,7 +93,7 @@ public class MiniTerminalClient {
     private static String network = "";
 
     public static void init() {
-        MiniTerminalClientConfig.load(LAYOUT);
+        MiniTerminalClientConfig.restore(LAYOUT);
         FloatingWindows.register(MiniTerminalClient::overlay);
         GuiContainerManager.addSlotClickHandler(new MiniTerminalNEIAdapter());
     }

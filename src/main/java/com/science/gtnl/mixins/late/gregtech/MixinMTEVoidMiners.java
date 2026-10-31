@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 import com.science.gtnl.common.machine.voidminer.VoidMinerHooks;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.MachineConfig;
 
 import bwcrossmod.galacticgreg.MTEVoidMinerBase;
 import bwcrossmod.galacticgreg.MTEVoidMiners;
@@ -30,7 +30,7 @@ public abstract class MixinMTEVoidMiners extends MTEVoidMinerBase<MixinMTEVoidMi
             target = "Lgregtech/api/util/HatchElementBuilder;atLeast([Lgregtech/api/interfaces/IHatchElement;)Lgregtech/api/util/HatchElementBuilder;"),
         index = 0)
     private static IHatchElement<?>[] modifyAtLeastArgs(IHatchElement<?>[] elements) {
-        if (!MainConfig.machine.enableVoidMinerTweak) return elements;
+        if (!MachineConfig.enableVoidMinerTweak) return elements;
         return new IHatchElement<?>[] { HatchElement.InputHatch, HatchElement.OutputBus, HatchElement.InputBus,
             HatchElement.Maintenance, HatchElement.Energy.or(HatchElement.ExoticEnergy) };
     }
@@ -38,7 +38,7 @@ public abstract class MixinMTEVoidMiners extends MTEVoidMinerBase<MixinMTEVoidMi
     @Override
     protected void checkHatches(List<StructureError> errors) {
         super.checkHatches(errors);
-        if (!MainConfig.machine.enableVoidMinerTweak) return;
+        if (!MachineConfig.enableVoidMinerTweak) return;
         VoidMinerHooks.checkAmperage(errors, mEnergyHatches, mExoticEnergyHatches);
     }
 

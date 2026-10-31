@@ -33,7 +33,7 @@ import com.science.gtnl.common.machine.tooltip.InfoSummary.BonusStat;
 import com.science.gtnl.common.machine.tooltip.InfoSummary.TierBonus;
 import com.science.gtnl.common.machine.tooltip.MultiblockTooltipReader;
 import com.science.gtnl.common.machine.tooltip.StructureTooltipHooks;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.MachineConfig;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
@@ -371,7 +371,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     }
 
     protected void checkEnergyHatch(List<StructureError> errors) {
-        if (MainConfig.machine.enableLaserHatch) {
+        if (MachineConfig.enableLaserHatch) {
             return;
         }
         boolean hasEnergyTunnel = false;

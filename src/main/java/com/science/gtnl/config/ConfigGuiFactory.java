@@ -21,13 +21,7 @@ public class ConfigGuiFactory implements SimpleGuiFactory {
     public static class Screen extends SimpleGuiConfig {
 
         public Screen(GuiScreen parent) throws ConfigException {
-            super(
-                parent,
-                ScienceNotLeisure.MODID,
-                ScienceNotLeisure.MODNAME,
-                true,
-                MainConfig.class,
-                EquipmentSoundConfig.class);
+            super(parent, ScienceNotLeisure.MODID, ScienceNotLeisure.MODNAME, true, ConfigRegistry.gui());
         }
     }
 }

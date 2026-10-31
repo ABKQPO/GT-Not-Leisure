@@ -1,5 +1,6 @@
 package com.science.gtnl.config;
 
+import com.gtnewhorizon.gtnhlib.config.Config;
 import com.gtnewhorizon.gtnhlib.config.Config.Comment;
 import com.gtnewhorizon.gtnhlib.config.Config.DefaultBoolean;
 import com.gtnewhorizon.gtnhlib.config.Config.DefaultDouble;
@@ -9,51 +10,56 @@ import com.gtnewhorizon.gtnhlib.config.Config.Name;
 import com.gtnewhorizon.gtnhlib.config.Config.RangeInt;
 import com.gtnewhorizon.gtnhlib.config.Config.RequiresMcRestart;
 import com.gtnewhorizon.gtnhlib.config.Config.Sync;
+import com.science.gtnl.ScienceNotLeisure;
 
+@Config(
+    modid = ScienceNotLeisure.MODID,
+    category = "machine",
+    configSubDirectory = ConfigRegistry.DIRECTORY,
+    filename = ConfigRegistry.MACHINE_FILE)
+@Config.LangKeyPattern(pattern = ConfigRegistry.LANG_PATTERN, fullyQualified = true)
 @Sync
 @Comment("Machine section")
 public class MachineConfig {
 
     @Comment("Default energy consumption per operation (in AE/t)")
-    @LangKey("gtnl.gui.config.general.machine.beam_former_energy_consume")
+    @LangKey("gtnl.gui.config.machine.beam_former_energy_consume")
     @DefaultDouble(10)
-    public double beamFormerEnergyConsume = 10;
+    public static double beamFormerEnergyConsume = 10;
 
     @Comment("Default maximum beam length (in blocks)")
-    @LangKey("gtnl.gui.config.general.machine.beam_former_length")
+    @LangKey("gtnl.gui.config.machine.beam_former_length")
     @DefaultInt(256)
-    public int beamFormerLength = 256;
+    public static int beamFormerLength = 256;
 
     @Comment("Allow interaction with machines from their main facing (similar to GTM behavior)")
-    @LangKey("gtnl.gui.config.general.machine.allow_main_facing_interaction")
+    @LangKey("gtnl.gui.config.machine.allow_main_facing_interaction")
     @DefaultBoolean(false)
-    public boolean allowMainFacingInteraction = false;
+    public static boolean allowMainFacingInteraction = false;
 
     @Comment("Set Machine Can Use Laser Hatch")
-    @Name("enableLaserHatch")
     @DefaultBoolean(false)
-    public boolean enableLaserHatch = false;
+    public static boolean enableLaserHatch = false;
 
     @Comment("Enable Purification Plant Buff, add Wireless mode and max long parallels")
     @DefaultBoolean(false)
     @RequiresMcRestart
-    public boolean enablePurificationPlantBuff = false;
+    public static boolean enablePurificationPlantBuff = false;
 
     @Comment("Enable Output Change Function")
     @DefaultBoolean(true)
     @RequiresMcRestart
-    public boolean enableRecipeOutputChance = true;
+    public static boolean enableRecipeOutputChance = true;
 
     @Comment("Enable Void Miner Tweak, allows you to override target dimension that Void Miner mines")
     @DefaultBoolean(true)
-    public boolean enableVoidMinerTweak = true;
+    public static boolean enableVoidMinerTweak = true;
 
     @Comment("Change Recipe Item Output, like QFT")
     @DefaultDouble(2.5)
-    public double recipeOutputChance = 2.5;
+    public static double recipeOutputChance = 2.5;
 
-    @Name("quantum_computer")
-    public final QuantumComputer quantum_computer = new QuantumComputer();
+    public static final QuantumComputer quantum_computer = new QuantumComputer();
 
     @Comment("Quantum Computer")
     public static class QuantumComputer {
@@ -92,8 +98,7 @@ public class MachineConfig {
         public int calculationLimitSeconds = 30;
     }
 
-    @Name("meteor_miner")
-    public final MeteorMiner meteor_miner = new MeteorMiner();
+    public static final MeteorMiner meteor_miner = new MeteorMiner();
 
     @Comment("Meteor Miner")
     public static class MeteorMiner {
@@ -109,8 +114,7 @@ public class MachineConfig {
         public int meteorMinerMaxRowPerCycle = 1;
     }
 
-    @Name("artificial_star")
-    public final ArtificialStar artificial_star = new ArtificialStar();
+    public static final ArtificialStar artificial_star = new ArtificialStar();
 
     @Comment("Artificial Star")
     public static class ArtificialStar {
@@ -135,8 +139,7 @@ public class MachineConfig {
         public double secondsOfArtificialStarProgressCycleTime = 6.4;
     }
 
-    @Name("eternal_gregtech_workshop")
-    public final EternalWorkshop eternal_gregtech_workshop = new EternalWorkshop();
+    public static final EternalWorkshop eternal_gregtech_workshop = new EternalWorkshop();
 
     @Comment("Eternal Workshop")
     public static class EternalWorkshop {
@@ -146,8 +149,7 @@ public class MachineConfig {
         public boolean spiralRender = false;
     }
 
-    @Name("portal_to_alfheim")
-    public final PortalAlfheim portal_to_alfheim = new PortalAlfheim();
+    public static final PortalAlfheim portal_to_alfheim = new PortalAlfheim();
 
     @Comment("Portal Alfheim")
     public static class PortalAlfheim {

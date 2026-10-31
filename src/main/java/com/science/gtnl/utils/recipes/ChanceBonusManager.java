@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 import com.github.bsideup.jabel.Desugar;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.MachineConfig;
 
 import bartworks.system.material.WerkstoffLoader;
 import gregtech.api.enums.OrePrefixes;
@@ -106,7 +106,7 @@ public class ChanceBonusManager {
                 try {
                     int machineTier = GTUtility.getTier(Math.min(Integer.MAX_VALUE, mte.getMaxInputVoltage()));
                     int baseTier = GTUtility.getTier(recipe.mEUt);
-                    double bonusPerTier = MainConfig.machine.recipeOutputChance / 100.0;
+                    double bonusPerTier = MachineConfig.recipeOutputChance / 100.0;
 
                     return getTierChanceBonus(Math.min(16, machineTier), baseTier, bonusPerTier);
                 } catch (Exception e) {

@@ -34,7 +34,7 @@ import com.reavaritia.utils.item.ItemStackWrapper;
 import com.reavaritia.utils.item.SubtitleDisplay;
 import com.reavaritia.utils.item.ToolHelper;
 import com.science.gtnl.common.gui.VeinMiningPickaxeGui;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ItemConfig;
 import com.science.gtnl.loader.ItemLoader;
 import com.science.gtnl.utils.ClientUtils;
 import com.science.gtnl.utils.item.ItemUtils;
@@ -87,10 +87,10 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, I
 
         if (tags != null) {
             if (tags.hasKey("range")) {
-                range = Math.max(0, Math.min(MainConfig.item.vein_miner_pickaxe.maxRange, tags.getInteger("range")));
+                range = Math.max(0, Math.min(ItemConfig.vein_miner_pickaxe.maxRange, tags.getInteger("range")));
             }
             if (tags.hasKey("amount")) {
-                amount = Math.max(0, Math.min(MainConfig.item.vein_miner_pickaxe.maxAmount, tags.getInteger("amount")));
+                amount = Math.max(0, Math.min(ItemConfig.vein_miner_pickaxe.maxAmount, tags.getInteger("amount")));
             }
             if (tags.hasKey("preciseMode")) {
                 preciseMode = tags.getBoolean("preciseMode");
@@ -202,15 +202,13 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, I
     }
 
     public static void setRange(ItemStack stack, int range) {
-        getOrCreateTag(stack).setInteger(
-            "range",
-            Math.max(-1, Math.min(range, Math.max(-1, MainConfig.item.vein_miner_pickaxe.maxRange))));
+        getOrCreateTag(stack)
+            .setInteger("range", Math.max(-1, Math.min(range, Math.max(-1, ItemConfig.vein_miner_pickaxe.maxRange))));
     }
 
     public static void setAmount(ItemStack stack, int amount) {
-        getOrCreateTag(stack).setInteger(
-            "amount",
-            Math.max(0, Math.min(amount, Math.max(0, MainConfig.item.vein_miner_pickaxe.maxAmount))));
+        getOrCreateTag(stack)
+            .setInteger("amount", Math.max(0, Math.min(amount, Math.max(0, ItemConfig.vein_miner_pickaxe.maxAmount))));
     }
 
     public static void setPreciseMode(ItemStack stack, boolean preciseMode) {
@@ -253,15 +251,13 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, I
             if (tags != null) {
                 if (!isChainEnabled(stack)) return;
                 if (tags.hasKey("range")) {
-                    range = Math
-                        .max(-1, Math.min(MainConfig.item.vein_miner_pickaxe.maxRange, tags.getInteger("range")));
+                    range = Math.max(-1, Math.min(ItemConfig.vein_miner_pickaxe.maxRange, tags.getInteger("range")));
                 }
                 if (tags.hasKey("preciseMode")) {
                     preciseMode = tags.getBoolean("preciseMode");
                 }
                 if (tags.hasKey("amount")) {
-                    amount = Math
-                        .max(0, Math.min(MainConfig.item.vein_miner_pickaxe.maxAmount, tags.getInteger("amount")));
+                    amount = Math.max(0, Math.min(ItemConfig.vein_miner_pickaxe.maxAmount, tags.getInteger("amount")));
                 }
             }
 

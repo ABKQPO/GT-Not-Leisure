@@ -3,14 +3,17 @@ package com.science.gtnl.config;
 import java.util.Objects;
 
 import com.gtnewhorizon.gtnhlib.config.Config;
-import com.gtnewhorizon.gtnhlib.config.ConfigException;
-import com.gtnewhorizon.gtnhlib.config.ConfigurationManager;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.floatingwindow.FloatingWindowGeometry;
 import com.science.gtnl.client.meminiterminal.MiniTerminalLayout;
 
-@Config(modid = ScienceNotLeisure.MODID, configSubDirectory = "GTNotLeisure", filename = "MEMiniTerminalClient")
+@Config(
+    modid = ScienceNotLeisure.MODID,
+    category = "mini_terminal",
+    configSubDirectory = ConfigRegistry.DIRECTORY,
+    filename = ConfigRegistry.CLIENT_FILE)
 @Config.ExcludeFromAutoGui
+@Config.Comment("Window state of the ME mini portable terminal")
 public class MiniTerminalClientConfig {
 
     @Config.Comment("Use the saved mini terminal rectangle instead of anchoring it beside the inventory.")
@@ -41,17 +44,8 @@ public class MiniTerminalClientConfig {
     @Config.DefaultBoolean(false)
     public static boolean shiftClickToME;
 
-    @Config.Ignore
-    private static boolean registered;
-
-    public static void load(MiniTerminalLayout layout) {
-        try {
-            ConfigurationManager.registerConfig(MiniTerminalClientConfig.class);
-            registered = true;
-            layout.restorePreference(windowPreference());
-        } catch (ConfigException e) {
-            ScienceNotLeisure.LOG.error("Failed to load ME mini portable terminal client preferences", e);
-        }
+    public static void restore(MiniTerminalLayout layout) {
+        layout.restorePreference(windowPreference());
     }
 
     private static FloatingWindowGeometry.Preference windowPreference() {
@@ -78,6 +72,6 @@ public class MiniTerminalClientConfig {
     }
 
     private static void save() {
-        if (registered) ConfigurationManager.save(MiniTerminalClientConfig.class);
+        ConfigRegistry.save(MiniTerminalClientConfig.class);
     }
 }

@@ -16,7 +16,7 @@ import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.compat.cropsnh.CropsNHRecipes;
 import com.science.gtnl.compat.newhorizons.NHCoreRecipes;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.RecipeConfig;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModsItemlist;
@@ -3367,7 +3367,7 @@ public class AssemblerRecipes implements IRecipePool {
         NHCoreRecipes.assembler();
         CropsNHRecipes.assembler();
 
-        if (MainConfig.recipe.enableDeleteRecipe) loadDeleteRecipe();
+        if (RecipeConfig.enableDeleteRecipe) loadDeleteRecipe();
     }
 
     public void loadLampRecipes() {

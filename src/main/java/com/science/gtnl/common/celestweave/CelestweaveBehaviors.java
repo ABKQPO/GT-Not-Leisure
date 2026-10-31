@@ -30,7 +30,6 @@ import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.common.packet.CelestweaveFireballPacket;
 import com.science.gtnl.common.packet.CelestweaveFxPacket;
 import com.science.gtnl.config.ItemConfig;
-import com.science.gtnl.config.MainConfig;
 
 import vazkii.botania.api.internal.IManaBurst;
 import vazkii.botania.api.mana.ManaItemHandler;
@@ -60,7 +59,7 @@ public class CelestweaveBehaviors {
     }
 
     private static ItemConfig.Celestweave config() {
-        return MainConfig.item.celestweave;
+        return ItemConfig.celestweave;
     }
 
     private static void setModifier(EntityLivingBase entity, IAttributeInstance attribute, UUID id, String name,

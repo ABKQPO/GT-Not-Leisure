@@ -20,7 +20,7 @@ import com.science.gtnl.api.IBeamFormer;
 import com.science.gtnl.common.beamformer.BeamFormerLink;
 import com.science.gtnl.common.item.items.ItemPartBeamFormer;
 import com.science.gtnl.common.render.beamformer.BeamFormerRenderHelper;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.MachineConfig;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridConnection;
@@ -78,7 +78,7 @@ public class PartBeamFormer extends GTNLBasePartState implements IBlockStateList
         this.getProxy()
             .setFlags(GridFlags.PREFERRED);
         this.getProxy()
-            .setIdlePowerUsage(MainConfig.machine.beamFormerEnergyConsume);
+            .setIdlePowerUsage(MachineConfig.beamFormerEnergyConsume);
     }
 
     @Override

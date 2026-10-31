@@ -12,7 +12,7 @@ import org.lwjgl.opengl.GL11;
 import com.science.gtnl.common.block.blocks.tile.TileEntityPlayerDoll;
 import com.science.gtnl.common.render.PlayerDollRenderManager;
 import com.science.gtnl.common.render.PlayerDollRenderManagerClient;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ItemConfig;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -66,7 +66,7 @@ public class PlayerDollRenderer extends TileEntitySpecialRenderer {
             }
         }
 
-        if (MainConfig.item.player_doll.enableCustomSkin && !PlayerDollRenderManager.offlineMode) {
+        if (ItemConfig.player_doll.enableCustomSkin && !PlayerDollRenderManager.offlineMode) {
             String ownerUUID = null;
             String playerName;
 

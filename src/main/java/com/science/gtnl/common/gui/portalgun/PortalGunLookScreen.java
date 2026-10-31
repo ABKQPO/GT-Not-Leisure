@@ -13,7 +13,6 @@ import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.ModularScreen;
 import com.cleanroommc.modularui.widget.sizer.Unit;
 import com.cleanroommc.modularui.widgets.ListWidget;
-import com.gtnewhorizon.gtnhlib.config.ConfigurationManager;
 import com.gtnllib.config.GTNLLibConfig;
 import com.gtnllib.gui.layout.Layout;
 import com.gtnllib.gui.settings.SettingControls;
@@ -24,7 +23,7 @@ import com.gtnllib.gui.widget.StepSlider;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.gui.equipment.EquipmentTheme;
 import com.science.gtnl.config.ClientConfig;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ConfigRegistry;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -51,11 +50,11 @@ public class PortalGunLookScreen extends ModularScreen {
     }
 
     private static Control slider(String name, double step, DoubleFunction<String> format) {
-        return SettingControls.slider(MainConfig.client, ClientConfig.class, name, step, format);
+        return SettingControls.slider(null, ClientConfig.class, name, step, format);
     }
 
     private static Control toggle(String name) {
-        return SettingControls.toggle(MainConfig.client, ClientConfig.class, name);
+        return SettingControls.toggle(null, ClientConfig.class, name);
     }
 
     private static List<Section> sections() {
@@ -180,7 +179,7 @@ public class PortalGunLookScreen extends ModularScreen {
     }
 
     private static void save() {
-        ConfigurationManager.save(MainConfig.class, GTNLLibConfig.class);
+        ConfigRegistry.save(ClientConfig.class, GTNLLibConfig.class);
     }
 
     @Override

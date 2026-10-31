@@ -17,7 +17,7 @@ import com.science.gtnl.common.celestweave.CelestweaveModule;
 import com.science.gtnl.common.celestweave.CelestweaveModuleSetting;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.common.packet.CelestweaveKeyPacket;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ItemConfig;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -57,11 +57,8 @@ public class CelestweaveClientInput {
         boolean dash = false, backpack = false;
         while (DASH.isPressed()) dash = true;
         while (BACKPACK.isPressed()) backpack = true;
-        if (dash && CelestweaveEnergy.activeAndAffords(
-            player,
-            CelestweaveArmor.BOOTS,
-            CelestweaveModule.DASH,
-            MainConfig.item.celestweave.dashEu))
+        if (dash && CelestweaveEnergy
+            .activeAndAffords(player, CelestweaveArmor.BOOTS, CelestweaveModule.DASH, ItemConfig.celestweave.dashEu))
             ScienceNotLeisure.network.sendToServer(new CelestweaveKeyPacket(CelestweaveKeyPacket.DASH));
         if (backpack) ScienceNotLeisure.network.sendToServer(new CelestweaveKeyPacket(CelestweaveKeyPacket.BACKPACK));
     }
@@ -70,7 +67,7 @@ public class CelestweaveClientInput {
     public static void playerTick(TickEvent.PlayerTickEvent event) {
         if (event.phase != TickEvent.Phase.START || !(event.player instanceof EntityPlayerSP player)
             || player != Minecraft.getMinecraft().thePlayer) return;
-        var config = MainConfig.item.celestweave;
+        var config = ItemConfig.celestweave;
         ItemStack legs = CelestweaveData.piece(player, CelestweaveArmor.LEGS);
         if (CelestweaveFlight.canFly(player, legs)) {
             int speed = CelestweaveModuleSetting.FLIGHT_SPEED.get(legs);

@@ -32,7 +32,7 @@ import com.science.gtnl.common.celestweave.CelestweaveModule;
 import com.science.gtnl.common.celestweave.CelestweaveModuleSetting;
 import com.science.gtnl.common.equipment.EquipmentEnergy;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ItemConfig;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -139,7 +139,7 @@ public class CelestweaveHud {
         boolean nowFlying = look.flightActive && player.capabilities.isFlying;
         if (flying && !nowFlying) landedAt = now;
         flying = nowFlying;
-        long dashLife = MainConfig.item.celestweave.dashCooldown * 50L, dashAge = now - state.dashAt;
+        long dashLife = ItemConfig.celestweave.dashCooldown * 50L, dashAge = now - state.dashAt;
         boolean dashing = dashAge >= 0 && dashAge < dashLife + READY_FLASH;
         ItemStack boots = look.worn[CelestweaveArmor.BOOTS];
         coreSignature = (status * 4 + (flying ? 2 : 0) + (low ? 1 : 0)) * 31 + wakes;

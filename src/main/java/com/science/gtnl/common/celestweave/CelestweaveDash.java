@@ -11,7 +11,7 @@ import net.minecraft.util.Vec3;
 import com.science.gtnl.common.equipment.EquipmentNet;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.common.packet.CelestweaveFxPacket;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ItemConfig;
 
 public class CelestweaveDash {
 
@@ -21,7 +21,7 @@ public class CelestweaveDash {
     public static void dash(EntityPlayerMP player) {
         ItemStack boots = CelestweaveData.piece(player, CelestweaveArmor.BOOTS);
         if (boots == null || !CelestweaveData.active(boots, CelestweaveModule.DASH) || player.isRiding()) return;
-        var config = MainConfig.item.celestweave;
+        var config = ItemConfig.celestweave;
         long now = player.worldObj.getTotalWorldTime();
         Long last = LAST.get(player.getUniqueID());
         if (last != null && now - last >= 0 && now - last < config.dashCooldown) return;

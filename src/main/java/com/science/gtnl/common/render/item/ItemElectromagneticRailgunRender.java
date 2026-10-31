@@ -30,7 +30,7 @@ import com.science.gtnl.client.railgun.RailgunClientFx;
 import com.science.gtnl.client.railgun.RailgunOrbRenderer;
 import com.science.gtnl.common.item.items.equipment.ElectromagneticRailgun;
 import com.science.gtnl.common.railgun.RailgunSetting;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ClientConfig;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -77,7 +77,7 @@ public class ItemElectromagneticRailgunRender extends ItemGunRender {
     }
 
     private static void renderBodyBolts(Entity holder) {
-        if (!MainConfig.client.enableRailgunBloom || !(holder instanceof EntityPlayer player)) return;
+        if (!ClientConfig.enableRailgunBloom || !(holder instanceof EntityPlayer player)) return;
         if (!RailgunCharge.charging(player)) return;
         if (!RailgunClientFx.visible(player.getEntityId(), Vec3d.pos(player))) return;
         int tier = RailgunCharge.tier(player)

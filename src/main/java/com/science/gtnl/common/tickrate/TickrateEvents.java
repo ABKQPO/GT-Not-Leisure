@@ -7,7 +7,7 @@ import net.minecraft.world.GameRules;
 import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.TickrateAPI;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.TickrateConfig;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
@@ -64,7 +64,7 @@ public class TickrateEvents {
     }
 
     public static float savedTickrate() {
-        float tickrate = MainConfig.tickrate.defaultTickrate;
+        float tickrate = TickrateConfig.defaultTickrate;
         try {
             GameRules rules = MinecraftServer.getServer()
                 .getEntityWorld()

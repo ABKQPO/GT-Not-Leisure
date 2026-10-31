@@ -18,7 +18,7 @@ import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.IBeamFormer;
 import com.science.gtnl.common.beamformer.BeamFormerLink;
 import com.science.gtnl.common.render.beamformer.BeamFormerRenderHelper;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.MachineConfig;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import appeng.api.implementations.IPowerChannelState;
@@ -81,7 +81,7 @@ public class TileEntityBeamFormer extends AENetworkTile
         this.getProxy()
             .setFlags(GridFlags.DENSE_CAPACITY);
         this.getProxy()
-            .setIdlePowerUsage(MainConfig.machine.beamFormerEnergyConsume);
+            .setIdlePowerUsage(MachineConfig.beamFormerEnergyConsume);
         this.getProxy()
             .setValidSides(EnumSet.noneOf(ForgeDirection.class));
     }

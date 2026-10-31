@@ -1,7 +1,7 @@
 package com.science.gtnl.common.recipe.gregtech;
 
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.DebugConfig;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import gregtech.api.enums.ItemList;
@@ -20,7 +20,7 @@ public class FluidSolidifierDustRecipes {
             .duration(1 * GTRecipeBuilder.SECONDS + 12 * GTRecipeBuilder.TICKS)
             .eut(material.voltageMultiplier)
             .addTo(RecipeMaps.fluidSolidifierRecipes);
-        if (MainConfig.debug.enableDebugMode) ScienceNotLeisure.LOG
+        if (DebugConfig.enableDebugMode) ScienceNotLeisure.LOG
             .warn("GTNL: 144l fluid molder for 1 dust Recipe: {} - Success", material.getLocalizedName());
     }
 }

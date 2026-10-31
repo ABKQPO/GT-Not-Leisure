@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.science.gtnl.common.effect.effects.PotionGhostlyShape;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.EffectConfig;
 import com.science.gtnl.loader.EffectLoader;
 
 @Mixin(value = World.class, remap = true)
@@ -27,7 +27,7 @@ public abstract class MixinWorldGhostlyShape {
         cancellable = true)
     private void gtnl$ignoreGhostlyShapePlayers(double x, double y, double z, double range,
         CallbackInfoReturnable<EntityPlayer> cir) {
-        if (!MainConfig.effect.enableGhostlyShape) return;
+        if (!EffectConfig.enableGhostlyShape) return;
         EntityPlayer closest = cir.getReturnValue();
         if (closest == null || !closest.isPotionActive(EffectLoader.ghostly_shape)) return;
         cir.setReturnValue(PotionGhostlyShape.closestVisiblePlayer(this.playerEntities, closest, x, y, z, range));

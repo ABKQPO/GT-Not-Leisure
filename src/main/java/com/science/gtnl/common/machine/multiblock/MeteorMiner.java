@@ -30,7 +30,7 @@ import com.science.gtnl.common.block.blocks.tile.TileEntityLaserBeacon;
 import com.science.gtnl.common.gui.modularui.multiblock.MeteorMinerGui;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.MachineConfig;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.BlockIcons;
@@ -112,8 +112,8 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
     public static final int SCAN_WIDTH = 100;
     public static final int SCAN_HEIGHT = 150;
     public static final int SCAN_DEPTH = 100;
-    public static final int MAX_BLOCKS_PER_CYCLE = MainConfig.machine.meteor_miner.meteorMinerMaxBlockPerCycle;
-    public static final int MAX_ROWS_PER_CYCLE = MainConfig.machine.meteor_miner.meteorMinerMaxRowPerCycle;
+    public static final int MAX_BLOCKS_PER_CYCLE = MachineConfig.meteor_miner.meteorMinerMaxBlockPerCycle;
+    public static final int MAX_ROWS_PER_CYCLE = MachineConfig.meteor_miner.meteorMinerMaxRowPerCycle;
 
     public MeteorMiner(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);

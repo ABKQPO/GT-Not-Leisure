@@ -1,6 +1,6 @@
 dependencies {
 
-    api("com.github.GTNotLeisure:GTNLLib:1.1:dev") { transitive = false }
+    api("com.github.GTNotLeisure:GTNLLib:1.1.0:dev") { transitive = false }
 
     implementation("com.github.GTNewHorizons:AE2FluidCraft-Rework:1.5.113-gtnh:dev") {
         exclude group: "com.github.GTNewHorizons", module: "Applied-Energistics-2-Unofficial"

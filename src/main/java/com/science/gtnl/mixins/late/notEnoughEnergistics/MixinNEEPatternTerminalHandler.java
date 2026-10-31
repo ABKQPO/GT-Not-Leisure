@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import com.github.vfyjxf.nee.nei.NEEPatternTerminalHandler;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.OtherConfig;
 import com.science.gtnl.utils.item.ItemUtils;
 
 @Mixin(value = NEEPatternTerminalHandler.class, remap = false)
@@ -21,7 +21,7 @@ public abstract class MixinNEEPatternTerminalHandler {
             remap = true,
             ordinal = 1))
     public ItemStack gtnl$replaceOutputStack(ItemStack instance) {
-        if (!MainConfig.other.not_enough_items.enableReplaceHotIngotInPattern) return instance.copy();
+        if (!OtherConfig.not_enough_items.enableReplaceHotIngotInPattern) return instance.copy();
         return ItemUtils.coolHotIngot(instance);
     }
 }

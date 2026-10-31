@@ -20,7 +20,8 @@ import com.gtnewhorizon.structurelib.alignment.constructable.IConstructable;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.multiblock.QuantumComputerGui;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.DebugConfig;
+import com.science.gtnl.config.MachineConfig;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.ECraftingCPUCluster;
 import com.science.gtnl.utils.enums.GTNLItemList;
@@ -235,11 +236,11 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
             .addInfo(StatCollector.translateToLocal("gtnl.machine.quantum_computer.tooltip.12"))
             .beginVariableStructureBlock(
                 3,
-                MainConfig.machine.quantum_computer.maxMultiblockSize,
+                MachineConfig.quantum_computer.maxMultiblockSize,
                 3,
-                MainConfig.machine.quantum_computer.maxMultiblockSize,
+                MachineConfig.quantum_computer.maxMultiblockSize,
                 3,
-                MainConfig.machine.quantum_computer.maxMultiblockSize,
+                MachineConfig.quantum_computer.maxMultiblockSize,
                 true)
             .toolTipFinisher();
         return tt;
@@ -463,7 +464,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
                 return true;
 
             case INVALID:
-                if (MainConfig.debug.enableDebugMode)
+                if (DebugConfig.enableDebugMode)
                     ScienceNotLeisure.LOG.info("Quantum Computer: Invalid block at offset ({}, {}, {}).", dx, dy, dz);
                 return false;
 
@@ -503,7 +504,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
                 break;
             }
 
-            if (next < -MainConfig.machine.quantum_computer.maxMultiblockSize / 2) {
+            if (next < -MachineConfig.quantum_computer.maxMultiblockSize / 2) {
                 return false;
             }
 
@@ -519,7 +520,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
                 break;
             }
 
-            if (next > MainConfig.machine.quantum_computer.maxMultiblockSize / 2) {
+            if (next > MachineConfig.quantum_computer.maxMultiblockSize / 2) {
                 return false;
             }
 
@@ -540,7 +541,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
                 break;
             }
 
-            if (next < -MainConfig.machine.quantum_computer.maxMultiblockSize / 2) {
+            if (next < -MachineConfig.quantum_computer.maxMultiblockSize / 2) {
                 return false;
             }
 
@@ -556,7 +557,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
                 break;
             }
 
-            if (next > MainConfig.machine.quantum_computer.maxMultiblockSize / 2) {
+            if (next > MachineConfig.quantum_computer.maxMultiblockSize / 2) {
                 return false;
             }
 
@@ -692,7 +693,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
         // Check downward until we find a valid floor.
         // We check specifically internal blocks for a valid floor. This means that in most cases this check
         // immediately falls through, as the first block we check is already invalid (e.g., air or machine).
-        for (dyMin = -1; dyMin >= -(MainConfig.machine.quantum_computer.maxMultiblockSize - 1); --dyMin) {
+        for (dyMin = -1; dyMin >= -(MachineConfig.quantum_computer.maxMultiblockSize - 1); --dyMin) {
             if (dyMin < -1 && checkFloor(aBaseMetaTileEntity, dyMin)) {
                 // Found a valid floor. Add its edges and finish.
                 for (int dx = dxMin; dx <= dxMax; ++dx) {
@@ -712,12 +713,12 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
                 }
             }
         }
-        if (dyMin < -(MainConfig.machine.quantum_computer.maxMultiblockSize - 1)) {
-            if (MainConfig.debug.enableDebugMode) ScienceNotLeisure.LOG.info("Quantum Computer: Too tall.");
+        if (dyMin < -(MachineConfig.quantum_computer.maxMultiblockSize - 1)) {
+            if (DebugConfig.enableDebugMode) ScienceNotLeisure.LOG.info("Quantum Computer: Too tall.");
             return false;
         }
 
-        if (MainConfig.debug.enableDebugMode) ScienceNotLeisure.LOG
+        if (DebugConfig.enableDebugMode) ScienceNotLeisure.LOG
             .info("Quantum Computer: Structure complete. Found {} casings, {} unit blocks.", casingCount, unitCount);
 
         width = dxMax - dxMin + 1;
@@ -740,8 +741,8 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
             return false;
         }
 
-        if (multiThreaderCount > MainConfig.machine.quantum_computer.maxMultiThreader
-            || dataEntanglerCount > MainConfig.machine.quantum_computer.maxDataEntangler) {
+        if (multiThreaderCount > MachineConfig.quantum_computer.maxMultiThreader
+            || dataEntanglerCount > MachineConfig.quantum_computer.maxDataEntangler) {
             return false;
         }
 
@@ -763,7 +764,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
             maximumParallel *= 4;
         }
 
-        if (MainConfig.debug.enableDebugMode) ScienceNotLeisure.LOG.info("Quantum Computer: Check successful.");
+        if (DebugConfig.enableDebugMode) ScienceNotLeisure.LOG.info("Quantum Computer: Check successful.");
 
         return true;
     }
@@ -787,7 +788,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
 
     @Override
     public void construct(ItemStack stackSize, boolean hintsOnly) {
-        final int i = Math.min(stackSize.stackSize, MainConfig.machine.quantum_computer.maxMultiblockSize / 2);
+        final int i = Math.min(stackSize.stackSize, MachineConfig.quantum_computer.maxMultiblockSize / 2);
         IGregTechTileEntity baseEntity = this.getBaseMetaTileEntity();
         World world = baseEntity.getWorld();
         int x = baseEntity.getXCoord();
