@@ -180,6 +180,13 @@ runConfigs.forEach { (taskName, path) ->
     }
 }
 
+if (providers.environmentVariable("GTNL_CLIENT_SMOKE").isPresent) {
+    tasks.named<JavaExec>("runClient25") {
+        maxHeapSize = "4G"
+        args("--width", "960", "--height", "540")
+    }
+}
+
 // Runtime-only smoke profiles leave the compilation API and ordinary dev launches unchanged.
 val smokeScenario = providers.gradleProperty("gtnl.smokeScenario").orNull
 if (smokeScenario != null) {

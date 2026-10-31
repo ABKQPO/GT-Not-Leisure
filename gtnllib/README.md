@@ -102,6 +102,11 @@ CI 强制重新编译两个模块，并用 `.github/scripts/check-deprecations.c
 上游调用、旧存档序列化和双端队列。架构检查会阻止未说明理由的新增分配。
 弱引用、枚举专用、并发和不可变集合保留原有语义。
 
+客户端 CI 通过 Xvfb 和软件 OpenGL 加载到主菜单，检查 GTNL、ReAvaritia、GTNLLib 注册的
+方块/物品图集是否回退到缺失贴图，并核对日志中的缺失资源。探针仅在设置
+`GTNL_CLIENT_SMOKE` 时启用，输出报告后自动退出；普通游戏启动不启用探针。
+这项检查覆盖启动和资源加载，不替代机器 GUI 操作、旧世界和多人联机验收。
+
 ## 第三方代码
 
 `gui/wheel` 的轮盘移植自 AnvilLib（MIT 许可），许可声明见 `src/main/resources/licenses/ANVILLIB-MIT.txt`。

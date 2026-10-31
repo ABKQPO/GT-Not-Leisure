@@ -1,0 +1,1 @@
+# Reviewed missing resources in the client startup profile. New entries require a concrete compatibility reason.
