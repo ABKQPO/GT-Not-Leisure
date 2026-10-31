@@ -51,6 +51,12 @@ final class HatchScrollGuiScenario implements GuiInteractionScenario {
             var grid = GuiTestSupport.find(viewport, "gtnlDualInputSlotGrid")
                 .getArea();
             var area = viewport.getArea();
+            int scrollbarWidth = viewport.getScrollArea()
+                .getScrollY()
+                .getThickness();
+            require(
+                grid.x >= area.x && grid.x + grid.width <= area.x + area.width - scrollbarWidth,
+                "hatch slots are clipped by the scroll viewport or scrollbar");
             require(
                 grid.y + grid.height - viewport.getScrollY() <= area.y + area.height,
                 "last slot row remains outside the viewport after scrolling");

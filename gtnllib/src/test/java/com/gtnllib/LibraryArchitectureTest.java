@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -31,8 +29,10 @@ import com.gtnllib.client.hud.HudElement;
 import com.gtnllib.client.hud.HudTiming;
 import com.gtnllib.config.GTNLLibConfig;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectRBTreeMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectRBTreeSet;
 
 @Tag("library")
 public class LibraryArchitectureTest extends LibraryTestSupport {
@@ -57,7 +57,7 @@ public class LibraryArchitectureTest extends LibraryTestSupport {
 
     @Test
     void enforcesStandaloneModuleAndPackageBoundaries() throws IOException {
-        Set<String> used = new TreeSet<>();
+        Set<String> used = new ObjectRBTreeSet<>();
         sources(used);
         resources();
         lang(used);
@@ -67,10 +67,10 @@ public class LibraryArchitectureTest extends LibraryTestSupport {
 
     private static void mixins() throws IOException {
         Path root = SOURCES.resolve("mixins");
-        Set<String> registered = new TreeSet<>();
+        Set<String> registered = new ObjectRBTreeSet<>();
         Matcher entry = MIXIN_NAME.matcher(read(root.resolve("GTNLLibMixins.java")));
         while (entry.find()) registered.add(entry.group(1));
-        Set<String> classes = new TreeSet<>();
+        Set<String> classes = new ObjectRBTreeSet<>();
         for (String phase : new String[] { "early", "late" }) for (Path file : files(root.resolve(phase))) {
             String source = read(file);
             if (!source.contains("@Mixin(")) continue;
@@ -90,13 +90,13 @@ public class LibraryArchitectureTest extends LibraryTestSupport {
     }
 
     private static void packages() throws IOException {
-        Map<String, Set<String>> imports = new TreeMap<>();
-        Set<String> configReaders = new TreeSet<>();
+        Map<String, Set<String>> imports = new Object2ObjectRBTreeMap<>();
+        Set<String> configReaders = new ObjectRBTreeSet<>();
         for (Path file : files(SOURCES)) {
             if (!file.toString()
                 .endsWith(".java")) continue;
             String from = packageOf(SOURCES.relativize(file.getParent()));
-            Set<String> targets = imports.computeIfAbsent(from, key -> new TreeSet<>());
+            Set<String> targets = imports.computeIfAbsent(from, key -> new ObjectRBTreeSet<>());
             Matcher matcher = LIB_IMPORT.matcher(read(file));
             while (matcher.find()) {
                 String to = matcher.group(1)
@@ -154,7 +154,7 @@ public class LibraryArchitectureTest extends LibraryTestSupport {
         try (Stream<Path> walk = Files.walk(root)) {
             return walk.filter(Files::isRegularFile)
                 .sorted()
-                .collect(Collectors.toList());
+                .collect(Collectors.toCollection(ObjectArrayList::new));
         }
     }
 
@@ -250,7 +250,7 @@ public class LibraryArchitectureTest extends LibraryTestSupport {
     }
 
     private static void lang(Set<String> used) throws IOException {
-        Set<String> expected = new TreeSet<>(used);
+        Set<String> expected = new ObjectRBTreeSet<>(used);
         for (String key : new String[] { "open", "help", "reset", "done", "hidden", "show_all", "in_use_only", "undo",
             "redo", "reset_element", "empty" }) expected.add("gtnllib.hud.editor." + key);
         for (HudElement.Setting setting : HudElement.Setting.values()) expected.add(setting.lang());
@@ -277,7 +277,7 @@ public class LibraryArchitectureTest extends LibraryTestSupport {
     }
 
     private static Set<String> legacyLangKeys() {
-        Set<String> keys = new TreeSet<>();
+        Set<String> keys = new ObjectRBTreeSet<>();
         String setting = "gtnl.gui.config.general.client.enable_text_effects";
         keys.add(setting);
         keys.add(setting + ".tooltip");

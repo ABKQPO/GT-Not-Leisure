@@ -4,7 +4,6 @@ import static com.gtnltest.TestSupport.check;
 import static com.science.gtnl.common.wireless.WirelessCopiedLinksTest.allocate;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,6 +29,8 @@ import com.science.gtnl.common.wireless.WirelessFrequencies.Entry;
 import com.science.gtnl.common.wireless.WirelessFrequencies.Structure;
 import com.science.gtnl.common.wireless.WirelessLinkData.Claim;
 import com.science.gtnl.common.wireless.WirelessLinkData.Slot;
+
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 @Tag("wireless")
 public class WirelessFrequencyTest {
@@ -299,7 +300,7 @@ public class WirelessFrequencyTest {
 
     private static void structureCache() throws ReflectiveOperationException {
         TestWorld world = allocate(TestWorld.class);
-        world.tiles = new HashMap<>();
+        world.tiles = new Object2ObjectOpenHashMap<>();
         world.loaded = true;
         Field provider = World.class.getDeclaredField("provider");
         provider.setAccessible(true);

@@ -4,7 +4,6 @@ import static com.gtnltest.TestSupport.check;
 import static com.gtnltest.TestSupport.rejects;
 
 import java.lang.reflect.Proxy;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
@@ -21,6 +20,7 @@ import com.science.gtnl.mixins.late.appliedEnergistics.AccessorTaskProgress;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.me.diagnostics.CraftingDiagnosticSessionId;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 @Tag("machine")
 public final class BatchDispatchTest {
@@ -60,7 +60,7 @@ public final class BatchDispatchTest {
         check(
             first.equals(BatchDispatchHooks.consumeSessions(context, progress)),
             "batch diagnostics start at first owner");
-        Map<CraftingDiagnosticSessionId, Long> outputs = new HashMap<>();
+        Map<CraftingDiagnosticSessionId, Long> outputs = new Object2ObjectOpenHashMap<>();
         BatchDispatchHooks.recordExpectedOutput(
             context,
             stack(6),
@@ -105,6 +105,7 @@ public final class BatchDispatchTest {
     private static final class Progress implements AccessorTaskProgress {
 
         private long value = 10;
+        // AccessorTaskProgress exposes this concrete AE2 type, so the fixture must preserve its signature.
         private final LinkedList<Segment> sessions = new LinkedList<>();
 
         @Override

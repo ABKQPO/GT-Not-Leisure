@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +22,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @Tag("machine")
 public class GlobalSteamPersistenceTest {
@@ -58,7 +58,7 @@ public class GlobalSteamPersistenceTest {
         broken.setString(SteamBalanceCodec.TEAM_TAG, "not-a-uuid");
         broken.setByteArray(SteamBalanceCodec.STEAM_TAG, BigInteger.TEN.toByteArray());
         entries.appendTag(broken);
-        List<NBTTagCompound> skipped = new ArrayList<>();
+        List<NBTTagCompound> skipped = new ObjectArrayList<>();
         Map<UUID, BigInteger> decoded = SteamBalanceCodec.decode(entries, skipped::add);
         check(
             decoded.size() == 2 && STEAM.equals(decoded.get(TEAM)) && skipped.size() == 1,

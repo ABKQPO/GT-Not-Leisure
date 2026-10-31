@@ -26,6 +26,8 @@ Windows 使用 `gradlew.bat`。Java 25 运行宿主测试；基础库仍保持 J
 无线授权与缓存、装备和传送门数学、UI 布局与基础库注册等。`artifactTest` 使用单独源集，
 检查实际发布包，不依赖游戏启动。测试夹具和原生测试模组均不得进入发布包。
 公共 API 和布局基线只读，测试失败不会自动重写基线。
+测试夹具中的可替换集合也使用 fastutil；旧存档序列化格式要求的 `HashMap` 和外部 AE2
+访问器明确返回的 `LinkedList` 保留原类型，以继续检验真实兼容边界。
 
 旧的 `verifyGTNLLib`、`verifyArchitecture`、`verifyMachines`、`verifyWireless`、
 `verifyCelestweave`、`verifyGrandAssemblyLine`、`verifyModuleArtifacts` 仅保留为 Gradle 别名。

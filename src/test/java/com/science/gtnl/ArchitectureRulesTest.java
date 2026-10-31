@@ -7,12 +7,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -23,6 +20,10 @@ import org.junit.jupiter.api.Test;
 
 import com.gtnewhorizon.gtnhlib.util.data.IMod;
 import com.science.gtnl.loader.CompatLoader;
+
+import it.unimi.dsi.fastutil.objects.Object2ObjectRBTreeMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectRBTreeSet;
 
 @Tag("architecture")
 public class ArchitectureRulesTest {
@@ -167,14 +168,14 @@ public class ArchitectureRulesTest {
         Set<String> utilsListed = Files.readAllLines(UTILS_LIST, StandardCharsets.UTF_8)
             .stream()
             .filter(line -> !line.isEmpty())
-            .collect(Collectors.toCollection(TreeSet::new));
+            .collect(Collectors.toCollection(ObjectRBTreeSet::new));
         Set<String> utilsPresent = sources.keySet()
             .stream()
             .filter(path -> path.startsWith("utils/"))
-            .collect(Collectors.toCollection(TreeSet::new));
-        Set<String> unlisted = new TreeSet<>(utilsPresent);
+            .collect(Collectors.toCollection(ObjectRBTreeSet::new));
+        Set<String> unlisted = new ObjectRBTreeSet<>(utilsPresent);
         unlisted.removeAll(utilsListed);
-        Set<String> stale = new TreeSet<>(utilsListed);
+        Set<String> stale = new ObjectRBTreeSet<>(utilsListed);
         stale.removeAll(utilsPresent);
         check(
             unlisted.isEmpty(),
@@ -194,7 +195,7 @@ public class ArchitectureRulesTest {
                     && entry.getValue()
                         .contains("@Mixin("))
             .map(entry -> mixinKey(entry.getKey()))
-            .collect(Collectors.toCollection(TreeSet::new));
+            .collect(Collectors.toCollection(ObjectRBTreeSet::new));
         check(registered.size() > 200, "the mixin registry scan reads Mixins.java, found " + registered.size());
         check(
             !registered.containsKey("unknown"),
@@ -203,14 +204,14 @@ public class ArchitectureRulesTest {
             .stream()
             .filter(entry -> entry.getValue() > 1)
             .map(Map.Entry::getKey)
-            .collect(Collectors.toCollection(TreeSet::new));
+            .collect(Collectors.toCollection(ObjectRBTreeSet::new));
         check(registeredTwice.isEmpty(), "mixins registered more than once in Mixins.java: " + registeredTwice);
-        Set<String> withoutClass = new TreeSet<>(registered.keySet());
+        Set<String> withoutClass = new ObjectRBTreeSet<>(registered.keySet());
         withoutClass.removeAll(mixinClasses);
         check(
             withoutClass.isEmpty(),
             "Mixins.java registers mixins that have no class in that phase's package: " + withoutClass);
-        Set<String> unregistered = new TreeSet<>(mixinClasses);
+        Set<String> unregistered = new ObjectRBTreeSet<>(mixinClasses);
         unregistered.removeAll(registered.keySet());
         check(
             unregistered.isEmpty(),
@@ -227,7 +228,7 @@ public class ArchitectureRulesTest {
         Matcher loaderOrder = LOADER_ENTRY.matcher(
             sources.get("loader/ContentLoaders.java")
                 .split("LOADERS = List.of\\(", 2)[1].split("\\);", 2)[0]);
-        List<String> order = new ArrayList<>();
+        List<String> order = new ObjectArrayList<>();
         while (loaderOrder.find()) order.add(loaderOrder.group(1));
         check(
             order.size() >= RELEASED_LOADER_ORDER.size() && order.subList(0, RELEASED_LOADER_ORDER.size())
@@ -390,7 +391,7 @@ public class ArchitectureRulesTest {
     // Keys are "early:pkg.Name" or "late:pkg.Name"; the Side constructor registers early mixins.
     private static Map<String, Integer> mixinRegistrations(String registry) {
         String body = registry.split("implements IMixins \\{", 2)[1].split("private final MixinBuilder builder;", 2)[0];
-        Map<String, Integer> counts = new TreeMap<>();
+        Map<String, Integer> counts = new Object2ObjectRBTreeMap<>();
         for (String entry : MIXIN_ENTRY_START.split(body)) {
             if (!entry.matches("(?s)[A-Z][A-Z_0-9]*\\(.*")) continue;
             String phase;
@@ -415,7 +416,7 @@ public class ArchitectureRulesTest {
     }
 
     private static Map<String, String> sources() throws IOException {
-        Map<String, String> result = new TreeMap<>();
+        Map<String, String> result = new Object2ObjectRBTreeMap<>();
         try (Stream<Path> walk = Files.walk(SOURCES)) {
             for (Path file : (Iterable<Path>) walk.filter(
                 path -> path.toString()

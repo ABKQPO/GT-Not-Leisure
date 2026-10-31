@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.function.DoubleConsumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -96,6 +95,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectRBTreeSet;
 
 @Tag("equipment")
 public class EquipmentResourcesTest extends com.science.gtnl.client.celestweave.EquipmentTestSupport {
@@ -1096,7 +1096,7 @@ public class EquipmentResourcesTest extends com.science.gtnl.client.celestweave.
     }
 
     private static void lang() throws Exception {
-        Set<String> expected = new TreeSet<>();
+        Set<String> expected = new ObjectRBTreeSet<>();
         for (CelestweaveModule module : CelestweaveModule.values()) {
             expected.add("item.gtnl.celestweave_module." + module.id + ".name");
             expected.add("item.gtnl.celestweave_module." + module.id + ".tooltip");
@@ -1140,7 +1140,7 @@ public class EquipmentResourcesTest extends com.science.gtnl.client.celestweave.
             ItemConfig.Celestweave.class,
             "energymodule",
             ItemConfig.EnergyModule.class);
-        Set<String> itemConfigKeys = new TreeSet<>();
+        Set<String> itemConfigKeys = new ObjectRBTreeSet<>();
         for (Map.Entry<String, Class<?>> section : itemSections.entrySet()) {
             String category = "gtnl.gui.config.general.item." + section.getKey();
             itemConfigKeys.add(category);

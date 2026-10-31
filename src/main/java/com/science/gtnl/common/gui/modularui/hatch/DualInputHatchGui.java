@@ -52,7 +52,7 @@ public class DualInputHatchGui extends MTEHatchBaseGui<DualInputHatch> {
     static IWidget slotViewport(Flow slots, SlotLayout layout) {
         if (layout.visibleRows() <= 12) return slots.center();
         // Keep the title and player inventory visible at 720p without dropping any slots.
-        return new ScrollWidget<>(new VerticalScrollData()).name("gtnlDualInputSlots")
+        return new ScrollWidget<>(new VerticalScrollData(false, 4)).name("gtnlDualInputSlots")
             .size(layout.totalColumns() * SLOT_SIZE + 4, 12 * SLOT_SIZE)
             .center()
             .child(

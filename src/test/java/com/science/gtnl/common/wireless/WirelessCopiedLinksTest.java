@@ -5,7 +5,6 @@ import static com.gtnltest.TestSupport.check;
 import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,6 +32,7 @@ import com.science.gtnl.common.wireless.WirelessLinkData.Slot;
 import appeng.api.parts.IPart;
 import appeng.tile.networking.TileCableBus;
 import cpw.mods.fml.common.registry.RegistryDelegate;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 @Tag("wireless")
 public class WirelessCopiedLinksTest {
@@ -194,7 +194,7 @@ public class WirelessCopiedLinksTest {
         @SuppressWarnings("unchecked")
         Fixture() throws ReflectiveOperationException {
             world = allocate(TestWorld.class);
-            world.tiles = new HashMap<>();
+            world.tiles = new Object2ObjectOpenHashMap<>();
             world.loaded = true;
             field(World.class, "provider").set(world, new WorldProviderSurface());
             player = allocate(TestPlayer.class);

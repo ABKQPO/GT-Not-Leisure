@@ -15,12 +15,14 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectRBTreeSet;
 
 @Tag("architecture")
 public class PublicApiCompatibilityTest {
@@ -39,7 +41,7 @@ public class PublicApiCompatibilityTest {
         List<String> missing = Files.readAllLines(BASELINE, StandardCharsets.UTF_8)
             .stream()
             .filter(line -> !line.isEmpty() && !current.contains(line))
-            .collect(Collectors.toList());
+            .collect(Collectors.toCollection(ObjectArrayList::new));
         check(
             missing.isEmpty(),
             "public API signatures were removed or changed, which breaks addons built against older GTNL; keep the old"
@@ -48,12 +50,12 @@ public class PublicApiCompatibilityTest {
     }
 
     public static Set<String> currentSignatures() throws IOException {
-        Set<String> signatures = new TreeSet<>();
+        Set<String> signatures = new ObjectRBTreeSet<>();
         try (Stream<Path> files = Files.walk(API_SOURCES)) {
             for (Path file : files.filter(
                 path -> path.toString()
                     .endsWith(".java") && !path.startsWith(MIXIN_INTERFACES))
-                .collect(Collectors.toList())) {
+                .collect(Collectors.toCollection(ObjectArrayList::new))) {
                 String relative = Paths.get("src/main/java")
                     .relativize(file)
                     .toString()

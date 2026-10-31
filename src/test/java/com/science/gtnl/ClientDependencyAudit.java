@@ -8,9 +8,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import it.unimi.dsi.fastutil.objects.ObjectRBTreeSet;
 
 /** Exact legacy references cannot be traded for new dependencies by staying below a total count. */
 public final class ClientDependencyAudit {
@@ -22,7 +23,7 @@ public final class ClientDependencyAudit {
     private ClientDependencyAudit() {}
 
     public static void run(Map<String, String> sources) throws IOException {
-        Set<String> allowed = new TreeSet<>();
+        Set<String> allowed = new ObjectRBTreeSet<>();
         for (String line : Files.readAllLines(BASELINE)) {
             if (line.isBlank() || line.startsWith("#")) continue;
             String[] parts = line.split("\\t", 3);
@@ -30,9 +31,9 @@ public final class ClientDependencyAudit {
             if (parts.length == 3) check(allowed.add(parts[0] + "\t" + parts[1]), "duplicate dependency: " + line);
         }
         Set<String> actual = references(sources);
-        Set<String> added = new TreeSet<>(actual);
+        Set<String> added = new ObjectRBTreeSet<>(actual);
         added.removeAll(allowed);
-        Set<String> removed = new TreeSet<>(allowed);
+        Set<String> removed = new ObjectRBTreeSet<>(allowed);
         removed.removeAll(actual);
         check(added.isEmpty(), "isolate new common-to-client dependencies or review an explicit exception: " + added);
         check(removed.isEmpty(), "remove resolved client dependency exceptions from " + BASELINE + ": " + removed);
@@ -55,7 +56,7 @@ public final class ClientDependencyAudit {
     }
 
     private static Set<String> references(Map<String, String> sources) {
-        Set<String> references = new TreeSet<>();
+        Set<String> references = new ObjectRBTreeSet<>();
         sources.forEach((path, source) -> {
             if (!path.startsWith("common/") || path.startsWith("common/render/") || path.startsWith("common/gui/"))
                 return;
