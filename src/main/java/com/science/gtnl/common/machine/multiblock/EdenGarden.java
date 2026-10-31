@@ -65,7 +65,6 @@ import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gtnhlanth.common.register.LanthItemList;
 import ic2.core.init.BlocksItems;
 import ic2.core.init.InternalName;
-import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
@@ -85,7 +84,6 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
         GTGuiTextures.OVERLAY_BUTTON_CYCLIC, GTGuiTextures.OVERLAY_BUTTON_ALLOW_OUTPUT };
 
     public Collection<GreenHouseMode.EIGMigrationHolder> toMigrate;
-    public Object2DoubleOpenHashMap<ItemStack> synchedGUIDropTracker = new Object2DoubleOpenHashMap<>();
     @Getter
     public List<GreenHouseStoredCrop> storedCrops = new ObjectArrayList<>();
     @Getter

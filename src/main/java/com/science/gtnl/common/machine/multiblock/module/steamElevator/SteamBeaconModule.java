@@ -43,8 +43,6 @@ public class SteamBeaconModule extends SteamElevatorModuleBase {
 
     public static final String[] TIER_TITLES = { "basic", "advanced", "elite" };
 
-    public static final int CONFIG_WINDOW_ID = 14;
-
     private boolean hasSpeedEffect;
     private boolean hasStrengthEffect;
     private boolean hasJumpBoostEffect;

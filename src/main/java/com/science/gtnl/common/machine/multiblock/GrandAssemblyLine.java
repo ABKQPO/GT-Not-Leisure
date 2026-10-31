@@ -91,7 +91,6 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
 
     public static Object2IntMap<ItemId> specialRecipe = new Object2IntOpenHashMap<>();
 
-    public static int PARALLEL_WINDOW_ID = 10;
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String GAL_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/grand_assembly_line";
     private static final String[][] shape = StructureUtils.readStructureFromFile(GAL_STRUCTURE_FILE_PATH);

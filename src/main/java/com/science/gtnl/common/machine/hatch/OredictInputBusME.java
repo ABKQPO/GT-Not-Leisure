@@ -70,9 +70,6 @@ public class OredictInputBusME extends MTEHatchInputBusME
     public ItemStack[] shadowInventory;
     public int[] savedStackSizes;
 
-    public static final int CONFIG_WINDOW_ID = 10;
-    public static final int MANUAL_SLOT_WINDOW = 11;
-
     @Nullable
     public String oreDict;
     public boolean isSuper;

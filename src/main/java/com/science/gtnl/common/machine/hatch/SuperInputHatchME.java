@@ -63,7 +63,6 @@ public class SuperInputHatchME extends MTEHatchInputME implements IConfiguration
 
     public static int SLOT_COUNT = 100;
     public static final FluidStack[] EMPTY_FLUID_STACK = new FluidStack[0];
-    public static final int CONFIG_WINDOW_ID = 10;
 
     public FluidStack[] storedFluids = new FluidStack[SLOT_COUNT];
     public FluidStack[] storedInformationFluids = new FluidStack[SLOT_COUNT];

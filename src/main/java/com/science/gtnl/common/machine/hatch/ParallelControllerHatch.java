@@ -30,7 +30,7 @@ import lombok.Getter;
 public class ParallelControllerHatch extends MTEHatch {
 
     public int maxParallel;
-    public int parallel = 1;
+    public int parallel;
 
     public ParallelControllerHatch(int aID, String aName, String aNameRegional, int aTier, ITexture... aTextures) {
         super(

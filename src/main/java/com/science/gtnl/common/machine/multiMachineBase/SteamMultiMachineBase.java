@@ -102,7 +102,6 @@ import mcp.mobius.waila.api.IWailaDataAccessor;
 public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> extends MTESteamMultiBlockBase<T>
     implements IControllerInfo, IMultiblockTooltipRules {
 
-    public static final int OC_WINDOW_ID = 12;
     private static final String STEAM_INPUT_LINE = "GTPP.MBTT.SteamHatch";
     private static final String RECIPE_VOLTAGE_KEY = "gtnl.structure.tooltip.steam_recipe_voltage";
     private static final String HIGH_PRESSURE_RECIPE_VOLTAGE_KEY = RECIPE_VOLTAGE_KEY + ".high_pressure";

@@ -98,7 +98,6 @@ public class EyeOfHarmonyInjector extends TTMultiMachineBase
     implements IConstructable, ISurvivalConstructable, IMTERenderer {
 
     public static float MAX_ANGLE = 50;
-    public static int STATUS_WINDOW_ID = 10;
     public static FluidStack heliumStack = Materials.Helium.getGas(1);
     public static FluidStack hydrogenStack = Materials.Hydrogen.getGas(1);
     public static FluidStack rawStarMatterStack = Materials.RawStarMatter.getFluid(1);

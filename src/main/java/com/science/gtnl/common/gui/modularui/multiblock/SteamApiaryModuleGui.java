@@ -650,7 +650,6 @@ public class SteamApiaryModuleGui extends GTNLSteamMultiBlockBaseGui {
         for (DropEntry entry : entries) {
             progress.put(entry.stack(), entry.progress());
         }
-        steamApiary.setGuiDropProgressFromMui2(progress);
     }
 
     private List<IWidget> createDropRows(List<DropEntry> drops) {

@@ -52,7 +52,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import kubatech.api.DynamicInventory;
 import kubatech.api.utils.ItemUtils;
 
 @IMetaTileEntity.SkipGenerateDescription
@@ -63,49 +62,15 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
     public int mMaxSlots = 8;
     public ObjectArrayList<BeeSimulator> mStorage = new ObjectArrayList<>();
 
-    public static final int CONFIGURATION_WINDOW_ID = 10;
-
     public static final int MODE_PRIMARY_INPUT = 0;
     public static final int MODE_PRIMARY_OUTPUT = 1;
     public static final int MODE_PRIMARY_OPERATING = 2;
     public static final int INVENTORY_WIDTH = 128;
     public static final int INVENTORY_HEIGHT = 60;
-    public static final int INVENTORY_X = 10;
-    public static final int INVENTORY_Y = 16;
-    public static final int INVENTORY_BORDER_WIDTH = 3;
 
     public int mPrimaryMode = MODE_PRIMARY_INPUT;
     public Object2DoubleOpenHashMap<ItemId> dropProgress = new Object2DoubleOpenHashMap<>();
     private static final double BASE_DROP_ACCELERATION = 32_00d;
-    private Object2DoubleOpenHashMap<ItemStack> GUIDropProgress = new Object2DoubleOpenHashMap<>();
-
-    public DynamicInventory<SteamApiaryModule.BeeSimulator> dynamicInventory = new DynamicInventory<>(
-        INVENTORY_WIDTH,
-        INVENTORY_HEIGHT,
-        () -> mMaxSlots,
-        mStorage,
-        s -> s.queenStack).allowInventoryInjection(input -> {
-            World w = getBaseMetaTileEntity().getWorld();
-            SteamApiaryModule.BeeSimulator bs = new SteamApiaryModule.BeeSimulator(input, w, 6 + recipeOcCount);
-            if (bs.isValid) {
-                mStorage.add(bs);
-                return input;
-            }
-            return null;
-        })
-            .allowInventoryExtraction(mStorage::remove)
-            .allowInventoryReplace((i, stack) -> {
-                if (stack.stackSize != 1) return null;
-                World w = getBaseMetaTileEntity().getWorld();
-                SteamApiaryModule.BeeSimulator bs = new SteamApiaryModule.BeeSimulator(stack, w, 6 + recipeOcCount);
-                if (bs.isValid) {
-                    SteamApiaryModule.BeeSimulator removed = mStorage.remove(i);
-                    mStorage.add(i, bs);
-                    return removed.queenStack;
-                }
-                return null;
-            })
-            .setEnabled(() -> this.mMaxProgresstime == 0);
 
     public boolean isInInventory = true;
 
@@ -355,10 +320,6 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
         if (aBaseMetaTileEntity.isClientSide()) return true;
         openGui(aPlayer);
         return true;
-    }
-
-    public void setGuiDropProgressFromMui2(Object2DoubleOpenHashMap<ItemStack> progress) {
-        GUIDropProgress = progress;
     }
 
     @Override

@@ -63,8 +63,6 @@ public class SuperInputBusME extends MTEHatchInputBusME implements IConfiguratio
 
     public static int SIDE_SLOT_COUNT = 100;
     public static int ALL_SLOT_COUNT = SIDE_SLOT_COUNT * 2 + 1 + 9 * 9;
-    public static final int CONFIG_WINDOW_ID = 10;
-    public static final int MANUAL_SLOT_WINDOW = 11;
 
     public ItemStack[] shadowInventory = new ItemStack[SIDE_SLOT_COUNT];
     public int[] storedStackSizes = new int[SIDE_SLOT_COUNT];

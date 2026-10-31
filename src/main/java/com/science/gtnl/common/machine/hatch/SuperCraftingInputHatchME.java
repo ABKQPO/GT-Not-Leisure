@@ -124,7 +124,6 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus
     public static int MAX_INV_COUNT = MAX_PATTERN_COUNT + SLOT_MANUAL_SIZE + 1;
     public static int SLOT_CIRCUIT = MAX_PATTERN_COUNT;
     public static int SLOT_MANUAL_START = SLOT_CIRCUIT + 1;
-    public static int MANUAL_SLOT_WINDOW = 400;
     public BaseActionSource requestSource = null;
     public @Nullable AENetworkProxy gridProxy = null;
     public List<ProcessingLogic> processingLogics = new ObjectArrayList<>();
