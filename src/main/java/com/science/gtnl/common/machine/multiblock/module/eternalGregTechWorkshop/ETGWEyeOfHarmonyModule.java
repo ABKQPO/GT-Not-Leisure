@@ -424,7 +424,7 @@ public class ETGWEyeOfHarmonyModule extends EternalGregTechWorkshopModule {
             aBaseMetaTileEntity.setActive(mMaxProgresstime > 0);
             boolean active = aBaseMetaTileEntity.isActive() && mPollution > 0;
             setMufflers(active);
-        } else {
+        } else if (aBaseMetaTileEntity.isClientSide()) {
             doActivitySound(getActivitySoundLoop());
         }
     }
