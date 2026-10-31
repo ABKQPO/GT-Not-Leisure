@@ -8,7 +8,6 @@ import static com.science.gtnl.common.wireless.WirelessCardActions.type;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -28,8 +27,8 @@ import com.science.gtnl.common.me.InterfaceNameLocalization;
 import com.science.gtnl.common.wireless.WirelessCardContainer;
 import com.science.gtnl.common.wireless.WirelessCardLayout;
 import com.science.gtnl.common.wireless.WirelessCardViewCodec;
+import com.science.gtnl.compat.nech.NechSearchMatcher;
 
-import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
@@ -40,7 +39,7 @@ public class WirelessCardClientView {
 
     public static final int STATES = 6;
     private final WirelessCardContainer container;
-    private final SearchMatcher matcher = new SearchMatcher();
+    private final NechSearchMatcher matcher = new NechSearchMatcher();
     private final Map<SortView, List<RowOrder>> orders = new LinkedHashMap<>(16, 0.75f, true);
     private NBTTagCompound source = new NBTTagCompound();
     private List<Row> roots = List.of();
@@ -571,32 +570,4 @@ public class WirelessCardClientView {
     private record SortView(String machine, String type, boolean collapse, String query, Integer dimension,
         int state) {}
 
-    private static class SearchMatcher {
-
-        private Object api;
-        private Method contains;
-
-        SearchMatcher() {
-            if (!Loader.isModLoaded("nech")) return;
-            try {
-                Class<?> type = Class.forName("com.asdflj.nech.API");
-                api = type.getField("INSTANCE")
-                    .get(null);
-                contains = type.getMethod("contains", String.class, String.class);
-            } catch (ReflectiveOperationException | LinkageError failure) {
-                ScienceNotLeisure.LOG.warn("Cannot initialize optional Rework search", failure);
-            }
-        }
-
-        boolean contains(String text, String query) {
-            if (contains == null) return false;
-            try {
-                return (boolean) contains.invoke(api, text, query);
-            } catch (ReflectiveOperationException | RuntimeException | LinkageError failure) {
-                contains = null;
-                ScienceNotLeisure.LOG.warn("Rework search failed; using literal matching", failure);
-                return false;
-            }
-        }
-    }
 }

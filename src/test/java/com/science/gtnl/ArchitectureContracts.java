@@ -33,6 +33,7 @@ public class ArchitectureContracts {
     public static final Set<String> MOD_CHECK_ALLOWED = Set.of(
         "common/material/GTNLRecipeMaps.java",
         "common/packet/NetWorkHandler.java",
+        "utils/enums/ModsItemlist.java",
         "utils/recipes/RecipeBuilder.java");
 
     // GT's RecipeMapFrontend still takes ModularUI 1 types; GT machines still on ModularUI 1 open cover tabs through
@@ -116,6 +117,7 @@ public class ArchitectureContracts {
         Pattern.MULTILINE);
     private static final Pattern SELF_REGISTRATION = Pattern
         .compile("GameRegistry\\s*\\.\\s*register(Item|Block)\\(\\s*this");
+    private static final Pattern MOD_CHECK = Pattern.compile("\\bisModLoaded\\s*\\(|::\\s*isModLoaded\\b");
     private static final Pattern SAVED_DATA_CLASS = Pattern
         .compile("^public class (\\w+) extends WorldSavedData\\b", Pattern.MULTILINE);
     private static final Pattern LOADER_ENTRY = Pattern.compile("new ([\\w.]+)\\(\\)");
@@ -138,6 +140,21 @@ public class ArchitectureContracts {
     public static void run() throws IOException {
         Map<String, String> sources = sources();
         check(sources.size() > 1000, "the architecture scan sees the GTNL sources, found " + sources.size());
+        for (String call : List.of(
+            "Mods.NEI.isModLoaded()",
+            "Loader.isModLoaded(\"optional\")",
+            "Loader.isModLoaded \n (name)",
+            "isModLoaded(name)",
+            "IMod::isModLoaded")) {
+            check(
+                MOD_CHECK.matcher(call)
+                    .find(),
+                "mod checks cannot bypass the boundary: " + call);
+        }
+        check(
+            !MOD_CHECK.matcher("boolean isModLoadedFlag;")
+                .find(),
+            "ordinary variable names are not mod checks");
 
         Set<String> utilsListed = Files.readAllLines(UTILS_LIST, StandardCharsets.UTF_8)
             .stream()
@@ -211,8 +228,8 @@ public class ArchitectureContracts {
         for (Map.Entry<String, String> entry : sources.entrySet()) {
             String path = entry.getKey();
             if (!path.startsWith("compat/") && !path.startsWith("loader/") && !MOD_CHECK_ALLOWED.contains(path)) check(
-                !entry.getValue()
-                    .contains(".isModLoaded()"),
+                !MOD_CHECK.matcher(entry.getValue())
+                    .find(),
                 path + " checks whether a mod is loaded; code that only matters with that mod lives in compat/<mod>/,"
                     + " and optional items use ModsItemlist.getOr or getIfLoaded");
         }

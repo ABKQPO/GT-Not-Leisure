@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.block.Block;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityList;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -30,6 +31,7 @@ import com.science.gtnl.utils.world.teams.TeamMigrationWorldSavedData;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.network.FMLIndexedMessageToMessageCodec;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import gnu.trove.map.hash.TObjectByteHashMap;
 import gregtech.api.GregTechAPI;
@@ -74,7 +76,9 @@ public class CompatSnapshot {
                     + item.getUnlocalizedName()
                     + " class="
                     + item.getClass()
-                        .getSimpleName());
+                        .getSimpleName()
+                    + " defaultTab="
+                    + tabName(ReflectionHelper.getPrivateValue(Item.class, item, "tabToDisplayOn", "field_77701_a")));
         }
         for (Object key : Block.blockRegistry.getKeys()) {
             String name = String.valueOf(key);
@@ -91,20 +95,41 @@ public class CompatSnapshot {
                     + " itemForm="
                     + (form == null ? "none"
                         : form.getClass()
-                            .getSimpleName()));
+                            .getSimpleName())
+                    + " defaultTab="
+                    + tabName(
+                        ReflectionHelper
+                            .getPrivateValue(Block.class, block, "displayOnCreativeTab", "field_149772_a")));
         }
-        Map<Class<?>, String> tiles = ReflectionHelper
-            .getPrivateValue(TileEntity.class, null, "classToNameMap", "field_145853_j");
-        for (Map.Entry<Class<?>, String> entry : tiles.entrySet()) {
-            if (ours(entry.getKey())) lines.add(
-                "tile " + entry.getValue()
+        // The inverse map keeps only one name per class and would miss removed legacy aliases.
+        Map<String, Class<?>> tiles = ReflectionHelper
+            .getPrivateValue(TileEntity.class, null, "nameToClassMap", "field_145855_i");
+        for (Map.Entry<String, Class<?>> entry : tiles.entrySet()) {
+            if (ours(entry.getValue())) lines.add(
+                "tile " + entry.getKey()
                     + " class="
-                    + entry.getKey()
+                    + entry.getValue()
                         .getSimpleName());
         }
         for (Object entry : EntityList.classToStringMapping.entrySet()) {
             Map.Entry<?, ?> e = (Map.Entry<?, ?>) entry;
             if (ours((Class<?>) e.getKey())) lines.add("entity " + e.getValue());
+        }
+        Map<Class<?>, EntityRegistry.EntityRegistration> entities = ReflectionHelper
+            .getPrivateValue(EntityRegistry.class, EntityRegistry.instance(), "entityClassRegistrations");
+        for (Map.Entry<Class<?>, EntityRegistry.EntityRegistration> entry : entities.entrySet()) {
+            if (!ours(entry.getKey())) continue;
+            EntityRegistry.EntityRegistration registration = entry.getValue();
+            lines.add(
+                "entity-id " + registration.getContainer()
+                    .getModId()
+                    + ":"
+                    + registration.getModEntityId()
+                    + " "
+                    + registration.getEntityName()
+                    + " class="
+                    + entry.getKey()
+                        .getSimpleName());
         }
         for (int id = 0; id < GregTechAPI.METATILEENTITIES.length; id++) {
             IMetaTileEntity machine = GregTechAPI.METATILEENTITIES[id];
@@ -141,6 +166,12 @@ public class CompatSnapshot {
         String name = type.getName();
         for (String pkg : PACKAGES) if (name.startsWith(pkg)) return true;
         return false;
+    }
+
+    // Read the registration-time default without loading client-only getters. Client overrides need a client check.
+    private static String tabName(CreativeTabs tab) {
+        return tab == null ? "none"
+            : ReflectionHelper.getPrivateValue(CreativeTabs.class, tab, "tabLabel", "field_78034_o");
     }
 
     // Client and server must agree on the packet ids, which come from the registration order.

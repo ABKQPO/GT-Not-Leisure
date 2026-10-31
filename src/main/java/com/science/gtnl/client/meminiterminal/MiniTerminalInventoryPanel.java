@@ -43,6 +43,7 @@ import com.science.gtnl.client.floatingwindow.FloatingWindowPanel;
 import com.science.gtnl.common.meminiterminal.MiniTerminalPinSettings;
 import com.science.gtnl.common.meminiterminal.MiniTerminalStackTypes;
 import com.science.gtnl.compat.bogosorter.MiniTerminalBogoCompat;
+import com.science.gtnl.compat.lwjgl3ify.MouseWheelCompat;
 import com.science.gtnl.config.MiniTerminalClientConfig;
 
 import appeng.api.config.ActionItems;
@@ -68,9 +69,7 @@ import appeng.core.AEConfig;
 import appeng.core.localization.ColorUtils;
 import appeng.helpers.MonitorableAction;
 import appeng.items.contents.PinList;
-import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
-import cpw.mods.fml.common.Loader;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -913,7 +912,7 @@ public class MiniTerminalInventoryPanel extends FloatingWindowPanel {
         @Override
         public boolean onMouseScroll(UpOrDown direction, int amount) {
 
-            int ticks = Loader.isModLoaded("lwjgl3ify") ? amount : (int) Platform.ceilDiv(amount, 120);
+            int ticks = MouseWheelCompat.normalizeTicks(amount);
             VirtualMESlot slot = slotAt(getContext().getMouseX(), getContext().getMouseY());
             if (slot != null) {
                 IAEStack<?> stack = slot.getAEStack();
