@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Starts the dedicated server once, stops it after it finished loading and fails on a load error or a changed
-# compat snapshot. Usage: server-check.sh <gradle run task> <run directory> [host|library]
+# compat snapshot. Usage: server-check.sh <gradle run task> <run directory> [host|library|without-neenergistics|quest-without-api]
 set -uo pipefail
 
 TASK="${1:-:runServer25}"
@@ -11,11 +11,26 @@ MODE="${3:-host}"
 LOG="build/server-check.log"
 SNAPSHOT="$PWD/build/compat-snapshot.txt"
 BASELINE="src/test/resources/compat/compat-snapshot.txt"
+GRADLE_ARGS=()
+EXPECTED_MARKERS=()
+INACTIVE_COMPAT=""
 case "$MODE" in
   host) ;;
   library)
     LOG="build/library-server-check-${TASK##*:}.log"
     SNAPSHOT="$PWD/build/library-unexpected-host-snapshot.txt"
+    ;;
+  without-neenergistics|quest-without-api)
+    LOG="build/server-check-$MODE.log"
+    SNAPSHOT="$PWD/build/compat-snapshot-$MODE.txt"
+    GRADLE_ARGS=("-Pgtnl.smokeScenario=$MODE")
+    if [[ "$MODE" == without-neenergistics ]]; then
+      EXPECTED_MARKERS=("absent neenergistics")
+      INACTIVE_COMPAT=""
+    else
+      EXPECTED_MARKERS=("present betterquesting" "absent bqapi")
+      INACTIVE_COMPAT="betterquesting"
+    fi
     ;;
   *) echo "Unknown server check mode: $MODE" >&2; exit 2 ;;
 esac
@@ -45,7 +60,7 @@ touch "$LOG"
   done
   sleep 30
 ) | (
-  GTNL_COMPAT_SNAPSHOT="$SNAPSHOT" timeout 2400 ./gradlew --no-daemon "$TASK"
+  GTNL_COMPAT_SNAPSHOT="$SNAPSHOT" timeout 2400 ./gradlew --no-daemon "$TASK" "${GRADLE_ARGS[@]}"
   status=$?
   # Release the input producer even if Gradle exits before printing its usual success/failure banner.
   echo "GTNL_SERVER_CHECK_EXIT=$status"
@@ -73,6 +88,16 @@ if grep -q -e 'Caught exception from sciencenotleisure' -e 'Caught exception fro
 fi
 if ! grep -q 'GTNLLib initialized' "$LOG"; then
   echo "::error::GTNLLib did not initialize"
+  failed=1
+fi
+for marker in "${EXPECTED_MARKERS[@]}"; do
+  if ! grep -Fq "GTNL smoke verified $marker" "$LOG"; then
+    echo "::error::The expected runtime mod state was not verified: $marker"
+    failed=1
+  fi
+done
+if [[ -n "$INACTIVE_COMPAT" ]] && grep -Fq "GTNL compat for $INACTIVE_COMPAT is active" "$LOG"; then
+  echo "::error::Compat loaded despite a missing dependency: $INACTIVE_COMPAT"
   failed=1
 fi
 if [[ "$MODE" == library ]]; then

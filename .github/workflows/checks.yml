@@ -37,7 +37,19 @@ jobs:
         run: ./gradlew --build-cache setupCIWorkspace
 
       - name: Build with spotless check and contract tests
-        run: ./gradlew --build-cache build
+        run: |
+          mkdir -p build
+          set -o pipefail
+          ./gradlew --console=plain --build-cache build :compileJava --rerun :gtnllib:compileJava --rerun 2>&1 | tee build/compile-check.log
+          node --test .github/scripts/check-deprecations.test.cjs
+          node .github/scripts/check-deprecations.cjs build/compile-check.log src/test/resources/compat/deprecations.json
+
+      - name: Keep compiler diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: compiler-diagnostics
+          path: build/compile-check.log
 
   server:
     name: Dedicated server start and compat snapshot
@@ -70,6 +82,12 @@ jobs:
       - name: Start GTNLLib on Java 25 with only its own runtime dependencies
         run: .github/scripts/server-check.sh :gtnllib:runServer25 gtnllib/run/server_new library
 
+      - name: Start the host without NotEnoughEnergistics
+        run: .github/scripts/server-check.sh :runServer25 run/server-without-neenergistics without-neenergistics
+
+      - name: Start the host with BetterQuesting but without its optional quest API
+        run: .github/scripts/server-check.sh :runServer25 run/server-quest-without-api quest-without-api
+
       - name: Start GTNLLib on Java 8 with only its own runtime dependencies
         run: .github/scripts/server-check.sh :gtnllib:runServer gtnllib/run/server library
 
@@ -80,6 +98,8 @@ jobs:
           name: server-check
           path: |
             build/server-check.log
+            build/server-check-*.log
             build/library-server-check-*.log
             build/compat-snapshot.txt
+            build/compat-snapshot-*.txt
             build/library-unexpected-host-snapshot.txt

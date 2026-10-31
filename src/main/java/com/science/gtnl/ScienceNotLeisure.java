@@ -29,6 +29,7 @@ import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
         + "after:BloodArsenal;"
         + "required-after:Botania;"
         + "required-after:bartworks;"
+        + "required-after:cropsnh;"
         + "after:eternalsingularity;"
         + "after:etfuturum;"
         + "after:GalacticraftCore;"

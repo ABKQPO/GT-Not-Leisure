@@ -85,6 +85,18 @@ GregTech；跨模块共用的断言和主题检查放在 `src/testFixtures`，�
 许可文件及多版本字节码。CI 在 Java 25 上启动完整 GTNL 服务器并核对存档兼容快照，
 再分别在 Java 25、Java 8 上启动 GTNLLib 独立服务器，各次启动保留单独日志。
 
+宿主另有 `-Pgtnl.smokeScenario=without-neenergistics` 和 `quest-without-api` 两个启动场景，
+分别验证缺少 NotEnoughEnergistics、存在 BetterQuesting 但缺少 BQAPI 时的类加载边界。
+场景只调整 `:runServer25` 的运行路径，编译依赖不变；运行目录、日志和快照互相隔离。
+检查会在 Forge 内确认模组的实际存在状态，再核对同一份兼容快照。
+CropsNH 的类型已进入宿主温室公共接口，属于必需依赖；当前 CropsNH 版本还直接依赖 Waila，
+因此移除这两者不能当作正常的可选联动场景。
+
+CI 强制重新编译两个模块，并用 `.github/scripts/check-deprecations.cjs` 核对
+`src/test/resources/compat/deprecations.json`。基线按源码文件和告警种类计数，允许减少，
+不允许用另一个文件减少的告警抵消新增告警；缓存编译结果不能冒充零告警。
+`verifyArchitecture` 还会比较五个 NEI 页面在不同容量下的槽位和尺寸基线。
+
 ## 第三方代码
 
 `gui/wheel` 的轮盘移植自 AnvilLib（MIT 许可），许可声明见 `src/main/resources/licenses/ANVILLIB-MIT.txt`。

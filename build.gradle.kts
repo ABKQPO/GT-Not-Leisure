@@ -14,6 +14,9 @@ val rfgJarChainLock = gradle.sharedServices.registerIfAbsent("rfgJarChainLock", 
     maxParallelUsages.set(1)
 }
 allprojects {
+    tasks.withType<JavaCompile>().configureEach {
+        if (name == "compileJava") options.compilerArgs.addAll(listOf("-Xlint:deprecation,removal", "-Xmaxwarns", "10000"))
+    }
     tasks.withType<IJarOutputTask>().configureEach {
         usesService(rfgJarChainLock)
     }
@@ -174,5 +177,27 @@ runConfigs.forEach { (taskName, path) ->
         doFirst {
             workingDir.mkdirs()
         }
+    }
+}
+
+// Runtime-only smoke profiles leave the compilation API and ordinary dev launches unchanged.
+val smokeScenario = providers.gradleProperty("gtnl.smokeScenario").orNull
+if (smokeScenario != null) {
+    require(smokeScenario in setOf("without-neenergistics", "quest-without-api")) { "Unknown smoke scenario: $smokeScenario" }
+    val smokeQuest = configurations.create("smokeQuest") {
+        isCanBeConsumed = false
+        isTransitive = false
+    }
+    dependencies.add(smokeQuest.name, "com.github.GTNewHorizons:BetterQuesting:3.8.89-GTNH:dev")
+    tasks.named<JavaExec>("runServer25") {
+        val excludedArtifactPrefixes = if (smokeScenario == "without-neenergistics") listOf("NotEnoughEnergistics-")
+            else listOf("BetterQuestingAPI-")
+        classpath = classpath.filter { artifact ->
+            excludedArtifactPrefixes.none { artifact.name.startsWith(it, ignoreCase = true) }
+        }
+        if (smokeScenario == "quest-without-api") classpath += smokeQuest
+        workingDir = file("run/server-$smokeScenario")
+        environment("GTNL_EXPECT_ABSENT_MODS", if (smokeScenario == "without-neenergistics") "neenergistics" else "bqapi")
+        if (smokeScenario == "quest-without-api") environment("GTNL_EXPECT_PRESENT_MODS", "betterquesting")
     }
 }

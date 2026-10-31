@@ -63,6 +63,8 @@ public class CompatSnapshot {
     public static void writeIfRequested() {
         String target = System.getenv("GTNL_COMPAT_SNAPSHOT");
         if (target == null || target.isEmpty()) return;
+        verifyExpectedMods("GTNL_EXPECT_ABSENT_MODS", false);
+        verifyExpectedMods("GTNL_EXPECT_PRESENT_MODS", true);
         List<String> lines = new ArrayList<>();
         String prefix = ScienceNotLeisure.MODID + ":";
         for (Object key : Item.itemRegistry.getKeys()) {
@@ -158,6 +160,18 @@ public class CompatSnapshot {
             ScienceNotLeisure.LOG.info("GTNL compat snapshot written to {} ({} lines)", target, lines.size());
         } catch (IOException e) {
             ScienceNotLeisure.LOG.error("Failed to write the GTNL compat snapshot to {}", target, e);
+        }
+    }
+
+    private static void verifyExpectedMods(String variable, boolean present) {
+        String expected = System.getenv(variable);
+        if (expected == null || expected.isEmpty()) return;
+        for (String mod : expected.split(",")) {
+            String id = mod.trim();
+            if (Loader.isModLoaded(id) != present) {
+                throw new IllegalStateException("Startup smoke: expected " + id + (present ? " present" : " absent"));
+            }
+            ScienceNotLeisure.LOG.info("GTNL smoke verified {} {}", present ? "present" : "absent", id);
         }
     }
 
