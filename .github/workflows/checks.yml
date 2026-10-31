@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   build:
-    name: Full build and contract tests
+    name: Build, regression tests and artifact checks
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -36,13 +36,14 @@ jobs:
       - name: Setup the workspace
         run: ./gradlew --build-cache setupCIWorkspace
 
-      - name: Build with spotless check and contract tests
+      - name: Build with formatting, JUnit regressions and artifact checks
         run: |
           mkdir -p build
           set -o pipefail
           ./gradlew --console=plain --build-cache build :compileJava --rerun :gtnllib:compileJava --rerun 2>&1 | tee build/compile-check.log
           node --test .github/scripts/check-deprecations.test.cjs
           node --test .github/scripts/check-client-resources.test.cjs
+          node --test tools/testing/*.test.cjs
           node .github/scripts/check-deprecations.cjs build/compile-check.log src/test/resources/compat/deprecations.json
 
       - name: Keep compiler diagnostics
@@ -51,6 +52,49 @@ jobs:
         with:
           name: compiler-diagnostics
           path: build/compile-check.log
+
+      - name: Keep named JUnit results and HTML reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: regression-test-reports
+          path: |
+            build/test-results/
+            build/reports/tests/
+            gtnllib/build/test-results/
+            gtnllib/build/reports/tests/
+
+  runtime:
+    name: Native machine scenarios and world restart
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 32
+      - uses: actions/setup-java@v4
+        with:
+          java-version: |
+            8
+            17
+            21
+            25
+          distribution: zulu
+      - uses: gradle/actions/setup-gradle@v4
+      - run: chmod +x gradlew
+      - run: ./gradlew --no-daemon --build-cache setupCIWorkspace
+      - run: node tools/testing/run-runtime-tests.cjs --server
+      - name: Keep runtime scenarios and restart evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-runtime-tests
+          path: |
+            build/runtime-tests/*/*.json
+            build/runtime-tests/*/*.xml
+            build/runtime-tests/*/*.log
+            build/runtime-tests/*/game/crash-reports/
 
   client:
     name: Client startup and missing-texture baseline
@@ -77,6 +121,22 @@ jobs:
         run: ./gradlew --no-daemon --build-cache setupCIWorkspace
       - name: Load the client under a virtual display and check registered textures
         run: .github/scripts/client-check.sh
+      - name: Check the real machine GUI lifecycle
+        run: |
+          mkdir -p build/gui-xdg-data
+          LIBGL_ALWAYS_SOFTWARE=1 XDG_DATA_HOME="$PWD/build/gui-xdg-data" xvfb-run -a -s '-screen 0 1280x720x24 +extension GLX' node tools/testing/run-runtime-tests.cjs --client --case machine.large_steam_furnace.gui
+      - name: Keep GUI reports and actual rendered frames
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-gui-tests
+          path: |
+            build/runtime-tests/*/*.json
+            build/runtime-tests/*/*.xml
+            build/runtime-tests/*/*.log
+            build/runtime-tests/*/*.html
+            build/runtime-tests/*/screenshots/
+            build/runtime-tests/*/game/crash-reports/
       - name: Keep the client log and atlas report
         if: always()
         uses: actions/upload-artifact@v4

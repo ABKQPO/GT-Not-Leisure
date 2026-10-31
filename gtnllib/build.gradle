@@ -44,6 +44,9 @@ dependencies {
     compileOnly('org.jetbrains:annotations:26.0.1')
     compileOnly('org.projectlombok:lombok:1.18.42')
     annotationProcessor('org.projectlombok:lombok:1.18.42')
+    testImplementation platform('org.junit:junit-bom:5.11.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 tasks.named('compileJava', JavaCompile) {
@@ -56,19 +59,23 @@ tasks.named('compileJava', JavaCompile) {
     }
 }
 
-tasks.register('verifyGTNLLib', JavaExec) {
+tasks.register('verifyGTNLLib') {
     group = 'verification'
-    description = 'Run library contracts without GTNL or GregTech on the classpath'
-    dependsOn tasks.testClasses
-    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
-    mainClass = 'com.gtnllib.GTNLLibContractTest'
-    workingDir = projectDir
-    javaLauncher = javaToolchains.launcherFor(java.toolchain)
+    description = 'Compatibility alias for the standalone library regression tests'
+    dependsOn tasks.test
 }
 
 tasks.named('test', Test) {
-    failOnNoDiscoveredTests = false
-    dependsOn tasks.named('verifyGTNLLib')
+    useJUnitPlatform()
+    classpath += sourceSets.main.compileClasspath
+    workingDir = projectDir
+    javaLauncher = javaToolchains.launcherFor(java.toolchain)
+    forkEvery = 1
+    maxParallelForks = 1
+    maxHeapSize = '1G'
+    inputs.dir('src/main')
+    inputs.file('build.gradle')
+    testLogging { events 'failed', 'skipped'; exceptionFormat = 'full' }
 }
 
 configurations.create('distribution') {

@@ -41,7 +41,7 @@
 
 - 不引用 GTNL 和 GregTech 的任何类，也不写任何具体功能的名字；具体功能用到的颜色来源、编辑器配色、HUD 元素都由使用方在启动时注册进来。
 - 资源只用 `gtnllib` 命名空间：着色器在 `assets/gtnllib/shaders`（文字特效的在 `shaders/text`），语言文件在 `assets/gtnllib/lang`，界面材质在 `assets/gtnllib/textures/gui/skin`，语言键以 `gtnllib.` 开头，绘制对象和控件主题键也带 `gtnllib` 前缀。例外：从 GTNL 搬来的 `/getiteminfo`、文字特效预览、文字特效开关和物品提示的"按住 Shift / Ctrl"两行保留原来的 `gtnl.*` 键名，整合包里其他语言的翻译按键名覆盖，改名会让它们变回英文。
-- 契约测试在 `src/test/java/com/gtnllib`，其中 `BoundaryContracts` 守住上面两条，并检查包之间没有互相引用、只有入口读配置。
+- 回归测试在 `src/test/java/com/gtnllib`，其中 `LibraryArchitectureTest` 守住上面两条，并检查包之间没有互相引用、只有入口读配置。
 
 ## 初始化
 
@@ -74,14 +74,15 @@ GTNLLib 的 mixin 在 `com.gtnllib.mixins`，登记表是 `GTNLLibMixins`，配�
 `gtnllib/build.gradle` 显式声明基础库和可选对接的编译依赖；GTNL、GregTech 及宿主的 Minecraft
 访问权限修改不在编译路径中。原来的 `compileGTNLLibBoundary` 入口保留为模块编译任务的别名。
 
-GTNL 的 `check` 会执行模块的检查。GTNLLib 的契约测试位于模块内，运行时也不包含 GTNL 或
+GTNL 的 `check` 会执行模块的检查。GTNLLib 的 JUnit 5 回归测试位于模块内，运行时也不包含 GTNL 或
 GregTech；跨模块共用的断言和主题检查放在 `src/testFixtures`，通过 Gradle 测试夹具依赖使用。
 
-契约测试入口按模块分别运行：`verifyGTNLLib`、`verifyArchitecture`、`verifyMachines`、
-`verifyWireless`、`verifyCelestweave`（装备）和 `verifyGrandAssemblyLine`。`test` 会执行全部套件，
-每个套件在独立进程中报告断言和失败，不依赖其他套件的初始化副作用。
+测试入口为 `:gtnllib:test`、`:architectureTest`、`:machineTest`、`:wirelessTest` 和
+`:equipmentTest`。`:test` 执行全部 JVM 回归测试；每个类在独立进程中运行，JUnit 按具体用例
+输出 XML 和 HTML 结果。旧的 `verify*` 名称仅作为兼容别名保留。完整分层、原生服务器和 GUI
+测试说明见 [TESTING.md](../TESTING.md)。
 
-`verifyModuleArtifacts` 检查实际 jar 的模组元数据、coremod、访问权限声明、refmap、代码与资源归属、
+`:artifactTest` 检查实际 jar 的模组元数据、coremod、访问权限声明、refmap、代码与资源归属、
 许可文件及多版本字节码。CI 在 Java 25 上启动完整 GTNL 服务器并核对存档兼容快照，
 再分别在 Java 25、Java 8 上启动 GTNLLib 独立服务器，各次启动保留单独日志。
 

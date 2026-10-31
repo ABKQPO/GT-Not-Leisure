@@ -43,7 +43,7 @@ public class CompatSnapshot {
 
     private static final String[] PACKAGES = { "com.science.gtnl.", "com.reavaritia.", "com.gtnllib." };
 
-    // MapStorage finds saved data by these names; ArchitectureContracts checks every WorldSavedData is listed here.
+    // MapStorage finds saved data by these names; ArchitectureRulesTest checks every WorldSavedData is listed here.
     private static final Map<Class<? extends WorldSavedData>, String> SAVED_DATA = Map.of(
         CelestweaveBackpackData.class,
         CelestweaveBackpackData.NAME,

@@ -1,4 +1,5 @@
 import org.gradle.jvm.tasks.Jar
+import java.io.File
 import org.gradle.api.services.BuildService
 import org.gradle.api.services.BuildServiceParameters
 import com.gtnewhorizons.retrofuturagradle.util.IJarOutputTask
@@ -32,20 +33,26 @@ allprojects {
 
 abstract class ModuleArchiveArguments : CommandLineArgumentProvider {
     @get:InputFile
+    @get:PathSensitive(PathSensitivity.NAME_ONLY)
     abstract val host: RegularFileProperty
 
     @get:InputFiles
+    @get:PathSensitive(PathSensitivity.NAME_ONLY)
     abstract val library: ConfigurableFileCollection
 
     override fun asArguments(): Iterable<String> =
-        listOf(host.get().asFile.absolutePath) + library.files.map { it.absolutePath }.sorted()
+        listOf(
+            "-Dgtnl.test.hostJar=${host.get().asFile.absolutePath}",
+            "-Dgtnl.test.libraryJars=${library.files.map { it.absolutePath }.sorted().joinToString(File.pathSeparator)}"
+        )
 }
 
 val clientSmoke = providers.environmentVariable("GTNL_CLIENT_SMOKE").isPresent
+val runtimeTestDirectory = providers.gradleProperty("gtnl.runtimeDir").orNull
 minecraft {
     extraRunJvmArguments.addAll(
-        if (clientSmoke) "-Xmx4G" else "-Xmx8G",
-        if (clientSmoke) "-Xms1G" else "-Xms8G",
+        if (clientSmoke || runtimeTestDirectory != null) "-Xmx4G" else "-Xmx8G",
+        if (clientSmoke || runtimeTestDirectory != null) "-Xms1G" else "-Xms8G",
         "-Dgtnhlib.dumpkeys=true"
     )
     if (clientSmoke) extraRunJvmArguments.add("-Dgtnhlib.debug.eventbus=true")
@@ -59,23 +66,44 @@ sourceSets.test {
     compileClasspath += sourceSets.main.get().compileClasspath
 }
 
-val contractSuites = mapOf(
-    "verifyCelestweave" to "com.science.gtnl.client.celestweave.CelestweaveContractTest",
-    "verifyArchitecture" to "com.science.gtnl.ArchitectureContractTest",
-    "verifyMachines" to "com.science.gtnl.MachineContractTest",
-    "verifyWireless" to "com.science.gtnl.WirelessContractTest"
-)
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
+    javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
+    // Minecraft, Forge and MUI keep global registries. Each test class owns a fresh JVM.
+    forkEvery = 1
+    maxParallelForks = 1
+    maxHeapSize = "1G"
+    workingDir = projectDir
+    inputs.dir("src/main")
+    inputs.dir("gtnllib/src/main")
+    inputs.files("build.gradle.kts", "gtnllib/build.gradle", "gradle.properties")
+    testLogging { events("failed", "skipped"); exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL }
+}
 
-contractSuites.forEach { (taskName, entryPoint) ->
-    tasks.register<JavaExec>(taskName) {
+tasks.named<Test>("test") {
+    classpath += sourceSets.main.get().runtimeClasspath + sourceSets.main.get().compileClasspath
+    dependsOn(":gtnllib:test")
+}
+
+listOf("architecture", "machine", "wireless", "equipment").forEach { category ->
+    tasks.register<Test>("${category}Test") {
         group = "verification"
-        description = "Run the $taskName contract suite without starting Minecraft"
-        dependsOn(tasks.testClasses)
+        description = "Run $category regression tests without launching Minecraft"
+        testClassesDirs = sourceSets.test.get().output.classesDirs
         classpath = sourceSets.test.get().runtimeClasspath + sourceSets.main.get().runtimeClasspath +
             sourceSets.main.get().compileClasspath
-        mainClass.set(entryPoint)
-        javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
+        useJUnitPlatform { includeTags(category) }
     }
+}
+
+mapOf(
+    "verifyCelestweave" to "equipmentTest",
+    "verifyArchitecture" to "architectureTest",
+    "verifyMachines" to "machineTest",
+    "verifyWireless" to "wirelessTest",
+    "verifyGrandAssemblyLine" to "grandAssemblyLineTest"
+).forEach { (old, replacement) ->
+    tasks.register(old) { group = "verification"; description = "Compatibility alias for $replacement"; dependsOn(replacement) }
 }
 
 tasks.register<JavaExec>("benchEquipment") {
@@ -88,21 +116,13 @@ tasks.register<JavaExec>("benchEquipment") {
     javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
 }
 
-tasks.register<JavaExec>("verifyGrandAssemblyLine") {
+tasks.register<Test>("grandAssemblyLineTest") {
     group = "verification"
     description = "Verify Grand Assembly Line overclocking and large energy settlement without starting Minecraft"
-    dependsOn(tasks.testClasses)
+    testClassesDirs = sourceSets.test.get().output.classesDirs
     classpath = sourceSets.test.get().runtimeClasspath + sourceSets.main.get().runtimeClasspath +
         sourceSets.main.get().compileClasspath
-    mainClass.set("com.science.gtnl.common.machine.multiblock.GrandAssemblyLineOverclockContracts")
-    javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
-}
-
-tasks.named<Test>("test") {
-    failOnNoDiscoveredTests.set(false)
-    dependsOn(contractSuites.keys)
-    dependsOn("verifyGrandAssemblyLine")
-    dependsOn("verifyGTNLLib")
+    filter { includeTestsMatching("*GrandAssemblyLineOverclockTest") }
 }
 
 // Keep the existing verification entry points while the library owns their implementation.
@@ -129,6 +149,9 @@ val libraryDistribution = configurations.create("libraryDistribution") {
 dependencies {
     api(project(":gtnllib"))
     testImplementation(testFixtures(project(":gtnllib")))
+    testImplementation(platform("org.junit:junit-bom:5.11.4"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     libraryDistribution(project(path = ":gtnllib", configuration = "distribution"))
 }
 
@@ -149,21 +172,27 @@ tasks.named("assemble") {
     dependsOn(collectLibraryArtifacts)
 }
 
-val verifyModuleArtifacts = tasks.register<JavaExec>("verifyModuleArtifacts") {
+val artifactTests = sourceSets.create("artifactTest") {
+    compileClasspath += sourceSets.main.get().output + sourceSets.main.get().compileClasspath + sourceSets.test.get().compileClasspath
+    runtimeClasspath += compileClasspath + sourceSets.test.get().runtimeClasspath
+}
+
+val artifactTest = tasks.register<Test>("artifactTest") {
     group = "verification"
     description = "Verify independent mod metadata, coremods, refmaps and multi-release class files"
-    dependsOn(tasks.testClasses, tasks.named("reobfJar"), libraryDistribution)
-    classpath = sourceSets.test.get().runtimeClasspath + sourceSets.main.get().compileClasspath
-    mainClass.set("com.science.gtnl.ModuleArtifactContracts")
-    javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
+    dependsOn(tasks.named("reobfJar"), libraryDistribution)
+    testClassesDirs = artifactTests.output.classesDirs
+    classpath = artifactTests.runtimeClasspath
     val archives = objects.newInstance<ModuleArchiveArguments>()
     archives.host.set(tasks.named<Jar>("reobfJar").flatMap { it.archiveFile })
     archives.library.from(libraryDistribution)
-    argumentProviders.add(archives)
+    jvmArgumentProviders.add(archives)
 }
 
+tasks.register("verifyModuleArtifacts") { group = "verification"; dependsOn(artifactTest) }
+
 tasks.named("check") {
-    dependsOn(verifyModuleArtifacts)
+    dependsOn(artifactTest)
 }
 
 val runConfigs = listOf(
@@ -177,9 +206,39 @@ val runConfigs = listOf(
     "runServer25" to "run/server_new"
 )
 
+val runtimeTests = sourceSets.create("runtimeTest") {
+    compileClasspath += sourceSets.main.get().output + sourceSets.main.get().compileClasspath
+    runtimeClasspath += sourceSets.main.get().runtimeClasspath
+}
+val runtimeTestJar = tasks.register<Jar>("runtimeTestJar") {
+    group = "verification"
+    description = "Build the isolated Forge test mod; it is not a distribution artifact"
+    from(runtimeTests.output)
+    archiveFileName.set("gtnl-runtime-tests.jar")
+    destinationDirectory.set(layout.buildDirectory.dir("test-mods"))
+}
+if (runtimeTestDirectory != null) {
+    val testDirectory = file(runtimeTestDirectory).canonicalFile
+    require(testDirectory.toPath().startsWith(layout.buildDirectory.dir("runtime-tests").get().asFile.canonicalFile.toPath())) {
+        "Runtime tests must use a runner-owned directory under build/runtime-tests"
+    }
+    require(testDirectory.resolve(".gtnl-test-workspace").isFile) { "Use tools/testing/run-runtime-tests.cjs to prepare the test workspace" }
+    val installRuntimeTests = tasks.register<Copy>("installRuntimeTests") {
+        from(runtimeTestJar)
+        into(testDirectory.resolve("mods"))
+    }
+    listOf("runServer25", "runClient25").forEach { taskName ->
+        tasks.named<JavaExec>(taskName) {
+            dependsOn(installRuntimeTests)
+            workingDir = testDirectory
+            if (taskName == "runClient25") args("--width", "1280", "--height", "720")
+        }
+    }
+}
+
 runConfigs.forEach { (taskName, path) ->
     tasks.named<JavaExec>(taskName) {
-        workingDir = file("${projectDir}/$path")
+        workingDir = if (taskName in listOf("runServer25", "runClient25") && runtimeTestDirectory != null) file(runtimeTestDirectory) else file("${projectDir}/$path")
         doFirst {
             workingDir.mkdirs()
         }

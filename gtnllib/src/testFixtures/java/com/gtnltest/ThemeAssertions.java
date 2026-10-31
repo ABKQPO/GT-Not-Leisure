@@ -1,9 +1,9 @@
 package com.gtnltest;
 
-import static com.gtnltest.ContractAssertions.call;
-import static com.gtnltest.ContractAssertions.check;
-import static com.gtnltest.ContractAssertions.field;
-import static com.gtnltest.ContractAssertions.read;
+import static com.gtnltest.TestSupport.call;
+import static com.gtnltest.TestSupport.check;
+import static com.gtnltest.TestSupport.field;
+import static com.gtnltest.TestSupport.read;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;

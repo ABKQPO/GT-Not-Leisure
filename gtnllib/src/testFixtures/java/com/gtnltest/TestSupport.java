@@ -1,0 +1,53 @@
+package com.gtnltest;
+
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+/** Shared assertions and reflection helpers; JUnit owns discovery, isolation and reporting. */
+public final class TestSupport {
+
+    private TestSupport() {}
+
+    public static void check(boolean condition, String message) {
+        if (!condition) throw new AssertionError(message);
+    }
+
+    public static void near(double expected, double actual, String message) {
+        check(Math.abs(expected - actual) < 1.0E-6, message + ": expected " + expected + ", got " + actual);
+    }
+
+    public static Object call(Class<?> owner, String name, Object target, Class<?>[] types, Object... args)
+        throws ReflectiveOperationException {
+        Method method = owner.getDeclaredMethod(name, types);
+        method.setAccessible(true);
+        return method.invoke(target, args);
+    }
+
+    public static Object field(Object target, String name) throws ReflectiveOperationException {
+        Field field = target.getClass()
+            .getDeclaredField(name);
+        field.setAccessible(true);
+        return field.get(target);
+    }
+
+    public static String read(Path file) throws IOException {
+        return new String(Files.readAllBytes(file), StandardCharsets.UTF_8);
+    }
+
+    public static String compact(String source) {
+        return source.replaceAll("\\s+", "");
+    }
+
+    public static boolean rejects(Runnable action) {
+        try {
+            action.run();
+            return false;
+        } catch (RuntimeException expected) {
+            return true;
+        }
+    }
+}
