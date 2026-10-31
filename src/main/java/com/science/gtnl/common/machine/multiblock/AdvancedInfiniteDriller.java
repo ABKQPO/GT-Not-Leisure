@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -24,16 +23,12 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
-import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
-import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
-import com.gtnewhorizons.modularui.common.widget.SlotWidget;
-import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.science.gtnl.api.casing.GTNLCasings;
-import com.science.gtnl.common.gui.modularui.AdvancedInfiniteDrillerGui;
+import com.science.gtnl.common.gui.modularui.multiblock.AdvancedInfiniteDrillerGui;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
+import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
+import com.science.gtnl.common.machine.voidminer.VMTweakHelper;
 import com.science.gtnl.utils.StructureUtils;
-import com.science.gtnl.utils.machine.VMTweakHelper;
-import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import bartworks.system.material.WerkstoffLoader;
 import gregtech.GTMod;
@@ -115,8 +110,6 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
 
     @Override
     public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
-        startRecipeProcessing();
-
         if (excessFuel > 2000 && mProgresstime > 0 && mProgresstime % 20 == 0) {
             excessFuel += (int) Math.floor(drillTier * excessFuel / 2000.0);
         }
@@ -128,8 +121,9 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
 
         if (mProgresstime > 0) {
             if (mProgresstime % 5 == 0 && excessFuel >= 2000) {
+                startRecipeProcessing();
                 int pyrotheumConsumption = getPyrotheumConsumption();
-                ArrayList<FluidStack> storedFluids = getStoredFluids();
+                List<FluidStack> storedFluids = getStoredFluids();
                 for (FluidStack tFluid : storedFluids) {
                     if (tFluid == null || tFluid.getFluid() == null) continue;
                     int amount = tFluid.amount;
@@ -164,6 +158,7 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
                         }
                     }
                 }
+                endRecipeProcessing();
             }
         } else if (aTick % 20 == 0 && !aBaseMetaTileEntity.isActive()) {
             excessFuel -= 4;
@@ -182,7 +177,6 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
             hatch.setHeatValue((float) percent);
         }
 
-        endRecipeProcessing();
         super.onPostTick(aBaseMetaTileEntity, aTick);
     }
 
@@ -270,7 +264,7 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
             excessFuel = 10000;
         }
 
-        ArrayList<FluidStack> storedFluids = getStoredFluids();
+        List<FluidStack> storedFluids = getStoredFluids();
         if (storedFluids.isEmpty()) {
             return CheckRecipeResultRegistry.NO_RECIPE;
         }
@@ -422,24 +416,6 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
         return new AdvancedInfiniteDrillerGui(this);
     }
 
-    @Override
-    @Deprecated
-    public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
-        // TODO: Remove this MUI1 fallback after the Advanced Infinite Driller terminal text is fully ported to MUI2.
-        super.drawTexts(screenElements, inventorySlot);
-        screenElements
-            .widget(
-                new TextWidget()
-                    .setStringSupplier(
-                        () -> StatCollector.translateToLocalFormatted(
-                            "gtnl.machine.advanced_infinite_driller.info.excess_fuel",
-                            excessFuel))
-                    .setDefaultColor(COLOR_TEXT_WHITE.get())
-                    .setEnabled(true))
-            .widget(
-                new FakeSyncWidget.DoubleSyncer(() -> excessFuel, fuel -> excessFuel = fuel).setSynced(true, false));
-    }
-
     public double getExcessFuelForGui() {
         return excessFuel;
     }
@@ -480,11 +456,6 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
         if (aNBT.hasKey("excessFuel")) {
             excessFuel = aNBT.getDouble("excessFuel");
         }
-    }
-
-    @Override
-    public boolean getPerfectOC() {
-        return false;
     }
 
     @Override

@@ -2,7 +2,7 @@ package com.science.gtnl.common.recipe.gtnl;
 
 import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -59,7 +59,7 @@ public class InfernalCokeRecipes implements IRecipePool {
             .eut(0)
             .addTo(ICR);
 
-        ArrayList<ItemStack> aLogData = OreDictionary.getOres("logWood");
+        List<ItemStack> aLogData = OreDictionary.getOres("logWood");
         for (ItemStack stack : aLogData) {
             RecipeBuilder.builder()
                 .itemInputs(GTUtility.copyAmount(1, stack))

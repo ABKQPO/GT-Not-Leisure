@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
-import com.science.gtnl.common.meminiterminal.MiniTerminalUpdatePacket.Entry;
+import com.science.gtnl.common.packet.MiniTerminalUpdatePacket.Entry;
 
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.AEStackTypeRegistry;
@@ -20,7 +20,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
-final class MiniTerminalCatalog {
+public class MiniTerminalCatalog {
 
     private static final int MIN_UPDATE_TICKS = 5;
     private static final int MIN_SCAN_TICKS = 20;

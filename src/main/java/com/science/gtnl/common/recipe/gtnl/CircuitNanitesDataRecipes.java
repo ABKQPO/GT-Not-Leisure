@@ -13,12 +13,29 @@ import gregtech.api.util.GTOreDictUnificator;
 
 public class CircuitNanitesDataRecipes implements IRecipePool {
 
+    public static Long loadedSeed;
+
     public RecipeMap<?> CNDR = GTNLRecipeMaps.CircuitNanitesDataRecipes;
     public CircuitNanitesDataMetadata RECIPE_DATA = CircuitNanitesDataMetadata.INSTANCE;
     public long worldSeed;
 
     public CircuitNanitesDataRecipes(long worldSeed) {
         this.worldSeed = worldSeed;
+    }
+
+    public static void loadForWorld(long worldSeed) {
+        if (Long.valueOf(worldSeed)
+            .equals(loadedSeed)) return;
+        clear();
+        new CircuitNanitesDataRecipes(worldSeed).loadRecipes();
+        loadedSeed = worldSeed;
+    }
+
+    public static void clear() {
+        CircuitNanitesRecipeData.recipeDataMap.clear();
+        GTNLRecipeMaps.CircuitNanitesDataRecipes.getBackend()
+            .clearRecipes();
+        loadedSeed = null;
     }
 
     @Override

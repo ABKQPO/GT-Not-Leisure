@@ -2,6 +2,7 @@ package com.science.gtnl.common.wireless;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,7 +18,8 @@ import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 public class WirelessLinkData {
 
     public static final String KEY = IWirelessTileData.KEY;
-    private static final int VERSION = 1;
+    private static final int LEGACY_VERSION = 1;
+    private static final int VERSION = 2;
     private static Map<NBTTagCompound, Decoded> readBatch;
     private static int readBatchDepth;
 
@@ -53,7 +55,8 @@ public class WirelessLinkData {
 
     public record Slot(ForgeDirection side, boolean external) {}
 
-    public record Claim(String kind, Set<Address> frequencies, Set<Address> paused, Set<Address> entrances) {
+    public record Claim(String kind, Set<WirelessFrequency> frequencies, Set<WirelessFrequency> paused,
+        Set<WirelessFrequency> entrances) {
 
         public Claim {
             frequencies = Set.copyOf(frequencies);
@@ -92,7 +95,8 @@ public class WirelessLinkData {
         Map<Slot, Claim> result = new Object2ObjectOpenHashMap<>();
         if (!tileData.hasKey(KEY, 10)) return result;
         NBTTagCompound data = tileData.getCompoundTag(KEY);
-        if (!data.hasKey("version", 3) || data.getInteger("version") != VERSION) return result;
+        int version = data.getInteger("version");
+        if (!data.hasKey("version", 3) || version != VERSION && version != LEGACY_VERSION) return result;
         ForgeDirection[] directions = ForgeDirection.values();
         NBTTagList entries = data.getTagList("nodes", 10);
         for (int i = 0; i < entries.tagCount(); i++) {
@@ -105,27 +109,17 @@ public class WirelessLinkData {
                 || entry.getString("kind")
                     .isEmpty())
                 continue;
-            Set<Address> frequencies = new ObjectOpenHashSet<>();
-            Set<Address> paused = new ObjectOpenHashSet<>();
-            Set<Address> entrances = new ObjectOpenHashSet<>();
+            Set<WirelessFrequency> frequencies = new ObjectOpenHashSet<>();
+            Set<WirelessFrequency> paused = new ObjectOpenHashSet<>();
+            Set<WirelessFrequency> entrances = new ObjectOpenHashSet<>();
             NBTTagList sources = entry.getTagList("frequencies", 10);
             for (int j = 0; j < sources.tagCount(); j++) {
                 NBTTagCompound source = sources.getCompoundTagAt(j);
-                if (!source.hasKey("dimension", 3) || !source.hasKey("x", 3)
-                    || !source.hasKey("y", 3)
-                    || !source.hasKey("z", 3)
-                    || !source.hasKey("side", 3)) continue;
-                int sourceSide = source.getInteger("side");
-                if (sourceSide < 0 || sourceSide >= directions.length) continue;
-                Address address = new Address(
-                    source.getInteger("dimension"),
-                    source.getInteger("x"),
-                    source.getInteger("y"),
-                    source.getInteger("z"),
-                    directions[sourceSide]);
-                frequencies.add(address);
-                if (source.getBoolean("paused")) paused.add(address);
-                if (source.getBoolean("entrance")) entrances.add(address);
+                WirelessFrequency frequency = readFrequency(source);
+                if (frequency == null) continue;
+                frequencies.add(frequency);
+                if (source.getBoolean("paused")) paused.add(frequency);
+                if (source.getBoolean("entrance")) entrances.add(frequency);
             }
             Slot slot = new Slot(directions[side], entry.getBoolean("external"));
             if (!frequencies.isEmpty())
@@ -134,9 +128,45 @@ public class WirelessLinkData {
         return result;
     }
 
+    private static WirelessFrequency readFrequency(NBTTagCompound source) {
+        if (source.hasKey("id", 8)) {
+            UUID id = WirelessFrequencies.uuid(source, "id");
+            return id == null ? null : WirelessFrequency.of(id);
+        }
+        Address position = readPosition(source);
+        return position == null ? null : WirelessFrequency.legacy(position);
+    }
+
+    private static void writeFrequency(NBTTagCompound source, WirelessFrequency frequency) {
+        if (frequency.isLegacy()) writePosition(source, frequency.legacy());
+        else source.setString(
+            "id",
+            frequency.id()
+                .toString());
+    }
+
+    static Address readPosition(NBTTagCompound tag) {
+        if (!tag.hasKey("dimension", 3) || !tag.hasKey("x", 3) || !tag.hasKey("y", 3) || !tag.hasKey("z", 3))
+            return null;
+        return new Address(
+            tag.getInteger("dimension"),
+            tag.getInteger("x"),
+            tag.getInteger("y"),
+            tag.getInteger("z"),
+            ForgeDirection.UNKNOWN);
+    }
+
+    static NBTTagCompound writePosition(NBTTagCompound tag, Address position) {
+        tag.setInteger("dimension", position.dimension());
+        tag.setInteger("x", position.x());
+        tag.setInteger("y", position.y());
+        tag.setInteger("z", position.z());
+        return tag;
+    }
+
     public static boolean write(NBTTagCompound tileData, Map<Slot, Claim> claims) {
         if (tileData.hasKey(KEY, 10) && tileData.getCompoundTag(KEY)
-            .getInteger("version") != VERSION) return false;
+            .getInteger("version") > VERSION) return false;
         if (readView(tileData).equals(claims)) return false;
         if (claims.isEmpty()) {
             tileData.removeTag(KEY);
@@ -164,23 +194,16 @@ public class WirelessLinkData {
                 entry.getValue()
                     .kind());
             NBTTagList frequencies = new NBTTagList();
-            for (Address address : entry.getValue()
+            for (WirelessFrequency frequency : entry.getValue()
                 .frequencies()) {
                 NBTTagCompound source = new NBTTagCompound();
-                source.setInteger("dimension", address.dimension());
-                source.setInteger("x", address.x());
-                source.setInteger("y", address.y());
-                source.setInteger("z", address.z());
+                writeFrequency(source, frequency);
                 if (entry.getValue()
                     .paused()
-                    .contains(address)) source.setBoolean("paused", true);
+                    .contains(frequency)) source.setBoolean("paused", true);
                 if (entry.getValue()
                     .entrances()
-                    .contains(address)) source.setBoolean("entrance", true);
-                source.setInteger(
-                    "side",
-                    address.side()
-                        .ordinal());
+                    .contains(frequency)) source.setBoolean("entrance", true);
                 frequencies.appendTag(source);
             }
             node.setTag("frequencies", frequencies);

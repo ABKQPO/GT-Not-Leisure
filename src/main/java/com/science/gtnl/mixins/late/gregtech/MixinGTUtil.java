@@ -48,15 +48,12 @@ public abstract class MixinGTUtil {
     private static int redirectTagCount(NBTTagList originalList, MTEMultiBlockBase controller, EntityPlayer player,
         @Local NBTTagCompound newTag) {
         int originalCount = originalList.tagCount();
-
         NBTTagList maintenanceList = saveConfigurationToDataStick(player, controller.mMaintenanceHatches);
-
         int maintenanceCount = 0;
         if (maintenanceList != null && maintenanceList.tagCount() > 0) {
             newTag.setTag("mMaintenanceHatches", maintenanceList);
             maintenanceCount = maintenanceList.tagCount();
         }
-
         return originalCount + maintenanceCount;
     }
 

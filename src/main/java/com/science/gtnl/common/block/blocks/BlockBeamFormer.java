@@ -1,7 +1,5 @@
 package com.science.gtnl.common.block.blocks;
 
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
@@ -10,24 +8,19 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import com.science.gtnl.client.GTNLCreativeTabs;
-import com.science.gtnl.common.block.blocks.item.ItemBlockBeamFormer;
 import com.science.gtnl.common.block.blocks.tile.TileEntityBeamFormer;
 import com.science.gtnl.common.render.tile.RenderBlockBeamFormer;
-import com.science.gtnl.utils.enums.GTNLItemList;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.core.features.AEFeature;
 import appeng.helpers.ICustomCollision;
 import appeng.util.Platform;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -41,14 +34,8 @@ public class BlockBeamFormer extends AEBaseTileBlock implements ICustomCollision
         super(Material.iron);
         setHardness(8.0F);
         setResistance(40.0F);
-        setBlockName("gtnl.beam_former");
         setHarvestLevel("pickaxe", 3);
-        setBlockTextureName(RESOURCE_ROOT_ID + ":beam_former/beam_former_block_model");
-        setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
         setLightOpacity(0);
-        GameRegistry.registerBlock(this, ItemBlockBeamFormer.class, "beam_former");
-        GameRegistry.registerTileEntity(TileEntityBeamFormer.class, "beam_former_tile_entity");
-        GTNLItemList.BlockBeamFormer.set(new ItemStack(this, 1));
         this.setTileEntity(TileEntityBeamFormer.class);
         this.setFeature(EnumSet.of(AEFeature.Core));
         this.isOpaque = false;

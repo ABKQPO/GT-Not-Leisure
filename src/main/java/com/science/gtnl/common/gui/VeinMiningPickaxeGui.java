@@ -16,7 +16,7 @@ import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.SliderWidget;
 import com.cleanroommc.modularui.widgets.textfield.TextFieldWidget;
 import com.science.gtnl.common.item.items.VeinMiningPickaxe;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ItemConfig;
 
 import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.api.modularui2.GTGuis;
@@ -79,7 +79,7 @@ public class VeinMiningPickaxeGui {
             rangeSlider,
             rangeField,
             -1,
-            Math.max(-1, MainConfig.item.vein_miner_pickaxe.maxRange),
+            Math.max(-1, ItemConfig.vein_miner_pickaxe.maxRange),
             1);
         addNumberRow(
             panel,
@@ -88,7 +88,7 @@ public class VeinMiningPickaxeGui {
             amountSlider,
             amountField,
             0,
-            Math.max(0, MainConfig.item.vein_miner_pickaxe.maxAmount),
+            Math.max(0, ItemConfig.vein_miner_pickaxe.maxAmount),
             1000);
 
         panel.child(

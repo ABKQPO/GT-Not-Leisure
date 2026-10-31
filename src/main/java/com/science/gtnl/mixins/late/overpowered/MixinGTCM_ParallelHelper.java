@@ -8,8 +8,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.Nxer.TwistSpaceTechnology.common.machine.multiMachineClasses.processingLogics.GTCM_ParallelHelper;
-import com.science.gtnl.config.MainConfig;
-import com.science.gtnl.utils.enums.ModList;
+import com.science.gtnl.compat.overpowered.RecipeOutputChance;
 import com.science.gtnl.utils.recipes.ChanceBonusManager;
 import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 
@@ -26,7 +25,7 @@ public abstract class MixinGTCM_ParallelHelper extends ParallelHelper {
      */
     @Inject(method = "determineParallel", at = @At("HEAD"), remap = false)
     private void opDetermineParallel(CallbackInfo ci) {
-        if (!ModList.Overpowered.isModLoaded() && MainConfig.machine.enableRecipeOutputChance) {
+        if (RecipeOutputChance.enabled()) {
             // Compute optional bonus based on machine and current EU/t
             OptionalDouble bonusOptional = ChanceBonusManager
                 .getChanceBonusOptional(machine, GTUtility.getTier(recipe.mEUt), chanceMultiplier, recipe);

@@ -15,8 +15,6 @@ public class PortalGunSpriteRender {
 
     private static final float GLOW_ALPHA = 0.3F;
 
-    private PortalGunSpriteRender() {}
-
     public static float widthScale(float open, float close) {
         return FxEasing.easeOutBack(open) * PortalGunPortalRender.shrink(close);
     }

@@ -9,21 +9,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.EnumChatFormatting;
 
-import com.gtnewhorizons.modularui.api.math.Pos2d;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
-import com.science.gtnl.utils.item.ItemUtils;
-
 import gregtech.api.recipe.BasicUIPropertiesBuilder;
 import gregtech.api.recipe.NEIRecipePropertiesBuilder;
-import gregtech.api.recipe.RecipeMapFrontend;
 import gregtech.api.util.MethodsReturnNonnullByDefault;
-import gregtech.common.gui.modularui.UIHelper;
 import gregtech.nei.RecipeDisplayInfo;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class EGTWUpgradeCostFrontend extends RecipeMapFrontend {
+public class EGTWUpgradeCostFrontend extends GTNLRecipeFrontend {
 
     public EGTWUpgradeCostFrontend(BasicUIPropertiesBuilder uiPropertiesBuilder,
         NEIRecipePropertiesBuilder neiPropertiesBuilder) {
@@ -31,21 +24,18 @@ public class EGTWUpgradeCostFrontend extends RecipeMapFrontend {
     }
 
     @Override
-    public void addGregTechLogo(ModularWindow.Builder builder, Pos2d windowOffset) {
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
-                .setSize(18, 18)
-                .setPos(new Pos2d(151, 100).add(windowOffset)));
+    protected Slot logoSlot() {
+        return new Slot(151, 100);
     }
 
     @Override
-    public List<Pos2d> getItemInputPositions(int itemInputCount) {
-        return UIHelper.getGridPositions(itemInputCount, 8, 8, 5);
+    protected List<Slot> itemInputSlots(int itemInputCount) {
+        return grid(itemInputCount, 8, 8, 5);
     }
 
     @Override
-    public List<Pos2d> getItemOutputPositions(int itemOutputCount) {
-        return UIHelper.getGridPositions(itemOutputCount, 134, 8, 1);
+    protected List<Slot> itemOutputSlots(int itemOutputCount) {
+        return grid(itemOutputCount, 134, 8, 1);
     }
 
     @Override

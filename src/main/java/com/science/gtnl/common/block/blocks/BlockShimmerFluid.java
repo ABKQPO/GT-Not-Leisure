@@ -3,19 +3,21 @@ package com.science.gtnl.common.block.blocks;
 import java.util.List;
 import java.util.UUID;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 
-import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.block.BlockFluidBase;
+import com.science.gtnl.common.item.GTNLCreativeTabs;
 import com.science.gtnl.common.recipe.gtnl.ShimmerRecipes;
 import com.science.gtnl.loader.EffectLoader;
 
@@ -131,5 +133,53 @@ public class BlockShimmerFluid extends BlockFluidBase {
         int y = MathHelper.floor_double(entity.posY + 0.5);
         int z = MathHelper.floor_double(entity.posZ);
         return world.getBlock(x, y, z) != this;
+    }
+
+    public static void liftConvertedItem(EntityItem item) {
+        NBTTagCompound tag = item.getEntityData();
+
+        if (!tag.getBoolean("ShimmerConverted")) return;
+
+        World world = item.worldObj;
+        int x = MathHelper.floor_double(item.posX);
+        int y = MathHelper.floor_double(item.posY);
+        int z = MathHelper.floor_double(item.posZ);
+
+        boolean isInShimmer = false;
+
+        if (world.blockExists(x, y, z)) {
+            Block blockAtY = world.getBlock(x, y, z);
+            if (blockAtY instanceof BlockShimmerFluid) {
+                isInShimmer = true;
+            }
+        }
+
+        if (!isInShimmer && world.blockExists(x, y - 1, z)) {
+            Block blockBelow = world.getBlock(x, y - 1, z);
+            if (blockBelow instanceof BlockShimmerFluid) {
+                isInShimmer = true;
+                y = y - 1;
+            }
+        }
+
+        if (!isInShimmer) return;
+
+        double fluidTopY = y + 1.0;
+        double targetY = fluidTopY + 0.95;
+        double dy = targetY - item.posY;
+
+        if (dy > 0.05) {
+            item.motionY = Math.min(0.07, dy * 0.15);
+            item.motionX = 0;
+            item.motionZ = 0;
+            item.velocityChanged = true;
+            item.fallDistance = 0f;
+            item.onGround = false;
+        } else {
+            item.motionY = 0;
+            item.motionX = 0;
+            item.motionZ = 0;
+            item.velocityChanged = true;
+        }
     }
 }

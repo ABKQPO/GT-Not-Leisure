@@ -20,8 +20,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import com.science.gtnl.CommonProxy;
 import com.science.gtnl.api.ICustomGui;
+import com.science.gtnl.common.gui.GTNLGuiHandler;
 import com.science.gtnl.common.item.items.ItemPartMECellDock;
 import com.science.gtnl.utils.ColorUtils;
 import com.science.gtnl.utils.enums.GTNLItemList;
@@ -292,7 +292,7 @@ public class PartMECellDock extends PartBasicState
 
         if (!player.isSneaking()) {
             if (Platform.isServer()) {
-                CommonProxy.openGui(player, GuiType.MECellDockGUI, getSide(), getTile());
+                GTNLGuiHandler.openGui(player, GuiType.MECellDockGUI, getSide(), getTile());
             }
             return true;
         }

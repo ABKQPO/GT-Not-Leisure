@@ -30,17 +30,16 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.gtnllib.utils.MathUtils;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
+import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.MachineConfig;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
-import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.GTNLItemList;
-import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.enums.ModsItemlist;
-import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import goodgenerator.loader.Loaders;
 import gregtech.api.GregTechAPI;
@@ -77,24 +76,18 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
     private static final String RAS_STRUCTURE_FILE_PATH = ScienceNotLeisure.RESOURCE_ROOT_ID + ":"
         + "multiblock/real_artificial_star";
     private static final String[][] shape = StructureUtils.readStructureFromFile(RAS_STRUCTURE_FILE_PATH);
-    public static long MaxOfDepletedExcitedNaquadahFuelRod = MainConfig.machine.artificial_star.euEveryDepletedExcitedNaquadahFuelRod;
-    public static long MaxOfEnhancementCore = MainConfig.machine.artificial_star.euEveryEnhancementCore;
+    public static long MaxOfDepletedExcitedNaquadahFuelRod = MachineConfig.artificial_star.euEveryDepletedExcitedNaquadahFuelRod;
+    public static long MaxOfEnhancementCore = MachineConfig.artificial_star.euEveryEnhancementCore;
     public static long MaxOfAntimatter = 3;
     public static long MaxOfAntimatterFuelRod = 1024;
     public static long MaxOfStrangeAnnihilationFuelRod = 32768;
-    public static boolean configEnableDefaultRender = MainConfig.machine.artificial_star.enableRenderDefaultArtificialStar;
+    public static boolean configEnableDefaultRender = MachineConfig.artificial_star.enableRenderDefaultArtificialStar;
     public static final ItemStack TST_PROTO = ModsItemlist.TwistSpaceStellarStructuralFrameMaterial.get(1);
     private static final ItemStack DEPLETED_ROD = GTNLItemList.DepletedExcitedNaquadahFuelRod.get(1);
     private static final ItemStack ENHANCEMENT_CORE = GTNLItemList.EnhancementCore.get(1);
-    private static final ItemStack TST_ANTIMATTER = ModList.TwistSpaceTechnology.isModLoaded()
-        ? ModsItemlist.TwistSpaceAntimatter.get(1)
-        : null;
-    private static final ItemStack TST_FUEL_ROD = ModList.TwistSpaceTechnology.isModLoaded()
-        ? ModsItemlist.TwistSpaceAntimatterFuelRod.get(1)
-        : null;
-    private static final ItemStack TST_STRANGE_ROD = ModList.TwistSpaceTechnology.isModLoaded()
-        ? ModsItemlist.TwistSpaceStrangeAnnihilationFuelRod.get(1)
-        : null;
+    private static final ItemStack TST_ANTIMATTER = ModsItemlist.TwistSpaceAntimatter.getIfLoaded(1);
+    private static final ItemStack TST_FUEL_ROD = ModsItemlist.TwistSpaceAntimatterFuelRod.getIfLoaded(1);
+    private static final ItemStack TST_STRANGE_ROD = ModsItemlist.TwistSpaceStrangeAnnihilationFuelRod.getIfLoaded(1);
 
     public String ownerName;
     public UUID ownerUUID;
@@ -304,7 +297,7 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
                     BigInteger.valueOf(MaxOfEnhancementCore)
                         .multiply(BigInteger.valueOf(size)));
                 matched = true;
-            } else if (ModList.TwistSpaceTechnology.isModLoaded()) {
+            } else {
                 if (GTUtility.areStacksEqual(items, TST_ANTIMATTER, true)) {
                     currentOutputEU = currentOutputEU.add(
                         BigInteger.valueOf(MaxOfAntimatter)
@@ -344,26 +337,26 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
 
         BigDecimal eu = new BigDecimal(currentOutputEU).multiply(BigDecimal.valueOf(outputMultiplier))
             .multiply(BigDecimal.valueOf((rewardContinuous + 100d) / 100d))
-            .multiply(new BigDecimal(Utils.INTEGER_MAX_VALUE));
+            .multiply(new BigDecimal(MathUtils.INTEGER_MAX_VALUE));
 
         BigInteger result = eu.toBigInteger();
         if (!addEUToGlobalEnergyMap(ownerUUID, result)) {
             return CheckRecipeResultRegistry.INTERNAL_ERROR;
         }
 
-        mMaxProgresstime = (int) (20 * MainConfig.machine.artificial_star.secondsOfArtificialStarProgressCycleTime);
+        mMaxProgresstime = (int) (20 * MachineConfig.artificial_star.secondsOfArtificialStarProgressCycleTime);
         if (recoveryChance == 1000) {
             if (recoveryAmount > 0) {
                 // mOutputItems = getRecovers(recoveryAmount);
             }
-            if (recoveryAmountTST > 0 && ModList.TwistSpaceTechnology.isModLoaded()) {
+            if (recoveryAmountTST > 0) {
                 mOutputItems = getRecoversTST(recoveryAmountTST);
             }
         } else if (XSTR.XSTR_INSTANCE.nextInt(1000) < recoveryChance) {
             if (recoveryAmount > 0) {
                 // mOutputItems = getRecovers(recoveryAmount);
             }
-            if (recoveryAmountTST > 0 && ModList.TwistSpaceTechnology.isModLoaded()) {
+            if (recoveryAmountTST > 0) {
                 mOutputItems = getRecoversTST(recoveryAmountTST);
             }
         }
@@ -378,7 +371,7 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
     }
 
     public ItemStack[] getRecoversTST(long amount) {
-        if (amount <= 0 || !ModList.TwistSpaceTechnology.isModLoaded()) return new ItemStack[0];
+        if (amount <= 0 || TST_PROTO == null) return new ItemStack[0];
 
         List<ItemStack> list = new ObjectArrayList<>();
 
@@ -537,7 +530,7 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
                     + " * 2147483647"
                     + EnumChatFormatting.RESET
                     + " EU / "
-                    + MainConfig.machine.artificial_star.secondsOfArtificialStarProgressCycleTime
+                    + MachineConfig.artificial_star.secondsOfArtificialStarProgressCycleTime
                     + " s");
         }
     }

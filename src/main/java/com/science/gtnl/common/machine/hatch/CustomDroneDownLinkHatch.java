@@ -8,22 +8,12 @@ import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
-import com.gtnewhorizons.modularui.api.math.Alignment;
-import com.gtnewhorizons.modularui.api.math.Color;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
-import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
-import com.gtnewhorizons.modularui.common.widget.TextWidget;
-import com.gtnewhorizons.modularui.common.widget.textfield.TextFieldWidget;
 import com.science.gtnl.api.IConfigurationMaintenance;
-import com.science.gtnl.common.gui.modularui.GTNLCustomDroneDownLinkHatchGui;
-import com.science.gtnl.utils.item.ItemUtils;
+import com.science.gtnl.common.gui.modularui.hatch.GTNLCustomDroneDownLinkHatchGui;
 
-import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IDataCopyable;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
-import gregtech.api.interfaces.modularui.IAddGregtechLogo;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.common.tileentities.machines.multi.drone.MTEHatchDroneDownLink;
@@ -33,7 +23,7 @@ import lombok.Setter;
 @IMetaTileEntity.SkipGenerateName
 @IMetaTileEntity.SkipGenerateDescription
 public class CustomDroneDownLinkHatch extends MTEHatchDroneDownLink
-    implements IConfigurationMaintenance, IAddGregtechLogo, IDataCopyable {
+    implements IConfigurationMaintenance, IDataCopyable {
 
     public static final String COPIED_DATA_IDENTIFIER = "customDroneDownLinkHatch";
 
@@ -159,40 +149,6 @@ public class CustomDroneDownLinkHatch extends MTEHatchDroneDownLink
     @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
         return new GTNLCustomDroneDownLinkHatchGui(this).build(data, syncManager, uiSettings);
-    }
-
-    @Override
-    @Deprecated
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        // TODO: Remove this mui1 fallback after CustomDroneDownLinkHatch mui2 rollout is complete.
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
-                .setSize(18, 18)
-                .setPos(125, 62));
-    }
-
-    @Override
-    @Deprecated
-    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
-        // TODO: Remove this mui1 fallback after CustomDroneDownLinkHatch mui2 rollout is complete.
-        super.addUIWidgets(builder, buildContext);
-        if (isConfiguration()) {
-            builder.widget(
-                TextWidget.localised("gtnl.hatch.configuration_maintenance.processing_time")
-                    .setTextAlignment(Alignment.Center)
-                    .setPos(0, 38)
-                    .setSize(150, 14))
-                .widget(
-                    new TextFieldWidget().setSetterInt(val -> mConfigTime = val)
-                        .setGetterInt(() -> mConfigTime)
-                        .setNumbers(mMinConfigTime, mMaxConfigTime)
-                        .setOnScrollNumbers(1, 2, 5)
-                        .setTextAlignment(Alignment.Center)
-                        .setTextColor(Color.WHITE.normal)
-                        .setSize(70, 18)
-                        .setPos(40, 56)
-                        .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD));
-        }
     }
 
     @Override

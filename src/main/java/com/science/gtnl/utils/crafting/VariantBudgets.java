@@ -21,7 +21,7 @@ import appeng.util.item.AEItemStack;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
-public final class VariantBudgets {
+public class VariantBudgets {
 
     private final Map<IAEItemStack, Map<IAEStack<?>, IItemList<IAEStack<?>>>> budgets = new Object2ObjectOpenHashMap<>();
 

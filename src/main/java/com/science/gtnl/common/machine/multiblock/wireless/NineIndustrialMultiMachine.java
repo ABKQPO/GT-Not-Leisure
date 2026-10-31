@@ -22,16 +22,16 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.gtnllib.utils.MathUtils;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.GTNLMultiBlockBaseGui;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
-import com.science.gtnl.utils.Utils;
-import com.science.gtnl.utils.machine.NineIndustrialMultiMachineManager;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
+import com.science.gtnl.utils.text.LanguageLoader;
 
 import bartworks.common.loaders.ItemRegistry;
 import goodgenerator.loader.Loaders;
@@ -39,7 +39,6 @@ import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
-import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -50,7 +49,6 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
-import gregtech.api.util.GTLanguageManager;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
@@ -84,7 +82,7 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
         for (int id = 0; id < 108; id++) {
             RecipeMap<?> recipeMap = getRecipeMap(id);
             if (recipeMap != null) {
-                String aNEI = GTLanguageManager.getTranslation(getRecipeMap(id).unlocalizedName);
+                String aNEI = LanguageLoader.gtTranslation(getRecipeMap(id).unlocalizedName);
                 aToolTipNames[id] = aNEI != null ? aNEI : "BAD NEI NAME";
             }
         }
@@ -317,22 +315,11 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
         return new GTNLMultiBlockBaseGui<>(this).withMachineModeIcons(createDefaultMachineModeIcons());
     }
 
-    @Override
-    @Deprecated
-    public void setMachineModeIcons() {
-        // TODO: Remove this mui1 fallback after this GUI no longer supports mui1 startup paths.
-        machineModeIcons.clear();
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_DEFAULT);
-        for (int i = 0; i <= 35; i++) {
-            machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_DEFAULT);
-        }
-    }
-
     @NotNull
     @Override
     public CheckRecipeResult checkProcessing() {
         costingEU = BigInteger.ZERO;
-        costingEUText = Utils.ZERO_STRING;
+        costingEUText = MathUtils.ZERO_STRING;
 
         if (!wirelessMode) return handleNonWirelessModeProcessing();
 
@@ -372,7 +359,7 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
         BigInteger costEU = BigInteger.valueOf(processingLogic.getCalculatedEut())
             .multiply(BigInteger.valueOf(processingLogic.getDuration()));
 
-        if (!addEUToGlobalEnergyMap(ownerUUID, costEU.multiply(Utils.NEGATIVE_ONE))) {
+        if (!addEUToGlobalEnergyMap(ownerUUID, costEU.multiply(MathUtils.NEGATIVE_ONE))) {
             return CheckRecipeResultRegistry.insufficientPower(costEU.longValue());
         }
 
@@ -388,7 +375,7 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
                 }
             }
         }
-        mOutputItems = Utils.mergeArray(mOutputItems, outputItems);
+        mOutputItems = MathUtils.mergeArray(mOutputItems, outputItems);
 
         FluidStack[] outputFluids = processingLogic.getOutputFluids();
         if (outputFluids != null) {
@@ -400,7 +387,7 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
                 }
             }
         }
-        mOutputFluids = Utils.mergeArray(mOutputFluids, outputFluids);
+        mOutputFluids = MathUtils.mergeArray(mOutputFluids, outputFluids);
 
         endRecipeProcessing();
         return result;

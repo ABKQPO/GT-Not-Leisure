@@ -42,7 +42,7 @@ public class YogTerminalStorage extends WorldSavedData {
         instance = null;
     }
 
-    static boolean loaded() {
+    public static boolean loaded() {
         return instance != null;
     }
 

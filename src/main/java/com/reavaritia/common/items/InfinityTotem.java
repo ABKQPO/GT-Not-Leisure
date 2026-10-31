@@ -30,6 +30,7 @@ import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 
+import com.gtnllib.mod.ModList;
 import com.reavaritia.ReAvaritia;
 import com.reavaritia.client.ReAvaCreativeTabs;
 import com.reavaritia.utils.enums.ReAvaItemList;
@@ -37,7 +38,6 @@ import com.reavaritia.utils.item.PlaySound;
 import com.reavaritia.utils.item.SubtitleDisplay;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.packet.StatusMessage;
-import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import baubles.api.BaubleType;

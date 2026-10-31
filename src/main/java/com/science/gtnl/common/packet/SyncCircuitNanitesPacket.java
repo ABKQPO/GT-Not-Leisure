@@ -2,9 +2,11 @@ package com.science.gtnl.common.packet;
 
 import net.minecraft.client.Minecraft;
 
-import com.science.gtnl.common.packet.base.ClientboundPacket;
-import com.science.gtnl.loader.RecipeLoader;
+import com.gtnllib.network.ClientboundPacket;
+import com.science.gtnl.common.recipe.gtnl.CircuitNanitesDataRecipes;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 
 public class SyncCircuitNanitesPacket extends ClientboundPacket {
@@ -28,8 +30,9 @@ public class SyncCircuitNanitesPacket extends ClientboundPacket {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void handleClient(Minecraft minecraft) {
-        RecipeLoader.loadCircuitNanitesData(worldSeed);
+        CircuitNanitesDataRecipes.loadForWorld(worldSeed);
     }
 
 }

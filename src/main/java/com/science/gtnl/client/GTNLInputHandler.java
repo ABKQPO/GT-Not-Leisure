@@ -11,12 +11,15 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.lwjgl.input.Mouse;
 
 import com.cleanroommc.modularui.api.widget.Interactable;
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.gui.IBookmarkGroupDropTarget;
 import com.science.gtnl.common.item.items.Stick;
@@ -52,13 +55,16 @@ import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.util.AssemblyLineUtils;
 import gregtech.common.items.ItemFluidDisplay;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
+@EventBusSubscriber(side = Side.CLIENT, phase = Phase.PRE)
 public class GTNLInputHandler implements IContainerInputHandler {
 
     public static final GTNLInputHandler INSTANCE = new GTNLInputHandler();
     public static final String AE_RETRIEVE_ITEM_KEY = "gui.ae_retrieve_item";
     public static final String AE_START_CRAFT_KEY = "gui.ae_start_craft";
+    public static final String CONFIG_FULL_KEY = "gtnl.universal_bus.config_full";
     public static final int PICK_BLOCK_COOLDOWN_TICKS = 10;
     public static final int ANIMATION_FRAME_COUNT = 14;
     public static final Map<String, BooleanSupplier> KEY_BINDINGS = createKeyBindings();
@@ -69,10 +75,6 @@ public class GTNLInputHandler implements IContainerInputHandler {
     public static GuiScreen LAST_GUI_SCREEN = null;
 
     public List<ItemStack> draggedBookmarkGroup;
-
-    public GTNLInputHandler() {
-        GuiContainerManager.addInputHandler(this);
-    }
 
     public static Map<String, BooleanSupplier> createKeyBindings() {
         Map<String, BooleanSupplier> keyBindings = new Object2ObjectOpenHashMap<>(2);
@@ -151,7 +153,7 @@ public class GTNLInputHandler implements IContainerInputHandler {
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onClientTick(TickEvent.ClientTickEvent event) {
+    public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (INPUT_COOLDOWN_TICKS > 0) {
             INPUT_COOLDOWN_TICKS--;
         }
@@ -159,12 +161,12 @@ public class GTNLInputHandler implements IContainerInputHandler {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onInputEvent(final InputEvent.KeyInputEvent event) {
+    public static void onInputEvent(final InputEvent.KeyInputEvent event) {
         tryHandlePickBlockInput();
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onInputEvent(final InputEvent.MouseInputEvent event) {
+    public static void onInputEvent(final InputEvent.MouseInputEvent event) {
         tryHandlePickBlockInput();
     }
 
@@ -202,10 +204,17 @@ public class GTNLInputHandler implements IContainerInputHandler {
 
     @Override
     public void onMouseUp(GuiContainer gui, int mousex, int mousey, int button) {
-        if (button == 0 && this.draggedBookmarkGroup != null && gui instanceof IBookmarkGroupDropTarget target) {
-            target.handleBookmarkGroupDrop(mousex, mousey, this.draggedBookmarkGroup);
-        }
+        final List<ItemStack> group = this.draggedBookmarkGroup;
         this.draggedBookmarkGroup = null;
+        if (button != 0 || group == null || !(gui instanceof IBookmarkGroupDropTarget target)) return;
+
+        final int placed = target.handleBookmarkGroupDrop(mousex, mousey, group);
+        if (placed < 0) return;
+
+        final int skipped = group.size() - placed;
+        if (skipped > 0 && MC.thePlayer != null) {
+            MC.thePlayer.addChatMessage(new ChatComponentTranslation(CONFIG_FULL_KEY, skipped));
+        }
     }
 
     @Override
@@ -228,7 +237,7 @@ public class GTNLInputHandler implements IContainerInputHandler {
             this.draggedBookmarkGroup = group.getBookmarkItems()
                 .stream()
                 .map(BookmarkItem::getItemStack)
-                .collect(Collectors.toList());
+                .collect(Collectors.toCollection(ObjectArrayList::new));
         }
     }
 

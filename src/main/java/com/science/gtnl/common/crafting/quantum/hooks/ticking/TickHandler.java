@@ -1,53 +1,75 @@
 package com.science.gtnl.common.crafting.quantum.hooks.ticking;
 
-import java.util.Collections;
+import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import net.minecraft.world.World;
 
 import com.science.gtnl.common.crafting.quantum.crafting.CraftingCalculation;
 
-public final class TickHandler {
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
+
+public class TickHandler {
 
     private static final TickHandler INSTANCE = new TickHandler();
 
-    private final Set<CraftingCalculation> running = Collections.newSetFromMap(new ConcurrentHashMap<>());
-    private volatile long sessionEpoch;
-    private volatile boolean accepting = true;
+    private final Object lock = new Object();
+    private final Set<CraftingCalculation> running = new ReferenceOpenHashSet<>();
+    private long sessionEpoch;
+    private boolean accepting = true;
 
     public static TickHandler instance() {
         return INSTANCE;
     }
 
     public long getCraftingSessionEpoch() {
-        return this.sessionEpoch;
+        synchronized (this.lock) {
+            return this.sessionEpoch;
+        }
+    }
+
+    public boolean isCurrentSession(long sessionEpoch) {
+        synchronized (this.lock) {
+            return this.accepting && sessionEpoch == this.sessionEpoch;
+        }
     }
 
     public boolean registerCraftingSimulation(World world, CraftingCalculation calculation, long sessionEpoch) {
-        if (!this.accepting || sessionEpoch != this.sessionEpoch) {
-            calculation.cancel();
-            return false;
+        synchronized (this.lock) {
+            if (this.accepting && sessionEpoch == this.sessionEpoch) {
+                this.running.add(calculation);
+                return true;
+            }
         }
-        this.running.add(calculation);
-        return true;
+        calculation.cancel();
+        return false;
     }
 
     public void unregisterCraftingSimulation(World world, CraftingCalculation calculation) {
-        this.running.remove(calculation);
+        synchronized (this.lock) {
+            this.running.remove(calculation);
+        }
     }
 
     public void openSession() {
-        this.sessionEpoch++;
-        this.accepting = true;
+        synchronized (this.lock) {
+            this.sessionEpoch++;
+            this.accepting = true;
+        }
     }
 
     public void closeSession() {
-        this.accepting = false;
-        this.sessionEpoch++;
-        for (CraftingCalculation calculation : this.running.toArray(new CraftingCalculation[0])) {
+        List<CraftingCalculation> cancelled;
+        synchronized (this.lock) {
+            this.accepting = false;
+            this.sessionEpoch++;
+            cancelled = new ObjectArrayList<>(this.running);
+            this.running.clear();
+        }
+        // Cancel outside the lock: a cancelled calculation unregisters itself from its worker thread.
+        for (CraftingCalculation calculation : cancelled) {
             calculation.cancel();
         }
-        this.running.clear();
     }
 }

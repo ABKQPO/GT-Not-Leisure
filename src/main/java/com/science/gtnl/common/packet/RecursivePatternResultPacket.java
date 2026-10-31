@@ -8,11 +8,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;
 
+import com.gtnllib.network.ClientboundPacket;
 import com.science.gtnl.client.quantum.ICraftingCycleHost;
 import com.science.gtnl.client.quantum.RecursivePatternReport;
 import com.science.gtnl.common.crafting.cycle.RecursivePatternFinder.Cycle;
 import com.science.gtnl.common.crafting.cycle.RecursivePatternFinder.PatternLocation;
-import com.science.gtnl.common.packet.base.ClientboundPacket;
 
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.DimensionalCoord;

@@ -1,11 +1,9 @@
 package com.science.gtnl.common.item.items;
 
-import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Set;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,15 +14,10 @@ import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.ChatStyle;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.oredict.OreDictionary;
@@ -35,20 +28,18 @@ import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.ModularScreen;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.reavaritia.utils.item.ItemStackWrapper;
 import com.reavaritia.utils.item.SubtitleDisplay;
 import com.reavaritia.utils.item.ToolHelper;
-import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.gui.VeinMiningPickaxeGui;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ItemConfig;
 import com.science.gtnl.loader.ItemLoader;
-import com.science.gtnl.utils.enums.GTNLItemList;
+import com.science.gtnl.utils.ClientUtils;
 import com.science.gtnl.utils.item.ItemUtils;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -62,7 +53,9 @@ import it.unimi.dsi.fastutil.longs.LongArrayFIFOQueue;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
 
+@EventBusSubscriber(phase = Phase.PRE)
 public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, IGuiHolder<PlayerInventoryGuiData> {
 
     public boolean isEnable;
@@ -73,17 +66,8 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, I
 
     public VeinMiningPickaxe() {
         super(EnumHelper.addToolMaterial("VEIN", 15, 20000000, 15, 3, 10));
-        this.setUnlocalizedName("gtnl.vein_mining_pickaxe");
-        this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        this.setTextureName(ScienceNotLeisure.RESOURCE_ROOT_ID + ":" + "vein_mining_pickaxe");
         this.setMaxStackSize(1);
         this.setMaxDamage(20000000);
-        MinecraftForge.EVENT_BUS.register(this);
-        FMLCommonHandler.instance()
-            .bus()
-            .register(this);
-        GameRegistry.registerItem(this, "vein_mining_pickaxe");
-        GTNLItemList.VeinMiningPickaxe.set(new ItemStack(this, 1));
     }
 
     @Override
@@ -103,10 +87,10 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, I
 
         if (tags != null) {
             if (tags.hasKey("range")) {
-                range = Math.max(0, Math.min(MainConfig.item.vein_miner_pickaxe.maxRange, tags.getInteger("range")));
+                range = Math.max(0, Math.min(ItemConfig.vein_miner_pickaxe.maxRange, tags.getInteger("range")));
             }
             if (tags.hasKey("amount")) {
-                amount = Math.max(0, Math.min(MainConfig.item.vein_miner_pickaxe.maxAmount, tags.getInteger("amount")));
+                amount = Math.max(0, Math.min(ItemConfig.vein_miner_pickaxe.maxAmount, tags.getInteger("amount")));
             }
             if (tags.hasKey("preciseMode")) {
                 preciseMode = tags.getBoolean("preciseMode");
@@ -218,15 +202,13 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, I
     }
 
     public static void setRange(ItemStack stack, int range) {
-        getOrCreateTag(stack).setInteger(
-            "range",
-            Math.max(-1, Math.min(range, Math.max(-1, MainConfig.item.vein_miner_pickaxe.maxRange))));
+        getOrCreateTag(stack)
+            .setInteger("range", Math.max(-1, Math.min(range, Math.max(-1, ItemConfig.vein_miner_pickaxe.maxRange))));
     }
 
     public static void setAmount(ItemStack stack, int amount) {
-        getOrCreateTag(stack).setInteger(
-            "amount",
-            Math.max(0, Math.min(amount, Math.max(0, MainConfig.item.vein_miner_pickaxe.maxAmount))));
+        getOrCreateTag(stack)
+            .setInteger("amount", Math.max(0, Math.min(amount, Math.max(0, ItemConfig.vein_miner_pickaxe.maxAmount))));
     }
 
     public static void setPreciseMode(ItemStack stack, boolean preciseMode) {
@@ -247,7 +229,11 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, I
     }
 
     @SubscribeEvent
-    public void onBlockBreak(BlockEvent.BreakEvent event) {
+    public static void onBlockBreak(BlockEvent.BreakEvent event) {
+        ItemLoader.veinMiningPickaxe.chainBreak(event);
+    }
+
+    public void chainBreak(BlockEvent.BreakEvent event) {
         EntityPlayer player = event.getPlayer();
         World world = player.worldObj;
         if (world.isRemote || !(player instanceof EntityPlayerMP playerMP)) return;
@@ -265,15 +251,13 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, I
             if (tags != null) {
                 if (!isChainEnabled(stack)) return;
                 if (tags.hasKey("range")) {
-                    range = Math
-                        .max(-1, Math.min(MainConfig.item.vein_miner_pickaxe.maxRange, tags.getInteger("range")));
+                    range = Math.max(-1, Math.min(ItemConfig.vein_miner_pickaxe.maxRange, tags.getInteger("range")));
                 }
                 if (tags.hasKey("preciseMode")) {
                     preciseMode = tags.getBoolean("preciseMode");
                 }
                 if (tags.hasKey("amount")) {
-                    amount = Math
-                        .max(0, Math.min(MainConfig.item.vein_miner_pickaxe.maxAmount, tags.getInteger("amount")));
+                    amount = Math.max(0, Math.min(ItemConfig.vein_miner_pickaxe.maxAmount, tags.getInteger("amount")));
                 }
             }
 
@@ -319,7 +303,7 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, I
         int fortune = EnchantmentHelper.getFortuneModifier(player);
         Object2IntOpenHashMap<ItemStackWrapper> mergedDrops = new Object2IntOpenHashMap<>();
         Set<String> targetOreNames = collectOreNames(targetBlock, targetMeta);
-        IdentityHashMap<Block, Int2BooleanOpenHashMap> oreMatches = new IdentityHashMap<>();
+        Reference2ReferenceOpenHashMap<Block, Int2BooleanOpenHashMap> oreMatches = new Reference2ReferenceOpenHashMap<>();
         int cachedChunkX = Integer.MIN_VALUE;
         int cachedChunkZ = Integer.MIN_VALUE;
         int cachedSectionY = Integer.MIN_VALUE;
@@ -480,7 +464,7 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, I
     }
 
     private static boolean matchesOreDictionary(Block block, int meta, Set<String> targetNames, boolean preciseMode,
-        IdentityHashMap<Block, Int2BooleanOpenHashMap> cache) {
+        Reference2ReferenceOpenHashMap<Block, Int2BooleanOpenHashMap> cache) {
         if (targetNames.isEmpty()) return false;
         Int2BooleanOpenHashMap blockMatches = cache.get(block);
         if (blockMatches == null) {
@@ -561,7 +545,7 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, I
     }
 
     @SubscribeEvent
-    public void onHarvestDrops(BlockEvent.HarvestDropsEvent event) {
+    public static void onHarvestDrops(BlockEvent.HarvestDropsEvent event) {
         if (event.harvester == null || event.harvester.getCurrentEquippedItem() == null) return;
         ItemStack heldItem = event.harvester.getCurrentEquippedItem();
         if (!(heldItem.getItem() instanceof VeinMiningPickaxe veinMiningPickaxe)) return;
@@ -581,16 +565,12 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, I
     @SideOnly(Side.CLIENT)
     @Override
     public void showSubtitle(String messageKey) {
-        IChatComponent component = new ChatComponentTranslation(messageKey);
-        component.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.WHITE));
-        Minecraft.getMinecraft().ingameGUI.func_110326_a(component.getFormattedText(), true);
+        ClientUtils.showSubtitle(messageKey);
     }
 
     @SideOnly(Side.CLIENT)
     @Override
     public void showSubtitle(String messageKey, int range) {
-        IChatComponent component = new ChatComponentTranslation(messageKey, range);
-        component.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.WHITE));
-        Minecraft.getMinecraft().ingameGUI.func_110326_a(component.getFormattedText(), true);
+        ClientUtils.showSubtitle(messageKey, range);
     }
 }

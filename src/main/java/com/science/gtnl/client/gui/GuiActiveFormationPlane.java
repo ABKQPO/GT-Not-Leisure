@@ -7,9 +7,9 @@ import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.input.Mouse;
 
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.common.gui.container.ContainerActiveFormationPlane;
 import com.science.gtnl.common.packet.SwitchToCustomGuiPacket;
 import com.science.gtnl.common.part.PartActiveFormationPlane;
-import com.science.gtnl.container.ContainerActiveFormationPlane;
 import com.science.gtnl.utils.enums.GuiType;
 
 import appeng.api.config.FuzzyMode;

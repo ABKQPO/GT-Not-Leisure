@@ -6,19 +6,17 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
-import com.dreammaster.item.NHItemList;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
+import com.science.gtnl.compat.newhorizons.NHCoreItem;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import bartworks.system.material.WerkstoffLoader;
-import cpw.mods.fml.common.Optional;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.objects.OreDictItemStack;
@@ -221,8 +219,8 @@ public class LaserEngraverRecipes implements IRecipePool {
                 GTNLItemList.NeutroniumBoule.get(1L),
                 WerkstoffLoader.MagnetoResonaticDust.get(OrePrefixes.lens, 0),
                 WerkstoffLoader.Fayalit.get(OrePrefixes.lens, 0),
-                Mods.NewHorizonsCoreMod.isModLoaded() ? getMysteriousCrystalLens()
-                    : GTOreDictUnificator.get(OrePrefixes.lens, Materials.GreenSapphire, 0))
+                NHCoreItem.MysteriousCrystalLens
+                    .get(0, GTOreDictUnificator.get(OrePrefixes.lens, Materials.GreenSapphire, 0)))
             .itemOutputs(ItemList.Circuit_Silicon_Ingot6.get(2))
             .fluidInputs(Materials.UUMatter.getFluid(16000L))
             .duration(30 * SECONDS)
@@ -231,11 +229,6 @@ public class LaserEngraverRecipes implements IRecipePool {
             .addTo(lER);
 
         loadWirelessEnergyCoverRecipes();
-    }
-
-    @Optional.Method(modid = "dreamcraft")
-    public ItemStack getMysteriousCrystalLens() {
-        return NHItemList.MysteriousCrystalLens.get(0);
     }
 
     public void loadWirelessEnergyCoverRecipes() {

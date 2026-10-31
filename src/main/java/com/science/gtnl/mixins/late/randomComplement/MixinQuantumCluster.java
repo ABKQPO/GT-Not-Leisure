@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.science.gtnl.utils.RCQuantumCluster;
+import com.science.gtnl.api.mixinHelper.RCQuantumCluster;
 
 import appeng.api.AEApi;
 import appeng.me.cache.helpers.ConnectionWrapper;

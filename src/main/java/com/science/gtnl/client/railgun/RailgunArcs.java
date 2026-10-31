@@ -3,15 +3,13 @@ package com.science.gtnl.client.railgun;
 import com.gtnllib.client.fx.world.FxArcRenderer;
 import com.gtnllib.client.fx.world.FxArcRenderer.Style;
 import com.gtnllib.utils.Vec3d;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ClientConfig;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RailgunArcs {
-
-    private RailgunArcs() {}
 
     public static void chain(Vec3d from, Vec3d to, int lifetime, boolean ehv) {
         if (from == null || to == null || !from.finite() || !to.finite()) return;
@@ -42,6 +40,6 @@ public class RailgunArcs {
     }
 
     private static void spawn(Vec3d from, Vec3d to, int segments, double spread, int lifetime, Style style) {
-        FxArcRenderer.spawn(from, to, segments, spread, lifetime, style, MainConfig.client.enableRailgunBloom);
+        FxArcRenderer.spawn(from, to, segments, spread, lifetime, style, ClientConfig.enableRailgunBloom);
     }
 }

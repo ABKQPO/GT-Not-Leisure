@@ -27,7 +27,7 @@ import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
-public final class MiniTerminalMonitorableAdapter extends ContainerMEMonitorable implements AutoCloseable {
+public class MiniTerminalMonitorableAdapter extends ContainerMEMonitorable implements AutoCloseable {
 
     private final EntityPlayerMP owner;
     private final List<IMEMonitor<?>> monitors = new ObjectArrayList<>();

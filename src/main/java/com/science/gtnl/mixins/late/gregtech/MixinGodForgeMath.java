@@ -11,9 +11,9 @@ import com.science.gtnl.common.machine.multiblock.FOGAlloyBlastSmelterModule;
 import com.science.gtnl.common.machine.multiblock.FOGAlloySmelterModule;
 import com.science.gtnl.common.machine.multiblock.FOGExtractorModule;
 import com.science.gtnl.common.machine.multiblock.FOGSolarMuonCatalystModule;
+import com.science.gtnl.common.machine.multiblock.GodforgeModuleHooks;
 
 import tectech.thing.metaTileEntity.multi.godforge.MTEBaseModule;
-import tectech.thing.metaTileEntity.multi.godforge.upgrade.ForgeOfGodsUpgrade;
 import tectech.thing.metaTileEntity.multi.godforge.util.ForgeOfGodsData;
 import tectech.thing.metaTileEntity.multi.godforge.util.GodforgeMath;
 
@@ -23,18 +23,7 @@ public abstract class MixinGodForgeMath {
     @Inject(method = "allowModuleConnection", at = @At("HEAD"), cancellable = true)
     private static void recipesLoader(MTEBaseModule _module, ForgeOfGodsData data,
         CallbackInfoReturnable<Boolean> cir) {
-        if (_module instanceof FOGAlloySmelterModule) {
-            cir.setReturnValue(true);
-            return;
-        }
-        if ((_module instanceof FOGAlloyBlastSmelterModule || _module instanceof FOGExtractorModule)
-            && data.isUpgradeActive(ForgeOfGodsUpgrade.FDIM)) {
-            cir.setReturnValue(true);
-            return;
-        }
-        if (_module instanceof FOGSolarMuonCatalystModule && data.isUpgradeActive(ForgeOfGodsUpgrade.QGPIU)) {
-            cir.setReturnValue(true);
-        }
+        if (GodforgeModuleHooks.connects(_module, data)) cir.setReturnValue(true);
     }
 
     @ModifyConstant(

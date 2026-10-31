@@ -1,6 +1,5 @@
 package com.science.gtnl.common.block.blocks.item;
 
-import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -14,7 +13,6 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.util.StringUtils;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 
 import com.cleanroommc.modularui.api.IGuiHolder;
 import com.cleanroommc.modularui.factory.GuiFactories;
@@ -23,29 +21,15 @@ import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.ModularScreen;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
-import com.github.bsideup.jabel.Desugar;
-import com.gtnewhorizons.modularui.api.ModularUITextures;
-import com.gtnewhorizons.modularui.api.drawable.IDrawable;
-import com.gtnewhorizons.modularui.api.math.Alignment;
-import com.gtnewhorizons.modularui.api.math.Color;
-import com.gtnewhorizons.modularui.api.screen.IItemWithModularUI;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
-import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
-import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
-import com.gtnewhorizons.modularui.common.widget.TextWidget;
-import com.gtnewhorizons.modularui.common.widget.VanillaButtonWidget;
-import com.gtnewhorizons.modularui.common.widget.textfield.TextFieldWidget;
 import com.science.gtnl.common.gui.PlayerDollGui;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.modularui2.GTGuiThemes;
 import gregtech.api.modularui2.GTModularScreen;
 
-public class ItemBlockPlayerDoll extends ItemBlock implements IItemWithModularUI, IGuiHolder<PlayerInventoryGuiData> {
+public class ItemBlockPlayerDoll extends ItemBlock implements IGuiHolder<PlayerInventoryGuiData> {
 
     public static final byte RENDER_OFF = 0;
     public static final byte RENDER_CAPE = 1;
@@ -53,7 +37,6 @@ public class ItemBlockPlayerDoll extends ItemBlock implements IItemWithModularUI
 
     public ItemBlockPlayerDoll(Block block) {
         super(block);
-        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override
@@ -148,14 +131,6 @@ public class ItemBlockPlayerDoll extends ItemBlock implements IItemWithModularUI
     }
 
     @Override
-    @Deprecated
-    public ModularWindow createWindow(UIBuildContext buildContext, ItemStack stack) {
-        // TODO: Remove this mui1 fallback after the Player Doll item GUI is fully ported to mui2.
-        if (!(stack.getItem() instanceof ItemBlockPlayerDoll)) return null;
-        return new PlayerDollUIFactory(buildContext).createWindow();
-    }
-
-    @Override
     @SideOnly(Side.CLIENT)
     public ModularScreen createScreen(PlayerInventoryGuiData data, ModularPanel mainPanel) {
         return new GTModularScreen(mainPanel, GTGuiThemes.STANDARD);
@@ -239,175 +214,6 @@ public class ItemBlockPlayerDoll extends ItemBlock implements IItemWithModularUI
 
         public ItemStack build() {
             return stack;
-        }
-    }
-
-    @Desugar
-    @Deprecated
-    public record PlayerDollUIFactory(UIBuildContext buildContext) {
-
-        // TODO: Remove this mui1 fallback after the Player Doll item GUI is fully ported to mui2.
-        public ModularWindow createWindow() {
-            ModularWindow.Builder builder = ModularWindow.builder(300, 97);
-            ItemStack stack = buildContext.getPlayer().inventory.getCurrentItem();
-
-            builder
-                .widget(new FakeSyncWidget.StringSyncer(() -> getSkullOwner(stack), val -> setSkullOwner(stack, val)));
-            builder.widget(new FakeSyncWidget.StringSyncer(() -> getSkinHttp(stack), val -> setSkinHttp(stack, val)));
-            builder.widget(new FakeSyncWidget.StringSyncer(() -> getCapeHttp(stack), val -> setCapeHttp(stack, val)));
-            builder.widget(new FakeSyncWidget.ByteSyncer(() -> getRenderMode(stack), val -> setRenderMode(stack, val)));
-
-            builder.setBackground(ModularUITextures.VANILLA_BACKGROUND);
-
-            TextFieldWidget playerNameText = new TextFieldWidget();
-            builder.widget(
-                playerNameText.setGetter(() -> getSkullOwner(stack))
-                    .setSetter(value -> setSkullOwner(stack, value))
-                    .setTextColor(Color.WHITE.dark(1))
-                    .setTextAlignment(Alignment.CenterLeft)
-                    .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD.withOffset(-1, -1, 2, 2))
-                    .setPos(8, 8)
-                    .setSize(77, 12))
-                .widget(
-                    new TextWidget(StatCollector.translateToLocal("gtnl.gui.player_doll.player_name")).setPos(88, 10));
-
-            TextFieldWidget skinHttpText = new TextFieldWidget();
-            builder.widget(
-                skinHttpText.setGetter(() -> getSkinHttp(stack))
-                    .setSetter(value -> setSkinHttp(stack, value))
-                    .setTextColor(Color.WHITE.dark(1))
-                    .setTextAlignment(Alignment.CenterLeft)
-                    .setScrollBar()
-                    .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD.withOffset(-1, -1, 2, 2))
-                    .setPos(8, 26)
-                    .setSize(197, 12))
-                .widget(
-                    new TextWidget(StatCollector.translateToLocal("gtnl.gui.player_doll.skin_url")).setPos(208, 28));
-
-            TextFieldWidget capeHttpText = new TextFieldWidget();
-            builder.widget(
-                capeHttpText.setGetter(() -> getCapeHttp(stack))
-                    .setSetter(value -> setCapeHttp(stack, value))
-                    .setTextColor(Color.WHITE.dark(1))
-                    .setTextAlignment(Alignment.CenterLeft)
-                    .setScrollBar()
-                    .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD.withOffset(-1, -1, 2, 2))
-                    .setPos(8, 44)
-                    .setSize(197, 12))
-                .widget(
-                    new TextWidget(StatCollector.translateToLocal("gtnl.gui.player_doll.cape_url")).setPos(208, 46));
-
-            ButtonWidget renderCapeModeButton = new ButtonWidget();
-            builder.widget(
-                renderCapeModeButton.setOnClick((clickData, widget) -> cycleRenderMode(stack))
-                    .setBackground(() -> {
-                        byte mode = getRenderMode(stack);
-                        if (mode == RENDER_CAPE) {
-                            return new IDrawable[] { GTUITextures.BUTTON_STANDARD,
-                                GTUITextures.OVERLAY_BUTTON_MACHINEMODE_PACKAGER };
-                        }
-
-                        if (mode == RENDER_ELYTRA) {
-                            return new IDrawable[] { GTUITextures.BUTTON_STANDARD,
-                                GTUITextures.OVERLAY_BUTTON_MACHINEMODE_UNPACKAGER };
-                        }
-
-                        return new IDrawable[] { GTUITextures.BUTTON_STANDARD,
-                            GTUITextures.OVERLAY_BUTTON_MACHINEMODE_DEFAULT };
-                    })
-                    .dynamicTooltip(() -> Collections.singletonList(getRenderModeTooltip(stack)))
-                    .setUpdateTooltipEveryTick(true)
-                    .setPos(64, 66)
-                    .setSize(16, 16))
-                .widget(
-                    new TextWidget(StatCollector.translateToLocal("gtnl.gui.player_doll.render_mode")).setPos(85, 68));
-
-            builder.widget(
-                new VanillaButtonWidget()
-                    .setDisplayString(StatCollector.translateToLocal("gtnl.gui.player_doll.confirm"))
-                    .setOnClick((clickData, widget) -> {
-                        playerNameText.onRemoveFocus();
-                        skinHttpText.onRemoveFocus();
-                        capeHttpText.onRemoveFocus();
-                        widget.getWindow()
-                            .tryClose();
-                    })
-                    .setSynced(true, false)
-                    .setPos(8, 62)
-                    .setSize(48, 20));
-
-            return builder.build();
-        }
-
-        public NBTTagCompound getOrCreateTag(ItemStack stack) {
-            return ItemBlockPlayerDoll.getOrCreateTag(stack);
-        }
-
-        public void cycleRenderMode(ItemStack stack) {
-            byte mode = getRenderMode(stack);
-            mode++;
-            if (mode > RENDER_ELYTRA) {
-                mode = RENDER_OFF;
-            }
-            setRenderMode(stack, mode);
-        }
-
-        public String getRenderModeTooltip(ItemStack stack) {
-            return switch (getRenderMode(stack)) {
-                case RENDER_CAPE -> StatCollector.translateToLocal("gtnl.waila.player_doll.render_mode.cape");
-                case RENDER_ELYTRA -> StatCollector.translateToLocal("gtnl.waila.player_doll.render_mode.elytra");
-                default -> StatCollector.translateToLocal("gtnl.waila.player_doll.render_mode.off");
-            };
-        }
-
-        public byte getRenderMode(ItemStack stack) {
-            return ItemBlockPlayerDoll.getRenderMode(stack);
-        }
-
-        public void setRenderMode(ItemStack stack, byte mode) {
-            ItemBlockPlayerDoll.setRenderMode(stack, mode);
-        }
-
-        public String getSkullOwner(ItemStack stack) {
-            if (stack.hasTagCompound()) {
-                NBTTagCompound nbt = stack.getTagCompound();
-                if (nbt.hasKey("SkullOwner", 8)) {
-                    return nbt.getString("SkullOwner");
-                }
-            }
-            return "";
-        }
-
-        public void setSkullOwner(ItemStack stack, String playerName) {
-            getOrCreateTag(stack).setString("SkullOwner", playerName);
-        }
-
-        public String getSkinHttp(ItemStack stack) {
-            if (stack.hasTagCompound()) {
-                NBTTagCompound nbt = stack.getTagCompound();
-                if (nbt.hasKey("SkinHttp", 8)) {
-                    return nbt.getString("SkinHttp");
-                }
-            }
-            return "";
-        }
-
-        public void setSkinHttp(ItemStack stack, String skinHttp) {
-            getOrCreateTag(stack).setString("SkinHttp", skinHttp);
-        }
-
-        public String getCapeHttp(ItemStack stack) {
-            if (stack.hasTagCompound()) {
-                NBTTagCompound nbt = stack.getTagCompound();
-                if (nbt.hasKey("CapeHttp", 8)) {
-                    return nbt.getString("CapeHttp");
-                }
-            }
-            return "";
-        }
-
-        public void setCapeHttp(ItemStack stack, String skinHttp) {
-            getOrCreateTag(stack).setString("CapeHttp", skinHttp);
         }
     }
 }

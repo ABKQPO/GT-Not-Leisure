@@ -42,6 +42,9 @@ import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.science.gtnl.client.floatingwindow.FloatingWindowPanel;
 import com.science.gtnl.common.meminiterminal.MiniTerminalPinSettings;
 import com.science.gtnl.common.meminiterminal.MiniTerminalStackTypes;
+import com.science.gtnl.compat.bogosorter.MiniTerminalBogoCompat;
+import com.science.gtnl.compat.lwjgl3ify.MouseWheelCompat;
+import com.science.gtnl.config.MiniTerminalClientConfig;
 
 import appeng.api.config.ActionItems;
 import appeng.api.config.OperationMode;
@@ -66,14 +69,12 @@ import appeng.core.AEConfig;
 import appeng.core.localization.ColorUtils;
 import appeng.helpers.MonitorableAction;
 import appeng.items.contents.PinList;
-import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
-import cpw.mods.fml.common.Loader;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
-public final class MiniTerminalInventoryPanel extends FloatingWindowPanel {
+public class MiniTerminalInventoryPanel extends FloatingWindowPanel {
 
     private static final UITexture MAGNET_CARD = UITexture.fullImage("ae2wct", "items/magnetCard");
 
@@ -270,11 +271,11 @@ public final class MiniTerminalInventoryPanel extends FloatingWindowPanel {
         return model.isOnline();
     }
 
-    MEGuiTextField nativeSearchField() {
+    public MEGuiTextField nativeSearchField() {
         return search.nativeField();
     }
 
-    void applySearch(String text) {
+    public void applySearch(String text) {
 
         search.applySearch(text);
     }
@@ -476,7 +477,7 @@ public final class MiniTerminalInventoryPanel extends FloatingWindowPanel {
         return button;
     }
 
-    private static final class TerminalButton extends ButtonWidget<TerminalButton> {
+    private static class TerminalButton extends ButtonWidget<TerminalButton> {
 
         private final GuiImgButton button;
         private Consumer<GuiImgButton> syncState = button -> {};
@@ -517,7 +518,7 @@ public final class MiniTerminalInventoryPanel extends FloatingWindowPanel {
         }
     }
 
-    private final class TypeButton extends ButtonWidget<TypeButton> {
+    private class TypeButton extends ButtonWidget<TypeButton> {
 
         private final IAEStackType<?> type;
         private final TypeToggleButton button;
@@ -558,7 +559,7 @@ public final class MiniTerminalInventoryPanel extends FloatingWindowPanel {
         }
     }
 
-    private final class TerminalWidget extends Widget<TerminalWidget> implements Interactable, IViewport {
+    private class TerminalWidget extends Widget<TerminalWidget> implements Interactable, IViewport {
 
         private final Gui gui = new Gui();
         private final ResourceLocation texture = new ResourceLocation(
@@ -911,7 +912,7 @@ public final class MiniTerminalInventoryPanel extends FloatingWindowPanel {
         @Override
         public boolean onMouseScroll(UpOrDown direction, int amount) {
 
-            int ticks = Loader.isModLoaded("lwjgl3ify") ? amount : (int) Platform.ceilDiv(amount, 120);
+            int ticks = MouseWheelCompat.normalizeTicks(amount);
             VirtualMESlot slot = slotAt(getContext().getMouseX(), getContext().getMouseY());
             if (slot != null) {
                 IAEStack<?> stack = slot.getAEStack();
@@ -950,7 +951,7 @@ public final class MiniTerminalInventoryPanel extends FloatingWindowPanel {
 
     }
 
-    static final class Input {
+    public static class Input {
 
         static int mouseButton(int button, int pickKey) {
             return button == pickKey + 100 ? keyBindPickBlockAction : button;
@@ -976,7 +977,7 @@ public final class MiniTerminalInventoryPanel extends FloatingWindowPanel {
             return MonitorableAction.PICKUP_OR_SET_DOWN;
         }
 
-        static boolean preferContainerInteraction(boolean interactionKeyDown, boolean holdingFluidContainer,
+        public static boolean preferContainerInteraction(boolean interactionKeyDown, boolean holdingFluidContainer,
             boolean spaceDown) {
             return interactionKeyDown && holdingFluidContainer && !spaceDown;
         }

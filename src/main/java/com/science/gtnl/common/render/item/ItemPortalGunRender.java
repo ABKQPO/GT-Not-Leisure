@@ -25,7 +25,7 @@ import com.gtnllib.utils.MathUtils;
 import com.gtnllib.utils.Vec3d;
 import com.science.gtnl.common.item.items.PortalGun;
 import com.science.gtnl.common.render.item.PortalGunCoreArcs.Arc;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ClientConfig;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -203,12 +203,11 @@ public class ItemPortalGunRender extends ItemGunRender {
         GL11.glTranslatef(0.46F - 0.56F, -0.40F + 0.52F, -1.20F + 0.72F);
         tiltInHand();
         GL11.glScalef(HAND_SCALE, HAND_SCALE, HAND_SCALE);
-        MainConfig.Client settings = MainConfig.client;
-        GL11.glTranslated(0, edition.firstPersonLift(), edition.firstPersonPush() - settings.portalGunHeldForward);
+        GL11.glTranslated(0, edition.firstPersonLift(), edition.firstPersonPush() - ClientConfig.portalGunHeldForward);
         // Why: tipping the top toward the eye and turning the gun shows the vial's whole outline, bottom edge included.
         GL11.glTranslatef(edition.centerX(), edition.centerY(), edition.centerZ());
-        GL11.glRotated(settings.portalGunHeldPitch, 1, 0, 0);
-        GL11.glRotated(settings.portalGunHeldYaw, 0, 1, 0);
+        GL11.glRotated(ClientConfig.portalGunHeldPitch, 1, 0, 0);
+        GL11.glRotated(ClientConfig.portalGunHeldYaw, 0, 1, 0);
         GL11.glTranslatef(-edition.centerX(), -edition.centerY(), -edition.centerZ());
     }
 

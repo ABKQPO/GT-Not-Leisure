@@ -3,25 +3,9 @@ package com.science.gtnl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.science.gtnl.common.command.CommandEnergyNetwork;
-import com.science.gtnl.common.command.CommandItemInfo;
-import com.science.gtnl.common.command.CommandPlaySound;
-import com.science.gtnl.common.command.CommandSteamNetwork;
-import com.science.gtnl.common.command.CommandStellarIris;
-import com.science.gtnl.common.command.CommandSudo;
-import com.science.gtnl.common.command.CommandSuicide;
-import com.science.gtnl.common.command.CommandTickrate;
-import com.science.gtnl.common.command.CommandWirelessME;
-import com.science.gtnl.common.crafting.quantum.ae2.QuantumCraftingCache;
-import com.science.gtnl.common.crafting.quantum.ae2.QuantumCraftingMode;
-import com.science.gtnl.common.crafting.quantum.hooks.ticking.TickHandler;
-import com.science.gtnl.common.portalgun.PortalGunPairs;
-import com.science.gtnl.common.wireless.WirelessChannelManager;
-import com.science.gtnl.loader.MaterialLoader;
-import com.science.gtnl.utils.enums.ModList;
+import com.science.gtnl.common.packet.NetWorkHandler;
+import com.science.gtnl.loader.ContentLoaders;
 import com.science.gtnl.utils.item.MissingMappingsHandler;
-import com.science.gtnl.utils.text.LanguageLoader;
-import com.science.gtnl.utils.world.TileEntityMigrationHandler;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
@@ -40,10 +24,12 @@ import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
     modid = "sciencenotleisure",
     version = Tags.VERSION,
     name = ScienceNotLeisure.MODNAME,
-    dependencies = "after:AWWayofTime;" + "after:Avaritia;"
+    dependencies = "required-after:gtnllib;" + "after:AWWayofTime;"
+        + "after:Avaritia;"
         + "after:BloodArsenal;"
         + "required-after:Botania;"
         + "required-after:bartworks;"
+        + "required-after:cropsnh;"
         + "after:eternalsingularity;"
         + "after:etfuturum;"
         + "after:GalacticraftCore;"
@@ -69,7 +55,7 @@ public class ScienceNotLeisure {
     public static ScienceNotLeisure instance;
     public static final String MODNAME = "GTNotLeisure";
     public static final String VERSION = Tags.VERSION;
-    public static final String RESOURCE_ROOT_ID = ModList.ScienceNotLeisure.ID;
+    public static final String RESOURCE_ROOT_ID = MODID;
     public static final Logger LOG = LogManager.getLogger(ScienceNotLeisure.MODID);
 
     public static SimpleNetworkWrapper network;
@@ -77,66 +63,42 @@ public class ScienceNotLeisure {
     @SidedProxy(clientSide = "com.science.gtnl.ClientProxy", serverSide = "com.science.gtnl.CommonProxy")
     public static CommonProxy proxy;
 
-    // preInit "Run before anything else. Read your config, create blocks, items, etc, and register them with the
-    // GameRegistry." (Remove if not needed)
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         network = NetworkRegistry.INSTANCE.newSimpleChannel(ScienceNotLeisure.MODID);
         NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
+        NetWorkHandler.register();
         proxy.preInit(event);
-        MaterialLoader.loadPreInit();
     }
 
-    // load "Do your mod setup. Build whatever data structures you care about. Register recipes." (Remove if not needed)
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
         proxy.init(event);
-        MaterialLoader.loadInit();
     }
 
-    // postInit "Handle interaction with other mods, complete your setup based on this." (Remove if not needed)
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         proxy.postInit(event);
-        TileEntityMigrationHandler.register();
     }
 
     @Mod.EventHandler
     public void completeInit(FMLLoadCompleteEvent event) {
         proxy.completeInit(event);
-        LanguageLoader.registry();
     }
 
     @Mod.EventHandler
     public void serverAboutToStart(FMLServerAboutToStartEvent event) {
-        // Spawn chunks load before ServerStarting. Do not erase their restored-link discoveries afterwards.
-        WirelessChannelManager.clear();
+        ContentLoaders.serverAboutToStart();
     }
 
-    // register server commands in this event handler (Remove if not needed)
     @Mod.EventHandler
     public void serverStarting(FMLServerStartingEvent event) {
-        event.registerServerCommand(new CommandWirelessME());
-        event.registerServerCommand(new CommandTickrate());
-        event.registerServerCommand(new CommandSteamNetwork());
-        event.registerServerCommand(new CommandStellarIris());
-        event.registerServerCommand(new CommandEnergyNetwork());
-        event.registerServerCommand(new CommandPlaySound());
-        event.registerServerCommand(new CommandItemInfo());
-        event.registerServerCommand(new CommandSudo());
-        event.registerServerCommand(new CommandSuicide());
-        TickHandler.instance()
-            .openSession();
+        ContentLoaders.serverStarting(event);
     }
 
     @Mod.EventHandler
     public void serverStopping(FMLServerStoppingEvent event) {
-        WirelessChannelManager.clear();
-        TickHandler.instance()
-            .closeSession();
-        QuantumCraftingMode.clear();
-        QuantumCraftingCache.clearAll();
-        PortalGunPairs.OPENED.clear();
+        ContentLoaders.serverStopping();
     }
 
     @Mod.EventHandler

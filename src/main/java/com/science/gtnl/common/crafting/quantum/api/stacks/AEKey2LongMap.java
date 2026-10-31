@@ -36,7 +36,7 @@ public interface AEKey2LongMap extends Object2LongMap<AEKey> {
         }
     }
 
-    final class OpenHashMap extends Object2LongOpenHashMap<AEKey> implements AEKey2LongMap {
+    class OpenHashMap extends Object2LongOpenHashMap<AEKey> implements AEKey2LongMap {
 
         public OpenHashMap() {
             super();
@@ -64,7 +64,7 @@ public interface AEKey2LongMap extends Object2LongMap<AEKey> {
     /**
      * Open-addressed map whose primitive accumulation clamps signed-long overflow without doing a second lookup.
      */
-    final class SaturatingOpenHashMap extends Object2LongOpenHashMap<AEKey> implements AEKey2LongMap {
+    class SaturatingOpenHashMap extends Object2LongOpenHashMap<AEKey> implements AEKey2LongMap {
 
         public SaturatingOpenHashMap() {
             super();
@@ -118,14 +118,14 @@ public interface AEKey2LongMap extends Object2LongMap<AEKey> {
         }
     }
 
-    final class LinkdOpenHashMap extends Object2LongLinkedOpenHashMap<AEKey> implements AEKey2LongMap {
+    class LinkdOpenHashMap extends Object2LongLinkedOpenHashMap<AEKey> implements AEKey2LongMap {
 
     }
 
     /**
      * Read-only primitive map view that preserves the AE-key-specific map contract.
      */
-    final class UnmodifiableMap extends Object2LongMaps.UnmodifiableMap<AEKey> implements AEKey2LongMap {
+    class UnmodifiableMap extends Object2LongMaps.UnmodifiableMap<AEKey> implements AEKey2LongMap {
 
         public UnmodifiableMap(AEKey2LongMap map) {
             super(map);
@@ -137,7 +137,7 @@ public interface AEKey2LongMap extends Object2LongMap<AEKey> {
         }
     }
 
-    final class AVLTreeMap extends Object2LongAVLTreeMap<AEKey> implements AEKey2LongMap {
+    class AVLTreeMap extends Object2LongAVLTreeMap<AEKey> implements AEKey2LongMap {
 
         public AVLTreeMap(Comparator<? super AEKey> c) {
             super(c);

@@ -9,7 +9,7 @@ import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
-import com.science.gtnl.common.gui.modularui.NuclearItemBusGui;
+import com.science.gtnl.common.gui.modularui.hatch.NuclearItemBusGui;
 
 import gregtech.GTMod;
 import gregtech.api.enums.Textures;

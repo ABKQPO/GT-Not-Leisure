@@ -1,7 +1,5 @@
 package com.science.gtnl.common.item.items;
 
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -28,9 +26,7 @@ import com.glodblock.github.loader.recipe.WirelessTerminalQuantumBridgeRecipe;
 import com.glodblock.github.util.NameConst;
 import com.gtnewhorizon.gtnhlib.compat.BaublesCompat;
 import com.gtnewhorizon.gtnhlib.item.ItemStackNBT;
-import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.meminiterminal.MiniTerminalSessionService;
-import com.science.gtnl.utils.enums.GTNLItemList;
 
 import appeng.api.AEApi;
 import appeng.api.config.PinsRows;
@@ -42,7 +38,6 @@ import appeng.util.Platform;
 import baubles.api.expanded.BaubleExpandedSlots;
 import baubles.common.container.InventoryBaubles;
 import baubles.common.lib.PlayerHandler;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -56,12 +51,7 @@ public class ItemMEMiniPortableTerminal extends ToolWirelessTerminal {
     private static final Map<EntityPlayer, Int2ObjectOpenHashMap<ItemStack>> WORN_SNAPSHOTS = new WeakHashMap<>();
 
     public ItemMEMiniPortableTerminal() {
-        setUnlocalizedName("gtnl.me_mini_portable_terminal");
-        setTextureName(RESOURCE_ROOT_ID + ":" + "me_mini_portable_terminal");
         setMaxStackSize(1);
-        setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        GameRegistry.registerItem(this, "me_mini_portable_terminal");
-        GTNLItemList.MEMiniPortableTerminal.set(new ItemStack(this));
         AEApi.instance()
             .registries()
             .wireless()

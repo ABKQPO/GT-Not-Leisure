@@ -75,11 +75,6 @@ public abstract class GTMMultiMachineBase<T extends GTMMultiMachineBase<T>> exte
     }
 
     @Override
-    public boolean getPerfectOC() {
-        return false;
-    }
-
-    @Override
     public double getEUtDiscount() {
         return 0.8 - (mParallelTier / 50.0);
     }

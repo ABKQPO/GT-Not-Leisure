@@ -10,10 +10,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
+import com.gtnllib.mod.ModList;
 import com.science.gtnl.api.ITileEntityTickAcceleration;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ReAvaritiaConfig;
 import com.science.gtnl.mixins.early.minecraft.AccessorTileEntity;
-import com.science.gtnl.utils.enums.ModList;
 
 public class EntityChronarchClock extends Entity {
 
@@ -130,7 +130,7 @@ public class EntityChronarchClock extends Entity {
     }
 
     private boolean isBlacklisted(TileEntity te) {
-        String[] blacklist = MainConfig.re_avaritia.chronarch_clock.chronarchsClockTileEntityBlacklist;
+        String[] blacklist = ReAvaritiaConfig.chronarch_clock.chronarchsClockTileEntityBlacklist;
         if (blacklist.length == 0) return false;
 
         String registryName = getRegistryName(te);

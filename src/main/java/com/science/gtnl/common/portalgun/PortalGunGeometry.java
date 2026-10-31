@@ -17,8 +17,6 @@ public class PortalGunGeometry {
         WEST_BASIS = { { 0, -1, 0 }, { 0, 0, -1 }, { 1, 0, 0 } },
         EAST_BASIS = { { 0, 1, 0 }, { 0, 0, -1 }, { -1, 0, 0 } };
 
-    private PortalGunGeometry() {}
-
     public static double[] halfExtents(ForgeDirection facing, ForgeDirection up) {
         double[] half = { WIDTH / 2, WIDTH / 2, WIDTH / 2 };
         half[axis(facing)] = THICKNESS / 2;

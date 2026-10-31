@@ -5,122 +5,46 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import org.apache.commons.lang3.tuple.Pair;
-
-import com.gtnewhorizons.modularui.api.ModularUITextures;
-import com.gtnewhorizons.modularui.api.drawable.IDrawable;
-import com.gtnewhorizons.modularui.api.math.Pos2d;
-import com.gtnewhorizons.modularui.api.math.Size;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
-import com.gtnewhorizons.modularui.common.widget.SlotWidget;
-import com.science.gtnl.utils.item.ItemUtils;
-
-import gregtech.api.enums.TieredVariant;
 import gregtech.api.recipe.BasicUIPropertiesBuilder;
 import gregtech.api.recipe.NEIRecipePropertiesBuilder;
-import gregtech.api.recipe.RecipeMapFrontend;
 import gregtech.api.util.MethodsReturnNonnullByDefault;
-import gregtech.common.gui.modularui.UIHelper;
-import gregtech.nei.GTNEIDefaultHandler;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class SteamGateAssemblerFrontend extends RecipeMapFrontend {
+public class SteamGateAssemblerFrontend extends GTNLRecipeFrontend {
 
     public SteamGateAssemblerFrontend(BasicUIPropertiesBuilder uiPropertiesBuilder,
         NEIRecipePropertiesBuilder neiPropertiesBuilder) {
         super(
-            uiPropertiesBuilder.progressBarPos(new Pos2d(124, 175)),
-            neiPropertiesBuilder.recipeBackgroundSize(new Size(170, 196)));
+            uiPropertiesBuilder.progressBarPos(position(124, 175)),
+            neiPropertiesBuilder.recipeBackgroundSize(size(170, 196)),
+            Logo.STEAM);
     }
 
     @Override
-    public void addGregTechLogo(ModularWindow.Builder builder, Pos2d windowOffset) {
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_STEAM_LOGO)
-                .setSize(18, 18)
-                .setPos(new Pos2d(97, 175).add(windowOffset)));
+    protected Slot logoSlot() {
+        return new Slot(97, 175);
     }
 
     @Override
-    public List<Pos2d> getItemInputPositions(int itemInputCount) {
-        ObjectArrayList<Pos2d> positions = new ObjectArrayList<>();
+    protected List<Slot> itemInputSlots(int itemInputCount) {
+        ObjectArrayList<Slot> positions = new ObjectArrayList<>();
         for (int j = 0; j < 9; j++) {
             for (int i = 0; i < 9; i++) {
-                positions.add(new Pos2d((6 + 18 * i), (7 + 18 * j)));
+                positions.add(new Slot((6 + 18 * i), (7 + 18 * j)));
             }
         }
         return positions;
     }
 
     @Override
-    public List<Pos2d> getItemOutputPositions(int itemOutputCount) {
-        return Collections.singletonList(new Pos2d(150, 175));
+    protected List<Slot> itemOutputSlots(int itemOutputCount) {
+        return Collections.singletonList(new Slot(150, 175));
     }
 
     @Override
-    public ModularWindow.Builder createNEITemplate(GTNEIDefaultHandler.NEITemplateContext ctx) {
-        // Remove the regular background texture with the border.
-        ModularWindow.Builder builder = ModularWindow.builder(neiProperties.recipeBackgroundSize);
-
-        if (uiProperties.useProgressBar) {
-            addProgressBar(builder, ctx);
-        }
-
-        UIHelper.forEachSlots(
-            (i, backgrounds, pos) -> builder.widget(
-                SlotWidget.phantom(ctx.itemInputsInventory, i)
-                    .setBackground(backgrounds)
-                    .setPos(pos)
-                    .setSize(18, 18)),
-            (i, backgrounds, pos) -> builder.widget(
-                SlotWidget.phantom(ctx.itemOutputsInventory, i)
-                    .setBackground(backgrounds)
-                    .setPos(pos)
-                    .setSize(18, 18)),
-            (i, backgrounds, pos) -> {
-                if (uiProperties.useSpecialSlot) builder.widget(
-                    SlotWidget.phantom(ctx.specialSlotInventory, 0)
-                        .setBackground(backgrounds)
-                        .setPos(pos)
-                        .setSize(18, 18));
-            },
-            (i, backgrounds, pos) -> builder.widget(
-                SlotWidget.phantom(ctx.fluidInputsInventory, i)
-                    .setBackground(backgrounds)
-                    .setPos(pos)
-                    .setSize(18, 18)),
-            (i, backgrounds, pos) -> builder.widget(
-                SlotWidget.phantom(ctx.fluidOutputsInventory, i)
-                    .setBackground(backgrounds)
-                    .setPos(pos)
-                    .setSize(18, 18)),
-            ModularUITextures.ITEM_SLOT,
-            ModularUITextures.FLUID_SLOT,
-            uiProperties,
-            uiProperties.maxItemInputs,
-            uiProperties.maxItemOutputs,
-            uiProperties.maxFluidInputs,
-            uiProperties.maxFluidOutputs,
-            TieredVariant.STANDARD,
-            ctx.windowOffset);
-
-        addGregTechLogo(builder, ctx.windowOffset);
-
-        for (Pair<IDrawable, Pair<Size, Pos2d>> specialTexture : uiProperties.specialTextures) {
-            builder.widget(
-                new DrawableWidget().setDrawable(specialTexture.getLeft())
-                    .setSize(
-                        specialTexture.getRight()
-                            .getLeft())
-                    .setPos(
-                        specialTexture.getRight()
-                            .getRight()
-                            .add(ctx.windowOffset)));
-        }
-
-        return builder;
+    protected boolean borderless() {
+        return true;
     }
 }

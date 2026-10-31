@@ -14,14 +14,12 @@ import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
-import com.science.gtnl.utils.item.ItemUtils;
-import com.science.gtnl.utils.recipes.format.RocketAssemblerFormat;
+import com.science.gtnl.common.gui.recipe.format.RocketAssemblerFormat;
 import com.science.gtnl.utils.recipes.metadata.RocketAssemblerInputSlotsMetadata;
 
 import codechicken.nei.PositionedStack;
 import gregtech.api.recipe.BasicUIPropertiesBuilder;
 import gregtech.api.recipe.NEIRecipePropertiesBuilder;
-import gregtech.api.recipe.RecipeMapFrontend;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MethodsReturnNonnullByDefault;
@@ -31,7 +29,7 @@ import gregtech.nei.GTNEIDefaultHandler.NEITemplateContext;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class RocketAssemblerFrontend extends RecipeMapFrontend {
+public class RocketAssemblerFrontend extends GTNLRecipeFrontend {
 
     public RocketAssemblerFrontend(BasicUIPropertiesBuilder uiPropertiesBuilder,
         NEIRecipePropertiesBuilder neiPropertiesBuilder) {
@@ -42,11 +40,8 @@ public class RocketAssemblerFrontend extends RecipeMapFrontend {
     }
 
     @Override
-    public void addGregTechLogo(ModularWindow.Builder builder, Pos2d windowOffset) {
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
-                .setSize(18, 18)
-                .setPos(new Pos2d(134, 98).add(windowOffset)));
+    protected Slot logoSlot() {
+        return new Slot(134, 98);
     }
 
     @Override

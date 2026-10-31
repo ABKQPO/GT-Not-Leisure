@@ -29,12 +29,11 @@ import gregtech.api.metatileentity.implementations.MTEBasicMachine;
 import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.metatileentity.implementations.MTEHatchMultiInput;
 import gregtech.api.util.GTUtility;
-import gregtech.common.covers.CoverLegacyData;
 import gregtech.common.gui.modularui.cover.base.CoverBaseGui;
 import lombok.Getter;
 import lombok.Setter;
 
-public class VoidCover extends CoverLegacyData implements IFluidsLockable {
+public class VoidCover extends IntDataCover implements IFluidsLockable {
 
     @Getter
     @Setter
@@ -192,14 +191,12 @@ public class VoidCover extends CoverLegacyData implements IFluidsLockable {
     }
 
     @Override
-    @Deprecated
-    public ModularWindow createWindow(CoverUIBuildContext buildContext) {
-        // TODO: Remove this mui1 fallback after the mui2 VoidCoverGui is validated in all cover opening paths.
+    protected ModularWindow createWindow(CoverUIBuildContext buildContext) {
         return new VoidCoverUIFactory(buildContext).createWindow();
     }
 
     @Override
-    public void readDataFromNbt(NBTBase nbt) {
+    protected void readDataFromNbt(NBTBase nbt) {
         if (nbt instanceof NBTTagCompound compound) {
             this.coverData = compound.getInteger("CoverData");
             this.isInputMode = compound.getBoolean("isInputMode");
@@ -232,7 +229,7 @@ public class VoidCover extends CoverLegacyData implements IFluidsLockable {
     }
 
     @Override
-    public @NotNull NBTBase saveDataToNbt() {
+    protected @NotNull NBTBase saveDataToNbt() {
         NBTTagCompound compound = new NBTTagCompound();
         compound.setInteger("CoverData", this.coverData);
         compound.setBoolean("isInputMode", this.isInputMode);

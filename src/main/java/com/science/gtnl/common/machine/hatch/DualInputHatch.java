@@ -18,23 +18,14 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
+import com.cleanroommc.modularui.utils.fluid.FluidStackTank;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
-import com.gtnewhorizons.modularui.api.ModularUITextures;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
-import com.gtnewhorizons.modularui.common.fluid.FluidStackTank;
-import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
-import com.gtnewhorizons.modularui.common.widget.FluidSlotWidget;
-import com.gtnewhorizons.modularui.common.widget.SlotWidget;
-import com.science.gtnl.common.gui.modularui.DualInputHatchGui;
-import com.science.gtnl.utils.item.ItemUtils;
+import com.science.gtnl.common.gui.modularui.hatch.DualInputHatchGui;
 
 import gregtech.api.enums.GTValues;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
-import gregtech.api.interfaces.modularui.IAddGregtechLogo;
-import gregtech.api.interfaces.modularui.IAddUIWidgets;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchInputBus;
@@ -44,7 +35,7 @@ import gregtech.common.tileentities.machines.IDualInputInventory;
 
 @IMetaTileEntity.SkipGenerateName
 @IMetaTileEntity.SkipGenerateDescription
-public class DualInputHatch extends MTEHatchInputBus implements IAddUIWidgets, IDualInputHatch, IAddGregtechLogo {
+public class DualInputHatch extends MTEHatchInputBus implements IDualInputHatch {
 
     public FluidStack[] mStoredFluid;
     public FluidStackTank[] fluidTanks;
@@ -417,48 +408,6 @@ public class DualInputHatch extends MTEHatchInputBus implements IAddUIWidgets, I
     @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
         return new DualInputHatchGui(this).build(data, syncManager, uiSettings);
-    }
-
-    @Override
-    @Deprecated
-    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
-        // TODO: Remove this mui1 fallback after DualInputHatch mui2 rollout is complete.
-        final int itemColumns = Math.max(1, mTier);
-        final int itemRows = Math.max(1, mTier);
-
-        final int totalWidth = 9 * itemColumns + 36;
-        final int totalHeight = 5 * itemRows + 81;
-        final int centerX = (176 - totalWidth) / 2;
-        final int centerY = (166 - totalHeight) / 2;
-
-        for (int row = 0; row < itemRows; row++) {
-            for (int col = 0; col < itemColumns; col++) {
-                int slotIndex = row * itemColumns + col;
-                if (slotIndex < itemSlotAmount - 1) {
-                    builder.widget(
-                        new SlotWidget(inventoryHandler, slotIndex).setBackground(ModularUITextures.ITEM_SLOT)
-                            .setPos(centerX + col * 18 + 5, centerY + row * 18));
-                }
-            }
-        }
-
-        for (int i = 0; i < mTier; i++) {
-            builder.widget(
-                new FluidSlotWidget(fluidTanks[i]).setBackground(ModularUITextures.FLUID_SLOT)
-                    .setPos(centerX + 18 * itemColumns + 5, centerY + i * 18));
-        }
-
-        addGregTechLogo(builder);
-    }
-
-    @Override
-    @Deprecated
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        // TODO: Remove this mui1 fallback after DualInputHatch mui2 rollout is complete.
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
-                .setSize(18, 18)
-                .setPos(169 + 4 * (mTier - 1) + mTier / 2, 102 + 14 * (mTier - 1)));
     }
 
     @Override

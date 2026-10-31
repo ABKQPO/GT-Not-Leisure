@@ -1,29 +1,19 @@
 package com.science.gtnl.common.item.items.bauble;
 
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 
-import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.item.BaubleItem;
-import com.science.gtnl.utils.enums.GTNLItemList;
 
 import baubles.api.BaubleType;
-import cpw.mods.fml.common.registry.GameRegistry;
 
 public class SatietyRing extends BaubleItem {
 
     public SatietyRing() {
         this.setMaxStackSize(1);
-        this.setUnlocalizedName("gtnl.satiety_ring");
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "satiety_ring");
-        this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        GameRegistry.registerItem(this, "satiety_ring");
-        GTNLItemList.SatietyRing.set(new ItemStack(this, 1));
     }
 
     @Override

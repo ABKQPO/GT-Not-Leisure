@@ -1,0 +1,32 @@
+package com.science.gtnl.common.recipe.gtnl;
+
+import static kubatech.api.Variables.numberFormat;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import net.minecraft.util.StatCollector;
+
+import org.jetbrains.annotations.Nullable;
+
+import gregtech.api.recipe.RecipeMetadataKey;
+import gregtech.api.util.MethodsReturnNonnullByDefault;
+import gregtech.nei.RecipeDisplayInfo;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+public class SteamAmountMetadata extends RecipeMetadataKey<Long> {
+
+    public static final SteamAmountMetadata INSTANCE = new SteamAmountMetadata();
+
+    private SteamAmountMetadata() {
+        super(Long.class, "offer_value");
+    }
+
+    @Override
+    public void drawInfo(RecipeDisplayInfo recipeInfo, @Nullable Object value) {
+        long offer = cast(value, 0L);
+        recipeInfo.drawText(
+            StatCollector.translateToLocal("gtnl.machine.steam_cactus_wonder.info.offer_value")
+                + numberFormat.format(offer));
+    }
+}

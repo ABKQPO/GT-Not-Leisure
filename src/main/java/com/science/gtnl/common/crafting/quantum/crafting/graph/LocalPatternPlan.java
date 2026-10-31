@@ -11,7 +11,7 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 /**
  * Frozen result of planning one compatibility unit. It contains no live legacy crafting tree.
  */
-public final class LocalPatternPlan {
+public class LocalPatternPlan {
 
     private final IPatternDetails pattern;
     private final long craftTimes;

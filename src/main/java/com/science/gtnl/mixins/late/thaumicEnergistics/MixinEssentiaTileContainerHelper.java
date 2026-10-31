@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.science.gtnl.common.block.blocks.tile.IMultiEssentiaContainer;
+import com.science.gtnl.compat.thaumicenergistics.ThaumicEnergisticsCompat;
 
 import appeng.api.config.Actionable;
 import thaumcraft.api.aspects.Aspect;
@@ -26,18 +27,8 @@ public class MixinEssentiaTileContainerHelper {
     private void gtnl$injectIntoMultiEssentiaContainer(IAspectContainer container, int amountToFill,
         Aspect aspectToFill, Actionable mode, CallbackInfoReturnable<Long> cir) {
         if (!(container instanceof IMultiEssentiaContainer multiContainer)) return;
-
-        if (amountToFill <= 0 || aspectToFill == null
-            || !perms.canInjectToAspectContainerTile(container)
-            || !container.doesContainerAccept(aspectToFill)) {
-            cir.setReturnValue(0L);
-            return;
-        }
-
-        int accepted = Math.min(amountToFill, multiContainer.getEssentiaCapacity() - multiContainer.getTotalAmount());
-        if (accepted > 0 && mode == Actionable.MODULATE) {
-            accepted -= container.addToContainer(aspectToFill, accepted);
-        }
-        cir.setReturnValue((long) Math.max(0, accepted));
+        cir.setReturnValue(
+            ThaumicEnergisticsCompat
+                .injectIntoMultiContainer(container, multiContainer, amountToFill, aspectToFill, mode, perms));
     }
 }

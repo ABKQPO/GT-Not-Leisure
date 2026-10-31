@@ -33,7 +33,7 @@ public class OutputHatchMEProxy extends MTEHatchOutputME {
     public static final String COPIED_DATA_IDENTIFIER = "outputHatchME";
 
     public int masterX, masterY, masterZ, masterDim;
-    public boolean masterSet = false; // indicate if values of masterX, masterY, masterZ are valid
+    public boolean masterSet = false;
     public MTEHatchOutputME master;
     private long lastProxyFlushTick;
 

@@ -6,10 +6,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.gtnewhorizon.gtnhlib.blockpos.BlockPos;
+import com.gtnllib.world.IBlockStateListener;
+import com.gtnllib.world.WorldListener;
 import com.science.gtnl.api.IBeamFormer;
-import com.science.gtnl.api.IBlockStateListener;
-import com.science.gtnl.common.world.WorldListener;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.MachineConfig;
 
 import appeng.api.AEApi;
 import appeng.api.exceptions.FailedConnection;
@@ -59,7 +59,7 @@ public class BeamFormerLink implements IBlockStateListener {
         int z = origin.z;
         int distance = 0;
         IBeamFormer target = null;
-        int limit = Math.max(0, MainConfig.machine.beamFormerLength);
+        int limit = Math.max(0, MachineConfig.beamFormerLength);
         if (direction != ForgeDirection.UNKNOWN) {
             for (int step = 0; step < limit; step++) {
                 x += direction.offsetX;

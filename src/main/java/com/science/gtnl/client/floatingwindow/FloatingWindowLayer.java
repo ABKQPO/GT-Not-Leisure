@@ -19,7 +19,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
-public final class FloatingWindowLayer {
+public class FloatingWindowLayer {
 
     private static final FloatBuffer BASE_MATRIX = BufferUtils.createFloatBuffer(16);
     private static final FloatBuffer SCRATCH_MATRIX = BufferUtils.createFloatBuffer(16);

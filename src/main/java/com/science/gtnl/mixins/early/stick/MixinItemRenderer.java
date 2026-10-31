@@ -22,16 +22,7 @@ public abstract class MixinItemRenderer {
         remap = false)
     private ItemStack replaceStack(ItemStack original, EntityLivingBase entity, ItemStack stack, int pass,
         IItemRenderer.ItemRenderType type) {
-        if (original == null) return null;
-
-        if (!(original.getItem() instanceof Stick stick)) {
-            return original;
-        }
-
-        if (stick.isShiftDown()) {
-            return original;
-        }
-
+        if (original == null || !(original.getItem() instanceof Stick stick) || stick.isShiftDown()) return original;
         ItemStack fake = Stick.getDisguisedStack(original);
         return fake != null ? fake : original;
     }

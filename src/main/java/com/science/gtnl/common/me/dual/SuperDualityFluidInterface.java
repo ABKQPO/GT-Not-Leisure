@@ -18,22 +18,12 @@ public class SuperDualityFluidInterface extends DualityFluidInterface {
     public SuperDualityFluidInterface(AENetworkProxy networkProxy, IInterfaceHost host, int tankSlots) {
         super(networkProxy, host);
         this.tankSlots = tankSlots;
-        replaceInternalInventory("tanks", new AEFluidInventory(this, tankSlots, (int) TANK_CAPACITY));
-        replaceInternalInventory("config", new AEFluidInventory(this, tankSlots, Integer.MAX_VALUE));
-        replaceInternalArray("requireWork", new IAEFluidStack[tankSlots]);
+        replaceInternalField("tanks", new AEFluidInventory(this, tankSlots, (int) TANK_CAPACITY));
+        replaceInternalField("config", new AEFluidInventory(this, tankSlots, Integer.MAX_VALUE));
+        replaceInternalField("requireWork", new IAEFluidStack[tankSlots]);
     }
 
-    private void replaceInternalInventory(String fieldName, Object value) {
-        try {
-            Field field = DualityFluidInterface.class.getDeclaredField(fieldName);
-            field.setAccessible(true);
-            field.set(this, value);
-        } catch (ReflectiveOperationException e) {
-            throw new IllegalStateException("Failed to replace DualityFluidInterface field: " + fieldName, e);
-        }
-    }
-
-    private void replaceInternalArray(String fieldName, Object value) {
+    private void replaceInternalField(String fieldName, Object value) {
         try {
             Field field = DualityFluidInterface.class.getDeclaredField(fieldName);
             field.setAccessible(true);

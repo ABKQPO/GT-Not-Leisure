@@ -16,8 +16,8 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 
+import com.gtnllib.utils.CreativeCursor;
 import com.science.gtnl.common.item.items.ItemMEMiniPortableTerminal;
-import com.science.gtnl.utils.CreativeCursor;
 
 import appeng.api.config.InsertionMode;
 import appeng.api.config.SecurityPermissions;
@@ -42,7 +42,7 @@ import cpw.mods.fml.common.eventhandler.Event;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
-final class MiniTerminalTransferService {
+public class MiniTerminalTransferService {
 
     private static final Map<UUID, PickupHost> PICKUP_HOSTS = new Object2ObjectOpenHashMap<>();
     private static final Map<Container, Boolean> COVERS_MAIN_INVENTORY = new WeakHashMap<>();
@@ -237,7 +237,7 @@ final class MiniTerminalTransferService {
     private record PickupHost(EntityPlayerMP player, ItemStack stack, int slot, String binding,
         WirelessTerminalGuiObject host, int gridCheckTick) {}
 
-    static final class InventoryDestination extends AdaptorIInventory {
+    public static class InventoryDestination extends AdaptorIInventory {
 
         private final InsertionMode insertionMode;
         private final boolean single;

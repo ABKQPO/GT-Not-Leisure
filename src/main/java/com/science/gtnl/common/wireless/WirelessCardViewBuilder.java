@@ -16,8 +16,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 
+import com.science.gtnl.common.me.InterfaceNameLocalization;
 import com.science.gtnl.common.wireless.WirelessMachineGroups.Row;
-import com.science.gtnl.utils.appliedEnergistics.InterfaceNameLocalization;
 
 import appeng.api.networking.IGridNode;
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
@@ -41,7 +41,7 @@ public class WirelessCardViewBuilder {
     WirelessCardSnapshot build(WirelessCardBinding binding, ItemStack card) {
         var interfaces = new WirelessInterfaceView();
         List<IWirelessLinkView> all = binding == null ? List.of()
-            : new ObjectArrayList<>(WirelessClusterManager.links(binding.source()));
+            : new ObjectArrayList<>(WirelessClusterManager.links(binding.frequency()));
         boolean initializing = startup.waiting(all);
         var focus = detailNode == null ? null
             : all.stream()
@@ -56,7 +56,7 @@ public class WirelessCardViewBuilder {
         renameState = nextRenameState;
         List<Row> rows = initializing ? List.of()
             : focus == null ? WirelessMachineGroups.group(all, interfaces)
-                : WirelessClusterManager.entranceLinks(binding.source(), focus.cluster())
+                : WirelessClusterManager.entranceLinks(binding.frequency(), focus.cluster())
                     .stream()
                     .map(Row::cluster)
                     .toList();
@@ -85,15 +85,16 @@ public class WirelessCardViewBuilder {
         data.setBoolean("bound", binding != null);
         writeStatistics(data, WirelessMachineGroups.summarize(focus == null ? all : List.of(focus)));
         data.setInteger("total", focus == null ? all.size() : 1);
-        data.setInteger("entrances", binding == null ? 0 : WirelessChannelManager.entranceCount(binding.source()));
+        data.setInteger("entrances", binding == null ? 0 : WirelessChannelManager.entranceCount(binding.frequency()));
         data.setInteger("entranceLimit", WirelessChannelManager.entranceLimit());
         if (binding != null) {
-            var sourceAddress = WirelessChannelManager.controllerSource(binding.source());
+            var controller = WirelessFrequencies.controller(binding.frequency());
+            var sourceAddress = controller == null ? binding.location() : controller;
             data.setString("source", coordinates(sourceAddress));
             writeDimensionName(dimensions, sourceAddress.dimension());
-            IGridNode source = binding.source()
-                .node();
+            IGridNode source = WirelessFrequencies.controllerNode(binding.frequency());
             data.setBoolean("sourceLoaded", source != null);
+            data.setBoolean("sourceSplit", WirelessFrequencies.split(binding.frequency()));
             data.setBoolean("channels", WirelessChannelManager.channelsEnabled());
             if (source != null && source.getGrid() != null) {
                 var allocation = WirelessChannelManager.allocation(source.getGrid());

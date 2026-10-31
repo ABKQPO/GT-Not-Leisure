@@ -1,17 +1,12 @@
 package com.science.gtnl.common.item.items.bauble;
 
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 
-import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.item.BaubleItem;
-import com.science.gtnl.utils.enums.GTNLItemList;
 
 import baubles.api.BaubleType;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import vazkii.botania.common.Botania;
@@ -20,11 +15,6 @@ public class SuperReachRing extends BaubleItem {
 
     public SuperReachRing() {
         this.setMaxStackSize(1);
-        this.setUnlocalizedName("gtnl.super_reach_ring");
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "super_reach_ring");
-        this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        GameRegistry.registerItem(this, "super_reach_ring");
-        GTNLItemList.SuperReachRing.set(new ItemStack(this, 1));
     }
 
     @Override

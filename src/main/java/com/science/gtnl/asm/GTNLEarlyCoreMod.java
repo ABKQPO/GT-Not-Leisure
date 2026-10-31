@@ -1,20 +1,23 @@
 package com.science.gtnl.asm;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.minecraft.launchwrapper.Launch;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.gtnewhorizon.gtnhlib.config.ConfigException;
-import com.gtnewhorizon.gtnhlib.config.ConfigurationManager;
 import com.gtnewhorizon.gtnhmixins.IEarlyMixinLoader;
 import com.gtnewhorizon.gtnhmixins.builders.IMixins;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ConfigMigration;
+import com.science.gtnl.config.ConfigRegistry;
 import com.science.gtnl.mixins.Mixins;
 
+import cpw.mods.fml.relauncher.FMLLaunchHandler;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 
 @IFMLLoadingPlugin.MCVersion("1.7.10")
@@ -40,10 +43,15 @@ public class GTNLEarlyCoreMod implements IFMLLoadingPlugin, IEarlyMixinLoader {
         }
 
         try {
-            ConfigurationManager.registerConfig(MainConfig.class);
-        } catch (ConfigException e) {
-            LOGGER.error("Failed to register config", e);
+            ConfigMigration.migrate(
+                new File(Launch.minecraftHome != null ? Launch.minecraftHome : new File("."), "config"),
+                FMLLaunchHandler.side()
+                    .isClient());
+        } catch (RuntimeException e) {
+            LOGGER.error("Failed to migrate the old config files", e);
         }
+
+        ConfigRegistry.registerCommon();
 
         LocalDate today = LocalDate.now();
         enableAprilFool = today.getMonthValue() == 4 && today.getDayOfMonth() == 1;

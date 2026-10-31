@@ -10,30 +10,31 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.science.gtnl.common.effect.EffectBase;
 import com.science.gtnl.loader.EffectLoader;
 import com.science.gtnl.utils.ColorUtils;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
+@EventBusSubscriber(phase = Phase.PRE)
 public class ShimmeringEffect extends EffectBase {
 
     public ShimmeringEffect(int id) {
         super(id, "shimmering", false, ColorUtils.rgb(ColorUtils.effectShimmering), 3);
-        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @SubscribeEvent
-    public void onLivingUpdate(LivingEvent.LivingUpdateEvent event) {
+    public static void onLivingUpdate(LivingEvent.LivingUpdateEvent event) {
         if (event.entity instanceof EntityPlayer player && !player.worldObj.isRemote) {
-            PotionEffect effect = player.getActivePotionEffect(this);
+            PotionEffect effect = player.getActivePotionEffect(EffectLoader.shimmering);
             if (effect != null) {
                 player.motionX = 0;
                 player.motionY = 0;
@@ -56,7 +57,7 @@ public class ShimmeringEffect extends EffectBase {
                 }
 
                 if (isAir1x2x1(world, x, y, z) || player.posY < 0) {
-                    player.removePotionEffect(this.id);
+                    player.removePotionEffect(EffectLoader.shimmering.id);
                     player.motionX = 0;
                     player.motionY = 0;
                     player.motionZ = 0;
@@ -67,7 +68,7 @@ public class ShimmeringEffect extends EffectBase {
         }
     }
 
-    private boolean isAir1x2x1(World world, int x, int y, int z) {
+    private static boolean isAir1x2x1(World world, int x, int y, int z) {
         if (!isPassableOrEmpty(world, x, y, z) || !isPassableOrEmpty(world, x, y + 1, z)) {
             return false;
         }
@@ -82,7 +83,7 @@ public class ShimmeringEffect extends EffectBase {
         return aabb != null && aabb.maxY <= y;
     }
 
-    private boolean isPassableOrEmpty(World world, int x, int y, int z) {
+    private static boolean isPassableOrEmpty(World world, int x, int y, int z) {
         Block block = world.getBlock(x, y, z);
         return block == null || world.isAirBlock(x, y, z)
             || !block.getMaterial()
@@ -95,21 +96,21 @@ public class ShimmeringEffect extends EffectBase {
     }
 
     @SubscribeEvent
-    public void onPlayerInteract(PlayerInteractEvent event) {
+    public static void onPlayerInteract(PlayerInteractEvent event) {
         if (event.entityPlayer.isPotionActive(EffectLoader.shimmering)) {
             event.setCanceled(true);
         }
     }
 
     @SubscribeEvent
-    public void onAttackEntity(AttackEntityEvent event) {
+    public static void onAttackEntity(AttackEntityEvent event) {
         if (event.entityPlayer.isPotionActive(EffectLoader.shimmering)) {
             event.setCanceled(true);
         }
     }
 
     @SubscribeEvent
-    public void onLivingHurt(LivingHurtEvent event) {
+    public static void onLivingHurt(LivingHurtEvent event) {
         if (event.entityLiving instanceof EntityPlayer player) {
             if (player.isPotionActive(EffectLoader.shimmering)) {
                 if (event.source == DamageSource.inWall) {
@@ -120,7 +121,7 @@ public class ShimmeringEffect extends EffectBase {
     }
 
     @SubscribeEvent
-    public void onLivingAttack(LivingAttackEvent event) {
+    public static void onLivingAttack(LivingAttackEvent event) {
         if (!(event.entityLiving instanceof EntityPlayer player)) return;
         if (player.isPotionActive(EffectLoader.shimmering)) {
             Entity source = event.source.getEntity();

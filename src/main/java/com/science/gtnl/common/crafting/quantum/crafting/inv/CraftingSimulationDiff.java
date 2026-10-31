@@ -10,7 +10,7 @@ import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 /**
  * Frozen, single-use changes produced by an isolated crafting simulation.
  */
-public final class CraftingSimulationDiff {
+public class CraftingSimulationDiff {
 
     final KeyCounter requiredExtract;
     final KeyCounter inventoryDelta;

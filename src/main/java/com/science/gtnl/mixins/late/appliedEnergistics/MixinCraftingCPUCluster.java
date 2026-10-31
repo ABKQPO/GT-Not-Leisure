@@ -1,7 +1,5 @@
 package com.science.gtnl.mixins.late.appliedEnergistics;
 
-import java.util.Deque;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -9,7 +7,6 @@ import net.minecraft.inventory.InventoryCrafting;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Coerce;
 
@@ -18,24 +15,11 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
-import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.common.block.blocks.tile.TileEntityMEChisel;
-import com.science.gtnl.common.machine.multiblock.AssemblerMatrix;
-import com.science.gtnl.utils.ChiselPatternDetails;
-import com.science.gtnl.utils.DireCraftingPatternDetails;
-import com.science.gtnl.utils.ECraftingCPUCluster;
-import com.science.gtnl.utils.LargeInventoryCrafting;
-import com.science.gtnl.utils.crafting.CraftingBatchPlanner;
-import com.science.gtnl.utils.crafting.CraftingBatchPlanner.BatchPlan;
-import com.science.gtnl.utils.crafting.CraftingBatchPlanner.CommitResult;
-import com.science.gtnl.utils.crafting.CraftingBatchPlanner.MediumStrategy;
-import com.science.gtnl.utils.crafting.CraftingBatchPlanner.SessionAllocation;
-import com.science.gtnl.utils.crafting.CraftingBatchPlanner.SessionConsumption;
-import com.science.gtnl.utils.crafting.CraftingBatchPlanner.SessionSegment;
-import com.science.gtnl.utils.crafting.CraftingBatchPlannerImpl;
+import com.science.gtnl.common.crafting.batch.BatchDispatchHooks;
+import com.science.gtnl.common.crafting.batch.BatchDispatchHooks.Context;
+import com.science.gtnl.common.crafting.batch.CraftingBatchPlanner.CommitResult;
 
 import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.crafting.ICraftingMedium;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.energy.IEnergyGrid;
@@ -44,13 +28,9 @@ import appeng.crafting.MECraftingInventory;
 import appeng.me.cache.CraftingGridCache;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.me.diagnostics.CraftingDiagnosticSessionId;
-import it.unimi.dsi.fastutil.booleans.BooleanArrayList;
 
 @Mixin(value = CraftingCPUCluster.class, remap = false)
 public abstract class MixinCraftingCPUCluster {
-
-    @Unique
-    private static final CraftingBatchPlanner GTNL$BATCH_PLANNER = new CraftingBatchPlannerImpl();
 
     @Shadow
     protected int remainingOperations;
@@ -70,22 +50,9 @@ public abstract class MixinCraftingCPUCluster {
     private List<ICraftingMedium> gtnl$beginDispatch(CraftingGridCache cache, ICraftingPatternDetails key,
         Operation<List<ICraftingMedium>> original,
         @Local(name = "craftingEntry") Map.Entry<ICraftingPatternDetails, ?> craftingEntry,
-        @Share("gtnl$batchDispatch") LocalRef<BatchDispatchContext> contextRef) {
+        @Share("gtnl$batchDispatch") LocalRef<Context> contextRef) {
         List<ICraftingMedium> media = original.call(cache, key);
-        BooleanArrayList compatibility = new BooleanArrayList(media.size());
-        for (ICraftingMedium medium : media) {
-            compatibility.add(gtnl$isCompatiblePair(key, medium));
-        }
-
-        Object progress = craftingEntry.getValue();
-        if (!(progress instanceof AccessorTaskProgress taskProgress)) {
-            ScienceNotLeisure.LOG.error("AE crafting task progress is missing the GTNL accessor for pattern {}", key);
-            contextRef.set(new BatchDispatchContext(key, null, MediumStrategy.NATIVE));
-            return media;
-        }
-
-        contextRef
-            .set(new BatchDispatchContext(key, taskProgress, GTNL$BATCH_PLANNER.resolveMediumStrategy(compatibility)));
+        contextRef.set(BatchDispatchHooks.beginDispatch(key, media, craftingEntry.getValue()));
         return media;
     }
 
@@ -100,41 +67,15 @@ public abstract class MixinCraftingCPUCluster {
         require = 1)
     private List<IAEStack<?>> gtnl$planExpandedInputs(CraftingCPUCluster cluster, ICraftingPatternDetails details,
         CraftingGridCache cache, Operation<List<IAEStack<?>>> original, IEnergyGrid eg,
-        @Share("gtnl$batchDispatch") LocalRef<BatchDispatchContext> contextRef) {
+        @Share("gtnl$batchDispatch") LocalRef<Context> contextRef) {
         List<IAEStack<?>> expandedInputs = original.call(cluster, details, cache);
-        BatchDispatchContext context = contextRef.get();
-        if (expandedInputs == null || context == null || context.taskProgress == null) return expandedInputs;
-
-        // A quantum CPU only extracts the variants a substituting pattern has budget for
-        BatchPlan plan = (Object) this instanceof ECraftingCPUCluster quantum && quantum.hasVariantBudget(details)
-            ? GTNL$BATCH_PLANNER.plan(
-                context.taskProgress.getValue(),
-                context.mediumStrategy,
-                expandedInputs,
-                details.getCondensedAEOutputs(),
-                input -> quantum.getBudgetedAvailable(details, input),
-                requested -> eg.extractAEPower(requested, Actionable.SIMULATE, PowerMultiplier.CONFIG))
-            : GTNL$BATCH_PLANNER.plan(
-                context.taskProgress.getValue(),
-                context.mediumStrategy,
-                expandedInputs,
-                details.getCondensedAEOutputs(),
-                this.inventory,
-                requested -> eg.extractAEPower(requested, Actionable.SIMULATE, PowerMultiplier.CONFIG));
-        context.resetForPlan(plan);
-        if (!plan.isBatched()) return expandedInputs;
-
-        try {
-            return GTNL$BATCH_PLANNER.scaleInputs(expandedInputs, plan.getCrafts());
-        } catch (ArithmeticException exception) {
-            ScienceNotLeisure.LOG.error(
-                "AE batch input scaling violated its checked plan for pattern {} and {} crafts",
-                details,
-                plan.getCrafts(),
-                exception);
-            context.reject();
-            return expandedInputs;
-        }
+        return BatchDispatchHooks.planExpandedInputs(
+            (CraftingCPUCluster) (Object) this,
+            details,
+            expandedInputs,
+            eg,
+            contextRef.get(),
+            this.inventory);
     }
 
     /**
@@ -147,21 +88,11 @@ public abstract class MixinCraftingCPUCluster {
             target = "Lappeng/crafting/MECraftingInventory;extractItems(Lappeng/api/storage/data/IAEStack;Lappeng/api/config/Actionable;)Lappeng/api/storage/data/IAEStack;"),
         require = 1)
     private IAEStack<?> gtnl$validateActualExtraction(MECraftingInventory craftingInventory, IAEStack<?> request,
-        Actionable mode, Operation<IAEStack<?>> original,
-        @Share("gtnl$batchDispatch") LocalRef<BatchDispatchContext> contextRef) {
+        Actionable mode, Operation<IAEStack<?>> original, @Share("gtnl$batchDispatch") LocalRef<Context> contextRef) {
         IAEStack<?> extracted = original.call(craftingInventory, request, mode);
-        BatchDispatchContext context = contextRef.get();
+        Context context = contextRef.get();
         if (context == null || !context.isPlannedBatch() || mode != Actionable.MODULATE) return extracted;
-        if (extracted != null && extracted.getStackSize() == request.getStackSize()) return extracted;
-
-        ScienceNotLeisure.LOG.error(
-            "AE batch extraction contract changed after planning for pattern {}: requested {}, extracted {}",
-            context.details,
-            request.getStackSize(),
-            extracted == null ? 0 : extracted.getStackSize());
-        context.reject();
-        if (extracted != null) craftingInventory.injectItems(extracted, Actionable.MODULATE);
-        return null;
+        return BatchDispatchHooks.validateExtraction(craftingInventory, request, extracted, context);
     }
 
     /**
@@ -175,36 +106,15 @@ public abstract class MixinCraftingCPUCluster {
         require = 1)
     private boolean gtnl$commitAcceptedBatch(ICraftingMedium medium, ICraftingPatternDetails details,
         InventoryCrafting craftingInventory, Operation<Boolean> original,
-        @Share("gtnl$batchDispatch") LocalRef<BatchDispatchContext> contextRef) {
-        BatchDispatchContext context = contextRef.get();
+        @Share("gtnl$batchDispatch") LocalRef<Context> contextRef) {
+        Context context = contextRef.get();
         if (context == null || !context.isPlannedBatch()) {
             return original.call(medium, details, craftingInventory);
         }
-        if (context.rejected) return false;
-        if (!(craftingInventory instanceof LargeInventoryCrafting largeInventory)) {
-            ScienceNotLeisure.LOG
-                .error("AE supplied a crafting inventory without long batch support for pattern {}", details);
-            context.reject();
-            return false;
-        }
-
-        CommitResult commit;
-        try {
-            commit = GTNL$BATCH_PLANNER
-                .commit(context.plan, true, context.taskProgress.getValue(), this.remainingOperations);
-        } catch (RuntimeException exception) {
-            ScienceNotLeisure.LOG.error("AE batch commit precondition failed for pattern {}", details, exception);
-            context.reject();
-            return false;
-        }
-
-        largeInventory.setAssemblerSize(context.plan.getCrafts());
-        boolean accepted = original.call(medium, details, craftingInventory);
-        if (!accepted) return false;
-
-        context.taskProgress.setValue(commit.getTaskValueBeforeNativeDecrement());
-        this.remainingOperations = commit.getRemainingOperationsBeforeNativeDecrement();
-        context.committed = true;
+        CommitResult commit = BatchDispatchHooks
+            .prepareCommit(context, details, craftingInventory, this.remainingOperations);
+        if (commit == null || !original.call(medium, details, craftingInventory)) return false;
+        this.remainingOperations = BatchDispatchHooks.finishCommit(context, commit);
         return true;
     }
 
@@ -218,23 +128,10 @@ public abstract class MixinCraftingCPUCluster {
             target = "Lappeng/me/cluster/implementations/CraftingCPUCluster$TaskProgress;consumeCraftSession()Lappeng/me/diagnostics/CraftingDiagnosticSessionId;"),
         require = 1)
     private CraftingDiagnosticSessionId gtnl$consumeBatchSessions(CraftingCPUCluster.TaskProgress taskProgress,
-        Operation<CraftingDiagnosticSessionId> original,
-        @Share("gtnl$batchDispatch") LocalRef<BatchDispatchContext> contextRef) {
-        BatchDispatchContext context = contextRef.get();
-        if (context == null || !context.committed) return original.call(taskProgress);
-
-        AccessorTaskProgress accessor = (AccessorTaskProgress) taskProgress;
-        context.sessionConsumption = GTNL$BATCH_PLANNER
-            .consumeSessions(gtnl$sessionSegments(accessor.getDiagnosticSessionCrafts()), context.plan.getCrafts());
-        long consumedCrafts = context.sessionConsumption.getConsumedCrafts();
-        if (consumedCrafts > 0 && consumedCrafts < context.plan.getCrafts()) {
-            ScienceNotLeisure.LOG.error(
-                "AE batch diagnostics session counts ended early for pattern {}: planned {}, consumed {}",
-                context.details,
-                context.plan.getCrafts(),
-                consumedCrafts);
-        }
-        return context.sessionConsumption.getFirstSessionId();
+        Operation<CraftingDiagnosticSessionId> original, @Share("gtnl$batchDispatch") LocalRef<Context> contextRef) {
+        Context context = contextRef.get();
+        if (context == null || !context.isCommitted()) return original.call(taskProgress);
+        return BatchDispatchHooks.consumeSessions(context, (AccessorTaskProgress) taskProgress);
     }
 
     /**
@@ -247,11 +144,11 @@ public abstract class MixinCraftingCPUCluster {
             target = "Lappeng/api/networking/crafting/ICraftingPatternDetails;getCondensedAEOutputs()[Lappeng/api/storage/data/IAEStack;"),
         require = 1)
     private IAEStack<?>[] gtnl$scaleCommittedOutputs(ICraftingPatternDetails details, Operation<IAEStack<?>[]> original,
-        @Share("gtnl$batchDispatch") LocalRef<BatchDispatchContext> contextRef) {
+        @Share("gtnl$batchDispatch") LocalRef<Context> contextRef) {
         IAEStack<?>[] outputs = original.call(details);
-        BatchDispatchContext context = contextRef.get();
-        if (context == null || !context.committed) return outputs;
-        return GTNL$BATCH_PLANNER.scaleOutputs(outputs, context.plan.getCrafts());
+        Context context = contextRef.get();
+        if (context == null || !context.isCommitted()) return outputs;
+        return BatchDispatchHooks.BATCH_PLANNER.scaleOutputs(outputs, context.getPlannedCrafts());
     }
 
     /**
@@ -265,74 +162,15 @@ public abstract class MixinCraftingCPUCluster {
         require = 1)
     private void gtnl$recordBatchExpectedOutput(@Coerce Object diagnostics, IAEStack<?> output,
         long outputObservedAtTick, CraftingDiagnosticSessionId diagnosticSessionId, Operation<Void> original,
-        @Share("gtnl$batchDispatch") LocalRef<BatchDispatchContext> contextRef) {
-        BatchDispatchContext context = contextRef.get();
-        if (context == null || !context.committed || context.sessionConsumption == null) {
+        @Share("gtnl$batchDispatch") LocalRef<Context> contextRef) {
+        Context context = contextRef.get();
+        if (context == null || !context.isCommitted() || !context.hasSessionConsumption()) {
             original.call(diagnostics, output, outputObservedAtTick, diagnosticSessionId);
             return;
         }
-
-        long crafts = context.plan.getCrafts();
-        if (output.getStackSize() % crafts != 0) {
-            ScienceNotLeisure.LOG.error(
-                "AE batch diagnostics received a non-divisible output for pattern {}: amount {}, crafts {}",
-                context.details,
-                output.getStackSize(),
-                crafts);
-            return;
-        }
-
-        long baseOutput = output.getStackSize() / crafts;
-        for (SessionAllocation<CraftingDiagnosticSessionId> allocation : context.sessionConsumption.getAllocations()) {
-            IAEStack<?> sessionOutput = output.copy();
-            sessionOutput.setStackSize(GTNL$BATCH_PLANNER.checkedMultiply(baseOutput, allocation.getCrafts()));
-            original.call(diagnostics, sessionOutput, outputObservedAtTick, allocation.getSessionId());
-        }
-    }
-
-    @Unique
-    private static boolean gtnl$isCompatiblePair(ICraftingPatternDetails details, ICraftingMedium medium) {
-        return (details instanceof DireCraftingPatternDetails && medium instanceof AssemblerMatrix)
-            || (details instanceof ChiselPatternDetails && medium instanceof TileEntityMEChisel);
-    }
-
-    @Unique
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private static Deque<SessionSegment<CraftingDiagnosticSessionId>> gtnl$sessionSegments(LinkedList<?> segments) {
-        return (Deque) segments;
-    }
-
-    @Unique
-    private static class BatchDispatchContext {
-
-        private final ICraftingPatternDetails details;
-        private final AccessorTaskProgress taskProgress;
-        private final MediumStrategy mediumStrategy;
-        private BatchPlan plan;
-        private boolean rejected;
-        private boolean committed;
-        private SessionConsumption<CraftingDiagnosticSessionId> sessionConsumption;
-
-        private BatchDispatchContext(ICraftingPatternDetails details, AccessorTaskProgress taskProgress,
-            MediumStrategy mediumStrategy) {
-            this.details = details;
-            this.taskProgress = taskProgress;
-            this.mediumStrategy = mediumStrategy;
-        }
-
-        private void resetForPlan(BatchPlan plan) {
-            this.plan = plan;
-            this.rejected = false;
-            this.committed = false;
-            this.sessionConsumption = null;
-        }
-
-        private boolean isPlannedBatch() {
-            return this.plan != null && this.plan.isBatched();
-        }
-
-        private void reject() {
-            this.rejected = true;
-        }
+        BatchDispatchHooks.recordExpectedOutput(
+            context,
+            output,
+            (sessionOutput, sessionId) -> original.call(diagnostics, sessionOutput, outputObservedAtTick, sessionId));
     }
 }

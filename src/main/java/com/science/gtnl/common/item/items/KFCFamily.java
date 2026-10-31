@@ -1,7 +1,5 @@
 package com.science.gtnl.common.item.items;
 
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,11 +9,8 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
-import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.loader.EffectLoader;
-import com.science.gtnl.utils.enums.GTNLItemList;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -23,12 +18,7 @@ public class KFCFamily extends ItemFood {
 
     public KFCFamily() {
         super(20, 20, true);
-        this.setUnlocalizedName("gtnl.kfc_family");
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "kfc_family");
-        this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         this.setAlwaysEdible();
-        GameRegistry.registerItem(this, "kfc_family");
-        GTNLItemList.KFCFamily.set(new ItemStack(this, 1));
     }
 
     @Override

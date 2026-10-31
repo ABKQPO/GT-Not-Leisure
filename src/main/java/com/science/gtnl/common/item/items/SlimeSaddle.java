@@ -1,27 +1,16 @@
 package com.science.gtnl.common.item.items;
 
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.entity.EntitySaddleSlime;
-import com.science.gtnl.utils.enums.GTNLItemList;
-
-import cpw.mods.fml.common.registry.GameRegistry;
 
 public class SlimeSaddle extends Item {
 
     public SlimeSaddle() {
-        this.setUnlocalizedName("gtnl.slime_saddle");
-        this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         this.setMaxStackSize(1);
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "slime_saddle");
-        GameRegistry.registerItem(this, "slime_saddle");
-        GTNLItemList.SlimeSaddle.set(new ItemStack(this, 1));
     }
 
     @Override

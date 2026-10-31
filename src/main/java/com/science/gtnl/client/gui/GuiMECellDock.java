@@ -5,9 +5,9 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.StatCollector;
 
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.common.gui.container.ContainerMECellDock;
 import com.science.gtnl.common.packet.SwitchToCustomGuiPacket;
 import com.science.gtnl.common.part.PartMECellDock;
-import com.science.gtnl.container.ContainerMECellDock;
 import com.science.gtnl.utils.enums.GuiType;
 
 import appeng.client.gui.AEBaseGui;

@@ -22,8 +22,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.science.gtnl.CommonProxy;
 import com.science.gtnl.api.ICustomGui;
+import com.science.gtnl.common.gui.GTNLGuiHandler;
 import com.science.gtnl.common.part.universal.UniversalBusHelper;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.GuiType;
@@ -95,6 +95,8 @@ public class PartUniversalStorageBus extends PartUpgradeable implements IStorage
 
     public final BaseActionSource source;
     public final IAEStack<?>[] filterCache = new IAEStack<?>[CONFIG_SIZE - BASE_SLOTS];
+    private boolean bulkUpdating = false;
+
     public final IAEStackInventory config = new IAEStackInventory(this, CONFIG_SIZE) {
 
         @Override
@@ -103,7 +105,7 @@ public class PartUniversalStorageBus extends PartUpgradeable implements IStorage
             if (n >= BASE_SLOTS && n < BASE_SLOTS + getInstalledUpgrades(Upgrades.CAPACITY) * 9) {
                 filterCache[n - BASE_SLOTS] = aes;
             }
-            resetCache(true);
+            if (!bulkUpdating) resetCache(true);
         }
     };
 
@@ -320,6 +322,16 @@ public class PartUniversalStorageBus extends PartUpgradeable implements IStorage
         final NBTTagCompound filterCacheTag = new NBTTagCompound();
         this.writeFilterCache(filterCacheTag);
         data.setTag(NBT_FILTER_CACHE, filterCacheTag);
+    }
+
+    public void bulkUpdateConfig(final Runnable action) {
+        this.bulkUpdating = true;
+        try {
+            action.run();
+        } finally {
+            this.bulkUpdating = false;
+            this.resetCache(true);
+        }
     }
 
     public void resetCache(final boolean fullReset) {
@@ -798,7 +810,7 @@ public class PartUniversalStorageBus extends PartUpgradeable implements IStorage
     public boolean onPartActivate(final EntityPlayer player, final Vec3 pos) {
         if (player.isSneaking()) return false;
         if (Platform.isClient()) return true;
-        CommonProxy.openGui(
+        GTNLGuiHandler.openGui(
             player,
             GuiType.UniversalStorageBusGUI,
             this.getSide(),
@@ -840,7 +852,7 @@ public class PartUniversalStorageBus extends PartUpgradeable implements IStorage
         return type == PipeType.ITEM && with == this.getSide() ? ConnectOverride.CONNECT : ConnectOverride.DISCONNECT;
     }
 
-    public static final class TypeChannel {
+    public static class TypeChannel {
 
         public final IAEStackType<?> type;
         @SuppressWarnings("rawtypes")

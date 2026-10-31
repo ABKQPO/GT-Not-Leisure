@@ -23,7 +23,6 @@ import net.minecraft.world.World;
 
 import com.reavaritia.ReAvaritia;
 import com.reavaritia.common.blocks.BlockExtremeAnvil;
-import com.science.gtnl.utils.enums.ModList;
 
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -328,6 +327,6 @@ public class EntityExtremeAnvil extends Entity {
 
     public static void registerEntity() {
         EntityRegistry
-            .registerModEntity(EntityExtremeAnvil.class, "EntityExtremeAnvil", 2, ModList.ReAvaritia.ID, 64, 1, true);
+            .registerModEntity(EntityExtremeAnvil.class, "EntityExtremeAnvil", 2, ReAvaritia.MODID, 64, 1, true);
     }
 }

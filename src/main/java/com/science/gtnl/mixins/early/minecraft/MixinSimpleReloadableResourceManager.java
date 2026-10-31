@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import com.google.common.collect.Sets;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 
 @Mixin(value = SimpleReloadableResourceManager.class, remap = true)
 public class MixinSimpleReloadableResourceManager {
@@ -29,6 +29,6 @@ public class MixinSimpleReloadableResourceManager {
             target = "Lnet/minecraft/client/resources/SimpleReloadableResourceManager;setResourceDomains:Ljava/util/Set;",
             opcode = Opcodes.PUTFIELD))
     private void redirectSetResourceDomains(SimpleReloadableResourceManager instance, Set<String> value) {
-        this.setResourceDomains = Sets.newLinkedHashSet();
+        this.setResourceDomains = new ObjectLinkedOpenHashSet<>();
     }
 }

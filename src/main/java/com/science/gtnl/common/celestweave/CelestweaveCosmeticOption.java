@@ -8,7 +8,7 @@ import java.util.function.Predicate;
 
 import net.minecraft.nbt.NBTTagCompound;
 
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ItemConfig;
 
 public enum CelestweaveCosmeticOption {
 
@@ -18,7 +18,7 @@ public enum CelestweaveCosmeticOption {
         CelestweaveStripStyle.ids(), null),
     STRIP_SPEED("StripSpeed", Kind.DECIMAL, "strip_speed", 0.25F, () -> 3F, 1F, 0.25F, null, null,
         cosmetic -> cosmetic.stripStyle().usesSpeed),
-    IDLE_ARCS("IdleArcs", Kind.INT, "idle_arcs", -1F, () -> MainConfig.item.celestweave.maxIdleArcs, -1F, 1F, null,
+    IDLE_ARCS("IdleArcs", Kind.INT, "idle_arcs", -1F, () -> ItemConfig.celestweave.maxIdleArcs, -1F, 1F, null,
         "by_tier"),
     ARC_FREQ("ArcFreq", Kind.DECIMAL, "arc_freq", 0.25F, () -> 3F, 1F, 0.25F, null, null),
     ARC_SPREAD("ArcSpread", Kind.DECIMAL, "arc_spread", 0.3F, () -> 2.5F, 1F, 0.1F, null, null),

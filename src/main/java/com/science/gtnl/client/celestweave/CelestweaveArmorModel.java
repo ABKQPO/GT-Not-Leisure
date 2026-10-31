@@ -16,7 +16,7 @@ import com.gtnllib.client.fx.world.FxVisibility;
 import com.gtnllib.utils.MathUtils;
 import com.science.gtnl.common.celestweave.CelestweaveCosmetic;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ClientConfig;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -52,7 +52,8 @@ public class CelestweaveArmorModel extends ModelBiped {
             bone.isHidden = false;
         }
         setRotationAngles(limbSwing, limbAmount, age, yaw, pitch, scale, entity);
-        if (!(entity instanceof EntityLivingBase living) || entity.isInvisible()) return;
+        if (!(entity instanceof EntityLivingBase living) || entity.isInvisible()
+            || CelestweaveClientEvents.concealed(entity)) return;
         CelestweaveFrames frames = CelestweaveObjModel.INSTANCE.frames();
         if (frames == null) return;
         CelestweaveClientState state = CelestweaveClientState.of(entity);
@@ -60,7 +61,7 @@ public class CelestweaveArmorModel extends ModelBiped {
         if (!look.wears(piece)) return;
         CelestweavePose pose = CelestweaveAnimator.pose(living, state, look, frames);
         double distance = FxVisibility.distanceToViewer(entity);
-        boolean lod = distance > MainConfig.client.celestweaveDetailDistance;
+        boolean lod = distance > ClientConfig.celestweaveDetailDistance;
         boolean overlay = (living.hurtTime > 0 || living.deathTime > 0) && !GL11.glIsEnabled(GL11.GL_TEXTURE_2D);
 
         isolated(() -> {
@@ -75,7 +76,9 @@ public class CelestweaveArmorModel extends ModelBiped {
     }
 
     public static void renderFirstPersonArm(EntityPlayer player, ModelRenderer arm) {
-        if (!MainConfig.client.enableCelestweaveFirstPersonArm || player == null || player.isInvisible()) return;
+        if (!ClientConfig.enableCelestweaveFirstPersonArm || player == null
+            || player.isInvisible()
+            || CelestweaveClientEvents.concealed(player)) return;
         CelestweaveFrames frames = CelestweaveObjModel.INSTANCE.frames();
         if (frames == null) return;
         CelestweaveClientState state = CelestweaveClientState.of(player);

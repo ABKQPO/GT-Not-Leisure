@@ -3,10 +3,12 @@ package com.science.gtnl.common.packet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 
-import com.science.gtnl.common.packet.base.ClientboundPacket;
+import com.gtnllib.network.ClientboundPacket;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import cpw.mods.fml.common.network.ByteBufUtils;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 
 public class PlaceItemInHotbarPacket extends ClientboundPacket {
@@ -37,6 +39,7 @@ public class PlaceItemInHotbarPacket extends ClientboundPacket {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void handleClient(Minecraft minecraft) {
         if (result != null) {
             ItemUtils.placeItemInHotbar(Minecraft.getMinecraft().thePlayer, result, isCreative, useAE);

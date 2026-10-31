@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.zip.GZIPOutputStream;
 
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
@@ -18,11 +19,12 @@ import com.science.gtnl.common.crafting.quantum.api.crafting.IPatternDetails;
 import com.science.gtnl.common.crafting.quantum.api.stacks.AEKey;
 import com.science.gtnl.common.crafting.quantum.api.stacks.GenericStack;
 import com.science.gtnl.common.crafting.quantum.crafting.CraftingPlan;
-import com.science.gtnl.mixins.late.appliedEnergistics.quamtumComputer.AccessorPacketCraftingTreeData;
+import com.science.gtnl.mixins.late.appliedEnergistics.quantum.AccessorPacketCraftingTreeData;
 
 import appeng.api.config.CraftingMode;
 import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.storage.data.IAEStack;
+import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketCraftingTreeData;
 import appeng.crafting.v2.CraftingCalculations;
 import appeng.crafting.v2.CraftingRequest.SubstitutionMode;
@@ -42,7 +44,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 
-public final class QuantumCraftingTree {
+public class QuantumCraftingTree {
 
     private static final int MAX_NODES = 100_000;
     private static final int MAX_LOOP_DEPTH = 64;
@@ -655,7 +657,7 @@ public final class QuantumCraftingTree {
         MISSING
     }
 
-    private static final class Request {
+    private static class Request {
 
         private final AEKey key;
         private long amount;
@@ -683,7 +685,7 @@ public final class QuantumCraftingTree {
         }
     }
 
-    private static final class Resolver {
+    private static class Resolver {
 
         private final Kind kind;
         private final AEKey what;
@@ -699,6 +701,12 @@ public final class QuantumCraftingTree {
             this.kind = kind;
             this.what = what;
             this.amount = amount;
+        }
+    }
+
+    public static void sendTo(EntityPlayerMP player, QuantumCraftingJob<?> job) {
+        for (PacketCraftingTreeData packet : createChunks(player.worldObj, job)) {
+            NetworkHandler.instance.sendTo(packet, player);
         }
     }
 }

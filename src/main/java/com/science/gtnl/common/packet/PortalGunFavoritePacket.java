@@ -5,8 +5,8 @@ import net.minecraft.item.ItemStack;
 
 import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
 import com.gtnewhorizon.gtnhlib.util.data.ItemId;
+import com.gtnllib.network.ServerboundPacket;
 import com.science.gtnl.common.item.items.PortalGun;
-import com.science.gtnl.common.packet.base.ServerboundPacket;
 import com.science.gtnl.common.portalgun.PortalGunData;
 import com.science.gtnl.common.portalgun.PortalGunDestination;
 

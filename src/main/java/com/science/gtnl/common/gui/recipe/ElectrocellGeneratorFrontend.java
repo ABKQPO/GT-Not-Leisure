@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import com.google.common.collect.ImmutableList;
-import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.science.gtnl.utils.recipes.metadata.ElectrocellGeneratorMetadata;
 
 import gregtech.api.recipe.BasicUIPropertiesBuilder;
@@ -14,7 +12,7 @@ import gregtech.api.util.MethodsReturnNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ElectrocellGeneratorFrontend extends GTNLLogoFrontend {
+public class ElectrocellGeneratorFrontend extends GTNLRecipeFrontend {
 
     public ElectrocellGeneratorFrontend(BasicUIPropertiesBuilder uiPropertiesBuilder,
         NEIRecipePropertiesBuilder neiPropertiesBuilder) {
@@ -22,22 +20,22 @@ public class ElectrocellGeneratorFrontend extends GTNLLogoFrontend {
     }
 
     @Override
-    public List<Pos2d> getItemInputPositions(int itemInputCount) {
-        return ImmutableList.of(new Pos2d(43, 7), new Pos2d(115, 7));
+    protected List<Slot> itemInputSlots(int count) {
+        return slots(43, 7, 115, 7);
     }
 
     @Override
-    public List<Pos2d> getItemOutputPositions(int itemOutputCount) {
-        return ImmutableList.of(new Pos2d(79, 45));
+    protected List<Slot> itemOutputSlots(int count) {
+        return slots(79, 45);
     }
 
     @Override
-    public List<Pos2d> getFluidInputPositions(int fluidInputCount) {
-        return ImmutableList.of(new Pos2d(79, 7));
+    protected List<Slot> fluidInputSlots(int count) {
+        return slots(79, 7);
     }
 
     @Override
-    public List<Pos2d> getFluidOutputPositions(int fluidOutputCount) {
-        return ImmutableList.of(new Pos2d(79, 63));
+    protected List<Slot> fluidOutputSlots(int count) {
+        return slots(79, 63);
     }
 }

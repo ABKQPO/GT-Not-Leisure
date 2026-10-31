@@ -12,13 +12,10 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.part.PartMECellDock;
-import com.science.gtnl.utils.enums.GTNLItemList;
 
 import appeng.api.AEApi;
 import appeng.api.parts.IPartItem;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lombok.Getter;
@@ -91,14 +88,9 @@ public class ItemPartMECellDock extends Item implements IPartItem {
 
     public ItemPartMECellDock() {
         setMaxStackSize(64);
-        setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
-        setUnlocalizedName("gtnl.me_cell_dock");
-        setTextureName(RESOURCE_ROOT_ID + ":part/cell_dock");
-        GameRegistry.registerItem(this, "me_cell_dock");
         AEApi.instance()
             .partHelper()
             .setItemBusRenderer(this);
-        GTNLItemList.MECellDock.set(new ItemStack(this));
     }
 
     @Override

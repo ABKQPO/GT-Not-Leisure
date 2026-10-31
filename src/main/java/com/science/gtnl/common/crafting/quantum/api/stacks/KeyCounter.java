@@ -42,7 +42,7 @@ import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 /**
  * Associates a generic Value of type T with AE keys and makes key/Value pairs searchable with fuzzy mode semantics.
  */
-public final class KeyCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
+public class KeyCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
 
     private static final Reference2ObjectMap<Object, VariantCounter> EMPTY_LISTS = Reference2ObjectMaps.emptyMap();
     // First map contains a mapping from AEKey#primaryKey

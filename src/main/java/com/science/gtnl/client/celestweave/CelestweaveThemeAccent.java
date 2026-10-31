@@ -25,8 +25,6 @@ public class CelestweaveThemeAccent {
     private static ModularPanel editedPanel;
     private static IntSupplier editedGlow;
 
-    private CelestweaveThemeAccent() {}
-
     public static void register() {
         EquipmentTheme.LIVE.accentFrom(CelestweaveThemeAccent::accent);
         HudColor.source(EquipmentTheme.LIVE, HUD_COLOR_LANG);

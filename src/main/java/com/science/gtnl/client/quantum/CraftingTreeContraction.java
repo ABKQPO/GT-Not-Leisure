@@ -20,7 +20,7 @@ import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
  * goes on below the cycle as it would below a single craft. The nodes keep their own parents, so a ring can still be
  * made of them; the tree is laid out by the parents and children here instead.
  */
-public final class CraftingTreeContraction {
+public class CraftingTreeContraction {
 
     // Per cycle node, what hangs under it
     private final Map<Object, List<Object>> children = new Reference2ObjectOpenHashMap<>();

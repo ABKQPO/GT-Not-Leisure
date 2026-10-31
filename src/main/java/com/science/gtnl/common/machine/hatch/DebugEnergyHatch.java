@@ -1,8 +1,5 @@
 package com.science.gtnl.common.machine.hatch;
 
-import java.util.function.LongConsumer;
-import java.util.function.LongSupplier;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,32 +10,19 @@ import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
-import com.gtnewhorizons.modularui.api.NumberFormatMUI;
-import com.gtnewhorizons.modularui.api.drawable.IDrawable;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
-import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
-import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
-import com.gtnewhorizons.modularui.common.widget.TextWidget;
-import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
-import com.science.gtnl.common.gui.modularui.DebugEnergyHatchGui;
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
+import com.science.gtnl.common.gui.modularui.hatch.DebugEnergyHatchGui;
 import com.science.gtnl.mixins.early.gregtech.AccessorMTETieredMachineBlock;
-import com.science.gtnl.utils.item.ItemUtils;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Textures;
-import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
-import gregtech.api.interfaces.modularui.IAddGregtechLogo;
-import gregtech.api.interfaces.modularui.IAddUIWidgets;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchEnergy;
 import gregtech.api.util.GTUtility;
-import it.unimi.dsi.fastutil.ints.IntConsumer;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import tectech.thing.metaTileEntity.hatch.MTEHatchEnergyTunnel;
@@ -48,9 +32,7 @@ import tectech.util.CommonValues;
 
 @IMetaTileEntity.SkipGenerateName
 @IMetaTileEntity.SkipGenerateDescription
-public class DebugEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets, IAddGregtechLogo {
-
-    private static final NumberFormatMUI numberFormat = new NumberFormatMUI();
+public class DebugEnergyHatch extends MTEHatchEnergy {
 
     @Getter
     public long mEUT = 0, mAMP = 0;
@@ -87,7 +69,7 @@ public class DebugEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets, I
     }
 
     public static String formatPowerSum(long eut, long amp) {
-        return numberFormat.format(amp * eut);
+        return NumberFormatUtil.formatNumber(amp * eut);
     }
 
     @Override
@@ -224,57 +206,6 @@ public class DebugEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets, I
     }
 
     @Override
-    @Deprecated
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        // TODO: Remove this MUI1 fallback after DebugEnergyHatch only uses the MUI2 GUI.
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
-                .setSize(18, 18)
-                .setPos(111, 55));
-    }
-
-    @Override
-    @Deprecated
-    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
-        // TODO: Remove this MUI1 fallback after DebugEnergyHatch only uses the MUI2 GUI.
-        builder.widget(
-            new DrawableWidget().setDrawable(GTUITextures.PICTURE_SCREEN_BLACK)
-                .setSize(90, 72)
-                .setPos(43, 4))
-            .widget(
-                new TextWidget().setStringSupplier(() -> "TIER: " + GTValues.VN[GTUtility.getTier(Math.abs(mEUT))])
-                    .setDefaultColor(COLOR_TEXT_WHITE.get())
-                    .setPos(46, 22))
-            .widget(
-                new TextWidget().setStringSupplier(() -> "SUM: " + numberFormat.format(mAMP * mEUT))
-                    .setDefaultColor(COLOR_TEXT_WHITE.get())
-                    .setPos(46, 46));
-
-        addLabelledIntegerTextField(builder, "EUT: ", this::getMEUT, this::setMEUT, 8);
-        addLabelledIntegerTextField(builder, "AMP: ", this::getMAMP, this::setMAMP, 34);
-
-        addChangeNumberButton(builder, GTUITextures.OVERLAY_BUTTON_MINUS_LARGE, val -> mEUT -= val, 512, 64, 7, 4);
-        addChangeNumberButton(builder, GTUITextures.OVERLAY_BUTTON_MINUS_LARGE, val -> mEUT /= val, 512, 64, 7, 22);
-        addChangeNumberButton(builder, GTUITextures.OVERLAY_BUTTON_MINUS_LARGE, val -> mAMP -= val, 512, 64, 7, 40);
-        addChangeNumberButton(builder, GTUITextures.OVERLAY_BUTTON_MINUS_LARGE, val -> mAMP /= val, 512, 64, 7, 58);
-
-        addChangeNumberButton(builder, GTUITextures.OVERLAY_BUTTON_MINUS_SMALL, val -> mEUT -= val, 16, 1, 25, 4);
-        addChangeNumberButton(builder, GTUITextures.OVERLAY_BUTTON_MINUS_SMALL, val -> mEUT /= val, 16, 2, 25, 22);
-        addChangeNumberButton(builder, GTUITextures.OVERLAY_BUTTON_MINUS_SMALL, val -> mAMP -= val, 16, 1, 25, 40);
-        addChangeNumberButton(builder, GTUITextures.OVERLAY_BUTTON_MINUS_SMALL, val -> mAMP /= val, 16, 2, 25, 58);
-
-        addChangeNumberButton(builder, GTUITextures.OVERLAY_BUTTON_PLUS_SMALL, val -> mEUT += val, 16, 1, 133, 4);
-        addChangeNumberButton(builder, GTUITextures.OVERLAY_BUTTON_PLUS_SMALL, val -> mEUT *= val, 16, 2, 133, 22);
-        addChangeNumberButton(builder, GTUITextures.OVERLAY_BUTTON_PLUS_SMALL, val -> mAMP += val, 16, 1, 133, 40);
-        addChangeNumberButton(builder, GTUITextures.OVERLAY_BUTTON_PLUS_SMALL, val -> mAMP *= val, 16, 2, 133, 58);
-
-        addChangeNumberButton(builder, GTUITextures.OVERLAY_BUTTON_PLUS_LARGE, val -> mEUT += val, 512, 64, 151, 4);
-        addChangeNumberButton(builder, GTUITextures.OVERLAY_BUTTON_PLUS_LARGE, val -> mEUT *= val, 512, 64, 151, 22);
-        addChangeNumberButton(builder, GTUITextures.OVERLAY_BUTTON_PLUS_LARGE, val -> mAMP += val, 512, 64, 151, 40);
-        addChangeNumberButton(builder, GTUITextures.OVERLAY_BUTTON_PLUS_LARGE, val -> mAMP *= val, 512, 64, 151, 58);
-    }
-
-    @Override
     public void saveNBTData(NBTTagCompound aNBT) {
         super.saveNBTData(aNBT);
         aNBT.setLong("mEUT", mEUT);
@@ -345,30 +276,5 @@ public class DebugEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets, I
                 }
             }
         }
-    }
-
-    private void addLabelledIntegerTextField(ModularWindow.Builder builder, String label, LongSupplier getter,
-        LongConsumer setter, int yPos) {
-        builder.widget(
-            new TextWidget(label).setDefaultColor(COLOR_TEXT_WHITE.get())
-                .setPos(46, yPos))
-            .widget(
-                new NumericWidget().setGetter(getter::getAsLong)
-                    .setSetter(val -> setter.accept((int) val))
-                    .setTextColor(COLOR_TEXT_WHITE.get())
-                    .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD.withOffset(-1, -1, 2, 2))
-                    .setPos(46 + 24, yPos - 1)
-                    .setSize(56, 10));
-    }
-
-    private void addChangeNumberButton(ModularWindow.Builder builder, IDrawable overlay, IntConsumer setter,
-        int changeNumberShift, int changeNumber, int xPos, int yPos) {
-        builder.widget(new ButtonWidget().setOnClick((clickData, widget) -> {
-            setter.accept(clickData.shift ? changeNumberShift : changeNumber);
-            updateProducingState();
-        })
-            .setBackground(GTUITextures.BUTTON_STANDARD, overlay)
-            .setSize(18, 18)
-            .setPos(xPos, yPos));
     }
 }

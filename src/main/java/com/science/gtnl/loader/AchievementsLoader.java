@@ -6,7 +6,7 @@ import net.minecraftforge.common.AchievementPage;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
-public class AchievementsLoader {
+public class AchievementsLoader implements IContentLoader {
 
     public static AchievementPage gtnlAchievementsPage;
     public static Achievement welcome;
@@ -27,5 +27,15 @@ public class AchievementsLoader {
 
         gtnlAchievementsPage = new AchievementPage(ScienceNotLeisure.MODNAME, welcome);
         AchievementPage.registerAchievementPage(gtnlAchievementsPage);
+    }
+
+    @Override
+    public String name() {
+        return "achievements";
+    }
+
+    @Override
+    public void postInit() {
+        registry();
     }
 }

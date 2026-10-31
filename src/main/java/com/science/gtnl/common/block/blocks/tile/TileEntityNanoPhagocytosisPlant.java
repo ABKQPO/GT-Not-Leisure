@@ -8,7 +8,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import com.gtnewhorizons.modularui.api.math.Color;
+import com.cleanroommc.modularui.utils.Color;
 
 import lombok.Getter;
 import tectech.thing.metaTileEntity.multi.godforge.color.ForgeOfGodsStarColor;

@@ -6,7 +6,7 @@ import net.minecraft.world.World;
 
 import org.spongepowered.asm.mixin.Mixin;
 
-import com.science.gtnl.utils.event.LivingSneakEvent;
+import com.science.gtnl.common.entity.LivingSneakEvent;
 
 @Mixin(value = EntityLivingBase.class, remap = true)
 public abstract class MixinEntityLivingBase extends Entity {

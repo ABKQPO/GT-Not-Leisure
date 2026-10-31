@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.science.gtnl.client.GTNLCreativeTabs;
+import com.science.gtnl.common.item.GTNLCreativeTabs;
 import com.science.gtnl.common.part.PartUniversalExportBus;
 import com.science.gtnl.common.part.PartUniversalImportBus;
 import com.science.gtnl.common.part.PartUniversalStorageBus;

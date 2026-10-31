@@ -40,8 +40,6 @@ public class PortalGunVortexRender {
         SHINE = { 1F, 1F, 1F, 0.94F }, HALO = { 0.59F, 0.88F, 0.98F, 0.26F }, DROP_HALO = { 0.59F, 0.88F, 0.98F, 0.2F },
         CLEAR_HALO = { 0.59F, 0.88F, 0.98F, 0F };
 
-    private PortalGunVortexRender() {}
-
     public record Flow(List<double[]> points, float open) {}
 
     public record Outline(double[][] points, double[][] normals, double[] widths, double[] outer, double[] inner,

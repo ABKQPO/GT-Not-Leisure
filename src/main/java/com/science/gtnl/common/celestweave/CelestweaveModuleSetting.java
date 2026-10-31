@@ -8,20 +8,20 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.Constants;
 
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ItemConfig;
 
 public enum CelestweaveModuleSetting {
 
-    FLIGHT_SPEED(CelestweaveModule.FLIGHT, "Speed", Format.MULTIPLIER, 1,
-        () -> MainConfig.item.celestweave.maxFlightLevel, 1),
-    FLIGHT_VSPEED(CelestweaveModule.FLIGHT, "VSpeed", Format.MULTIPLIER, 1,
-        () -> MainConfig.item.celestweave.maxFlightLevel, 1),
+    FLIGHT_SPEED(CelestweaveModule.FLIGHT, "Speed", Format.MULTIPLIER, 1, () -> ItemConfig.celestweave.maxFlightLevel,
+        1),
+    FLIGHT_VSPEED(CelestweaveModule.FLIGHT, "VSpeed", Format.MULTIPLIER, 1, () -> ItemConfig.celestweave.maxFlightLevel,
+        1),
     FLIGHT_LEVITATE(CelestweaveModule.FLIGHT, "Levitate", false),
     FLIGHT_INERTIA(CelestweaveModule.FLIGHT, "Inertia", false),
-    WALK_SPEED(CelestweaveModule.WALK_ASSIST, "Speed", Format.MULTIPLIER, 1,
-        () -> MainConfig.item.celestweave.maxWalkLevel, 2),
-    WALK_JUMP(CelestweaveModule.WALK_ASSIST, "Jump", Format.MULTIPLIER, 1,
-        () -> MainConfig.item.celestweave.maxWalkLevel, 1),
+    WALK_SPEED(CelestweaveModule.WALK_ASSIST, "Speed", Format.MULTIPLIER, 1, () -> ItemConfig.celestweave.maxWalkLevel,
+        2),
+    WALK_JUMP(CelestweaveModule.WALK_ASSIST, "Jump", Format.MULTIPLIER, 1, () -> ItemConfig.celestweave.maxWalkLevel,
+        1),
     WALK_STEP(CelestweaveModule.WALK_ASSIST, "Step", true),
     WALK_OMNI(CelestweaveModule.WALK_ASSIST, "Omni", true),
     REACH_LEVEL(CelestweaveModule.REACH, "Level", Format.LEVEL, 0, () -> 2, 0),

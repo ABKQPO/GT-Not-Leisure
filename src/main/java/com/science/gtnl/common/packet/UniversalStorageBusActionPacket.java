@@ -2,8 +2,8 @@ package com.science.gtnl.common.packet;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 
-import com.science.gtnl.common.packet.base.ServerboundPacket;
-import com.science.gtnl.container.ContainerUniversalStorageBus;
+import com.gtnllib.network.ServerboundPacket;
+import com.science.gtnl.common.gui.container.ContainerUniversalStorageBus;
 
 import io.netty.buffer.ByteBuf;
 

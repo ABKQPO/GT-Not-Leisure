@@ -7,11 +7,14 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.science.gtnl.loader.EffectLoader;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
+@EventBusSubscriber(phase = Phase.PRE)
 public class SoulCardboardArmorHandler {
 
     public static final int JUMP_AMPLIFIER = 0;
@@ -21,7 +24,7 @@ public class SoulCardboardArmorHandler {
     private static final int REFRESH_DURATION = 20;
 
     @SubscribeEvent
-    public void onLivingUpdate(LivingUpdateEvent event) {
+    public static void onLivingUpdate(LivingUpdateEvent event) {
         if (event.entityLiving.worldObj.isRemote) return;
         if (!(event.entityLiving instanceof EntityPlayer player)) return;
         if (!isWearingFullSet(player)) return;
@@ -31,7 +34,7 @@ public class SoulCardboardArmorHandler {
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = true)
-    public void onLivingHurt(LivingHurtEvent event) {
+    public static void onLivingHurt(LivingHurtEvent event) {
         if (event.entityLiving.worldObj.isRemote) return;
         if (!(event.entityLiving instanceof EntityPlayer player)) return;
         if (!isWearingFullSet(player)) return;

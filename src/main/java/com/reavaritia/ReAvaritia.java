@@ -14,7 +14,6 @@ import com.reavaritia.common.items.ChronarchsClock;
 import com.reavaritia.common.packet.ExtremeAnvilPacket;
 import com.reavaritia.utils.MissingMappingsHandler;
 import com.reavaritia.utils.SubscribeEventUtils;
-import com.science.gtnl.utils.enums.ModList;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -41,7 +40,7 @@ public class ReAvaritia {
 
     public static final String MODNAME = "ReAvaritia";
     public static final String VERSION = "1.0.0";
-    public static final String RESOURCE_ROOT_ID = ModList.ReAvaritia.ID;
+    public static final String RESOURCE_ROOT_ID = ReAvaritia.MODID;
     public static final Logger LOG = LogManager.getLogger(ReAvaritia.MODID);
 
     public static SimpleNetworkWrapper network;

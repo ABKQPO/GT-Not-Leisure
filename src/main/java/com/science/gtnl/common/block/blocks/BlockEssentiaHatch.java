@@ -1,24 +1,17 @@
 package com.science.gtnl.common.block.blocks;
 
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-import com.science.gtnl.client.GTNLCreativeTabs;
-import com.science.gtnl.common.block.blocks.item.ItemBlockEssentiaHatch;
 import com.science.gtnl.common.block.blocks.tile.TileEntityEssentiaHatch;
-import com.science.gtnl.utils.enums.GTNLItemList;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.GregTechAPI;
 import gregtech.api.util.GTUtility;
 import thaumcraft.api.aspects.IEssentiaContainerItem;
@@ -29,14 +22,7 @@ public class BlockEssentiaHatch extends BlockContainer {
         super(Material.iron);
         this.setHardness(9.0F);
         this.setResistance(5.0F);
-        this.setBlockName("gtnl.essentia_hatch");
-        this.setBlockTextureName(RESOURCE_ROOT_ID + ":" + "essentia_hatch");
         this.setHarvestLevel("wrench", 2);
-        this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureMachine);
-        GameRegistry.registerBlock(this, ItemBlockEssentiaHatch.class, "essentia_hatch");
-        GameRegistry.registerTileEntity(TileEntityEssentiaHatch.class, "essentia_hatch_tile_entity");
-        GregTechAPI.registerMachineBlock(this, -1);
-        GTNLItemList.EssentiaHatch.set(new ItemStack(this, 1));
     }
 
     @Override

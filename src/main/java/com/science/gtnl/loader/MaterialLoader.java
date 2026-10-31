@@ -2,128 +2,62 @@ package com.science.gtnl.loader;
 
 import static com.science.gtnl.utils.CardboardBoxUtils.addBoxBlacklist;
 
-import net.blay09.mods.craftingtweaks.api.CraftingTweaksAPI;
-import net.blay09.mods.craftingtweaks.api.SimpleTweakProvider;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
 import net.minecraftforge.oredict.OreDictionary;
 
 import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.cleanroommc.bogosorter.BogoSortAPI;
-import com.science.gtnl.api.TickrateAPI;
-import com.science.gtnl.api.stellar.StellarIrisUpgradeCatalog;
 import com.science.gtnl.common.entity.EntitySteamRocket;
 import com.science.gtnl.common.item.items.MilledOre;
-import com.science.gtnl.common.item.steamRocket.SchematicSteamRocket;
 import com.science.gtnl.common.material.GTNLMaterials;
-import com.science.gtnl.common.recipe.gtnl.RocketAssemblerRecipes;
-import com.science.gtnl.config.MainConfig;
-import com.science.gtnl.container.portableWorkbench.ContainerPortableAdvancedWorkbench;
-import com.science.gtnl.container.portableWorkbench.ContainerPortableAvaritiaddonsChest;
-import com.science.gtnl.container.portableWorkbench.ContainerPortableChest;
+import com.science.gtnl.config.ItemConfig;
 import com.science.gtnl.utils.enums.GTNLItemList;
-import com.science.gtnl.utils.enums.GTNLStructureChannels;
-import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.enums.ModsItemlist;
-import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseBucket;
+import com.science.gtnl.utils.text.LanguageLoader;
 
 import bartworks.API.WerkstoffAdderRegistry;
 import bartworks.common.loaders.ItemRegistry;
-import cpw.mods.fml.common.Optional;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GlassTier;
 import gregtech.common.misc.WirelessNetworkManager;
 import micdoodle8.mods.galacticraft.api.recipe.RocketFuels;
-import micdoodle8.mods.galacticraft.api.recipe.SchematicRegistry;
 
-public class MaterialLoader {
+public class MaterialLoader implements IContentLoader {
 
-    public static void loadPreInit() {
-        EffectLoader.registry();
-        EntityLoader.registry();
-        if (Mods.BetterQuesting.isModLoaded() && ModList.BetterQuestingAPI.isModLoaded()) {
-            QuestLoader.registry();
-        }
+    @Override
+    public String name() {
+        return "materials";
+    }
 
-        BlockLoader.registry();
-        BlockLoader.registerTreeBrickuoia();
-
-        ItemLoader.registry();
+    @Override
+    public void preInit() {
         WerkstoffAdderRegistry.addWerkstoffAdder(new GTNLMaterials());
     }
 
-    public static void loadInit() {
+    @Override
+    public void init() {
         GTNLMaterials.init();
-        WailaLoader.register();
-        TickrateAPI.changeTickrate(MainConfig.tickrate.defaultTickrate);
-
-        GTNLStructureChannels.register();
-
         registryOreDictionary();
-
-        // GTNLWorldgenloader.registry();
     }
 
-    public static void loadPostInit() {
+    @Override
+    public void postInit() {
         MilledOre.registry();
-        GreenHouseBucket.LoadGreenHouseBuckets();
-        MachineLoader.registry();
-        AchievementsLoader.registry();
-        StellarIrisUpgradeCatalog.registerDefaults();
-
-        if (Mods.GalaxySpace.isModLoaded() && Mods.StevesCarts2.isModLoaded()
-            && Mods.Railcraft.isModLoaded()
-            && Mods.IronTanks.isModLoaded()
-            && Mods.GraviSuite.isModLoaded()) {
-            SchematicRegistry.registerSchematicRecipe(new SchematicSteamRocket());
-            RocketAssemblerRecipes.loadSteamRocketRecipe();
-        }
         RocketFuels.addFuel(EntitySteamRocket.class, GTNLMaterials.CompressedSteam.getMolten(1));
-
-        if (ModList.CraftingTweaks.isModLoaded()) loadCraftTweakCompat();
-        if (Mods.InventoryBogoSorter.isModLoaded()) loadBogoSortCompat();
-
         OrePrefixes.nugget.addFamiliarPrefix(OrePrefixes.ingotHot);
         OrePrefixes.ingot.addFamiliarPrefix(OrePrefixes.ingotHot);
         OrePrefixes.ingotHot.addFamiliarPrefix(OrePrefixes.nugget);
         OrePrefixes.ingotHot.addFamiliarPrefix(OrePrefixes.ingot);
     }
 
-    public static void loadCompleteInit() {
-        if (Mods.NewHorizonsCoreMod.isModLoaded()) ScriptLoader.registry();
-
-        if (Mods.Nutrition.isModLoaded()) NutrientLoader.registry();
-
+    @Override
+    public void loadComplete() {
         loadCardBoardBoxBlackList();
-
-        if (MainConfig.item.stick.enableStickItem) {
-            RecipeLoader.loadVillageTrade();
-        }
-
         WirelessNetworkManager.number_of_energy_additions = 4L;
-
-        LoadCompleteRecipeScheduler.schedule();
-    }
-
-    @Optional.Method(modid = "craftingtweaks")
-    public static void loadCraftTweakCompat() {
-        SimpleTweakProvider provider = CraftingTweaksAPI
-            .registerSimpleProvider(ModList.ScienceNotLeisure.ID, ContainerPortableAdvancedWorkbench.class);
-        provider.setTweakRotate(true, true, 0, 0);
-        provider.setTweakBalance(true, true, 0, 0);
-        provider.setTweakClear(true, true, 0, 0);
-        provider.setAlignToGrid(EnumFacing.WEST);
-    }
-
-    @Optional.Method(modid = "bogosorter")
-    public static void loadBogoSortCompat() {
-        BogoSortAPI.INSTANCE.addGenericCompat(ContainerPortableChest.class);
-        BogoSortAPI.INSTANCE.addGenericCompat(ContainerPortableAvaritiaddonsChest.class);
+        LanguageLoader.registry();
     }
 
     public static void registryOreDictionary() {
@@ -131,7 +65,7 @@ public class MaterialLoader {
         GTOreDictUnificator
             .registerOre("blockGlass" + GTValues.VN[13], GTNLItemList.ShirabonReinforcedBoronSilicateGlass.get(1));
 
-        if (MainConfig.item.player_doll.enableRegisterMAXTierGlass) {
+        if (ItemConfig.player_doll.enableRegisterMAXTierGlass) {
             GlassTier.addCustomGlass(BlockLoader.playerDoll, 1, 14, 1);
             GlassTier.addCustomGlass(BlockLoader.playerDoll, 2, 14, 1);
             GlassTier.addCustomGlass(BlockLoader.playerDoll, 3, 14, 1);

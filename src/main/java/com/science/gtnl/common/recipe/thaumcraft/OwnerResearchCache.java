@@ -1,6 +1,6 @@
 package com.science.gtnl.common.recipe.thaumcraft;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -33,7 +33,7 @@ public class OwnerResearchCache {
         if (!owner.isEmpty() && !owner.equals(ownerName)) completedResearch.clear();
         owner = ownerName;
 
-        ArrayList<String> research = ResearchManager.getResearchForPlayer(ownerName);
+        List<String> research = ResearchManager.getResearchForPlayer(ownerName);
         if (research == null || research.isEmpty() || research.size() == completedResearch.size()) return;
 
         completedResearch.clear();

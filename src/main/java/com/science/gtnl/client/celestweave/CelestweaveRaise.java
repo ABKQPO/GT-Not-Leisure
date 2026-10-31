@@ -17,8 +17,6 @@ public class CelestweaveRaise {
     private static final float INSET = 0.0005F;
     private static final int LIT = 16;
 
-    private CelestweaveRaise() {}
-
     static List<float[]> raise(List<Face> faces, int[] argb, int width, int height, float lift) {
         List<float[]> quads = new ObjectArrayList<>();
         for (Face face : faces) if (face.vertices != null && face.vertices.length == 4

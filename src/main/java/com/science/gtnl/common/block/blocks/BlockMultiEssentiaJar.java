@@ -16,13 +16,9 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 import com.cleanroommc.modularui.factory.GuiFactories;
-import com.science.gtnl.client.GTNLCreativeTabs;
-import com.science.gtnl.common.block.blocks.item.ItemBlockMultiEssentiaJar;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
 import com.science.gtnl.utils.AspectTooltipUtils;
-import com.science.gtnl.utils.enums.GTNLItemList;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.common.blocks.BlockJar;
@@ -35,13 +31,8 @@ public class BlockMultiEssentiaJar extends BlockJar {
 
     public BlockMultiEssentiaJar() {
         super();
-        setBlockName("gtnl.multi_essentia_jar");
         setHardness(0.3F);
         setResistance(1.0F);
-        setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
-        GameRegistry.registerBlock(this, ItemBlockMultiEssentiaJar.class, "multi_essentia_jar");
-        GameRegistry.registerTileEntity(TileEntityMultiEssentiaJar.class, "multi_essentia_jar_tile_entity");
-        GTNLItemList.MultiEssentiaJar.set(new ItemStack(this));
     }
 
     @Override

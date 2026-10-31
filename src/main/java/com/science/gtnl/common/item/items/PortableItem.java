@@ -8,7 +8,6 @@ import java.util.UUID;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
@@ -19,17 +18,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
 import org.jetbrains.annotations.NotNull;
 
 import com.cleanroommc.modularui.utils.item.InvWrapper;
-import com.science.gtnl.CommonProxy;
-import com.science.gtnl.client.GTNLCreativeTabs;
-import com.science.gtnl.utils.InventoryInfinityChest;
+import com.science.gtnl.common.gui.GTNLGuiHandler;
+import com.science.gtnl.common.item.GTNLCreativeTabs;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.GuiType;
 
@@ -40,7 +36,6 @@ import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.tile.misc.TileInterface;
 import appeng.util.item.AEItemStack;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.common.tileentities.machines.IDualInputHatchWithPattern;
@@ -158,7 +153,7 @@ public class PortableItem extends Item {
         if (!world.isRemote && !player.isSneaking()) {
             PortableType type = getPortableType(stack);
             if (type != null && type.getGuiID() >= 0) {
-                CommonProxy.openGui(player, type.getGuiType(), null, world, 0, 0, 0);
+                GTNLGuiHandler.openGui(player, type.getGuiType(), null, world, 0, 0, 0);
             }
         }
         return stack;
@@ -168,6 +163,7 @@ public class PortableItem extends Item {
     public void onUpdate(ItemStack stack, World world, Entity player, int slot, boolean isSelected) {
         if (world.isRemote) return;
         if (stack.getItemDamage() != PortableType.FURNACE.getMeta()) return;
+        if (isIdleFurnace(stack.getTagCompound())) return;
 
         IInventory inv = getFurnaceInventory(stack);
 
@@ -241,6 +237,32 @@ public class PortableItem extends Item {
         saveFurnaceInventory.save(stack, inv);
     }
 
+    public static boolean isIdleFurnace(NBTTagCompound tag) {
+        if (tag == null || !tag.hasKey("Items", 9)
+            || !tag.hasKey("BurnTime", 3)
+            || !tag.hasKey("CookTime", 3)
+            || !tag.hasKey("CurrentItemBurnTime", 3)) return false;
+        if (tag.getInteger("BurnTime") != 0 || tag.getInteger("CookTime") != 0
+            || tag.getInteger("CurrentItemBurnTime") != 0) return false;
+        NBTTagList items = tag.getTagList("Items", 10);
+        int lastSlot = 0;
+        for (int i = 0; i < items.tagCount(); i++) {
+            NBTTagCompound item = items.getCompoundTagAt(i);
+            int slot = item.getByte("Slot") & 255;
+            // Slot 0 is the input; anything the save would reorder, drop or rewrite takes the full path.
+            if (slot <= lastSlot || slot > 2 || ItemStack.loadItemStackFromNBT(item) == null) return false;
+            lastSlot = slot;
+        }
+        return true;
+    }
+
+    public static boolean isFireproof(ItemStack stack) {
+        if (stack == null || !(stack.getItem() instanceof PortableItem)) return false;
+        int meta = stack.getItemDamage();
+        return meta == PortableType.OBSIDIAN.getMeta() || meta == PortableType.NETHERITE.getMeta()
+            || meta == PortableType.DARKSTEEL.getMeta();
+    }
+
     public static PortableType getPortableType(@NotNull ItemStack stack) {
         return PortableType.byMeta(stack.getItemDamage());
     }
@@ -274,25 +296,11 @@ public class PortableItem extends Item {
         }
     }
 
-    @SubscribeEvent
-    public void onItemEntityDamage(LivingHurtEvent event) {
-        if (!(event.entity instanceof EntityItem entityItem)) return;
-        ItemStack stack = entityItem.getEntityItem();
-        if (stack == null) return;
-
-        if (!(stack.getItem() instanceof PortableItem)) return;
-
+    public static boolean isExplosionProof(ItemStack stack) {
+        if (stack == null || !(stack.getItem() instanceof PortableItem)) return false;
         int meta = stack.getItemDamage();
-
-        boolean isProtected = meta == PortableType.OBSIDIAN.getMeta() || meta == PortableType.NETHERITE.getMeta()
+        return meta == PortableType.OBSIDIAN.getMeta() || meta == PortableType.NETHERITE.getMeta()
             || meta == PortableType.DARKSTEEL.getMeta();
-
-        if (!isProtected) return;
-
-        DamageSource source = event.source;
-        if (source.isFireDamage() || source.isExplosion()) {
-            event.setCanceled(true);
-        }
     }
 
     @FunctionalInterface

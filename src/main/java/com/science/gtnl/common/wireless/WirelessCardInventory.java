@@ -13,7 +13,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import com.gtnewhorizon.gtnhlib.compat.BaublesCompat;
 import com.science.gtnl.common.item.items.WirelessFrequencyCard;
 import com.science.gtnl.common.wireless.WirelessCardSelection.Candidate;
-import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
 
 import baubles.common.container.InventoryBaubles;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -22,7 +21,7 @@ public class WirelessCardInventory {
 
     public record CardSlot(IInventory inventory, int index) {}
 
-    static final class TrackedCard {
+    public static class TrackedCard {
 
         private ItemStack card;
         private final UUID identity;
@@ -96,16 +95,16 @@ public class WirelessCardInventory {
         return collect(player.inventory.mainInventory, BaublesCompat.getBaubles(player));
     }
 
-    static boolean hasBoundCard(EntityPlayer player, Address source) {
+    static boolean hasBoundCard(EntityPlayer player, WirelessFrequency source) {
         return hasBoundCard(player.getUniqueID(), source, carried(player));
     }
 
-    static boolean hasBoundCard(UUID owner, Address source, Iterable<ItemStack> cards) {
+    static boolean hasBoundCard(UUID owner, WirelessFrequency source, Iterable<ItemStack> cards) {
         for (ItemStack card : cards) {
             if (card == null || card.stackSize <= 0 || !(card.getItem() instanceof WirelessFrequencyCard)) continue;
             WirelessCardBinding binding = WirelessCardBinding.read(card.getTagCompound());
-            if (binding != null && binding.belongsTo(owner)
-                && WirelessChannelManager.sameSource(binding.source(), source)) return true;
+            if (binding != null && binding.belongsTo(owner) && WirelessFrequencies.same(binding.frequency(), source))
+                return true;
         }
         return false;
     }

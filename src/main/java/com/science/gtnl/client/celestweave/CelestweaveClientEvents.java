@@ -10,8 +10,9 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.common.MinecraftForge;
 
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.gtnllib.client.fx.world.FxArcRenderer;
 import com.gtnllib.client.fx.world.FxShockwaveRenderer;
 import com.gtnllib.client.fx.world.FxVisibility;
@@ -23,9 +24,9 @@ import com.science.gtnl.common.celestweave.CelestweaveModule;
 import com.science.gtnl.common.celestweave.CelestweaveReach;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.common.packet.CelestweaveFxPacket;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.compat.tinkersconstruct.CelestweaveBackpackTabs;
+import com.science.gtnl.config.ClientConfig;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -38,12 +39,12 @@ import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
+@EventBusSubscriber(side = Side.CLIENT, phase = Phase.PRE)
 public class CelestweaveClientEvents {
 
     private static final Random RNG = new Random();
-    private static final CelestweaveClientEvents INSTANCE = new CelestweaveClientEvents();
     private static final List<Scheduled> SCHEDULED = new ObjectArrayList<>();
-    private static final IntSet REMOTE_FLYING = new IntOpenHashSet();
+    private static final IntSet REMOTE_FLYING = new IntOpenHashSet(), CONCEALED = new IntOpenHashSet();
     private static final double HIT_AIM_HEIGHT = 0.72, HIT_AIM_MIN_OFFSET = 0.3, HIT_AIM_MIN_RATIO = 0.35;
     private static final int LOOK_REFRESH_TICKS = 20, WING_SOUND_MIN_AGE = 10, PRUNE_INTERVAL_TICKS = 100,
         MAX_SCHEDULED = 256, DASH_JET_TICKS = 8;
@@ -73,20 +74,11 @@ public class CelestweaveClientEvents {
         }
     }
 
-    private CelestweaveClientEvents() {}
-
     public static void register() {
-        FMLCommonHandler.instance()
-            .bus()
-            .register(INSTANCE);
-        MinecraftForge.EVENT_BUS.register(INSTANCE);
-        MinecraftForge.EVENT_BUS.register(new CelestweaveShieldFlash());
-        MinecraftForge.EVENT_BUS.register(new CelestweaveScreenGlow());
-        MinecraftForge.EVENT_BUS.register(new CelestweaveHud());
         CelestweaveHudElement.register();
         CelestweaveObjModel.register();
         CelestweaveClientInput.register();
-        CelestweaveBackpackClient.registerTabs();
+        CelestweaveBackpackTabs.register();
         CelestweaveThemeAccent.register();
     }
 
@@ -106,35 +98,36 @@ public class CelestweaveClientEvents {
     }
 
     static boolean fxAllowed(Entity entity, double distance) {
-        return MainConfig.client.celestweaveFxLevel > 0 && FxVisibility.allowed(
+        return ClientConfig.celestweaveFxLevel > 0 && FxVisibility.allowed(
             FxVisibility.isViewer(entity),
             distance,
-            MainConfig.client.enableCelestweaveShowOthersFx,
-            MainConfig.client.celestweaveFxDistance);
+            ClientConfig.enableCelestweaveShowOthersFx,
+            ClientConfig.celestweaveFxDistance);
     }
 
     @SubscribeEvent
-    public void renderPlayerPre(RenderPlayerEvent.Pre event) {
+    public static void renderPlayerPre(RenderPlayerEvent.Pre event) {
         CelestweaveSkinLayers.hide(event.renderer.modelBipedMain, event.entityPlayer);
     }
 
     @SubscribeEvent
-    public void renderPlayerPost(RenderPlayerEvent.Post event) {
+    public static void renderPlayerPost(RenderPlayerEvent.Post event) {
         CelestweaveSkinLayers.restore();
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void renderSpecials(RenderPlayerEvent.Specials.Pre event) {
-        if (CelestweaveData.piece(event.entityPlayer, CelestweaveArmor.CHEST) != null) event.renderCape = false;
+    public static void renderSpecials(RenderPlayerEvent.Specials.Pre event) {
+        if (CelestweaveData.piece(event.entityPlayer, CelestweaveArmor.CHEST) != null && !concealed(event.entityPlayer))
+            event.renderCape = false;
     }
 
     @SubscribeEvent
-    public void renderTick(TickEvent.RenderTickEvent event) {
+    public static void renderTick(TickEvent.RenderTickEvent event) {
         if (event.phase == TickEvent.Phase.START) frame++;
     }
 
     @SubscribeEvent
-    public void clientTick(TickEvent.ClientTickEvent event) {
+    public static void clientTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
         Minecraft minecraft = Minecraft.getMinecraft();
         World world = minecraft.theWorld;
@@ -146,14 +139,17 @@ public class CelestweaveClientEvents {
             CelestweaveThemeAccent.clear();
             SCHEDULED.clear();
             REMOTE_FLYING.clear();
-            if (world == null) CelestweaveReach.clearClient();
+            if (world == null) {
+                CelestweaveReach.clearClient();
+                CONCEALED.clear();
+            }
             lastWorld = world;
         }
         if (world == null || minecraft.isGamePaused()) return;
         ticks++;
         runScheduled();
         long now = Minecraft.getSystemTime();
-        int level = MainConfig.client.celestweaveFxLevel;
+        int level = ClientConfig.celestweaveFxLevel;
         int total = 0;
         for (Object object : world.playerEntities) {
             if (!(object instanceof EntityPlayer player)) continue;
@@ -163,16 +159,19 @@ public class CelestweaveClientEvents {
             CelestweaveLook look = look(player, state);
             boolean flying = player == minecraft.thePlayer ? look.flightActive && player.capabilities.isFlying
                 : look.flightInstalled && REMOTE_FLYING.contains(player.getEntityId());
-            if (CelestweaveAnimator.wingToggle(state, flying, now) && look.visible(CelestweaveModule.FLIGHT)
+            boolean concealed = concealed(player);
+            if (CelestweaveAnimator.wingToggle(state, flying, now) && !concealed
+                && look.visible(CelestweaveModule.FLIGHT)
                 && player.ticksExisted > WING_SOUND_MIN_AGE) CelestweaveSounds.wings(player, flying);
             boolean self = player == minecraft.thePlayer;
-            boolean process = FxVisibility.allowed(
-                self,
-                FxVisibility.distanceToViewer(player),
-                MainConfig.client.enableCelestweaveShowOthersFx,
-                MainConfig.client.celestweaveFxDistance)
+            boolean process = !concealed
+                && FxVisibility.allowed(
+                    self,
+                    FxVisibility.distanceToViewer(player),
+                    ClientConfig.enableCelestweaveShowOthersFx,
+                    ClientConfig.celestweaveFxDistance)
                 && (!self || minecraft.gameSettings.thirdPersonView != 0
-                    || MainConfig.client.enableCelestweaveFirstPersonFx);
+                    || ClientConfig.enableCelestweaveFirstPersonFx);
             CelestweaveArcs.tick(player, state, look, now, process ? level : 0);
             total += state.arcs.size();
         }
@@ -181,8 +180,8 @@ public class CelestweaveClientEvents {
     }
 
     private static void prune(World world) {
-        for (IntIterator ids = REMOTE_FLYING.iterator(); ids.hasNext();)
-            if (world.getEntityByID(ids.nextInt()) == null) ids.remove();
+        pruneIds(REMOTE_FLYING, world);
+        pruneIds(CONCEALED, world);
         Iterator<Int2ObjectMap.Entry<CelestweaveClientState>> iterator = CelestweaveClientState.STATES
             .int2ObjectEntrySet()
             .iterator();
@@ -193,6 +192,11 @@ public class CelestweaveClientEvents {
                 || !(entity instanceof EntityLivingBase living)
                 || !CelestweaveData.wearsAny(living) && entry.getValue().arcs.isEmpty()) iterator.remove();
         }
+    }
+
+    private static void pruneIds(IntSet set, World world) {
+        for (IntIterator ids = set.iterator(); ids.hasNext();)
+            if (world.getEntityByID(ids.nextInt()) == null) ids.remove();
     }
 
     private static void runScheduled() {
@@ -288,6 +292,15 @@ public class CelestweaveClientEvents {
     public static void setRemoteFlying(int entityId, boolean flying) {
         if (flying) REMOTE_FLYING.add(entityId);
         else REMOTE_FLYING.remove(entityId);
+    }
+
+    public static void setConcealed(int entityId, boolean concealed) {
+        if (concealed) CONCEALED.add(entityId);
+        else CONCEALED.remove(entityId);
+    }
+
+    public static boolean concealed(Entity entity) {
+        return CONCEALED.contains(entity.getEntityId());
     }
 
     public static void onFx(int entityId, CelestweaveFxPacket.Type type, float x, float y, float z) {

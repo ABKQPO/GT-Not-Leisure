@@ -1,6 +1,6 @@
 package com.science.gtnl.common.railgun;
 
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ItemConfig;
 
 public enum RailgunChargeTier {
 
@@ -38,7 +38,7 @@ public enum RailgunChargeTier {
     }
 
     public double baseDamage() {
-        var config = MainConfig.item.railgun;
+        var config = ItemConfig.railgun;
         return switch (this) {
             case EHV1 -> config.baseDamageEhv1;
             case EHV2 -> config.baseDamageEhv2;
@@ -48,7 +48,7 @@ public enum RailgunChargeTier {
     }
 
     public double shotEu() {
-        var config = MainConfig.item.railgun;
+        var config = ItemConfig.railgun;
         return switch (this) {
             case EHV1 -> config.shotEuEhv1;
             case EHV2 -> config.shotEuEhv2;

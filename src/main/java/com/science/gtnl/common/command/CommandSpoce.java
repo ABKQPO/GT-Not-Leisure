@@ -8,8 +8,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 
+import com.science.gtnl.common.render.SpoceEffect;
 import com.science.gtnl.utils.ColorUtils;
-import com.science.gtnl.utils.render.SpoceEffect;
 
 public class CommandSpoce extends CommandBase {
 

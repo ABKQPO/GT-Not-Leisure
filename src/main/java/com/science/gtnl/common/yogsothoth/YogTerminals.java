@@ -15,7 +15,7 @@ import baubles.common.lib.PlayerHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
-public final class YogTerminals {
+public class YogTerminals {
 
     private static BiFunction<UUID, Integer, List<ItemStack>> clientStored;
     private static Function<EntityPlayer, ItemStack> clientOpened;

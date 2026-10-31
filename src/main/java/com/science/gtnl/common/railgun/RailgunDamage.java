@@ -16,7 +16,7 @@ import net.minecraftforge.event.entity.player.AttackEntityEvent;
 
 import com.gtnllib.utils.MathUtils;
 import com.gtnllib.utils.Vec3d;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ItemConfig;
 import com.science.gtnl.loader.EffectLoader;
 
 public class RailgunDamage {
@@ -38,8 +38,6 @@ public class RailgunDamage {
 
     static boolean striking;
 
-    private RailgunDamage() {}
-
     private static boolean storm(World world, EntityPlayer player) {
         return world.isThundering() && world.canBlockSeeTheSky(
             MathHelper.floor_double(player.posX),
@@ -58,7 +56,7 @@ public class RailgunDamage {
         int chains = compute > 0 ? CHAIN_BASE + (compute - 1) * 2 + (storm ? STORM_CHAIN_BONUS : 0) : 0;
         return new DamageContext(
             base * (storm ? STORM_DAMAGE_MUL : 1),
-            MainConfig.item.railgun.beamBypass,
+            ItemConfig.railgun.beamBypass,
             CHAIN_DECAY,
             Math.min(CHAIN_HARD_CAP, chains),
             compute > 0 ? 1 : 0,
@@ -76,7 +74,7 @@ public class RailgunDamage {
         int forks = (compute > 0 ? tier.chainForks + compute - 1 : 0) + (storm ? 1 : 0);
         return new DamageContext(
             tier.baseDamage() * (storm ? STORM_DAMAGE_MUL : 1),
-            MainConfig.item.railgun.chargedBypass,
+            ItemConfig.railgun.chargedBypass,
             CHAIN_DECAY,
             Math.min(CHAIN_HARD_CAP, chains),
             Math.min(CHAIN_FORK_HARD_CAP, forks),
@@ -119,7 +117,7 @@ public class RailgunDamage {
             Entity anchor = RailgunTargetRules.damageAnchor(target, reference);
             boolean applied = anchor.attackEntityFrom(source(player), (float) Math.min(damage, Float.MAX_VALUE));
             if (applied && target.isEntityAlive()
-                && (!(target instanceof EntityPlayer) || MainConfig.item.railgun.enablePlayerParalysis))
+                && (!(target instanceof EntityPlayer) || ItemConfig.railgun.enablePlayerParalysis))
                 target.addPotionEffect(
                     new PotionEffect(EffectLoader.electromagneticParalysis.id, PARALYSIS_DURATION_TICKS, 0));
         }

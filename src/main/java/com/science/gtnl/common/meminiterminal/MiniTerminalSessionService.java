@@ -19,15 +19,14 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 
-import com.cleanroommc.bogosorter.api.IBogoSortAPI;
-import com.cleanroommc.bogosorter.api.ISlotGroup;
-import com.cleanroommc.bogosorter.common.sort.GuiSortingContext;
-import com.cleanroommc.bogosorter.mixins.early.minecraft.SlotAccessor;
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnllib.utils.CreativeCursor;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.item.items.ItemMEMiniPortableTerminal;
-import com.science.gtnl.common.meminiterminal.MiniTerminalRequestPacket.DepositMode;
-import com.science.gtnl.utils.CreativeCursor;
-import com.science.gtnl.utils.enums.ModList;
+import com.science.gtnl.common.packet.MiniTerminalRequestPacket;
+import com.science.gtnl.common.packet.MiniTerminalRequestPacket.DepositMode;
+import com.science.gtnl.common.packet.MiniTerminalUpdatePacket;
+import com.science.gtnl.compat.bogosorter.BogoSorterSlots;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -73,9 +72,10 @@ import it.unimi.dsi.fastutil.objects.Reference2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Reference2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
-public final class MiniTerminalSessionService {
+@EventBusSubscriber
+public class MiniTerminalSessionService {
 
-    enum MiniTerminalStatus {
+    public enum MiniTerminalStatus {
         ONLINE,
         UNBOUND,
         OFFLINE,
@@ -89,15 +89,12 @@ public final class MiniTerminalSessionService {
         STALE
     }
 
-    public static final MiniTerminalSessionService INSTANCE = new MiniTerminalSessionService();
     private static final Map<UUID, Session> SESSIONS = new Object2ObjectOpenHashMap<>();
     private static final Map<UUID, UUID> SELECTED = new Object2ObjectOpenHashMap<>();
     private static final Map<UUID, RequestBudget> BUDGETS = new Object2ObjectOpenHashMap<>();
     private static final Map<UUID, ParkedCatalog> PARKED = new Object2ObjectOpenHashMap<>();
     private static final int PARK_TICKS = 1200;
     private static long nextSession;
-
-    private MiniTerminalSessionService() {}
 
     public static void end(EntityPlayerMP player) {
         end(player, true);
@@ -138,7 +135,7 @@ public final class MiniTerminalSessionService {
         return null;
     }
 
-    static void handle(EntityPlayerMP player, MiniTerminalRequestPacket request) {
+    public static void handle(EntityPlayerMP player, MiniTerminalRequestPacket request) {
         Session session = SESSIONS.get(player.getUniqueID());
         if (request.kind == MiniTerminalRequestPacket.Kind.END) {
             if (session != null && session.id == request.sessionId) end(player);
@@ -287,30 +284,6 @@ public final class MiniTerminalSessionService {
             : MiniTerminalStatus.NO_PERMISSION;
     }
 
-    private static final class BogoInventory {
-
-        static List<Slot> sources(EntityPlayerMP player, Container container, Slot source) {
-            ISlotGroup group = GuiSortingContext.getOrCreate(container)
-                .getSlotGroup(source.slotNumber);
-            if (group == null) return List.of();
-            List<Slot> slots = new ObjectArrayList<>();
-            for (SlotAccessor entry : group.getSlots()) {
-                int index = entry.getSlotNumber();
-                if (index < 0 || index >= container.inventorySlots.size()) continue;
-                Slot slot = container.getSlot(index);
-
-                if (slot != source && pinned(player, container, slot)) continue;
-                slots.add(slot);
-            }
-            return slots;
-        }
-
-        static boolean pinned(EntityPlayerMP player, Container container, Slot slot) {
-            return IBogoSortAPI.getInstance()
-                .isPinned(player, container, slot);
-        }
-    }
-
     private static void togglePickup(EntityPlayerMP player, MiniTerminalRequestPacket request, Session session) {
         ItemStack stack = requestedTerminal(player, request, session);
         if (stack == null) return;
@@ -457,7 +430,7 @@ public final class MiniTerminalSessionService {
     }
 
     @SubscribeEvent
-    public void tick(TickEvent.PlayerTickEvent event) {
+    public static void tick(TickEvent.PlayerTickEvent event) {
         if (event.phase != TickEvent.Phase.END || !(event.player instanceof EntityPlayerMP player)) return;
         MiniTerminalOutbound.flush(player);
         ParkedCatalog parked = PARKED.get(player.getUniqueID());
@@ -494,7 +467,7 @@ public final class MiniTerminalSessionService {
     }
 
     @SubscribeEvent
-    public void logout(PlayerEvent.PlayerLoggedOutEvent event) {
+    public static void logout(PlayerEvent.PlayerLoggedOutEvent event) {
         if (event.player instanceof EntityPlayerMP player) end(player, false);
         discardParked(event.player.getUniqueID());
         SELECTED.remove(event.player.getUniqueID());
@@ -504,7 +477,7 @@ public final class MiniTerminalSessionService {
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onPickup(EntityItemPickupEvent event) {
+    public static void onPickup(EntityItemPickupEvent event) {
         MiniTerminalTransferService.pickup(event);
     }
 
@@ -562,7 +535,7 @@ public final class MiniTerminalSessionService {
         send(player, failed);
     }
 
-    private static final class RequestBudget {
+    private static class RequestBudget {
 
         private int tick;
         private int count;
@@ -602,7 +575,7 @@ public final class MiniTerminalSessionService {
         }
     }
 
-    private static final class Session {
+    private static class Session {
 
         final EntityPlayerMP player;
         final long id;
@@ -839,9 +812,7 @@ public final class MiniTerminalSessionService {
 
             List<Slot> sources = switch (request.depositMode) {
                 case STACK, ONE -> List.of(source);
-                case MATCHING, REGION -> ModList.InventoryBogoSorter.isModLoaded()
-                    ? BogoInventory.sources(player, container, source)
-                    : List.of();
+                case MATCHING, REGION -> BogoSorterSlots.slotGroup(player, container, source);
                 case NATIVE_REGION -> nativeRegionSources(source);
             };
             ItemStack selected = offered == null ? null : offered.copy();
@@ -875,8 +846,7 @@ public final class MiniTerminalSessionService {
             for (Object entry : container.inventorySlots) {
                 Slot candidate = (Slot) entry;
                 if (candidate.getClass() != source.getClass()) continue;
-                if (ModList.InventoryBogoSorter.isModLoaded() && BogoInventory.pinned(player, container, candidate))
-                    continue;
+                if (BogoSorterSlots.isPinned(player, container, candidate)) continue;
                 slots.add(candidate);
             }
             return slots;
@@ -902,8 +872,7 @@ public final class MiniTerminalSessionService {
                 Slot destination = hostSlot == null ? playerSlot : hostSlot;
                 if (!destination.isItemValid(target.getItemStack())) continue;
                 Container destinationContainer = hostSlot == null ? player.inventoryContainer : container;
-                if (ModList.InventoryBogoSorter.isModLoaded()
-                    && BogoInventory.pinned(player, destinationContainer, destination)) continue;
+                if (BogoSorterSlots.isPinned(player, destinationContainer, destination)) continue;
                 destinations.add(inventorySlot);
             }
             MiniTerminalTransferService.extractInventory(

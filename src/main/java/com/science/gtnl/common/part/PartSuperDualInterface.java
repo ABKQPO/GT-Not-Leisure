@@ -21,9 +21,9 @@ import org.jetbrains.annotations.NotNull;
 import com.glodblock.github.inventory.AEFluidInventory;
 import com.glodblock.github.inventory.IAEFluidTank;
 import com.glodblock.github.util.DualityFluidInterface;
-import com.science.gtnl.CommonProxy;
 import com.science.gtnl.api.ICustomGui;
 import com.science.gtnl.api.mixinHelper.IDualityInterface;
+import com.science.gtnl.common.gui.GTNLGuiHandler;
 import com.science.gtnl.common.me.dual.DualInterfaceHostSupport;
 import com.science.gtnl.common.me.dual.IDualInterfaceHost;
 import com.science.gtnl.common.me.dual.SuperDualInterfaceSlots;
@@ -104,7 +104,7 @@ public class PartSuperDualInterface extends PartInterface implements ICustomGui,
         if (player.isSneaking()) {
             return false;
         }
-        CommonProxy.openGui(player, GuiType.SuperDualInterfaceGUI, getSide(), getHost().getTile());
+        GTNLGuiHandler.openGui(player, GuiType.SuperDualInterfaceGUI, getSide(), getHost().getTile());
         return true;
     }
 
