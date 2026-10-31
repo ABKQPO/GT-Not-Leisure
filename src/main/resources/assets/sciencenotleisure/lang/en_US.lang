@@ -2823,7 +2823,6 @@ gtnl.potion.battle=Battle
 
 gtnl.block.seared_ladder.name=Seared Ladder
 gtnl.block.seared_ladder.tooltip.0=§o"Climbable smeltery building material."
-gtnl.block.seared_ladder.tooltip.1=Added by Circulation_
 
 gtnl.block.dire_pattern_encoder.name=Dire Pattern Encoder
 container.DirePatternEncoder=Dire Pattern Encoder

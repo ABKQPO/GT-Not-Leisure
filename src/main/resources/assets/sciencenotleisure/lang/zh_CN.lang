@@ -2823,7 +2823,6 @@ gtnl.potion.battle=战斗
 
 gtnl.block.seared_ladder.name=焦黑梯子
 gtnl.block.seared_ladder.tooltip.0=§o“可供攀爬的冶炼炉建材。”
-gtnl.block.seared_ladder.tooltip.1=由Circulation_添加
 
 gtnl.block.dire_pattern_encoder.name=终极样板编码台
 container.DirePatternEncoder=终极样板编码台
