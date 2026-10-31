@@ -48,6 +48,7 @@ minecraft {
         if (clientSmoke) "-Xms1G" else "-Xms8G",
         "-Dgtnhlib.dumpkeys=true"
     )
+    if (clientSmoke) extraRunJvmArguments.add("-Dgtnhlib.debug.eventbus=true")
 }
 
 tasks.withType<JavaCompile>().configureEach {

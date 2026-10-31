@@ -85,6 +85,7 @@ jobs:
           path: |
             build/client-check.log
             build/client-atlases.txt
+            build/client-threads.txt
             run/client_new/crash-reports/
 
   server:

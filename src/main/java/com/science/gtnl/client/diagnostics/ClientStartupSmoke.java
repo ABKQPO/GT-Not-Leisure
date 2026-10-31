@@ -30,12 +30,18 @@ public final class ClientStartupSmoke {
 
     private static Path report;
     private static int menuTicks;
+    private static int totalTicks;
+    private static String lastScreen;
 
     @EventBusSubscriber.Condition
     public static boolean requested() {
         String path = System.getenv("GTNL_CLIENT_SMOKE");
         if (path == null || path.isEmpty()) return false;
         report = Path.of(path);
+        ScienceNotLeisure.LOG.info(
+            "GTNL_CLIENT_SMOKE_ENABLED: max heap {}",
+            Runtime.getRuntime()
+                .maxMemory());
         return true;
     }
 
@@ -43,6 +49,18 @@ public final class ClientStartupSmoke {
     public static void tick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
         Minecraft client = Minecraft.getMinecraft();
+        String screen = client.currentScreen == null ? "<none>"
+            : client.currentScreen.getClass()
+                .getName();
+        if (!screen.equals(lastScreen)) {
+            ScienceNotLeisure.LOG.info("GTNL_CLIENT_SMOKE_SCREEN: {}", screen);
+            lastScreen = screen;
+        }
+        if (++totalTicks == 1200) {
+            ScienceNotLeisure.LOG.error("GTNL_CLIENT_SMOKE_FAILED: main menu not reached, current screen {}", screen);
+            client.shutdown();
+            return;
+        }
         if (!(client.currentScreen instanceof GuiMainMenu)) {
             menuTicks = 0;
             return;
