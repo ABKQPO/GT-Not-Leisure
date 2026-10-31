@@ -17,5 +17,9 @@ public interface RuntimeScenario {
 
     boolean tick(RuntimeFixture fixture, int ticks) throws Exception;
 
+    default String evidence() {
+        return "";
+    }
+
     default void close(RuntimeFixture fixture) throws Exception {}
 }

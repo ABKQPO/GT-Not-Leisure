@@ -39,11 +39,12 @@ public final class RuntimeTestMod {
     private boolean ready, started;
 
     @Mod.EventHandler
-    public void init(FMLInitializationEvent event) {
+    public void init(FMLInitializationEvent event) throws Exception {
         if (!"1".equals(System.getenv("GTNL_RUNTIME_TESTS")))
             throw new IllegalStateException("Runtime test mod is only for an explicitly owned test run");
         destination = Path.of(System.getenv("GTNL_TEST_REPORT"));
         report = new RuntimeReport();
+        RuntimeEvidence.write(destination, report.runId, report.phase);
         proxy.initialize(destination);
         FMLCommonHandler.instance()
             .bus()
@@ -108,6 +109,7 @@ public final class RuntimeTestMod {
                 finish(scenario, result);
             } else if (scenario.tick(fixture, ticks)) {
                 result.status = RuntimeReport.Status.PASS;
+                result.detail = scenario.evidence();
                 finish(scenario, result);
             }
         } catch (Exception | AssertionError | LinkageError error) {

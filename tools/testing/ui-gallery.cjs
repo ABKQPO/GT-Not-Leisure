@@ -10,8 +10,10 @@ function writeGallery(directory, report) {
             const file = path.resolve(directory,result.screenshot);
             if (!file.startsWith(path.resolve(directory)+path.sep) || fs.realpathSync(file)!==file) throw Error('Screenshot path escapes the run');
             const bytes = fs.readFileSync(file);
-            if (bytes.subarray(0,8).toString('hex') !== '89504e470d0a1a0a') throw Error('Screenshot is not PNG: '+result.id);
-            manifest.push({id:result.id,path:result.screenshot,bytes:bytes.length,sha256:crypto.createHash('sha256').update(bytes).digest('hex')});
+            if (bytes.length<33 || bytes.subarray(0,8).toString('hex') !== '89504e470d0a1a0a' || bytes.readUInt32BE(8)!==13 || bytes.toString('ascii',12,16)!=='IHDR') throw Error('Screenshot is not PNG: '+result.id);
+            const width=bytes.readUInt32BE(16), height=bytes.readUInt32BE(20);
+            if(!width || !height)throw Error('Screenshot has no pixels: '+result.id);
+            manifest.push({id:result.id,path:result.screenshot,width,height,bytes:bytes.length,sha256:crypto.createHash('sha256').update(bytes).digest('hex')});
             image='<a href="'+escape(result.screenshot)+'"><img loading="lazy" src="'+escape(result.screenshot)+'" alt="'+escape(result.id)+'"></a>';
         } else if(result.status==='PASS') throw Error('No screenshot for passed GUI: '+result.id);
         return '<article><h2>'+escape(result.id)+'</h2><strong>'+escape(result.status)+'</strong><p>'+escape(result.detail)+'</p>'+image+'</article>';

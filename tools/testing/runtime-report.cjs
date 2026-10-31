@@ -1,5 +1,3 @@
-const fs = require('node:fs');
-
 function expectedCases(enumSource, phase) {
     if (phase === 'restart') return ['world.steam.restart-read'];
     if (!['server','client'].includes(phase)) throw Error('Unknown phase: ' + phase);
@@ -8,7 +6,7 @@ function expectedCases(enumSource, phase) {
         return Array.from({length:count}, (_,variant) => 'machine.' + m[1].toLowerCase() + (variant ? '.variant_'+variant : '') + '.persistence');
     });
     if (!machines.length || new Set(machines).size !== machines.length) throw Error('Invalid machine catalog');
-    return phase === 'client' ? machines.map(id=>id.replace('.persistence','.gui')) : [...machines, 'steam.hatch.simulation-payment-reload', 'world.steam.restart-write'];
+    return phase === 'client' ? machines.map(id=>id.replace('.persistence','.gui')) : [...machines, 'steam.hatch.simulation-payment-reload', 'production.large_steam_furnace.structure-and-smelting', 'world.steam.restart-write'];
 }
 
 function validateReport(report, expected, runId, phase) {
@@ -32,6 +30,17 @@ function validateReport(report, expected, runId, phase) {
 }
 
 function xml(value) { return String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;'); }
+
+function validateEnvironment(environment, runId, phase, previous) {
+    if (environment.schemaVersion!==1 || environment.runId!==runId || environment.phase!==phase) throw Error('Stale runtime environment evidence');
+    for(const name of ['host','library','testMod']) {
+        const code=environment.code?.[name];
+        if(!code || !/^[a-f0-9]{64}$/.test(code.sha256) || !Number.isInteger(code.files) || code.files<1 || !code.location) throw Error('Missing loaded-code identity: '+name);
+        if(previous && previous.code?.[name]?.sha256!==code.sha256) throw Error('Loaded code changed between world save and restart: '+name);
+    }
+    for(const id of ['sciencenotleisure','gtnllib','gtnlruntimetests']) if(!environment.mods?.[id])throw Error('Required mod absent from runtime identity: '+id);
+    return environment;
+}
 function junitReport(report) {
     const cases = report.results || [];
     const failed = cases.filter(r => !['PASS', 'SKIP'].includes(r.status)).length;
@@ -43,4 +52,4 @@ function junitReport(report) {
     }).join('\n') + '\n</testsuite>\n';
 }
 
-module.exports = {expectedCases, validateReport, junitReport};
+module.exports = {expectedCases, validateReport, junitReport, validateEnvironment};

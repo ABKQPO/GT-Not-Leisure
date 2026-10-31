@@ -20,6 +20,7 @@ final class RuntimeCatalog {
         if (!"server".equals(phase)) throw new IllegalArgumentException("Unknown runtime phase: " + phase);
         cases.addAll(machines());
         cases.add(new SteamHatchScenario());
+        cases.add(new SteamFurnaceProductionScenario());
         cases.add(new SteamWorldSaveScenario(false));
         return cases;
     }

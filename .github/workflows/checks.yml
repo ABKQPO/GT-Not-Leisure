@@ -58,6 +58,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: regression-test-reports
+          retention-days: 7
           path: |
             build/test-results/
             build/reports/tests/
@@ -90,6 +91,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: native-runtime-tests
+          retention-days: 7
           path: |
             build/runtime-tests/*/*.json
             build/runtime-tests/*/*.xml
@@ -97,9 +99,9 @@ jobs:
             build/runtime-tests/*/game/crash-reports/
 
   client:
-    name: Client startup and missing-texture baseline
+    name: Client resources and native GUI lifecycle
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 50
     needs: build
     steps:
       - uses: actions/checkout@v4
@@ -124,12 +126,13 @@ jobs:
       - name: Check the real machine GUI lifecycle
         run: |
           mkdir -p build/gui-xdg-data
-          LIBGL_ALWAYS_SOFTWARE=1 XDG_DATA_HOME="$PWD/build/gui-xdg-data" xvfb-run -a -s '-screen 0 1280x720x24 +extension GLX' node tools/testing/run-runtime-tests.cjs --client --case machine.large_steam_furnace.gui
+          LIBGL_ALWAYS_SOFTWARE=1 XDG_DATA_HOME="$PWD/build/gui-xdg-data" xvfb-run -a -s '-screen 0 1280x720x24 +extension GLX' node tools/testing/run-runtime-tests.cjs --client
       - name: Keep GUI reports and actual rendered frames
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: native-gui-tests
+          retention-days: 7
           path: |
             build/runtime-tests/*/*.json
             build/runtime-tests/*/*.xml

@@ -43,7 +43,10 @@ public final class RuntimeFixture implements AutoCloseable {
     }
 
     public IGregTechTileEntity machine(int id, int offset) {
-        int x = X + offset, y = Y, z = Z;
+        return machineAt(id, X + offset, Y, Z);
+    }
+
+    public IGregTechTileEntity machineAt(int id, int x, int y, int z) {
         require(GregTechAPI.METATILEENTITIES[id] != null, "unregistered machine " + id);
         ItemStack stack = GregTechAPI.METATILEENTITIES[id].getStackForm(1);
         require(stack != null && stack.getItem() instanceof ItemBlock, "machine has no placeable item: " + id);
@@ -60,6 +63,13 @@ public final class RuntimeFixture implements AutoCloseable {
             result.getMetaTileID() == id && result.getMetaTileEntity() != null,
             "placed machine has wrong registry ID: " + id);
         return result;
+    }
+
+    public void trackStructure(int centerX, int centerY, int centerZ, int radius) {
+        for (int x = centerX - radius; x <= centerX + radius; x++)
+            for (int y = centerY - radius; y <= centerY + radius; y++)
+                for (int z = centerZ - radius; z <= centerZ + radius; z++)
+                    if (!world.isAirBlock(x, y, z)) positions.add(new int[] { x, y, z });
     }
 
     public IGregTechTileEntity reload(IGregTechTileEntity original) {

@@ -9,6 +9,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Supplier;
 
+import javax.imageio.ImageIO;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiScreen;
@@ -117,7 +119,8 @@ public final class ClientRuntimeTests extends RuntimeProxy {
         if (!enabled || event.phase != TickEvent.Phase.END) return;
         Minecraft client = Minecraft.getMinecraft();
         elapsed++;
-        if (index < report.results.size()) report.results.get(index).ticks++;
+        if (index < report.results.size() && report.results.get(index).status == RuntimeReport.Status.RUNNING)
+            report.results.get(index).ticks++;
         try {
             switch (stage) {
                 case MENU -> {
@@ -128,6 +131,7 @@ public final class ClientRuntimeTests extends RuntimeProxy {
                         client.gameSettings.guiScale = 2;
                         client.gameSettings.pauseOnLostFocus = false;
                         client.gameSettings.renderDistanceChunks = 3;
+                        client.gameSettings.hideGUI = true;
                         stage = Stage.WORLD;
                         elapsed = 0;
                         client.launchIntegratedServer(
@@ -213,14 +217,20 @@ public final class ClientRuntimeTests extends RuntimeProxy {
                         } else pending = submit(() -> player().openContainer == player().inventoryContainer);
                     }
                 }
-                case FINISH -> finish(client);
+                case FINISH -> {
+                    require(elapsed < 300, "server did not clean the final GUI fixture");
+                    if (pending.isDone()) {
+                        pending.join();
+                        finish(client);
+                    }
+                }
             }
         } catch (Exception | AssertionError | LinkageError error) {
             RuntimeReport.Result result = report.results.get(Math.min(index, report.results.size() - 1));
             result.status = RuntimeReport.Status.FAIL;
             result.detail = error.toString();
             LOG.error("GTNL client scenario failed: {}", result.id, error);
-            if (stage == Stage.MENU || stage == Stage.WORLD) finish(client);
+            if (stage == Stage.MENU || stage == Stage.WORLD || stage == Stage.FINISH) finish(client);
             else completeCase(client);
         }
     }
@@ -251,6 +261,10 @@ public final class ClientRuntimeTests extends RuntimeProxy {
             .resolve("screenshots")
             .resolve(filename);
         require(Files.isRegularFile(screenshot) && Files.size(screenshot) > 0, "no rendered screenshot was saved");
+        java.awt.image.BufferedImage frame = ImageIO.read(screenshot.toFile());
+        require(
+            frame != null && frame.getWidth() == client.displayWidth && frame.getHeight() == client.displayHeight,
+            "screenshot must decode into a complete frame at the actual window resolution");
         result.screenshot = "screenshots/" + filename;
         result.screenClass = screen.getClass()
             .getName();
@@ -264,7 +278,12 @@ public final class ClientRuntimeTests extends RuntimeProxy {
 
     private void beginNext() {
         if (index == machines.size()) {
+            pending = submit(() -> {
+                if (fixture != null) fixture.close();
+                return true;
+            });
             stage = Stage.FINISH;
+            elapsed = 0;
             return;
         }
         report.results.get(index).status = RuntimeReport.Status.RUNNING;
@@ -350,19 +369,16 @@ public final class ClientRuntimeTests extends RuntimeProxy {
     private void finish(Minecraft client) {
         enabled = false;
         report.state = report.results.stream()
-            .allMatch(r -> r.status == RuntimeReport.Status.PASS || r.status == RuntimeReport.Status.SKIP)
-            && report.results.stream()
-                .anyMatch(r -> r.status == RuntimeReport.Status.PASS) ? "PASS" : "FAIL";
+            .allMatch(r -> r.status == RuntimeReport.Status.PASS || r.status == RuntimeReport.Status.SKIP) ? "PASS"
+                : "FAIL";
         save();
         LOG.info(
             "GTNL_RUNTIME_COMPLETE run={} phase=client state={} scenarios={}",
             report.runId,
             report.state,
             machines.size());
-        if (client.theWorld != null) {
-            client.theWorld.sendQuittingDisconnectingPacket();
-            client.loadWorld(null);
-        }
+        // Let Minecraft's shutdown path unload the world after the current frame has finished.
+        // Unloading inside ClientTick leaves EntityRenderer with a null player in that same frame.
         client.shutdown();
     }
 

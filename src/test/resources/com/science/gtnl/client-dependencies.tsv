@@ -45,40 +45,40 @@ common/item/items/equipment/EquipmentVariantItem.java	net.minecraft.client.rende
 common/machine/hatch/DebugEnergyHatch.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
 common/machine/hatch/SuperDualInputHatchME.java	net.minecraft.client.gui.FontRenderer	Legacy FontRenderer API dependency; retain until its sided adapter is reviewed.
 common/machine/hatch/SuperDualInputHatchME.java	net.minecraft.client.renderer.texture.TextureManager	Legacy TextureManager API dependency; retain until its sided adapter is reviewed.
-common/packet/CelestweaveConcealPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideContracts requires the override to remain client-only.
-common/packet/CelestweaveFireballPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideContracts requires the override to remain client-only.
-common/packet/CelestweaveFlightPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideContracts requires the override to remain client-only.
-common/packet/CelestweaveFxPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideContracts requires the override to remain client-only.
-common/packet/DraconicArmorProjectionHitEffectPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideContracts requires the override to remain client-only.
-common/packet/DraconicArmorProjectionSyncPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideContracts requires the override to remain client-only.
-common/packet/MEChiselSyncParallel.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideContracts requires the override to remain client-only.
-common/packet/MiniTerminalUpdatePacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideContracts requires the override to remain client-only.
-common/packet/PlaceItemInHotbarPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideContracts requires the override to remain client-only.
-common/packet/PortableInfinityChestSyncPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideContracts requires the override to remain client-only.
-common/packet/ProspectingPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideContracts requires the override to remain client-only.
-common/packet/QuantumCraftConfirmPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideContracts requires the override to remain client-only.
-common/packet/QuantumCraftingAvailabilityPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideContracts requires the override to remain client-only.
-common/packet/RailgunBeamChainFxPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideContracts requires the override to remain client-only.
-common/packet/RailgunBeamUpdatePacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideContracts requires the override to remain client-only.
-common/packet/RailgunChargeCapPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideContracts requires the override to remain client-only.
-common/packet/RailgunFireFxPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideContracts requires the override to remain client-only.
-common/packet/RailgunRecoilFxPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideContracts requires the override to remain client-only.
-common/packet/RecursivePatternResultPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideContracts requires the override to remain client-only.
-common/packet/RestorePreviousGuiPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideContracts requires the override to remain client-only.
+common/packet/CelestweaveConcealPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideTest requires the override to remain client-only.
+common/packet/CelestweaveFireballPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideTest requires the override to remain client-only.
+common/packet/CelestweaveFlightPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideTest requires the override to remain client-only.
+common/packet/CelestweaveFxPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideTest requires the override to remain client-only.
+common/packet/DraconicArmorProjectionHitEffectPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideTest requires the override to remain client-only.
+common/packet/DraconicArmorProjectionSyncPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideTest requires the override to remain client-only.
+common/packet/MEChiselSyncParallel.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideTest requires the override to remain client-only.
+common/packet/MiniTerminalUpdatePacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideTest requires the override to remain client-only.
+common/packet/PlaceItemInHotbarPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideTest requires the override to remain client-only.
+common/packet/PortableInfinityChestSyncPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideTest requires the override to remain client-only.
+common/packet/ProspectingPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideTest requires the override to remain client-only.
+common/packet/QuantumCraftConfirmPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideTest requires the override to remain client-only.
+common/packet/QuantumCraftingAvailabilityPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideTest requires the override to remain client-only.
+common/packet/RailgunBeamChainFxPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideTest requires the override to remain client-only.
+common/packet/RailgunBeamUpdatePacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideTest requires the override to remain client-only.
+common/packet/RailgunChargeCapPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideTest requires the override to remain client-only.
+common/packet/RailgunFireFxPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideTest requires the override to remain client-only.
+common/packet/RailgunRecoilFxPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideTest requires the override to remain client-only.
+common/packet/RecursivePatternResultPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideTest requires the override to remain client-only.
+common/packet/RestorePreviousGuiPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideTest requires the override to remain client-only.
 common/packet/RestorePreviousGuiPacket.java	net.minecraft.client.gui.GuiScreen	Legacy GUI and modifier-key handling; isolate feature-specific UI on the next edit.
-common/packet/SoundPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideContracts requires the override to remain client-only.
-common/packet/StatusMessage.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideContracts requires the override to remain client-only.
-common/packet/SudoPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideContracts requires the override to remain client-only.
-common/packet/SuperDualInterfaceFluidSyncPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideContracts requires the override to remain client-only.
-common/packet/SyncCircuitNanitesPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideContracts requires the override to remain client-only.
-common/packet/SyncHPCAVariablesPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideContracts requires the override to remain client-only.
-common/packet/TickratePacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideContracts requires the override to remain client-only.
-common/packet/TileEntityNBTPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideContracts requires the override to remain client-only.
+common/packet/SoundPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideTest requires the override to remain client-only.
+common/packet/StatusMessage.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideTest requires the override to remain client-only.
+common/packet/SudoPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideTest requires the override to remain client-only.
+common/packet/SuperDualInterfaceFluidSyncPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideTest requires the override to remain client-only.
+common/packet/SyncCircuitNanitesPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideTest requires the override to remain client-only.
+common/packet/SyncHPCAVariablesPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideTest requires the override to remain client-only.
+common/packet/TickratePacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideTest requires the override to remain client-only.
+common/packet/TileEntityNBTPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideTest requires the override to remain client-only.
 common/packet/TileEntityNBTPacket.java	net.minecraft.client.entity.EntityClientPlayerMP	Legacy EntityClientPlayerMP API dependency; retain until its sided adapter is reviewed.
-common/packet/WirelessHighlightPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideContracts requires the override to remain client-only.
-common/packet/WirelessVisualisationPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideContracts requires the override to remain client-only.
-common/packet/YogTerminalStatePacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideContracts requires the override to remain client-only.
-common/packet/YogTerminalSyncPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideContracts requires the override to remain client-only.
+common/packet/WirelessHighlightPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideTest requires the override to remain client-only.
+common/packet/WirelessVisualisationPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideTest requires the override to remain client-only.
+common/packet/YogTerminalStatePacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideTest requires the override to remain client-only.
+common/packet/YogTerminalSyncPacket.java	net.minecraft.client.Minecraft	ClientboundPacket adapter; PacketSideTest requires the override to remain client-only.
 common/part/PartBeamFormer.java	net.minecraft.client.renderer.RenderBlocks	Legacy RenderBlocks API dependency; retain until its sided adapter is reviewed.
 common/part/PartEnergyAcceptor.java	net.minecraft.client.renderer.RenderBlocks	Legacy RenderBlocks API dependency; retain until its sided adapter is reviewed.
 common/part/PartEnergyCellBase.java	net.minecraft.client.renderer.RenderBlocks	Legacy RenderBlocks API dependency; retain until its sided adapter is reviewed.

@@ -49,6 +49,10 @@ node tools/testing/run-runtime-tests.cjs --case steam.hatch.simulation-payment-r
 蒸汽舱口场景验证模拟不扣款、正式扣款、水拒收、余额重载和不能重复扣款。
 世界存档场景将大整数蒸汽余额写入真实 `MapStorage`，正常停止服务器，再启动一个新 JVM
 读取同一测试世界。内存中写后读不能替代这项跨进程检查。
+大型蒸汽炉的生产场景按 StructureLib 定义搭建，装入真实输入总线、输出总线和蒸汽舱口，
+验证缺失外壳阻止运行、修复后消耗输入与蒸汽并产出 16 个石头，以及空闲期间不重复结算。
+两次进程在 Forge 初始化时记录实际加载的宿主、基础库、测试模组路径和 SHA-256；重启前后
+代码必须相同。运行记录也保留 Git 提交及工作区是否有未提交改动。
 
 状态含 `NOT_RUN`、`RUNNING`、`PASS`、`FAIL`、`TIMEOUT`、`SKIP`。
 只有全部计划内场景完成且进程正常结束，运行才通过；Minecraft 自行崩溃后 Gradle 返回 0 也不能通过。
@@ -61,9 +65,11 @@ node tools/testing/run-runtime-tests.cjs --client
 node tools/testing/run-runtime-tests.cjs --client --case machine.large_steam_furnace.gui
 ```
 
-CI 使用 Xvfb 和软件 OpenGL。测试模组从主菜单建立专用集成服务器世界，等待真实方块同步，
+CI 使用 Xvfb 和软件 OpenGL，固定 1280×720、GUI 缩放 2，并隐藏世界 HUD 避免欢迎消息遮挡。
+测试模组从主菜单建立专用集成服务器世界，等待真实方块同步，
 经方块激活路径打开服务端容器，核对客户端窗口编号，等待渲染，检查 MUI2 主面板边界，
 保存实际帧截图，再确认服务端收到关闭。截图、哈希清单和 `gallery.html` 与报告一起归档。
+截图必须能完整解码为实际窗口尺寸；游戏正常退出、无崩溃报告也是通过条件。
 这一路径使用原生游戏 API，不使用桌面自动化。
 
 现有主菜单贴图检查、五种服务器启动组合和兼容快照继续保留。
