@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.gtnewhorizon.cropsnh.api.IGrowthRequirement;
 import com.gtnewhorizon.cropsnh.api.IMachineGrowthRequirement;
+import com.gtnewhorizon.cropsnh.api.IPotencyData;
 import com.gtnewhorizon.cropsnh.api.ISeedData;
 import com.gtnewhorizon.cropsnh.blocks.BlockAdvancedHarvestingUnit;
 import com.gtnewhorizon.cropsnh.blocks.BlockFertilizerUnit;
@@ -554,11 +555,13 @@ public interface IGreenHouse extends IVoidable {
         int waterMissing = getWaterUsage();
         for (FluidStack fluidStack : getStoredFluids()) {
             if (CropsNHUtils.isStackInvalid(fluidStack)) continue;
-            int potency = HydrationRegistry.instance.getPotency(fluidStack.getFluid());
-            int amount = getAmountToConsumeBasedOnPotency(waterMissing, potency, fluidStack.amount);
-            if (amount > 0) {
-                waterMissing -= amount * potency;
-                waterToConsume.add(ObjectIntPair.of(fluidStack, amount));
+            IPotencyData potency = HydrationRegistry.instance.getPotency(fluidStack.getFluid());
+            if (potency == null) continue;
+            int applications = getApplicationCountBasedOnPotency(waterMissing, potency, fluidStack.amount);
+            if (applications > 0) {
+                waterMissing -= applications * potency.getPotency();
+                waterToConsume
+                    .add(ObjectIntPair.of(fluidStack, applications * potency.getUnitsConsumedPerApplication()));
             }
             if (waterMissing <= 0) break;
         }
@@ -609,10 +612,12 @@ public interface IGreenHouse extends IVoidable {
         return CheckRecipeResultRegistry.SUCCESSFUL;
     }
 
-    default int getAmountToConsumeBasedOnPotency(int missingPotency, int inputPotency, int inputAmount) {
-        if (missingPotency <= 0 || inputPotency <= 0 || inputAmount <= 0) return 0;
-        int maxConsume = missingPotency / inputPotency + (missingPotency % inputPotency > 0 ? 1 : 0);
-        return Math.min(maxConsume, inputAmount);
+    default int getApplicationCountBasedOnPotency(int missingPotency, IPotencyData potency, int inputAmount) {
+        int perApplication = potency.getPotency();
+        int unitsPerApplication = potency.getUnitsConsumedPerApplication();
+        if (missingPotency <= 0 || perApplication <= 0 || inputAmount < unitsPerApplication) return 0;
+        int maxApplications = missingPotency / perApplication + (missingPotency % perApplication > 0 ? 1 : 0);
+        return Math.min(maxApplications, inputAmount / unitsPerApplication);
     }
 
     default int getNutrientScore(ISeedData seedData) {

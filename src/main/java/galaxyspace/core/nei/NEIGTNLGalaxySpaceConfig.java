@@ -52,8 +52,8 @@ public class NEIGTNLGalaxySpaceConfig implements IConfigureNEI {
     }
 
     public void addRocketSteamRecipes(RocketRecipeHandler recipeHandler) {
-        int x = 4;
-        int y = 4 - recipeHandler.y;
+        int x = recipeHandler.getGuiXOffset();
+        int y = recipeHandler.getGuiYOffset();
 
         List<PositionedStack> input = new ObjectArrayList<>();
         input.add(new PositionedStack(ModsItemlist.StevesCartsStandardHull.get(1), 134 - x, 10 - y));
